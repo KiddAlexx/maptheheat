@@ -1,27 +1,17 @@
-# React + TypeScript + Vite
+# Map The Heat
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Map The Heat is a community-driven web application that allows users to share and discover spicy food places around the world. Whether you're a spice connoisseur seeking the next challenge, or just looking for a place to try a hot dish for the first time, Map The Heat is here to guide you.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Currently, in the early stages of development. Here's a glimpse of what's to come:
 
-## Expanding the ESLint configuration
+1. Discover spicy food places: Browse a map populated with hotspots recommended by fellow spice lovers.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+2. Contribute your discoveries: Found a new place that needs recognition? Add it to the map and share your experience.
 
-- Configure the top-level `parserOptions` property like this:
+3. Review and rate places: Share your feedback on the dishes, and rate the heat level to help other users know what to expect.
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+## Development
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+This application is being built with React, Firebase, Leaflet for maps, and various other technologies.
