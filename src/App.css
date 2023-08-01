@@ -1,3 +1,9 @@
+/*********************Default Styles********************/
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
 /********************Reusable Styles*******************/
 .btn-default {
   display: flex; /* Centers content for elements not centering by default */
