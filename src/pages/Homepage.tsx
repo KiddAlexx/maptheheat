@@ -1,9 +1,9 @@
-import PageNav from '../components/PageNav';
+
 
 function Homepage() {
   return (
     <main>
-      <PageNav />
+      Main
     </main>
   );
 }

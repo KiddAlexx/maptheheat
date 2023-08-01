@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import PageNav from './components/PageNav';
 
 import Homepage from './pages/Homepage';
 import Login from './pages/Login';
@@ -10,6 +11,7 @@ import './App.css';
 function App() {
   return (
     <BrowserRouter>
+      <PageNav />
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="login" element={<Login />} />

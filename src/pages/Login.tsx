@@ -8,6 +8,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [isLoadingAuth, setIsLoadingAuth] = useState(false);
   const [errorAuth, setErrorAuth] = useState('');
+  console.log(auth?.currentUser?.email);
 
   const signInWithEmail = async function () {
     try {
