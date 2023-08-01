@@ -1,9 +1,9 @@
-
+import HeroSection from '../components/HeroSection';
 
 function Homepage() {
   return (
     <main>
-      Main
+      <HeroSection />
     </main>
   );
 }

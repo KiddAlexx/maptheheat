@@ -1,0 +1,6 @@
+.heroSection {
+  height: calc(100vh - 8rem);
+  background-image: url('../../public/maptheheat-hero-sm.jpg');
+  background-size: cover;
+  background-position: center;
+}
