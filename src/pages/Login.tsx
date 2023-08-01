@@ -1,5 +1,9 @@
 import { auth, googleProvider } from '../config/firebase-config';
-import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 import { FirebaseError } from '@firebase/util';
 import { useState } from 'react';
 
@@ -10,7 +14,7 @@ function Login() {
   const [errorAuth, setErrorAuth] = useState('');
   console.log(auth?.currentUser?.email);
 
-  const signInWithEmail = async function () {
+  const createAccountWithEmail = async function () {
     try {
       setIsLoadingAuth(true);
       setErrorAuth('');
@@ -22,6 +26,19 @@ function Login() {
       setIsLoadingAuth(false);
     }
   };
+  const signInWithEmail = async function () {
+    try {
+      setIsLoadingAuth(true);
+      setErrorAuth('');
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      const firebaseError = err as FirebaseError;
+      setErrorAuth(firebaseError.message);
+    } finally {
+      setIsLoadingAuth(false);
+    }
+  };
+
   const signInWithGoogle = async function () {
     try {
       setIsLoadingAuth(true);
@@ -46,6 +63,7 @@ function Login() {
         type="password"
         onChange={(e) => setPassword(e.target.value)}
       />
+      <button onClick={createAccountWithEmail}>Create Account</button>
       <button onClick={signInWithEmail}>Sign In</button>
       <button onClick={signInWithGoogle}>Sign In With Google</button>
       {errorAuth ?? <p>{errorAuth}</p>}
