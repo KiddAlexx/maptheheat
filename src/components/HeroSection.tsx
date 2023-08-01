@@ -1,7 +1,21 @@
 import styles from './HeroSection.module.css';
 
 function HeroSection() {
-  return <section className={styles.heroSection}>Hero</section>;
+  return (
+    <section className={styles.heroSection}>
+      <div className={styles.ctaSection}>
+        <h1>Feel the Burn: Unleash Explosive Flavors with Map the Heat!</h1>
+        <p>
+          Navigate to the world's spiciest restaurants and shops. Our platform
+          is designed for heat-seekers like you. Start exploring now!
+        </p>
+        <div className={styles.btnContainer}>
+          <button className="btn-default">Search Restaurants</button>
+          <button className="btn-default">Search Shops</button>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 export default HeroSection;

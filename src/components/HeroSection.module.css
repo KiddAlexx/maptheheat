@@ -8,4 +8,39 @@
     url('../../public/maptheheat-hero-sm.jpg');
   background-size: cover;
   background-position: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.ctaSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10rem;
+  color: #fff;
+}
+
+.ctaSection h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 4rem;
+}
+
+.ctaSection p {
+  font-size: 2rem;
+  margin-bottom: 4rem;
+}
+
+.btnContainer {
+  display: flex;
+  gap: 4rem;
+}
+
+.btnContainer button {
+  height: 5rem;
+  width: 20rem;
+  background-color: #0a3509;
+  color: #fff;
 }
