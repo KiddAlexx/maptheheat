@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase-config';
@@ -6,9 +6,12 @@ import { auth } from '../config/firebase-config';
 import styles from './PageNav.module.css';
 
 function PageNav() {
+  const navigate = useNavigate();
+
   async function logOut() {
     try {
       await signOut(auth);
+      navigate('/');
     } catch (err) {
       console.error(err);
     }

@@ -6,19 +6,22 @@ import {
 } from 'firebase/auth';
 import { FirebaseError } from '@firebase/util';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoadingAuth, setIsLoadingAuth] = useState(false);
   const [errorAuth, setErrorAuth] = useState('');
-  console.log(auth?.currentUser?.email);
+
+  const navigate = useNavigate();
 
   const createAccountWithEmail = async function () {
     try {
       setIsLoadingAuth(true);
       setErrorAuth('');
       await createUserWithEmailAndPassword(auth, email, password);
+      navigate('/app');
     } catch (err) {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
@@ -31,6 +34,7 @@ function Login() {
       setIsLoadingAuth(true);
       setErrorAuth('');
       await signInWithEmailAndPassword(auth, email, password);
+      navigate('/app');
     } catch (err) {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
@@ -44,6 +48,7 @@ function Login() {
       setIsLoadingAuth(true);
       setErrorAuth('');
       await signInWithPopup(auth, googleProvider);
+      navigate('/app');
     } catch (err) {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
