@@ -1,13 +1,25 @@
 import { auth } from '../config/firebase-config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { FirebaseError } from '@firebase/util';
 import { useState } from 'react';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoadingAuth, setIsLoadingAuth] = useState(false);
+  const [errorAuth, setErrorAuth] = useState('');
 
   const signIn = async function () {
-    await createUserWithEmailAndPassword(auth, email, password);
+    try {
+      setIsLoadingAuth(true);
+      setErrorAuth('');
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      const firebaseError = err as FirebaseError;
+      setErrorAuth(firebaseError.message);
+    } finally {
+      setIsLoadingAuth(false);
+    }
   };
 
   return (
@@ -22,6 +34,7 @@ function Login() {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button onClick={signIn}>Sign In</button>
+      {errorAuth ?? <p>{errorAuth}</p>}
     </div>
   );
 }
