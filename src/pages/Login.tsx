@@ -8,6 +8,8 @@ import { FirebaseError } from '@firebase/util';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
+import styles from './Login.module.css';
+
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -58,7 +60,7 @@ function Login() {
   };
 
   return (
-    <div>
+    <div className={styles.authContainer}>
       <input
         placeholder="Email..."
         onChange={(e) => setEmail(e.target.value)}
@@ -68,9 +70,17 @@ function Login() {
         type="password"
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={createAccountWithEmail}>Create Account</button>
-      <button onClick={signInWithEmail}>Sign In</button>
-      <button onClick={signInWithGoogle}>Sign In With Google</button>
+      <div className={styles.authButtonContainer}>
+        <button className="btn-default" onClick={createAccountWithEmail}>
+          Create Account
+        </button>
+        <button className="btn-default" onClick={signInWithEmail}>
+          Sign In
+        </button>
+        <button className="btn-default" onClick={signInWithGoogle}>
+          Sign In With Google
+        </button>
+      </div>
       {errorAuth ?? <p>{errorAuth}</p>}
     </div>
   );
