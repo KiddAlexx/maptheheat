@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router';
 import styles from './HeroSection.module.css';
 
 function HeroSection() {
+  const navigate = useNavigate();
   return (
     <section className={styles.heroSection}>
       <div className={styles.ctaSection}>
@@ -10,8 +12,12 @@ function HeroSection() {
           is designed for heat-seekers like you. Start exploring now!
         </p>
         <div className={styles.btnContainer}>
-          <button className="btn-default">Search Restaurants</button>
-          <button className="btn-default">Search Shops</button>
+          <button className="btn-default" onClick={() => navigate('app')}>
+            Search Restaurants
+          </button>
+          <button className="btn-default" onClick={() => navigate('app')}>
+            Search Shops
+          </button>
         </div>
       </div>
     </section>
