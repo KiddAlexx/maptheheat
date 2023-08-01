@@ -19,12 +19,19 @@ function PageNav() {
       <h3>
         <NavLink to="/">LOGO</NavLink>
       </h3>
-      <ul>
+      <ul className={styles.authButtons}>
         <li>
-          <NavLink to="/login">Login</NavLink>
+          <NavLink to="/login" className={`btn-default ${styles.btnLogin}`}>
+            Login
+          </NavLink>
         </li>
         <li>
-          <button onClick={logOut}>Log Out</button>
+          <button
+            onClick={logOut}
+            className={`btn-default ${styles.btnLogout}`}
+          >
+            Log Out
+          </button>
         </li>
       </ul>
     </nav>

@@ -4,3 +4,17 @@
   justify-content: space-between;
   padding: 0 10rem;
 }
+
+.authButtons {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.btnLogin {
+  background-color: #618c61;
+}
+
+.btnLogout {
+  background-color: #e95936;
+}
