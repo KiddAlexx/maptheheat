@@ -1,5 +1,5 @@
-import { auth } from '../config/firebase-config';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, googleProvider } from '../config/firebase-config';
+import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { FirebaseError } from '@firebase/util';
 import { useState } from 'react';
 
@@ -9,11 +9,23 @@ function Login() {
   const [isLoadingAuth, setIsLoadingAuth] = useState(false);
   const [errorAuth, setErrorAuth] = useState('');
 
-  const signIn = async function () {
+  const signInWithEmail = async function () {
     try {
       setIsLoadingAuth(true);
       setErrorAuth('');
       await createUserWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      const firebaseError = err as FirebaseError;
+      setErrorAuth(firebaseError.message);
+    } finally {
+      setIsLoadingAuth(false);
+    }
+  };
+  const signInWithGoogle = async function () {
+    try {
+      setIsLoadingAuth(true);
+      setErrorAuth('');
+      await signInWithPopup(auth, googleProvider);
     } catch (err) {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
@@ -33,7 +45,8 @@ function Login() {
         type="password"
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={signIn}>Sign In</button>
+      <button onClick={signInWithEmail}>Sign In</button>
+      <button onClick={signInWithGoogle}>Sign In With Google</button>
       {errorAuth ?? <p>{errorAuth}</p>}
     </div>
   );
