@@ -23,23 +23,26 @@ function PageNav() {
         <NavLink to="/">LOGO</NavLink>
       </h3>
       <ul className={styles.authButtons}>
-        <li>
-          <NavLink to="/login" className={`btn-default ${styles.btnLogin}`}>
-            Login
-          </NavLink>
-        </li>
+        {auth.currentUser === null ? (
+          <li>
+            <NavLink to="/login" className={`btn-default ${styles.btnLogin}`}>
+              Login
+            </NavLink>
+          </li>
+        ) : (
+          <li>
+            <button
+              onClick={logOut}
+              className={`btn-default ${styles.btnLogout}`}
+            >
+              Log Out
+            </button>
+          </li>
+        )}
         <li>
           <NavLink to="/signup" className={`btn-default ${styles.btnLogin}`}>
             Sign Up!
           </NavLink>
-        </li>
-        <li>
-          <button
-            onClick={logOut}
-            className={`btn-default ${styles.btnLogout}`}
-          >
-            Log Out
-          </button>
         </li>
       </ul>
     </nav>
