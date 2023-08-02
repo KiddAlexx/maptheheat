@@ -13,12 +13,20 @@ import styles from './Login.module.css';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoadingAuth, setIsLoadingAuth] = useState(false);
   const [errorAuth, setErrorAuth] = useState('');
 
   const navigate = useNavigate();
   const location = useLocation();
   const mode = location.pathname.includes('signup') ? 'signup' : 'login';
+
+  const resetAuthState = function () {
+    setPassword('');
+    setConfirmPassword('');
+    setEmail('');
+    setIsLoadingAuth(false);
+  };
 
   const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -34,13 +42,19 @@ function Login() {
     try {
       setIsLoadingAuth(true);
       setErrorAuth('');
+      if (password !== confirmPassword) {
+        setErrorAuth('Woops, the passwords do not match!');
+        setPassword('');
+        setConfirmPassword('');
+        return;
+      }
       await createUserWithEmailAndPassword(auth, email, password);
       navigate('/app');
     } catch (err) {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
     } finally {
-      setIsLoadingAuth(false);
+      resetAuthState();
     }
   };
   const signInWithEmail = async function () {
@@ -53,7 +67,7 @@ function Login() {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
     } finally {
-      setIsLoadingAuth(false);
+      resetAuthState();
     }
   };
 
@@ -67,7 +81,7 @@ function Login() {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
     } finally {
-      setIsLoadingAuth(false);
+      resetAuthState();
     }
   };
 
@@ -75,13 +89,23 @@ function Login() {
     <form className={styles.authContainer} onSubmit={handleSubmit}>
       <input
         placeholder="Email..."
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <input
         placeholder="Password..."
+        value={password}
         type="password"
         onChange={(e) => setPassword(e.target.value)}
       />
+      {mode === 'signup' && (
+        <input
+          placeholder="Confirm Password..."
+          value={confirmPassword}
+          type="password"
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+      )}
       <div className={styles.authButtonContainer}>
         {mode === 'login' ? (
           <>
