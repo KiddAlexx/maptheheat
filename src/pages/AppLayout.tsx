@@ -1,5 +1,11 @@
 import { db } from '../config/firebase-config';
-import { getDocs, collection, addDoc } from 'firebase/firestore';
+import {
+  getDocs,
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+} from 'firebase/firestore';
 
 import { useState, useEffect } from 'react';
 
@@ -38,6 +44,11 @@ function AppLayout() {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const deleteRestaurant = async (id) => {
+    const restaurantDoc = doc(db, 'restaurant-details', id);
+    await deleteDoc(restaurantDoc);
   };
 
   return (
