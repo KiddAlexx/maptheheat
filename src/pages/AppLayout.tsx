@@ -1,5 +1,5 @@
 import { db } from '../config/firebase-config';
-import { getDocs, collection } from 'firebase/firestore';
+import { getDocs, collection, addDoc } from 'firebase/firestore';
 
 import { useState, useEffect } from 'react';
 
@@ -7,9 +7,13 @@ const restaurantCollectionRef = collection(db, 'restaurant-details');
 
 function AppLayout() {
   const [restaurantList, setRestaurantList] = useState([]);
+  console.log(restaurantList);
+
+  const [newRestaurantName, setNewRestaurantName] = useState('');
+  const [newRestaurantAddress, setNewRestaurantAddress] = useState('');
 
   useEffect(() => {
-    const getMovieList = async () => {
+    const getRestaurantList = async () => {
       try {
         const data = await getDocs(restaurantCollectionRef);
         const filteredData = data.docs.map((doc) => ({
@@ -21,10 +25,36 @@ function AppLayout() {
         console.error(err);
       }
     };
-    getMovieList();
+    getRestaurantList();
   }, []);
 
-  return <div>App Layout</div>;
+  const onSubmitRestaurant = async (e) => {
+    e.preventDefault();
+    try {
+      await addDoc(restaurantCollectionRef, {
+        restaurantName: newRestaurantName,
+        restaurantAddress: newRestaurantAddress,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <form onSubmit={onSubmitRestaurant}>
+      <input
+        type="text"
+        placeholder="name"
+        onChange={(e) => setNewRestaurantName(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="address"
+        onChange={(e) => setNewRestaurantAddress(e.target.value)}
+      />
+      <button>submit</button>
+    </form>
+  );
 }
 
 export default AppLayout;
