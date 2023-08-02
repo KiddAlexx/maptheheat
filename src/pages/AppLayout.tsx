@@ -5,6 +5,7 @@ import {
   addDoc,
   deleteDoc,
   doc,
+  updateDoc,
 } from 'firebase/firestore';
 
 import { useState, useEffect } from 'react';
@@ -49,6 +50,10 @@ function AppLayout() {
   const deleteRestaurant = async (id) => {
     const restaurantDoc = doc(db, 'restaurant-details', id);
     await deleteDoc(restaurantDoc);
+  };
+  const updateRestaurant = async (id) => {
+    const restaurantDoc = doc(db, 'restaurant-details', id);
+    await updateDoc(restaurantDoc, { restaurantName: updatedRestaurantName });
   };
 
   return (
