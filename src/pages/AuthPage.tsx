@@ -6,7 +6,7 @@ import {
 } from 'firebase/auth';
 import { FirebaseError } from '@firebase/util';
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
 import styles from './Login.module.css';
 
@@ -18,7 +18,11 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const createAccountWithEmail = async function () {
+  const location = useLocation();
+  const mode = location.pathname.includes('signup') ? 'signup' : 'login';
+
+  const createAccountWithEmail = async function (e) {
+    e.preventDefault();
     try {
       setIsLoadingAuth(true);
       setErrorAuth('');
@@ -60,7 +64,7 @@ function Login() {
   };
 
   return (
-    <div className={styles.authContainer}>
+    <form className={styles.authContainer}>
       <input
         placeholder="Email..."
         onChange={(e) => setEmail(e.target.value)}
@@ -71,18 +75,23 @@ function Login() {
         onChange={(e) => setPassword(e.target.value)}
       />
       <div className={styles.authButtonContainer}>
-        <button className="btn-default" onClick={createAccountWithEmail}>
-          Create Account
-        </button>
-        <button className="btn-default" onClick={signInWithEmail}>
-          Sign In
-        </button>
-        <button className="btn-default" onClick={signInWithGoogle}>
-          Sign In With Google
-        </button>
+        {mode === 'login' ? (
+          <>
+            <button className="btn-default" onClick={signInWithEmail}>
+              Sign In
+            </button>
+            <button className="btn-default" onClick={signInWithGoogle}>
+              Sign In With Google
+            </button>
+          </>
+        ) : (
+          <button className="btn-default" onClick={createAccountWithEmail}>
+            Create Account
+          </button>
+        )}
       </div>
       {errorAuth ?? <p>{errorAuth}</p>}
-    </div>
+    </form>
   );
 }
 

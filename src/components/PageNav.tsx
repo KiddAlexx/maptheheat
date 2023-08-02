@@ -29,6 +29,11 @@ function PageNav() {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/signup" className={`btn-default ${styles.btnLogin}`}>
+            Sign Up!
+          </NavLink>
+        </li>
+        <li>
           <button
             onClick={logOut}
             className={`btn-default ${styles.btnLogout}`}

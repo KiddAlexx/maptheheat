@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import PageNav from './components/PageNav';
 import Homepage from './pages/Homepage';
-import Login from './pages/Login';
+import AuthPage from './pages/AuthPage';
 import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
 
@@ -14,7 +14,8 @@ function App() {
       <PageNav />
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="login" element={<Login />} />
+        <Route path="login" element={<AuthPage />} />
+        <Route path="signup" element={<AuthPage />} />
         <Route path="app" element={<AppLayout />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
