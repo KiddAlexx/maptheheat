@@ -24,11 +24,21 @@ function PageNav() {
       </h3>
       <ul className={styles.authButtons}>
         {auth.currentUser === null ? (
-          <li>
-            <NavLink to="/login" className={`btn-default ${styles.btnLogin}`}>
-              Login
-            </NavLink>
-          </li>
+          <>
+            <li>
+              <NavLink to="/login" className={`btn-default ${styles.btnLogin}`}>
+                Login
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/signup"
+                className={`btn-default ${styles.btnLogin}`}
+              >
+                Sign Up!
+              </NavLink>
+            </li>
+          </>
         ) : (
           <li>
             <button
@@ -39,11 +49,6 @@ function PageNav() {
             </button>
           </li>
         )}
-        <li>
-          <NavLink to="/signup" className={`btn-default ${styles.btnLogin}`}>
-            Sign Up!
-          </NavLink>
-        </li>
       </ul>
     </nav>
   );
