@@ -17,12 +17,20 @@ function Login() {
   const [errorAuth, setErrorAuth] = useState('');
 
   const navigate = useNavigate();
-
   const location = useLocation();
   const mode = location.pathname.includes('signup') ? 'signup' : 'login';
 
-  const createAccountWithEmail = async function (e) {
+  const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (mode === 'login') {
+      await signInWithEmail();
+    }
+    if (mode === 'signup') {
+      await createAccountWithEmail();
+    }
+  };
+
+  const createAccountWithEmail = async function () {
     try {
       setIsLoadingAuth(true);
       setErrorAuth('');
@@ -64,7 +72,7 @@ function Login() {
   };
 
   return (
-    <form className={styles.authContainer}>
+    <form className={styles.authContainer} onSubmit={handleSubmit}>
       <input
         placeholder="Email..."
         onChange={(e) => setEmail(e.target.value)}
@@ -77,7 +85,7 @@ function Login() {
       <div className={styles.authButtonContainer}>
         {mode === 'login' ? (
           <>
-            <button className="btn-default" onClick={signInWithEmail}>
+            <button className="btn-default" type="submit">
               Sign In
             </button>
             <button className="btn-default" onClick={signInWithGoogle}>
@@ -85,7 +93,7 @@ function Login() {
             </button>
           </>
         ) : (
-          <button className="btn-default" onClick={createAccountWithEmail}>
+          <button className="btn-default" type="submit">
             Create Account
           </button>
         )}
