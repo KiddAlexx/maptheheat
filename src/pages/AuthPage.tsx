@@ -21,8 +21,6 @@ function Login() {
   const location = useLocation();
   const mode = location.pathname.includes('signup') ? 'signup' : 'login';
 
-  console.log(auth);
-
   const resetAuthState = function () {
     setPassword('');
     setConfirmPassword('');
