@@ -6,20 +6,24 @@ import AuthPage from './pages/AuthPage';
 import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
 
+import { RestaurantsProvider } from './context/RestaurantContext';
+
 import './App.css';
 
 function App() {
   return (
-    <BrowserRouter>
-      <PageNav />
-      <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="login" element={<AuthPage />} />
-        <Route path="signup" element={<AuthPage />} />
-        <Route path="app" element={<AppLayout />} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <RestaurantsProvider>
+      <BrowserRouter>
+        <PageNav />
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="login" element={<AuthPage />} />
+          <Route path="signup" element={<AuthPage />} />
+          <Route path="app" element={<AppLayout />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </RestaurantsProvider>
   );
 }
 

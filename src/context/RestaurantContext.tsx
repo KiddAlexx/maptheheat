@@ -1,4 +1,5 @@
-import { createContext } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useReducer, useEffect } from 'react';
 import { db } from '../config/firebase-config';
 import { getDocs, collection } from 'firebase/firestore';
 
@@ -6,10 +7,68 @@ const restaurantCollectionRef = collection(db, 'restaurant-details');
 
 const RestaurantContext = createContext();
 
-function RestaurantsProvider({ children }) {
-  return <RestaurantContext.Provider></RestaurantContext.Provider>;
+const initialState = {
+  restaurants: [],
+  isLoading: false,
+  errorMessage: '',
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'loading':
+      return { ...state, isLoading: true };
+    case 'restaurants/loaded':
+      return { ...state, isLoading: false, restaurants: action.payload };
+    case 'rejected':
+      return {
+        ...state,
+        isLoading: false,
+        errorMessage: action.payload,
+      };
+    default:
+      throw new Error('Unknown action type');
+  }
 }
 
+function RestaurantsProvider({ children }) {
+  const [{ restaurants, isLoading, errorMessage }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
+  console.log(restaurants, isLoading, errorMessage);
+
+  // Ensure restaurant list is fetched on initial load.
+  useEffect(function () {
+    getRestaurants();
+  }, []);
+
+  async function getRestaurants() {
+    try {
+      dispatch({ type: 'loading' });
+      const data = await getDocs(restaurantCollectionRef);
+      const filteredData = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      dispatch({ type: 'restaurants/loaded', payload: filteredData });
+    } catch {
+      dispatch({
+        type: 'rejected',
+        payload: 'There was an error loading restaurants',
+      });
+    }
+  }
+
+  return (
+    <RestaurantContext.Provider
+      value={{ restaurants, isLoading, errorMessage, getRestaurants }}
+    >
+      {children}
+    </RestaurantContext.Provider>
+  );
+}
+
+// A custom hook to provide easy access to the RestaurantContext.
 function useRestaurants() {
   const context = useContext(RestaurantContext);
   if (context === undefined)
@@ -18,3 +77,5 @@ function useRestaurants() {
     );
   return context;
 }
+
+export { RestaurantsProvider, useRestaurants };
