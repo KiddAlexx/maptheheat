@@ -1,13 +1,9 @@
-import ListView from '../components/ListView';
-import SearchBar from '../components/SearchBar';
-import VenueForm from '../components/VenueForm';
+import SideBar from '../components/SideBar';
 
 function AppLayout() {
   return (
     <main>
-      <SearchBar />
-      <VenueForm />
-      <ListView />
+      <SideBar />
     </main>
   );
 }
