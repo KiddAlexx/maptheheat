@@ -25,6 +25,12 @@ dd {
   padding: 0;
 }
 
+/* Set form input and labels as block elements by default */
+input,
+label {
+  display: block;
+}
+
 /* Remove default styling for all links */
 a,
 a:hover,
