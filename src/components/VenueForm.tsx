@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useRestaurants } from '../context/RestaurantContext';
+import { auth } from '../config/firebase-config';
 
 function VenueForm() {
   const [venueData, setVenueData] = useState({
@@ -7,7 +9,10 @@ function VenueForm() {
     description: '',
     hours: '',
     city: '',
+    userId: '',
   });
+
+  const { addRestaurant, getRestaurants } = useRestaurants();
 
   const { name, address, description, hours, city } = venueData;
 
@@ -16,9 +21,10 @@ function VenueForm() {
     setVenueData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = function (e: React.FormEvent<HTMLFormElement>) {
+  const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log(venueData);
+    addRestaurant({ ...venueData, userId: auth?.currentUser?.uid });
+    getRestaurants();
   };
 
   return (

@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useReducer, useEffect } from 'react';
 import { db } from '../config/firebase-config';
-import { getDocs, collection } from 'firebase/firestore';
+import { getDocs, collection, addDoc } from 'firebase/firestore';
 
 const restaurantCollectionRef = collection(db, 'restaurant-details');
 
@@ -59,9 +59,27 @@ function RestaurantsProvider({ children }) {
     }
   }
 
+  async function addRestaurant(restaurant) {
+    try {
+      dispatch({ type: 'loading' });
+      await addDoc(restaurantCollectionRef, restaurant);
+    } catch (err) {
+      dispatch({
+        type: 'rejected',
+        payload: err,
+      });
+    }
+  }
+
   return (
     <RestaurantContext.Provider
-      value={{ restaurants, isLoading, errorMessage, getRestaurants }}
+      value={{
+        restaurants,
+        isLoading,
+        errorMessage,
+        getRestaurants,
+        addRestaurant,
+      }}
     >
       {children}
     </RestaurantContext.Provider>
