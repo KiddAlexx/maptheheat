@@ -13,10 +13,11 @@
   gap: 2rem;
 }
 
-.btnLogin {
+/* Temp fix to ensure style overrides default from btn-default class */
+li .btnLogin {
   background-color: #618c61;
 }
 
-.btnLogout {
+li .btnLogout {
   background-color: #e95936;
 }
