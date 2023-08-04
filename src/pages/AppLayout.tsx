@@ -1,9 +1,11 @@
 import ListView from '../components/ListView';
+import VenueForm from '../components/VenueForm';
 
 function AppLayout() {
   return (
     <main>
-      <ListView></ListView>
+      <VenueForm />
+      <ListView />
     </main>
   );
 }
