@@ -5,3 +5,8 @@
 .map {
   height: 100%;
 }
+
+:global(.leaflet-popup .leaflet-popup-content) {
+  width: 40rem;
+  height: 40rem;
+}
