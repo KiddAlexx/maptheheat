@@ -1,0 +1,4 @@
+.appContainer {
+  display: flex;
+  height: calc(100vh - 8rem);
+}

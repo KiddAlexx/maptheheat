@@ -1,0 +1,3 @@
+.rightPanelContainer {
+  flex: 1; /* Ensures that conatiner will grow to fill remaining space */
+}
