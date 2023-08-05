@@ -1,7 +1,9 @@
-import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useRestaurants } from '../context/RestaurantContext';
 import styles from './MapView.module.css';
 
 function MapView() {
+  const { restaurants, isLoading, errorMessage } = useRestaurants();
   return (
     <div className={styles.mapContainer}>
       <MapContainer
@@ -14,11 +16,13 @@ function MapView() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={[51.505, -0.09]}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
+        {restaurants.map((restaurant) => (
+          <Marker position={[restaurant.coords.lat, restaurant.coords.lon]}>
+            <Popup>
+              {restaurant.name} <br /> {restaurant.description}
+            </Popup>
+          </Marker>
+        ))}
       </MapContainer>
     </div>
   );
