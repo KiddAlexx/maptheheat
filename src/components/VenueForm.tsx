@@ -6,24 +6,50 @@ function VenueForm() {
   const [venueData, setVenueData] = useState({
     name: '',
     address: '',
+    detailedAddress: '',
     description: '',
     hours: '',
     city: '',
+    country: '',
+    postcode: '',
     userId: '',
+    coords: {},
   });
 
   const { addRestaurant, getRestaurants } = useRestaurants();
 
-  const { name, address, description, hours, city } = venueData;
+  const { name, address, description, hours, city, postcode, country } =
+    venueData;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setVenueData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const fetchAddressDetails = async function () {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?street=${address}&city=${city}&country=spain&postalcode=${postcode}&format=json`
+      );
+      const [data] = await res.json(); // Take first result from array in case of multiple
+      return {
+        detailedAddress: data.display_name,
+        coords: { lat: data.lat, lon: data.lon },
+      };
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    addRestaurant({ ...venueData, userId: auth?.currentUser?.uid });
+    const additionalVenueData = await fetchAddressDetails();
+    const finalVenueData = {
+      ...venueData,
+      ...additionalVenueData,
+      userId: auth?.currentUser?.uid,
+    };
+    addRestaurant(finalVenueData);
     getRestaurants();
   };
 
@@ -46,13 +72,21 @@ function VenueForm() {
         value={name}
         id="venueName"
       />
-      <label htmlFor="address">Address</label>
+      <label htmlFor="address">Address - number followed by street name</label>
       <input
         type="text"
         name="address"
         onChange={handleChange}
         value={address}
         id="address"
+      />
+      <label htmlFor="postcode">Postcode</label>
+      <input
+        type="text"
+        name="postcode"
+        onChange={handleChange}
+        value={postcode}
+        id="postcode"
       />
       <label htmlFor="description">Description</label>
       <input
