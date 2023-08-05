@@ -18,6 +18,8 @@ function VenueForm() {
 
   const { addRestaurant, getRestaurants } = useRestaurants();
 
+  const currentTimeStamp = new Date().toISOString();
+
   const { name, address, description, hours, city, postcode, country } =
     venueData;
 
@@ -48,6 +50,7 @@ function VenueForm() {
       ...venueData,
       ...additionalVenueData,
       userId: auth?.currentUser?.uid,
+      dateAdded: currentTimeStamp,
     };
     addRestaurant(finalVenueData);
     getRestaurants();
