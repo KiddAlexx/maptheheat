@@ -8,8 +8,8 @@ function MapView() {
     <div className={styles.mapContainer}>
       <MapContainer
         className={styles.map}
-        center={[51.505, -0.09]}
-        zoom={13}
+        center={[41.3874, 2.17]}
+        zoom={13.5}
         scrollWheelZoom={true}
       >
         <TileLayer
