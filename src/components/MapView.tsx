@@ -17,7 +17,10 @@ function MapView() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {restaurants.map((restaurant) => (
-          <Marker position={[restaurant.coords.lat, restaurant.coords.lon]}>
+          <Marker
+            key={restaurant.id}
+            position={[restaurant.coords.lat, restaurant.coords.lon]}
+          >
             <Popup>
               {restaurant.name} <br /> {restaurant.description}
             </Popup>

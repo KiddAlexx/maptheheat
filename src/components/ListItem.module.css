@@ -2,6 +2,7 @@
   width: 15rem;
   height: 15rem;
   background-color: blueviolet;
+  flex-shrink: 0;
 }
 
 .listItemContainer {
