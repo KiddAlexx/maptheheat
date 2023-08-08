@@ -11,6 +11,7 @@ const initialState = {
   restaurants: [],
   isLoading: false,
   errorMessage: '',
+  activeRestaurant: 'initialvalue',
 };
 
 function reducer(state, action) {
@@ -25,17 +26,17 @@ function reducer(state, action) {
         isLoading: false,
         errorMessage: action.payload,
       };
+    case 'set-active':
+      return { ...state, activeRestaurant: action.payload };
+
     default:
       throw new Error('Unknown action type');
   }
 }
 
 function RestaurantsProvider({ children }) {
-  const [{ restaurants, isLoading, errorMessage }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
-  console.log(restaurants, isLoading, errorMessage);
+  const [{ restaurants, isLoading, errorMessage, activeRestaurant }, dispatch] =
+    useReducer(reducer, initialState);
 
   // Ensure restaurant list is fetched on initial load.
   useEffect(function () {
@@ -71,14 +72,20 @@ function RestaurantsProvider({ children }) {
     }
   }
 
+  function setActiveRestaurant(restaurant) {
+    dispatch({ type: 'set-active', payload: restaurant.id });
+  }
+
   return (
     <RestaurantContext.Provider
       value={{
         restaurants,
         isLoading,
         errorMessage,
+        activeRestaurant,
         getRestaurants,
         addRestaurant,
+        setActiveRestaurant,
       }}
     >
       {children}

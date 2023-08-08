@@ -3,7 +3,9 @@ import { useRestaurants } from '../context/RestaurantContext';
 import styles from './MapView.module.css';
 
 function MapView() {
-  const { restaurants, isLoading, errorMessage } = useRestaurants();
+  const { restaurants, isLoading, errorMessage, setActiveRestaurant } =
+    useRestaurants();
+
   return (
     <div className={styles.mapContainer}>
       <MapContainer

@@ -2,12 +2,25 @@ import { useRestaurants } from '../context/RestaurantContext';
 import ListItem from './ListItem';
 
 function ListView() {
-  const { restaurants, isLoading, errorMessage } = useRestaurants();
-
+  const {
+    restaurants,
+    isLoading,
+    errorMessage,
+    setActiveRestaurant,
+    activeRestaurant,
+  } = useRestaurants();
+  console.log('Active Restaurant in ListView render:', activeRestaurant);
   return (
     <div>
+      <div>{`Active Restaurant ${activeRestaurant}`}</div>
       {restaurants.map((restaurant) => (
-        <ListItem restaurant={restaurant} key={restaurant.id} />
+        <ListItem
+          handleClick={() => {
+            setActiveRestaurant(restaurant);
+          }}
+          restaurant={restaurant}
+          key={restaurant.id}
+        />
       ))}
     </div>
   );
