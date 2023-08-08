@@ -12,7 +12,6 @@ function ListView() {
   console.log('Active Restaurant in ListView render:', activeRestaurant);
   return (
     <div>
-      <div>{`Active Restaurant ${activeRestaurant}`}</div>
       {restaurants.map((restaurant) => (
         <ListItem
           handleClick={() => {

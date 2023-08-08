@@ -11,7 +11,7 @@ const initialState = {
   restaurants: [],
   isLoading: false,
   errorMessage: '',
-  activeRestaurant: 'initialvalue',
+  activeRestaurant: { id: '', coords: { lat: '', lon: '' } },
 };
 
 function reducer(state, action) {
@@ -27,7 +27,13 @@ function reducer(state, action) {
         errorMessage: action.payload,
       };
     case 'set-active':
-      return { ...state, activeRestaurant: action.payload };
+      return {
+        ...state,
+        activeRestaurant: {
+          id: action.payload.id,
+          coords: action.payload.coords,
+        },
+      };
 
     default:
       throw new Error('Unknown action type');
@@ -73,7 +79,7 @@ function RestaurantsProvider({ children }) {
   }
 
   function setActiveRestaurant(restaurant) {
-    dispatch({ type: 'set-active', payload: restaurant.id });
+    dispatch({ type: 'set-active', payload: restaurant });
   }
 
   return (
