@@ -12,6 +12,8 @@ function VenueForm() {
     city: '',
     country: '',
     postcode: '',
+    phoneNumber: '',
+    website: '',
     userId: '',
     coords: {},
   });
@@ -20,8 +22,17 @@ function VenueForm() {
 
   const currentTimeStamp = new Date().toISOString();
 
-  const { name, address, description, hours, city, postcode, country } =
-    venueData;
+  const {
+    name,
+    address,
+    description,
+    hours,
+    city,
+    postcode,
+    country,
+    phoneNumber,
+    website,
+  } = venueData;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -99,13 +110,29 @@ function VenueForm() {
         value={description}
         id="description"
       />
-      <label htmlFor="hours">Hours</label>
+      <label htmlFor="hours">Opening Hours</label>
       <input
         type="text"
         name="hours"
         onChange={handleChange}
         value={hours}
         id="hours"
+      />
+      <label htmlFor="phoneNumber">Phone Number</label>
+      <input
+        type="text"
+        name="phoneNumber"
+        onChange={handleChange}
+        value={phoneNumber}
+        id="phoneNumber"
+      />
+      <label htmlFor="website">Website</label>
+      <input
+        type="text"
+        name="website"
+        onChange={handleChange}
+        value={website}
+        id="website"
       />
       <button type="submit" className="btn-default">
         Submit
