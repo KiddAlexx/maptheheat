@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRestaurants } from '../context/RestaurantContext';
 import { auth } from '../config/firebase-config';
 
-function VenueForm() {
+function VenueForm({ setIsAddingVenue }) {
   const [venueData, setVenueData] = useState({
     name: '',
     address: '',
@@ -64,6 +64,7 @@ function VenueForm() {
       dateAdded: currentTimeStamp,
     };
     addRestaurant(finalVenueData);
+    setIsAddingVenue(false);
     getRestaurants();
   };
 
@@ -136,6 +137,13 @@ function VenueForm() {
       />
       <button type="submit" className="btn-default">
         Submit
+      </button>
+      <button
+        onClick={() => setIsAddingVenue(false)}
+        type="button"
+        className="btn-default"
+      >
+        Cancel
       </button>
     </form>
   );
