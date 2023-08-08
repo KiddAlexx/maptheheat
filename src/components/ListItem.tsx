@@ -1,11 +1,16 @@
+import styles from './ListItem.module.css';
+
 function ListItem({ restaurant }) {
   const { name, address, hours, description } = restaurant;
   return (
-    <div>
-      <h2>{name}</h2>
-      <h3>{address}</h3>
-      <p>{hours}</p>
-      <p>{description}</p>
+    <div className={styles.listItemContainer}>
+      <div className={styles.tempImageContainer}></div>
+      <div>
+        <h2>{name}</h2>
+        <h3>{address}</h3>
+        <p>{hours}</p>
+        <p>{description}</p>
+      </div>
     </div>
   );
 }

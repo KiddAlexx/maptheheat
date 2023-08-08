@@ -1,0 +1,17 @@
+.tempImageContainer {
+  width: 15rem;
+  height: 15rem;
+  background-color: blueviolet;
+}
+
+.listItemContainer {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border: solid red 1px;
+  cursor: pointer;
+}
+
+.listItemContainer:hover {
+  background-color: bisque;
+}
