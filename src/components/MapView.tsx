@@ -1,11 +1,5 @@
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMap,
-  Icon,
-} from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { Link } from 'react-router-dom';
 import { useRestaurants } from '../context/RestaurantContext';
 import styles from './MapView.module.css';
 import { useEffect } from 'react';
@@ -61,7 +55,16 @@ function MapView() {
             icon={createCustomIcon('red')}
           >
             <Popup>
-              {restaurant.name} <br /> {restaurant.description}
+              <div className={styles.tempImageContainer}></div>
+              <Link to="/app/venue">
+                <h2
+                  onClick={() => {
+                    setActiveRestaurant(restaurant);
+                  }}
+                >
+                  {restaurant.name}
+                </h2>
+              </Link>
             </Popup>
           </Marker>
         ))}
