@@ -3,9 +3,20 @@ import { createContext, useContext, useReducer, useEffect } from 'react';
 import { db } from '../config/firebase-config';
 import { getDocs, collection, addDoc } from 'firebase/firestore';
 
+import {
+  Restaurant,
+  Coords,
+  ActiveRestaurant,
+  RestaurantContext,
+  State,
+  Action,
+} from '../models/restaurantTypes';
+
 const restaurantCollectionRef = collection(db, 'restaurant-details');
 
-const RestaurantContext = createContext();
+const RestaurantContext = createContext<RestaurantContext | undefined>(
+  undefined
+);
 
 const initialState = {
   restaurants: [],
@@ -19,7 +30,7 @@ const initialState = {
   },
 };
 
-function reducer(state, action) {
+function reducer(state: State, action: Action) {
   switch (action.type) {
     case 'loading':
       return { ...state, isLoading: true };
