@@ -79,7 +79,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   const fetchAddressDetails = async function () {
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?street=${address}&city=${city}&${country}=spain&postalcode=${postcode}&format=json`
+        `https://nominatim.openstreetmap.org/search?street=${address}&city=${city}&country=${country}&postalcode=${postcode}&format=json`
       );
       const [data] = await res.json(); // Take first result from array in case of multiple
       return {
