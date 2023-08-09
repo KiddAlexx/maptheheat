@@ -1,7 +1,14 @@
 import { useParams } from 'react-router';
 
 function DetailedVenueView() {
-  return <div>Detailed Venue View</div>;
+  const { city, venue } = useParams();
+
+  return (
+    <div>
+      <p>{venue}</p>
+      <p>{city}</p>
+    </div>
+  );
 }
 
 export default DetailedVenueView;

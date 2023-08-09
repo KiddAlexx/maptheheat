@@ -56,7 +56,7 @@ function MapView() {
           >
             <Popup>
               <div className={styles.tempImageContainer}></div>
-              <Link to="/app/venue">
+              <Link to={`/app/venue/${restaurant.city}/${restaurant.urlSlug}`}>
                 <h2
                   onClick={() => {
                     setActiveRestaurant(restaurant);
