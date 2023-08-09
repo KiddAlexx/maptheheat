@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRestaurants } from '../context/RestaurantContext';
 import { auth } from '../config/firebase-config';
+import slugify from 'slugify';
 
 function VenueForm({ setIsAddingVenue }) {
   const [venueData, setVenueData] = useState({
@@ -16,6 +17,7 @@ function VenueForm({ setIsAddingVenue }) {
     website: '',
     userId: '',
     coords: {},
+    urlSlug: '',
   });
 
   const { addRestaurant, getRestaurants } = useRestaurants();
@@ -62,6 +64,7 @@ function VenueForm({ setIsAddingVenue }) {
       ...additionalVenueData,
       userId: auth?.currentUser?.uid,
       dateAdded: currentTimeStamp,
+      urlSlug: slugify(venueData.name),
     };
     addRestaurant(finalVenueData);
     setIsAddingVenue(false);

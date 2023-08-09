@@ -11,7 +11,12 @@ const initialState = {
   restaurants: [],
   isLoading: false,
   errorMessage: '',
-  activeRestaurant: { id: '', coords: { lat: '', lon: '' } },
+  activeRestaurant: {
+    id: '',
+    coords: { lat: '', lon: '' },
+    city: '',
+    urlSlug: '',
+  },
 };
 
 function reducer(state, action) {
@@ -32,6 +37,8 @@ function reducer(state, action) {
         activeRestaurant: {
           id: action.payload.id,
           coords: action.payload.coords,
+          city: action.payload.city,
+          urlSlug: action.payload.urlSlug,
         },
       };
 

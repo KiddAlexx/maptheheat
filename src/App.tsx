@@ -26,7 +26,7 @@ function App() {
             <Route index element={<Navigate replace to="map" />} />
             <Route path="map" element={<MapView />} />
             <Route path="profile" element={<UserProfile />} />
-            <Route path="venue" element={<DetailedVenueView />} />
+            <Route path="venue/:city/:venue" element={<DetailedVenueView />} />
           </Route>
           <Route path="*" element={<PageNotFound />} />
         </Routes>
