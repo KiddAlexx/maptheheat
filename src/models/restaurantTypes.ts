@@ -43,7 +43,7 @@ export type Action =
   | { type: 'rejected'; payload: string }
   | { type: 'set-active'; payload: ActiveRestaurant };
 
-export interface RestaurantContext extends State {
+export interface RestaurantContextType extends State {
   getRestaurants: () => void;
   addRestaurant: (restaurant: Restaurant) => void;
   setActiveRestaurant: (restaurant: Restaurant) => void;

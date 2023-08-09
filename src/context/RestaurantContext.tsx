@@ -7,14 +7,14 @@ import {
   Restaurant,
   Coords,
   ActiveRestaurant,
-  RestaurantContext,
+  RestaurantContextType,
   State,
   Action,
 } from '../models/restaurantTypes';
 
 const restaurantCollectionRef = collection(db, 'restaurant-details');
 
-const RestaurantContext = createContext<RestaurantContext | undefined>(
+const RestaurantContext = createContext<RestaurantContextType | undefined>(
   undefined
 );
 
