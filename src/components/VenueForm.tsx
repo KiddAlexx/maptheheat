@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRestaurants } from '../context/RestaurantContext';
 import { auth } from '../config/firebase-config';
 import slugify from 'slugify';
-
-interface VenueFormProps {
-  setIsAddingVenue: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { VenueFormProps } from './SideBar';
 
 function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   // Data to be used for new venue entry

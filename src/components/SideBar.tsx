@@ -4,6 +4,10 @@ import SearchBar from '../components/SearchBar';
 import VenueForm from '../components/VenueForm';
 import styles from './SideBar.module.css';
 
+export interface VenueFormProps {
+  setIsAddingVenue: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 function SideBar() {
   const [isAddingVenue, setIsAddingVenue] = useState(false);
   console.log(isAddingVenue);

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { auth } from '../config/firebase-config';
 import { useNavigate } from 'react-router';
+import { VenueFormProps } from './SideBar';
 
-function SearchBar({ setIsAddingVenue }) {
+function SearchBar({ setIsAddingVenue }: VenueFormProps) {
   const [searchValue, setSearchValue] = useState('');
   console.log(searchValue);
 
