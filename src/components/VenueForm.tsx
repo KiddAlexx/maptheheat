@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRestaurants } from '../context/RestaurantContext';
 import { auth } from '../config/firebase-config';
 import slugify from 'slugify';
+import { Restaurant } from '../models/restaurantTypes';
 
 function VenueForm({ setIsAddingVenue }) {
   const [venueData, setVenueData] = useState({
@@ -59,7 +60,7 @@ function VenueForm({ setIsAddingVenue }) {
   const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const additionalVenueData = await fetchAddressDetails();
-    const finalVenueData = {
+    const finalVenueData: Restaurant = {
       ...venueData,
       ...additionalVenueData,
       userId: auth?.currentUser?.uid,

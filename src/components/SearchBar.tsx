@@ -1,8 +1,13 @@
 import { useState } from 'react';
+import { auth } from '../config/firebase-config';
+import { useNavigate } from 'react-router';
 
 function SearchBar({ setIsAddingVenue }) {
   const [searchValue, setSearchValue] = useState('');
   console.log(searchValue);
+
+  const navigate = useNavigate();
+
   return (
     <>
       <form>
@@ -15,8 +20,19 @@ function SearchBar({ setIsAddingVenue }) {
           Search
         </button>
       </form>
-      <p>Can't find what you are looking for?</p>{' '}
-      <button onClick={() => setIsAddingVenue(true)} className="btn-default">
+      <p>Can't find what you are looking for?</p>
+      <button
+        onClick={() => {
+          //Redirect to login page if user is not logged in
+          if (!auth.currentUser) {
+            navigate('/login');
+          } else {
+            //Used in Sidebar to conditionally render form when set to true
+            setIsAddingVenue(true);
+          }
+        }}
+        className="btn-default"
+      >
         Add new restaurant!
       </button>
     </>
