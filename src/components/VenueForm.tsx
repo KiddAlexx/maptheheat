@@ -47,19 +47,19 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     if (city === 'Glasgow') {
       setVenueData((prevVenueData) => ({
         ...prevVenueData,
-        country: 'Scotland',
+        country: 'UK',
       }));
     }
     if (city === 'Edinburgh') {
       setVenueData((prevVenueData) => ({
         ...prevVenueData,
-        country: 'Scotland',
+        country: 'UK',
       }));
     }
     if (city === 'London') {
       setVenueData((prevVenueData) => ({
         ...prevVenueData,
-        country: 'England',
+        country: 'UK',
       }));
     }
   }, [city]);
@@ -84,7 +84,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
         coords: { lat: data.lat, lon: data.lon },
       };
     } catch (err) {
-      console.error(err);
+      alert(err);
     }
   };
 
