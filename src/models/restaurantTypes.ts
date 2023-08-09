@@ -16,6 +16,9 @@ export interface Restaurant {
   id: string;
 }
 
+// id not present at creation time, generate by Firestore
+export type NewRestaurant = Omit<Restaurant, 'id'>;
+
 export interface Coords {
   lat: string;
   lon: string;
@@ -37,7 +40,7 @@ export interface State {
 
 export interface RestaurantContextType extends State {
   getRestaurants: () => void;
-  addRestaurant: (restaurant: Restaurant) => void;
+  addRestaurant: (restaurant: NewRestaurant) => void;
   setActiveRestaurant: (restaurant: Restaurant) => void;
 }
 

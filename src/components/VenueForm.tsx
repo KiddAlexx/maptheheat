@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRestaurants } from '../context/RestaurantContext';
 import { auth } from '../config/firebase-config';
 import slugify from 'slugify';
-import { Restaurant } from '../models/restaurantTypes';
 
-function VenueForm({ setIsAddingVenue }) {
+interface VenueFormProps {
+  setIsAddingVenue: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function VenueForm({ setIsAddingVenue }: VenueFormProps) {
+  // Data to be used for new venue entry
   const [venueData, setVenueData] = useState({
     name: '',
     address: '',
@@ -17,13 +21,12 @@ function VenueForm({ setIsAddingVenue }) {
     phoneNumber: '',
     website: '',
     userId: '',
-    coords: {},
+    coords: { lat: '', lon: '' },
     urlSlug: '',
   });
 
+  // Functions from Restaurant Context
   const { addRestaurant, getRestaurants } = useRestaurants();
-
-  const currentTimeStamp = new Date().toISOString();
 
   const {
     name,
@@ -37,15 +40,46 @@ function VenueForm({ setIsAddingVenue }) {
     website,
   } = venueData;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (city === 'Barcelona') {
+      setVenueData((prevVenueData) => ({ ...prevVenueData, country: 'Spain' }));
+    }
+    if (city === 'Madrid') {
+      setVenueData((prevVenueData) => ({ ...prevVenueData, country: 'Spain' }));
+    }
+    if (city === 'Glasgow') {
+      setVenueData((prevVenueData) => ({
+        ...prevVenueData,
+        country: 'Scotland',
+      }));
+    }
+    if (city === 'Edinburgh') {
+      setVenueData((prevVenueData) => ({
+        ...prevVenueData,
+        country: 'Scotland',
+      }));
+    }
+    if (city === 'London') {
+      setVenueData((prevVenueData) => ({
+        ...prevVenueData,
+        country: 'England',
+      }));
+    }
+  }, [city]);
+
+  // Update venue data on each keystroke
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setVenueData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  // Fetches coordinates + detailed address from user input
   const fetchAddressDetails = async function () {
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?street=${address}&city=${city}&country=spain&postalcode=${postcode}&format=json`
+        `https://nominatim.openstreetmap.org/search?street=${address}&city=${city}&${country}=spain&postalcode=${postcode}&format=json`
       );
       const [data] = await res.json(); // Take first result from array in case of multiple
       return {
@@ -60,16 +94,17 @@ function VenueForm({ setIsAddingVenue }) {
   const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const additionalVenueData = await fetchAddressDetails();
-    const finalVenueData: Restaurant = {
+    const currentTimeStamp = new Date().toISOString();
+    const finalVenueData = {
       ...venueData,
       ...additionalVenueData,
-      userId: auth?.currentUser?.uid,
+      userId: auth!.currentUser!.uid, // Value will not be null, checks done prior, further validation to be added
       dateAdded: currentTimeStamp,
       urlSlug: slugify(venueData.name),
     };
     addRestaurant(finalVenueData);
     setIsAddingVenue(false);
-    getRestaurants();
+    getRestaurants(); // Fetches restaurant list after new entry (to change in future)
   };
 
   return (

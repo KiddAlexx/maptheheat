@@ -5,7 +5,7 @@ import VenueForm from '../components/VenueForm';
 import styles from './SideBar.module.css';
 
 function SideBar() {
-  const [isAddingVenue, setIsAddingVenue: ] = useState(false);
+  const [isAddingVenue, setIsAddingVenue] = useState(false);
   console.log(isAddingVenue);
   return (
     <div className={styles.sideBar}>

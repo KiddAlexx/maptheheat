@@ -21,6 +21,7 @@ import {
   RestaurantContextType,
   State,
   Action,
+  NewRestaurant,
 } from '../models/restaurantTypes';
 
 const restaurantCollectionRef = collection(db, 'restaurant-details');
@@ -98,7 +99,7 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function addRestaurant(restaurant: Restaurant) {
+  async function addRestaurant(restaurant: NewRestaurant) {
     try {
       dispatch({ type: 'loading' });
       await addDoc(restaurantCollectionRef, restaurant);
