@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from 'react-router';
 import { useRestaurants } from '../context/RestaurantContext';
 import ListItem from './ListItem';
+import { useEffect } from 'react';
 
 function ListView() {
   const {
@@ -16,17 +17,21 @@ function ListView() {
 
   const location = useLocation();
   const mode = location.pathname.includes('map') ? 'map' : 'venue';
+
+  useEffect(() => {
+    if (mode === 'venue') {
+      navigate(
+        `/app/venue/${activeRestaurant.city}/${activeRestaurant.urlSlug}`
+      );
+    }
+  }, [activeRestaurant, navigate, mode]);
+
   return (
     <div>
       {restaurants.map((restaurant) => (
         <ListItem
           handleClick={() => {
             setActiveRestaurant(restaurant);
-            if (mode === 'venue') {
-              navigate(
-                `/app/venue/${activeRestaurant.city}/${activeRestaurant.urlSlug}`
-              );
-            }
           }}
           restaurant={restaurant}
           key={restaurant.id}
