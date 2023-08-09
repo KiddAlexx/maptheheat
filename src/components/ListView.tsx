@@ -11,7 +11,6 @@ function ListView() {
     setActiveRestaurant,
     activeRestaurant,
   } = useRestaurants();
-  console.log('Active Restaurant in ListView render:', activeRestaurant);
 
   const navigate = useNavigate();
 

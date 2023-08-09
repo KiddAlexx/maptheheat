@@ -35,6 +35,12 @@ export interface State {
   activeRestaurant: ActiveRestaurant;
 }
 
+export interface RestaurantContextType extends State {
+  getRestaurants: () => void;
+  addRestaurant: (restaurant: Restaurant) => void;
+  setActiveRestaurant: (restaurant: Restaurant) => void;
+}
+
 export type Action =
   | {
       type: 'loading';
@@ -42,9 +48,3 @@ export type Action =
   | { type: 'restaurants/loaded'; payload: Restaurant[] }
   | { type: 'rejected'; payload: string }
   | { type: 'set-active'; payload: ActiveRestaurant };
-
-export interface RestaurantContextType extends State {
-  getRestaurants: () => void;
-  addRestaurant: (restaurant: Restaurant) => void;
-  setActiveRestaurant: (restaurant: Restaurant) => void;
-}

@@ -1,12 +1,23 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useReducer, useEffect } from 'react';
+
+//React imports
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  ReactNode,
+} from 'react';
+
+// Firebase imports
 import { db } from '../config/firebase-config';
 import { getDocs, collection, addDoc } from 'firebase/firestore';
 
+// Type imports
 import {
   Restaurant,
-  Coords,
-  ActiveRestaurant,
+  /*   Coords,
+  ActiveRestaurant, */
   RestaurantContextType,
   State,
   Action,
@@ -42,6 +53,7 @@ function reducer(state: State, action: Action) {
         isLoading: false,
         errorMessage: action.payload,
       };
+    // Used to set active restaurant, to help sync components
     case 'set-active':
       return {
         ...state,
@@ -58,25 +70,27 @@ function reducer(state: State, action: Action) {
   }
 }
 
-function RestaurantsProvider({ children }) {
+function RestaurantsProvider({ children }: { children: ReactNode }) {
   const [{ restaurants, isLoading, errorMessage, activeRestaurant }, dispatch] =
     useReducer(reducer, initialState);
 
-  // Ensure restaurant list is fetched on initial load.
+  // Ensure restaurant list is fetched on initial load
   useEffect(function () {
     getRestaurants();
   }, []);
 
+  // Function to fetch all restaurants from collection
   async function getRestaurants() {
     try {
       dispatch({ type: 'loading' });
       const data = await getDocs(restaurantCollectionRef);
-      const filteredData = data.docs.map((doc) => ({
-        ...doc.data(),
+      const filteredData: Restaurant[] = data.docs.map((doc) => ({
+        // This ensures TypeScript treats this as a Restaurant type, minus the id property
+        ...(doc.data() as Omit<Restaurant, 'id'>),
         id: doc.id,
       }));
       dispatch({ type: 'restaurants/loaded', payload: filteredData });
-    } catch {
+    } catch (err) {
       dispatch({
         type: 'rejected',
         payload: 'There was an error loading restaurants',
@@ -84,19 +98,20 @@ function RestaurantsProvider({ children }) {
     }
   }
 
-  async function addRestaurant(restaurant) {
+  async function addRestaurant(restaurant: Restaurant) {
     try {
       dispatch({ type: 'loading' });
       await addDoc(restaurantCollectionRef, restaurant);
     } catch (err) {
       dispatch({
         type: 'rejected',
-        payload: err,
+        payload: 'There was an error adding that restaurant',
       });
     }
   }
 
-  function setActiveRestaurant(restaurant) {
+  // Used to set active restaurant, to help sync components
+  function setActiveRestaurant(restaurant: Restaurant) {
     dispatch({ type: 'set-active', payload: restaurant });
   }
 
@@ -117,7 +132,7 @@ function RestaurantsProvider({ children }) {
   );
 }
 
-// A custom hook to provide easy access to the RestaurantContext.
+// A custom hook to provide easy access to the RestaurantContext
 function useRestaurants() {
   const context = useContext(RestaurantContext);
   if (context === undefined)
