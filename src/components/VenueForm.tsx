@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRestaurants } from '../context/RestaurantContext';
-import { auth } from '../config/firebase-config';
+import { auth, storage } from '../config/firebase-config';
+import { ref, uploadBytes } from 'firebase/storage';
 import slugify from 'slugify';
 import { VenueFormProps } from './SideBar';
 
@@ -21,6 +22,9 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     coords: { lat: '', lon: '' },
     urlSlug: '',
   });
+
+  //File Upload State
+  const [fileUpload, setFileUpload] = useState(null);
 
   // Functions from Restaurant Context
   const { addRestaurant, getRestaurants } = useRestaurants();
@@ -104,84 +108,102 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     getRestaurants(); // Fetches restaurant list after new entry (to change in future)
   };
 
+  const uploadFile = async function () {
+    if (!fileUpload) return;
+    const filesFolderRef = ref(storage, `restaurantImages/${fileUpload.name}`);
+    try {
+      await uploadBytes(filesFolderRef, fileUpload);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="city">City</label>
-      <select name="city" onChange={handleChange} value={city} id="city">
-        <option value="">Choose City</option>
-        <option value="Barcelona">Barcelona</option>
-        <option value="Madrid">Madrid</option>
-        <option value="Glasgow">Glasgow</option>
-        <option value="Edinburgh">Edinburgh</option>
-        <option value="London">London</option>
-      </select>
-      <label htmlFor="venueName">Restaurant Name</label>
-      <input
-        type="text"
-        name="name"
-        onChange={handleChange}
-        value={name}
-        id="venueName"
-      />
-      <label htmlFor="address">Address - number followed by street name</label>
-      <input
-        type="text"
-        name="address"
-        onChange={handleChange}
-        value={address}
-        id="address"
-      />
-      <label htmlFor="postcode">Postcode</label>
-      <input
-        type="text"
-        name="postcode"
-        onChange={handleChange}
-        value={postcode}
-        id="postcode"
-      />
-      <label htmlFor="description">Description</label>
-      <input
-        type="text"
-        name="description"
-        onChange={handleChange}
-        value={description}
-        id="description"
-      />
-      <label htmlFor="hours">Opening Hours</label>
-      <input
-        type="text"
-        name="hours"
-        onChange={handleChange}
-        value={hours}
-        id="hours"
-      />
-      <label htmlFor="phoneNumber">Phone Number</label>
-      <input
-        type="text"
-        name="phoneNumber"
-        onChange={handleChange}
-        value={phoneNumber}
-        id="phoneNumber"
-      />
-      <label htmlFor="website">Website</label>
-      <input
-        type="text"
-        name="website"
-        onChange={handleChange}
-        value={website}
-        id="website"
-      />
-      <button type="submit" className="btn-default">
-        Submit
-      </button>
-      <button
-        onClick={() => setIsAddingVenue(false)}
-        type="button"
-        className="btn-default"
-      >
-        Cancel
-      </button>
-    </form>
+    <>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="city">City</label>
+        <select name="city" onChange={handleChange} value={city} id="city">
+          <option value="">Choose City</option>
+          <option value="Barcelona">Barcelona</option>
+          <option value="Madrid">Madrid</option>
+          <option value="Glasgow">Glasgow</option>
+          <option value="Edinburgh">Edinburgh</option>
+          <option value="London">London</option>
+        </select>
+        <label htmlFor="venueName">Restaurant Name</label>
+        <input
+          type="text"
+          name="name"
+          onChange={handleChange}
+          value={name}
+          id="venueName"
+        />
+        <label htmlFor="address">
+          Address - number followed by street name
+        </label>
+        <input
+          type="text"
+          name="address"
+          onChange={handleChange}
+          value={address}
+          id="address"
+        />
+        <label htmlFor="postcode">Postcode</label>
+        <input
+          type="text"
+          name="postcode"
+          onChange={handleChange}
+          value={postcode}
+          id="postcode"
+        />
+        <label htmlFor="description">Description</label>
+        <input
+          type="text"
+          name="description"
+          onChange={handleChange}
+          value={description}
+          id="description"
+        />
+        <label htmlFor="hours">Opening Hours</label>
+        <input
+          type="text"
+          name="hours"
+          onChange={handleChange}
+          value={hours}
+          id="hours"
+        />
+        <label htmlFor="phoneNumber">Phone Number</label>
+        <input
+          type="text"
+          name="phoneNumber"
+          onChange={handleChange}
+          value={phoneNumber}
+          id="phoneNumber"
+        />
+        <label htmlFor="website">Website</label>
+        <input
+          type="text"
+          name="website"
+          onChange={handleChange}
+          value={website}
+          id="website"
+        />
+        <button type="submit" className="btn-default">
+          Submit
+        </button>
+        <button
+          onClick={() => setIsAddingVenue(false)}
+          type="button"
+          className="btn-default"
+        >
+          Cancel
+        </button>
+      </form>
+      <div>
+        <input type="file" onChange={(e) => setFileUpload(e.target.files[0])} />
+        <button onClick={uploadFile}>Upload File</button>
+      </div>
+    </>
   );
 }
 
