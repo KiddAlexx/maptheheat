@@ -1,0 +1,9 @@
+.listView {
+  overflow-y: scroll;
+  height: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.listView::-webkit-scrollbar {
+  display: none;
+}

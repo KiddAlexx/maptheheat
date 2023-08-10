@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from 'react-router';
 import { useRestaurants } from '../context/RestaurantContext';
 import ListItem from './ListItem';
 import { useEffect } from 'react';
+import styles from './ListView.module.css';
 
 function ListView() {
   const {
@@ -26,7 +27,7 @@ function ListView() {
   }, [activeRestaurant, navigate, mode]);
 
   return (
-    <div>
+    <div className={styles.listView}>
       {restaurants.map((restaurant) => (
         <ListItem
           handleClick={() => {
