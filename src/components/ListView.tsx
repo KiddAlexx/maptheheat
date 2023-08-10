@@ -20,7 +20,11 @@ function ListView() {
 
   // Checks that activeRestaurant values exist before setting address with params
   useEffect(() => {
-    if (mode === 'venue' && activeRestaurant.city && activeRestaurant.urlSlug) {
+    if (
+      mode === 'venue' &&
+      activeRestaurant?.city &&
+      activeRestaurant?.urlSlug
+    ) {
       navigate(
         `/app/venue/${activeRestaurant.city}/${activeRestaurant.urlSlug}`
       );
