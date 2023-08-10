@@ -14,8 +14,8 @@ function MapView() {
     activeRestaurant,
   } = useRestaurants();
 
-  const lat = activeRestaurant.coords.lat || 41.3874;
-  const lon = activeRestaurant.coords.lon || 2.17;
+  const lat = activeRestaurant?.coords?.lat || 41.3874;
+  const lon = activeRestaurant?.coords?.lon || 2.17;
 
   function ChangeCenter({ lat, lon }) {
     const map = useMap();
