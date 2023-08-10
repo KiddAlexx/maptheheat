@@ -35,7 +35,7 @@ export interface State {
   restaurants: Restaurant[];
   isLoading: boolean;
   errorMessage: string;
-  activeRestaurant: ActiveRestaurant;
+  activeRestaurant: Restaurant | null;
 }
 
 export interface RestaurantContextType extends State {
@@ -50,4 +50,4 @@ export type Action =
     }
   | { type: 'restaurants/loaded'; payload: Restaurant[] }
   | { type: 'rejected'; payload: string }
-  | { type: 'set-active'; payload: ActiveRestaurant };
+  | { type: 'set-active'; payload: Restaurant };

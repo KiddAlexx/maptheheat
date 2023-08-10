@@ -5,10 +5,19 @@ import { useRestaurants } from '../context/RestaurantContext';
 function DetailedVenueView() {
   const { city, venue } = useParams();
 
+  const { activeRestaurant } = useRestaurants();
+
+  const { name, phoneNumber, detailedAddress, website, description, hours } =
+    activeRestaurant;
+
   return (
     <div>
-      <p>{venue}</p>
-      <p>{city}</p>
+      <h2>{name}</h2>
+      <p>{hours}</p>
+      <p>{phoneNumber}</p>
+      <p>{detailedAddress}</p>
+      <p>{website}</p>
+      <p>{description}</p>
       <Link to="/app/map" className="btn-default">
         Back to Map
       </Link>

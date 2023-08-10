@@ -16,8 +16,6 @@ import { getDocs, collection, addDoc } from 'firebase/firestore';
 // Type imports
 import {
   Restaurant,
-  /*   Coords,
-  ActiveRestaurant, */
   RestaurantContextType,
   State,
   Action,
@@ -34,12 +32,7 @@ const initialState = {
   restaurants: [],
   isLoading: false,
   errorMessage: '',
-  activeRestaurant: {
-    id: '',
-    coords: { lat: '', lon: '' },
-    city: '',
-    urlSlug: '',
-  },
+  activeRestaurant: null,
 };
 
 function reducer(state: State, action: Action) {
@@ -58,12 +51,7 @@ function reducer(state: State, action: Action) {
     case 'set-active':
       return {
         ...state,
-        activeRestaurant: {
-          id: action.payload.id,
-          coords: action.payload.coords,
-          city: action.payload.city,
-          urlSlug: action.payload.urlSlug,
-        },
+        activeRestaurant: action.payload,
       };
 
     default:

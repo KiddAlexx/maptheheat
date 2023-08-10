@@ -24,6 +24,7 @@ function ListView() {
       navigate(
         `/app/venue/${activeRestaurant.city}/${activeRestaurant.urlSlug}`
       );
+      console.log(activeRestaurant);
     }
   }, [activeRestaurant, navigate, mode]);
 
