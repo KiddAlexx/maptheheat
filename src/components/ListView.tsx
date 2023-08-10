@@ -18,8 +18,9 @@ function ListView() {
   const location = useLocation();
   const mode = location.pathname.includes('map') ? 'map' : 'venue';
 
+  // Checks that activeRestaurant values exist before setting address with params
   useEffect(() => {
-    if (mode === 'venue') {
+    if (mode === 'venue' && activeRestaurant.city && activeRestaurant.urlSlug) {
       navigate(
         `/app/venue/${activeRestaurant.city}/${activeRestaurant.urlSlug}`
       );
