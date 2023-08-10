@@ -28,7 +28,7 @@ function SearchBar({ setIsAddingVenue }: VenueFormProps) {
           if (!auth.currentUser) {
             navigate('/login');
           } else {
-            //Used in Sidebar to conditionally render form when set to true
+            //Used in Sidebar to conditionally render VenueForm when set to true
             setIsAddingVenue(true);
           }
         }}
