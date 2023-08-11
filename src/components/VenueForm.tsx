@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRestaurants } from '../context/RestaurantContext';
-import { auth, storage } from '../config/firebase-config';
-import { ref, uploadBytes } from 'firebase/storage';
+import { auth } from '../config/firebase-config';
+
 import slugify from 'slugify';
 import { VenueFormProps } from './SideBar';
 
@@ -22,9 +22,6 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     coords: { lat: '', lon: '' },
     urlSlug: '',
   });
-
-  //File Upload State
-  const [fileUpload, setFileUpload] = useState(null);
 
   // Functions from Restaurant Context
   const { addRestaurant, getRestaurants } = useRestaurants();
@@ -108,16 +105,6 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     getRestaurants(); // Fetches restaurant list after new entry (to change in future)
   };
 
-  const uploadFile = async function () {
-    if (!fileUpload) return;
-    const filesFolderRef = ref(storage, `restaurantImages/${fileUpload.name}`);
-    try {
-      await uploadBytes(filesFolderRef, fileUpload);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -199,10 +186,6 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
           Cancel
         </button>
       </form>
-      <div>
-        <input type="file" onChange={(e) => setFileUpload(e.target.files[0])} />
-        <button onClick={uploadFile}>Upload File</button>
-      </div>
     </>
   );
 }
