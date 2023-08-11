@@ -21,6 +21,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     userId: '',
     coords: { lat: '', lon: '' },
     urlSlug: '',
+    images: [],
   });
 
   // Functions from Restaurant Context

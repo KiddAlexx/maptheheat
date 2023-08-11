@@ -11,7 +11,14 @@ import {
 
 // Firebase imports
 import { db } from '../config/firebase-config';
-import { getDocs, collection, addDoc } from 'firebase/firestore';
+import {
+  getDocs,
+  collection,
+  addDoc,
+  updateDoc,
+  arrayUnion,
+  doc,
+} from 'firebase/firestore';
 
 // Type imports
 import {
@@ -99,6 +106,20 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function updateRestaurantImages(id, imageURL) {
+    try {
+      dispatch({ type: 'loading' });
+      const restaurantDocRef = doc(db, 'restaurant-details', id);
+      await updateDoc(restaurantDocRef, { images: arrayUnion(imageURL) });
+    } catch (err) {
+      console.error(err);
+      dispatch({
+        type: 'rejected',
+        payload: 'There was an error adding restaurant image',
+      });
+    }
+  }
+
   // Used to set active restaurant, to help sync components
   function setActiveRestaurant(restaurant: Restaurant) {
     dispatch({ type: 'set-active', payload: restaurant });
@@ -114,6 +135,7 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
         getRestaurants,
         addRestaurant,
         setActiveRestaurant,
+        updateRestaurantImages,
       }}
     >
       {children}

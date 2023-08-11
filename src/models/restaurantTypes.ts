@@ -14,6 +14,7 @@ export interface Restaurant {
   coords: Coords;
   dateAdded: string;
   id: string;
+  images: string[];
 }
 
 // id not present at creation time, generate by Firestore

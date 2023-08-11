@@ -1,9 +1,14 @@
-import { ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { useState } from 'react';
 import { storage } from '../config/firebase-config';
+import { useRestaurants } from '../context/RestaurantContext';
 
-function ImageUpload() {
+function ImageUploader() {
   //File Upload State
   const [imageUpload, setImageUpload] = useState(null);
+
+  const { activeRestaurant, updateRestaurantImages } = useRestaurants();
+  const { city, id, urlSlug: restaurantName } = activeRestaurant;
 
   const uploadFile = async function () {
     if (!imageUpload) return;
@@ -13,6 +18,8 @@ function ImageUpload() {
     );
     try {
       await uploadBytes(filesFolderRef, imageUpload);
+      const downloadURL = await getDownloadURL(filesFolderRef);
+      await updateRestaurantImages(id, downloadURL);
     } catch (err) {
       console.error(err);
     }
@@ -30,4 +37,4 @@ function ImageUpload() {
   );
 }
 
-export default ImageUpload;
+export default ImageUploader;

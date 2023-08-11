@@ -1,6 +1,7 @@
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useRestaurants } from '../context/RestaurantContext';
+import ImageUpload from './ImageUploader';
 
 function DetailedVenueView() {
   const { city, venue } = useParams();
@@ -21,6 +22,7 @@ function DetailedVenueView() {
       <Link to="/app/map" className="btn-default">
         Back to Map
       </Link>
+      <ImageUpload />
     </div>
   );
 }
