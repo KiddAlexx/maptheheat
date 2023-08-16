@@ -32,8 +32,8 @@ function MapView() {
     return new L.Icon({
       iconUrl: chilliPin,
       iconSize: [23, 66],
-      iconAnchor: [11, 66],
-      popupAnchor: [0, -16],
+      iconAnchor: [0, 66],
+      popupAnchor: [0, -38],
     });
   };
 
