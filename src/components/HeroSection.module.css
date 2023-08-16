@@ -1,11 +1,6 @@
 .heroSection {
   height: calc(100vh - 8rem);
-  background-image: linear-gradient(
-      90deg,
-      rgba(240, 108, 13, 0.349) 59%,
-      rgba(182, 21, 0, 0.274) 100%
-    ),
-    url('../../public/maptheheat-hero-sm.jpg');
+  background-image: url('../../public/maptheheat-hero-sm.jpg');
   background-size: cover;
   background-position: center;
   display: grid;
@@ -26,6 +21,7 @@
   font-weight: 700;
   line-height: 1.2;
   margin-bottom: 4rem;
+  color: #fff;
 }
 
 .ctaSection p {
