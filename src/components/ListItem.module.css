@@ -8,11 +8,28 @@
 .listItemContainer {
   display: flex;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  width: 95%;
+
   border: solid red 1px;
   cursor: pointer;
+  position: relative;
 }
 
 .listItemContainer:hover {
-  background-color: bisque;
+  background-color: rgb(133, 133, 133);
+}
+
+.moreInfoLink {
+  color: #58290f;
+  font-size: 2rem;
+  font-weight: 500;
+
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+}
+
+.moreInfoLink:hover {
+  color: #9f481a;
 }
