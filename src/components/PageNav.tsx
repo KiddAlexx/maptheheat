@@ -19,8 +19,8 @@ function PageNav() {
 
   return (
     <nav className={styles.nav}>
-      <h3>
-        <NavLink to="/">LOGO</NavLink>
+      <h3 className={styles.logoMain}>
+        <NavLink to="/">Map The Heat</NavLink>
       </h3>
       <ul className={styles.authButtons}>
         {auth.currentUser === null ? (

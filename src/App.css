@@ -11,7 +11,7 @@ body {
   display: flex; /* Centers content for elements not centering by default */
   align-items: center;
   justify-content: center;
-  border-radius: 0.5rem;
+  border-radius: 10rem;
   height: 4rem;
   min-width: 15rem;
   font-weight: 700;

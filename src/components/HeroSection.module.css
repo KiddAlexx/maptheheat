@@ -2,8 +2,8 @@
   height: calc(100vh - 8rem);
   background-image: linear-gradient(
       90deg,
-      rgba(129, 37, 16, 0.25) 50%,
-      rgba(224, 145, 34, 0.15) 100%
+      rgba(17, 21, 24, 0.233) 50%,
+      rgba(17, 21, 24, 0.164) 100%
     ),
     url('../../public/maptheheat-hero-sm.jpg');
   background-size: cover;
