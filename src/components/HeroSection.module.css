@@ -1,6 +1,11 @@
 .heroSection {
   height: calc(100vh - 8rem);
-  background-image: url('../../public/maptheheat-hero-sm.jpg');
+  background-image: linear-gradient(
+      90deg,
+      rgba(129, 37, 16, 0.25) 50%,
+      rgba(224, 145, 34, 0.15) 100%
+    ),
+    url('../../public/maptheheat-hero-sm.jpg');
   background-size: cover;
   background-position: center;
   display: grid;
