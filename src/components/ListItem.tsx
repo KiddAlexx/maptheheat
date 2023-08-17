@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import styles from './ListItem.module.css';
 import { useRestaurants } from '../context/RestaurantContext';
+import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
 
 function ListItem({ restaurant, handleClick }) {
   const { name, address, hours, phoneNumber, city, urlSlug, images } =
@@ -18,8 +19,16 @@ function ListItem({ restaurant, handleClick }) {
           />
         </div>
       ) : (
-        <div className={styles.tempImageContainer}></div>
+        <div className={styles.mainImageContainer}>
+          <img
+            className={styles.imageMainSmall}
+            src={greyChilli}
+            alt="an greyed out image of a chilli pepper"
+          />
+          <p className={styles.addPhotosText}>Add Photos!</p>
+        </div>
       )}
+
       {/* Fix alt text*/}
       <div>
         <h2>{name}</h2>
