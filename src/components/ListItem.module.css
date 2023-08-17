@@ -1,8 +1,20 @@
 .tempImageContainer {
-  width: 15rem;
+  width: 22.5rem;
   height: 15rem;
   background-color: blueviolet;
   flex-shrink: 0;
+}
+
+.mainImageContainer {
+  width: 22.5rem;
+  height: 15rem;
+  overflow: hidden;
+}
+
+.imageMainSmall {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .listItemContainer {
@@ -10,14 +22,14 @@
   gap: 1rem;
   margin-bottom: 1rem;
   width: 95%;
-
-  border: solid red 1px;
+  border: solid rgba(255, 0, 0, 0) 1px;
   cursor: pointer;
   position: relative;
 }
 
 .listItemContainer:hover {
-  background-color: rgb(133, 133, 133);
+  /* background-color: rgb(133, 133, 133); */
+  border: solid rgb(13, 94, 17) 1px;
 }
 
 .moreInfoLink {

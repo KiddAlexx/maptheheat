@@ -3,11 +3,24 @@ import styles from './ListItem.module.css';
 import { useRestaurants } from '../context/RestaurantContext';
 
 function ListItem({ restaurant, handleClick }) {
-  const { name, address, hours, phoneNumber, city, urlSlug } = restaurant;
+  const { name, address, hours, phoneNumber, city, urlSlug, images } =
+    restaurant;
   const { setActiveRestaurant } = useRestaurants();
+  console.log(restaurant);
   return (
     <div className={styles.listItemContainer} onClick={handleClick}>
-      <div className={styles.tempImageContainer}></div>
+      {images ? (
+        <div className={styles.mainImageContainer}>
+          <img
+            className={styles.imageMainSmall}
+            src={images[0]}
+            alt="an image of restaurant"
+          />
+        </div>
+      ) : (
+        <div className={styles.tempImageContainer}></div>
+      )}
+      {/* Fix alt text*/}
       <div>
         <h2>{name}</h2>
         <h3>{address}</h3>

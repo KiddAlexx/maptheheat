@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { auth } from '../config/firebase-config';
 import { useNavigate } from 'react-router';
 import { VenueFormProps } from './SideBar';
+import styles from './SearchBar.module.css';
 
 function SearchBar({ setIsAddingVenue }: VenueFormProps) {
   const [searchValue, setSearchValue] = useState('');
@@ -32,7 +33,7 @@ function SearchBar({ setIsAddingVenue }: VenueFormProps) {
             setIsAddingVenue(true);
           }
         }}
-        className="btn-default"
+        className={`btn-default ${styles.btnAddNewVenue}`}
       >
         Add new restaurant!
       </button>
