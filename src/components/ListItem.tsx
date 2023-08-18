@@ -25,7 +25,7 @@ function ListItem({ restaurant, handleClick }) {
             src={greyChilli}
             alt="an greyed out image of a chilli pepper"
           />
-          <p className={styles.addPhotosText}>Add Photos!</p>
+          <p className={styles.addPhotosText}>Add Photos</p>
         </div>
       )}
 
