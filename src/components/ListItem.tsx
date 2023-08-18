@@ -2,10 +2,19 @@ import { Link } from 'react-router-dom';
 import styles from './ListItem.module.css';
 import { useRestaurants } from '../context/RestaurantContext';
 import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
+import VenueRating from './VenueRating';
 
 function ListItem({ restaurant, handleClick }) {
-  const { name, address, hours, phoneNumber, city, urlSlug, images } =
-    restaurant;
+  const {
+    name,
+    address,
+    hours,
+    phoneNumber,
+    city,
+    urlSlug,
+    images,
+    averageRating,
+  } = restaurant;
   const { setActiveRestaurant } = useRestaurants();
   console.log(restaurant);
   return (
@@ -32,6 +41,7 @@ function ListItem({ restaurant, handleClick }) {
       {/* Fix alt text*/}
       <div>
         <h2>{name}</h2>
+        <VenueRating initialRating={averageRating} readonly />
         <h3>{address}</h3>
         <p>Open</p> {/* Temp , calculate open state based on hours */}
         <p>{phoneNumber}</p>

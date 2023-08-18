@@ -2,6 +2,7 @@ import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useRestaurants } from '../context/RestaurantContext';
 import ImageUpload from './ImageUploader';
+import VenueRating from './VenueRating';
 
 function DetailedVenueView() {
   const { city, venue } = useParams();
@@ -15,6 +16,7 @@ function DetailedVenueView() {
     <div>
       <h2>{name}</h2>
       <p>{hours}</p>
+      <VenueRating />
       <p>{phoneNumber}</p>
       <p>{detailedAddress}</p>
       <p>{website}</p>
