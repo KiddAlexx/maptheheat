@@ -5,6 +5,7 @@ import styles from './MapView.module.css';
 import { useEffect } from 'react';
 import L from 'leaflet';
 import chilliPin from '../assets/chillipin.png';
+import MapPopupContent from './MapPopupContent';
 
 function MapView() {
   const {
@@ -56,16 +57,7 @@ function MapView() {
             icon={createCustomIcon('red')}
           >
             <Popup>
-              <div className={styles.tempImageContainer}></div>
-              <Link to={`/app/venue/${restaurant.city}/${restaurant.urlSlug}`}>
-                <h2
-                  onClick={() => {
-                    setActiveRestaurant(restaurant);
-                  }}
-                >
-                  {restaurant.name}
-                </h2>
-              </Link>
+              <MapPopupContent restaurant={restaurant} />
             </Popup>
           </Marker>
         ))}

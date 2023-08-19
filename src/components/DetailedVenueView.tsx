@@ -9,14 +9,21 @@ function DetailedVenueView() {
 
   const { activeRestaurant } = useRestaurants();
 
-  const { name, phoneNumber, detailedAddress, website, description, hours } =
-    activeRestaurant;
+  const {
+    name,
+    phoneNumber,
+    detailedAddress,
+    website,
+    description,
+    hours,
+    averageRating,
+  } = activeRestaurant;
 
   return (
     <div>
       <h2>{name}</h2>
       <p>{hours}</p>
-      <VenueRating />
+      <VenueRating initialRating={averageRating} readonly />
       <p>{phoneNumber}</p>
       <p>{detailedAddress}</p>
       <p>{website}</p>

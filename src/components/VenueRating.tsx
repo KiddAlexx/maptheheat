@@ -37,6 +37,7 @@ function VenueRating({ initialRating, readonly }) {
       readonly={readonly}
       emptySymbol={emptyFlame}
       fullSymbol={fullFlame}
+      fractions={2}
     />
   );
 }
