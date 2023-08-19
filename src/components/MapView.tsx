@@ -1,5 +1,4 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Link } from 'react-router-dom';
 import { useRestaurants } from '../context/RestaurantContext';
 import styles from './MapView.module.css';
 import { useEffect } from 'react';

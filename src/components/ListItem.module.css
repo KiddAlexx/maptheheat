@@ -1,10 +1,3 @@
-.tempImageContainer {
-  width: 22.5rem;
-  height: 15rem;
-  background-color: blueviolet;
-  flex-shrink: 0;
-}
-
 .mainImageContainer {
   width: 22.5rem;
   height: 15rem;

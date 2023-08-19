@@ -12,8 +12,3 @@
   background-color: blueviolet;
   flex-shrink: 0;
 }
-
-:global(.leaflet-popup .leaflet-popup-content) {
-  width: 15rem;
-  height: 15rem;
-}

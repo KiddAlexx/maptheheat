@@ -1,20 +1,49 @@
 import { Link } from 'react-router-dom';
 import { useRestaurants } from '../context/RestaurantContext';
+import VenueRating from './VenueRating';
+import styles from './MapPopupContent.module.css';
+import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
 
 function MapPopupContent({ restaurant }) {
   const { setActiveRestaurant } = useRestaurants();
+  const { city, urlSlug, name, averageRating, address, phoneNumber, images } =
+    restaurant;
   return (
     <>
-      {/*   <div className={styles.tempImageContainer}></div> */}
-      <Link to={`/app/venue/${restaurant.city}/${restaurant.urlSlug}`}>
-        <h2
-          onClick={() => {
-            setActiveRestaurant(restaurant);
-          }}
-        >
-          {restaurant.name}
-        </h2>
-      </Link>
+      {/* Duplication of code from ListItem - Move to own component */}
+      {images ? (
+        <div className={styles.mainImageContainer}>
+          <img
+            className={styles.imageMainSmall}
+            src={images[0]}
+            alt="an image of restaurant"
+          />
+        </div>
+      ) : (
+        <div className={styles.mainImageContainer}>
+          <img
+            className={styles.imageMainSmall}
+            src={greyChilli}
+            alt="an greyed out image of a chilli pepper"
+          />
+          <p className={styles.addPhotosText}>Add Photos</p>
+        </div>
+      )}
+      <div className={styles.popUpContentContainer}>
+        <Link to={`/app/venue/${city}/${urlSlug}`}>
+          <h2
+            className={styles.venueNamePopup}
+            onClick={() => {
+              setActiveRestaurant(restaurant);
+            }}
+          >
+            {name}
+          </h2>
+        </Link>
+        <VenueRating initialRating={averageRating} readonly />
+        <p>{address}</p>
+        <p>{phoneNumber}</p>
+      </div>
     </>
   );
 }
