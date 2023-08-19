@@ -14,11 +14,16 @@ function SearchBar({ setIsAddingVenue }: VenueFormProps) {
     <>
       <form>
         <input
+          className={styles.searchBarInput}
+          placeholder="Search by restaurant name" /* Dynamically change to shop later */
           type="text"
           name="searchValue"
           onChange={(e) => setSearchValue(e.target.value)}
         />
-        <button type="submit" className="btn-default">
+        <button
+          type="submit"
+          className={`${styles.searchBarButton} btn-default`}
+        >
           Search
         </button>
       </form>

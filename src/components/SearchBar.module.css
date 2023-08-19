@@ -1,3 +1,22 @@
+form {
+  position: relative;
+}
+
+.searchBarInput {
+  border-radius: 0.5rem;
+  height: 4rem;
+  z-index: 10;
+  width: 100%;
+  padding-left: 1rem;
+}
+form .searchBarButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 20;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
 .btnAddNewVenue {
   margin-bottom: 1rem;
 }

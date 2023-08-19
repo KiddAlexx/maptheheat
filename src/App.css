@@ -18,7 +18,8 @@ body {
   font-size: 2rem;
   line-height: 3rem;
   flex-shrink: 0;
-  background-color: #8d6212;
+  background-color: #9f481a;
+  color: #fff;
 }
 
 /* .btn-default:hover {
