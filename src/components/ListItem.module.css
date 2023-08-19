@@ -31,15 +31,19 @@
   border: solid rgba(255, 0, 0, 0) 1px;
   cursor: pointer;
   position: relative;
+
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
+    rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
 }
 
 .listItemContainer:hover {
   /* background-color: rgb(133, 133, 133); */
-  border: solid rgb(13, 94, 17) 1px;
+  /*   border: solid rgb(13, 94, 17) 1px; */
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
 
 .moreInfoLink {
-  color: #58290f;
+  color: #53270f;
   font-size: 2rem;
   font-weight: 500;
 
@@ -49,5 +53,5 @@
 }
 
 .moreInfoLink:hover {
-  color: #9f481a;
+  color: #a34e20;
 }

@@ -42,7 +42,7 @@ function ListItem({ restaurant, handleClick }) {
       <div>
         <h2>{name}</h2>
         <VenueRating initialRating={averageRating} readonly />
-        <h3>{address}</h3>
+        <p>{address}</p>
         <p>Open</p> {/* Temp , calculate open state based on hours */}
         <p>{phoneNumber}</p>
         <Link
