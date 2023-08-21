@@ -91,24 +91,36 @@ function Login() {
   return (
     <div className={styles.authContainer}>
       <form className={styles.authFormContainer} onSubmit={handleSubmit}>
-        <input
-          placeholder="Email..."
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          placeholder="Password..."
-          value={password}
-          type="password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {mode === 'signup' && (
+        <div className={styles.inputContainer}>
+          <label htmlFor="email">Email</label>
           <input
-            placeholder="Confirm Password..."
-            value={confirmPassword}
-            type="password"
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Email..."
+            value={email}
+            id="email"
+            onChange={(e) => setEmail(e.target.value)}
           />
+        </div>
+        <div className={styles.inputContainer}>
+          <label htmlFor="password">Password</label>
+          <input
+            placeholder="Password..."
+            value={password}
+            id="password"
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        {mode === 'signup' && (
+          <div className={styles.inputContainer}>
+            <label htmlFor="confirm-password">Confirm Password</label>
+            <input
+              placeholder="Confirm Password..."
+              value={confirmPassword}
+              id="confirm-password"
+              type="password"
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
         )}
         <div className={styles.authButtonContainer}>
           {mode === 'login' ? (
