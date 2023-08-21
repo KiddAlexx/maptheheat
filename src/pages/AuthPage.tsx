@@ -22,6 +22,12 @@ function Login() {
   const location = useLocation();
   const mode = location.pathname.includes('signup') ? 'signup' : 'login';
 
+  const resetAuthState = function () {
+    setPassword('');
+    setConfirmPassword('');
+    setEmail('');
+  };
+
   const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (mode === 'login') {
@@ -44,6 +50,7 @@ function Login() {
       }
       await createUserWithEmailAndPassword(auth, email, password);
       navigate('/app');
+      resetAuthState();
     } catch (err) {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
@@ -57,6 +64,7 @@ function Login() {
       setErrorAuth('');
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/app');
+      resetAuthState();
     } catch (err) {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
@@ -71,6 +79,7 @@ function Login() {
       setErrorAuth('');
       await signInWithPopup(auth, googleProvider);
       navigate('/app');
+      resetAuthState();
     } catch (err) {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
