@@ -1,0 +1,35 @@
+.multipleImageContainer {
+  width: 100%;
+  display: flex;
+}
+
+.mainImageContainer {
+  width: 22.5rem;
+  height: 15rem;
+  overflow: hidden;
+  position: relative;
+  margin: 1rem 0;
+  border: 2px solid rgba(8, 8, 8, 0.089);
+}
+
+.imageMainSmall {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 10;
+}
+.addPhotosText {
+  position: absolute;
+  z-index: 20;
+  bottom: 2%;
+  left: 50%;
+  transform: translate(-50%);
+
+  font-size: 2rem;
+  font-weight: 500;
+  color: #414141;
+}
+
+.detailedViewContainer {
+  padding: 2.5rem;
+}

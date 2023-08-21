@@ -1,6 +1,7 @@
 .sideBar {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   width: 60rem;
   height: calc(100vh - 8rem);
   padding: 1.2rem;
