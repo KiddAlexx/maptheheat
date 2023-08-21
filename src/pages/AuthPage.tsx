@@ -114,9 +114,16 @@ function Login() {
               <button className="btn-default" type="submit">
                 Sign In
               </button>
-              <button className="btn-default" onClick={signInWithGoogle}>
-                Sign In With Google
+              <div className={styles.divider}>
+                <p>OR</p>
+              </div>
+
+              <button
+                className={`btn-default ${styles.btnLoginGoogle}`}
+                onClick={signInWithGoogle}
+              >
                 <img src={googleBtnLight} alt="Google logo" />
+                Sign In With Google
               </button>
             </>
           ) : (

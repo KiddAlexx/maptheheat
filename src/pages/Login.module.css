@@ -8,7 +8,7 @@
 }
 
 .authFormContainer {
-  width: 36rem;
+  width: 40rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,7 +31,48 @@
 
 .authFormContainer button {
   width: 100%;
-  height: 4rem;
-  margin-bottom: 2rem;
+  height: 4.5rem;
+  margin-bottom: 1.5rem;
   background-color: #2b6027;
+}
+
+.authFormContainer .btnLoginGoogle {
+  display: flex;
+  gap: 1.2rem;
+  background-color: #fff;
+  color: #2b6027;
+  border: 1px solid #2b6027;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  margin-bottom: 1.5rem;
+  color: #2b6027;
+}
+
+.divider p {
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  display: flex;
+  gap: 2rem;
+  height: 1px;
+  width: 50%;
+  background-color: #2b6027;
+}
+
+.divider::before {
+  margin-right: 2rem;
+}
+
+.divider::after {
+  margin-left: 2rem;
 }
