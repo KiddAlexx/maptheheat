@@ -33,7 +33,7 @@ function MapView() {
       iconUrl: chilliPin,
       iconSize: [23, 66],
       iconAnchor: [0, 66],
-      popupAnchor: [0, -38],
+      popupAnchor: [11, -47],
     });
   };
 
