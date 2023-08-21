@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 
 import styles from './Login.module.css';
+import googleBtnLight from '../assets/btn_google_light_normal_ios.svg';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -86,44 +87,47 @@ function Login() {
   };
 
   return (
-    <form className={styles.authContainer} onSubmit={handleSubmit}>
-      <input
-        placeholder="Email..."
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        placeholder="Password..."
-        value={password}
-        type="password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      {mode === 'signup' && (
+    <div className={styles.authContainer}>
+      <form className={styles.authFormContainer} onSubmit={handleSubmit}>
         <input
-          placeholder="Confirm Password..."
-          value={confirmPassword}
-          type="password"
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder="Email..."
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
-      )}
-      <div className={styles.authButtonContainer}>
-        {mode === 'login' ? (
-          <>
-            <button className="btn-default" type="submit">
-              Sign In
-            </button>
-            <button className="btn-default" onClick={signInWithGoogle}>
-              Sign In With Google
-            </button>
-          </>
-        ) : (
-          <button className="btn-default" type="submit">
-            Create Account
-          </button>
+        <input
+          placeholder="Password..."
+          value={password}
+          type="password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {mode === 'signup' && (
+          <input
+            placeholder="Confirm Password..."
+            value={confirmPassword}
+            type="password"
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
         )}
-      </div>
-      {errorAuth ?? <p>{errorAuth}</p>}
-    </form>
+        <div className={styles.authButtonContainer}>
+          {mode === 'login' ? (
+            <>
+              <button className="btn-default" type="submit">
+                Sign In
+              </button>
+              <button className="btn-default" onClick={signInWithGoogle}>
+                Sign In With Google
+                <img src={googleBtnLight} alt="Google logo" />
+              </button>
+            </>
+          ) : (
+            <button className="btn-default" type="submit">
+              Create Account
+            </button>
+          )}
+        </div>
+        {errorAuth ?? <p>{errorAuth}</p>}
+      </form>
+    </div>
   );
 }
 
