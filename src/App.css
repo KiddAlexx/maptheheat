@@ -6,6 +6,10 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+input {
+  border-radius: 0.5rem;
+}
+
 /********************Reusable Styles*******************/
 .btn-default {
   display: flex; /* Centers content for elements not centering by default */
