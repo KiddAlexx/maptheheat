@@ -27,21 +27,24 @@ function SearchBar({ setIsAddingVenue }: VenueFormProps) {
           Search
         </button>
       </form>
-      <p>Can't find what you are looking for?</p>
-      <button
-        onClick={() => {
-          //Redirect to login page if user is not logged in
-          if (!auth.currentUser) {
-            navigate('/login');
-          } else {
-            //Used in Sidebar to conditionally render VenueForm when set to true
-            setIsAddingVenue(true);
-          }
-        }}
-        className={`btn-default ${styles.btnAddNewVenue}`}
-      >
-        Add new restaurant!
-      </button>
+      <div className={styles.addNewContainer}>
+        <p>Can't find what you are looking for?</p>
+
+        <button
+          onClick={() => {
+            //Redirect to login page if user is not logged in
+            if (!auth.currentUser) {
+              navigate('/login');
+            } else {
+              //Used in Sidebar to conditionally render VenueForm when set to true
+              setIsAddingVenue(true);
+            }
+          }}
+          className={`btn-default ${styles.btnAddNewVenue}`}
+        >
+          Add new restaurant!
+        </button>
+      </div>
     </>
   );
 }
