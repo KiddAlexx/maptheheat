@@ -14,6 +14,7 @@ form .searchBarButton {
   right: 0;
   z-index: 20;
   border-radius: 0 0.5rem 0.5rem 0;
+  background-color: #4ca546;
 }
 
 .addNewContainer {
