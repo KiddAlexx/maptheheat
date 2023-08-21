@@ -1,0 +1,49 @@
+.venueFormContainer {
+  overflow-y: scroll;
+  height: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.venueFormContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.inputContainer {
+  width: 100%;
+  padding-bottom: 0.5rem;
+}
+
+.inputContainer label {
+  margin-bottom: 0.3rem;
+  color: #414141;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.venueFormContainer input {
+  width: 100%;
+  height: 4rem;
+  padding: 0 1rem;
+}
+
+.venueFormContainer textarea {
+  width: 100%;
+  padding: 0 1rem;
+}
+.venueButtonContainer {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.venueButtonContainer .btnCancel {
+  flex-grow: 1;
+}
+
+.venueButtonContainer .btnSubmit {
+  background-color: #2b6027;
+  flex-grow: 1;
+}
