@@ -40,7 +40,7 @@ function SearchBar({ setIsAddingVenue }: VenueFormProps) {
               setIsAddingVenue(true);
             }
           }}
-          className={`btn-default ${styles.btnAddNewVenue}`}
+          className={` ${styles.btnAddNewVenue}`}
         >
           Add new restaurant!
         </button>
