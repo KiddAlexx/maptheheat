@@ -22,13 +22,6 @@ function Login() {
   const location = useLocation();
   const mode = location.pathname.includes('signup') ? 'signup' : 'login';
 
-  const resetAuthState = function () {
-    setPassword('');
-    setConfirmPassword('');
-    setEmail('');
-    setIsLoadingAuth(false);
-  };
-
   const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (mode === 'login') {
@@ -55,7 +48,7 @@ function Login() {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
     } finally {
-      resetAuthState();
+      setIsLoadingAuth(false);
     }
   };
   const signInWithEmail = async function () {
@@ -68,7 +61,7 @@ function Login() {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
     } finally {
-      resetAuthState();
+      setIsLoadingAuth(false);
     }
   };
 
@@ -82,7 +75,7 @@ function Login() {
       const firebaseError = err as FirebaseError;
       setErrorAuth(firebaseError.message);
     } finally {
-      resetAuthState();
+      setIsLoadingAuth(false);
     }
   };
 
