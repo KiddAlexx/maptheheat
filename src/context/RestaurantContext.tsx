@@ -106,7 +106,7 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function updateRestaurantImages(id, imageURL) {
+  async function updateRestaurantImages(id: string, imageURL: string) {
     try {
       dispatch({ type: 'loading' });
       const restaurantDocRef = doc(db, 'restaurant-details', id);
