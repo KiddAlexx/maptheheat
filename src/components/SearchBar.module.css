@@ -14,7 +14,11 @@ form .searchBarButton {
   right: 0;
   z-index: 20;
   border-radius: 0 0.5rem 0.5rem 0;
-  background-color: #4ca546;
+  background-color: #2b6027;
+  transition: background-color 0.2s ease-in-out;
+}
+form .searchBarButton:hover {
+  background-color: #53b84c;
 }
 
 .addNewContainer {

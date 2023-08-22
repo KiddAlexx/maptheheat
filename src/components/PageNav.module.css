@@ -42,9 +42,21 @@
 
 /* Temp fix to ensure style overrides default from btn-default class */
 li .btnLogin {
+  color: #fff;
   background-color: #2b6027;
+  transition: background-color 0.2s ease-in-out;
+}
+
+li .btnLogin:hover {
+  color: #fff;
+  background-color: #53b84c;
 }
 
 li .btnLogout {
   background-color: #e95936;
+  transition: background-color 0.2s ease-in-out;
+}
+
+li .btnLogout:hover {
+  background-color: #fd7350;
 }

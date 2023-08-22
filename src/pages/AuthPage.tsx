@@ -8,7 +8,7 @@ import { FirebaseError } from '@firebase/util';
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 
-import styles from './Login.module.css';
+import styles from './AuthPage.module.css';
 import googleBtnLight from '../assets/btn_google_light_normal_ios.svg';
 
 function Login() {

@@ -44,4 +44,8 @@
   width: 20rem;
   background-color: #9f481a;
   color: #fff;
+  transition: background-color 0.2s ease-in-out;
+}
+.btnContainer button:hover {
+  background-color: #d46326;
 }

@@ -41,9 +41,17 @@
 
 .venueButtonContainer .btnCancel {
   flex-grow: 1;
+  transition: background-color 0.2s ease-in-out;
+}
+.venueButtonContainer .btnCancel:hover {
+  background-color: #d46326;
 }
 
 .venueButtonContainer .btnSubmit {
   background-color: #2b6027;
+  transition: background-color 0.2s ease-in-out;
   flex-grow: 1;
+}
+.venueButtonContainer .btnSubmit:hover {
+  background-color: #53b84c;
 }
