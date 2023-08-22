@@ -12,13 +12,16 @@ function DetailedVenueView() {
 
   const { activeRestaurant } = useRestaurants();
 
+  if (!activeRestaurant) {
+    return;
+  }
+
   const {
     name,
     phoneNumber,
     detailedAddress,
     website,
     description,
-    hours,
     averageRating,
     images,
   } = activeRestaurant;
@@ -50,7 +53,7 @@ function DetailedVenueView() {
           </div>
         )}
       </div>
-      <VenueRating initialRating={averageRating} readonly />
+      <VenueRating initialRating={averageRating || null} readonly />
       <p>{detailedAddress}</p>
       <p>{description}</p>
       <p>Open</p> {/* Calculate based on opening hours */}
