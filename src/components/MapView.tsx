@@ -8,8 +8,7 @@ import MapPopupContent from './MapPopupContent';
 import { Coords } from '../models/restaurantTypes';
 
 function MapView() {
-  const { restaurants, isLoading, errorMessage, activeRestaurant } =
-    useRestaurants();
+  const { restaurants, activeRestaurant } = useRestaurants();
 
   const lat = activeRestaurant?.coords?.lat || 41.3874;
   const lon = activeRestaurant?.coords?.lon || 2.17;

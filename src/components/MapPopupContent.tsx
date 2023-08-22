@@ -3,8 +3,13 @@ import { useRestaurants } from '../context/RestaurantContext';
 import VenueRating from './VenueRating';
 import styles from './MapPopupContent.module.css';
 import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
+import { Restaurant } from '../models/restaurantTypes';
 
-function MapPopupContent({ restaurant }) {
+interface MapPopupContentProps {
+  restaurant: Restaurant;
+}
+
+function MapPopupContent({ restaurant }: MapPopupContentProps) {
   const { setActiveRestaurant } = useRestaurants();
   const { city, urlSlug, name, averageRating, address, phoneNumber, images } =
     restaurant;
@@ -40,7 +45,7 @@ function MapPopupContent({ restaurant }) {
             {name}
           </h2>
         </Link>
-        <VenueRating initialRating={averageRating} readonly />
+        <VenueRating initialRating={averageRating || null} readonly />
         <p>{address}</p>
         <p>{phoneNumber}</p>
       </div>
