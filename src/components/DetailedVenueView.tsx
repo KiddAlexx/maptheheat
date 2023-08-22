@@ -1,4 +1,4 @@
-import { useParams } from 'react-router';
+/* import { useParams } from 'react-router'; */
 import { Link } from 'react-router-dom';
 import { useRestaurants } from '../context/RestaurantContext';
 import ImageUpload from './ImageUploader';
@@ -8,7 +8,7 @@ import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
 import styles from './DetailedVenueView.module.css';
 
 function DetailedVenueView() {
-  const { city, venue } = useParams();
+  /* const { city, venue } = useParams(); */
 
   const { activeRestaurant } = useRestaurants();
 

@@ -18,6 +18,8 @@ function Login() {
   const [isLoadingAuth, setIsLoadingAuth] = useState(false);
   const [errorAuth, setErrorAuth] = useState('');
 
+  console.log(isLoadingAuth); /* temp - use loading state */
+
   const navigate = useNavigate();
   const location = useLocation();
   const mode = location.pathname.includes('signup') ? 'signup' : 'login';
