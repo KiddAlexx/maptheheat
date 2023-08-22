@@ -4,17 +4,16 @@ import { useRestaurants } from '../context/RestaurantContext';
 import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
 import VenueRating from './VenueRating';
 
-function ListItem({ restaurant, handleClick }) {
-  const {
-    name,
-    address,
-    hours,
-    phoneNumber,
-    city,
-    urlSlug,
-    images,
-    averageRating,
-  } = restaurant;
+import { Restaurant } from '../models/restaurantTypes';
+
+interface ListItemProps {
+  restaurant: Restaurant;
+  handleClick: () => void;
+}
+
+function ListItem({ restaurant, handleClick }: ListItemProps) {
+  const { name, address, phoneNumber, city, urlSlug, images, averageRating } =
+    restaurant;
   const { setActiveRestaurant } = useRestaurants();
   console.log(restaurant);
   return (
@@ -41,7 +40,7 @@ function ListItem({ restaurant, handleClick }) {
       {/* Fix alt text*/}
       <div>
         <h2>{name}</h2>
-        <VenueRating initialRating={averageRating} readonly />
+        <VenueRating initialRating={averageRating || null} readonly />
         <p>{address}</p>
         <p>Open</p> {/* Temp , calculate open state based on hours */}
         <p>{phoneNumber}</p>

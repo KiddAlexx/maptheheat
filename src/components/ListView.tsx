@@ -5,13 +5,8 @@ import { useEffect } from 'react';
 import styles from './ListView.module.css';
 
 function ListView() {
-  const {
-    restaurants,
-    isLoading,
-    errorMessage,
-    setActiveRestaurant,
-    activeRestaurant,
-  } = useRestaurants();
+  const { restaurants, setActiveRestaurant, activeRestaurant } =
+    useRestaurants();
 
   const navigate = useNavigate();
 
