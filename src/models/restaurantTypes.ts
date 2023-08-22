@@ -14,7 +14,7 @@ export interface Restaurant {
   coords: Coords;
   dateAdded: string;
   id: string;
-  images: string[];
+  images?: string[];
   averageRating?: number;
 }
 
@@ -22,8 +22,8 @@ export interface Restaurant {
 export type NewRestaurant = Omit<Restaurant, 'id'>;
 
 export interface Coords {
-  lat: string;
-  lon: string;
+  lat: number;
+  lon: number;
 }
 
 export interface ActiveRestaurant {

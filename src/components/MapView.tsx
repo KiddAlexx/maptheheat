@@ -5,20 +5,16 @@ import { useEffect } from 'react';
 import L from 'leaflet';
 import chilliPin from '../assets/chillipin.png';
 import MapPopupContent from './MapPopupContent';
+import { Coords } from '../models/restaurantTypes';
 
 function MapView() {
-  const {
-    restaurants,
-    isLoading,
-    errorMessage,
-    setActiveRestaurant,
-    activeRestaurant,
-  } = useRestaurants();
+  const { restaurants, isLoading, errorMessage, activeRestaurant } =
+    useRestaurants();
 
   const lat = activeRestaurant?.coords?.lat || 41.3874;
   const lon = activeRestaurant?.coords?.lon || 2.17;
 
-  function ChangeCenter({ lat, lon }) {
+  function ChangeCenter({ lat, lon }: Coords) {
     const map = useMap();
 
     useEffect(() => {
@@ -28,7 +24,7 @@ function MapView() {
     return null;
   }
 
-  const createCustomIcon = (color) => {
+  const createCustomIcon = () => {
     return new L.Icon({
       iconUrl: chilliPin,
       iconSize: [23, 66],
@@ -53,7 +49,7 @@ function MapView() {
           <Marker
             key={restaurant.id}
             position={[restaurant.coords.lat, restaurant.coords.lon]}
-            icon={createCustomIcon('red')}
+            icon={createCustomIcon()}
           >
             <Popup>
               <MapPopupContent restaurant={restaurant} />
