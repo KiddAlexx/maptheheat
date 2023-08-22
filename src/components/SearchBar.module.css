@@ -31,13 +31,13 @@ form .searchBarButton:hover {
 }
 
 .addNewContainer p {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 500;
   color: #414141;
 }
 
 .addNewContainer .btnAddNewVenue {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 500;
   color: #2b6027;
 }
