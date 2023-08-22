@@ -15,7 +15,29 @@
 }
 
 .logoMain {
-  color: #fff;
+  background: linear-gradient(
+    90deg,
+    rgb(255, 184, 143) 0%,
+    rgb(234, 88, 83) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.logoMain:hover {
+  background: linear-gradient(
+    90deg,
+    rgb(234, 88, 83) 0%,
+    rgb(255, 184, 143) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 /* Temp fix to ensure style overrides default from btn-default class */
