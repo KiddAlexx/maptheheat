@@ -6,9 +6,16 @@ import imageCompression from 'browser-image-compression';
 
 function ImageUploader() {
   //File Upload State
-  const [imageUpload, setImageUpload] = useState(null);
+  const [imageUpload, setImageUpload] = useState<File | null>(null);
 
   const { activeRestaurant, updateRestaurantImages } = useRestaurants();
+
+  // Return from function if activeRestaurant does not exist
+  // Handle this with error message in future
+  if (!activeRestaurant) {
+    return;
+  }
+
   const { city, id, urlSlug: restaurantName } = activeRestaurant;
 
   const uploadFile = async function () {
@@ -46,7 +53,8 @@ function ImageUploader() {
       <div>
         <input
           type="file"
-          onChange={(e) => setImageUpload(e.target.files[0])}
+          // Checks to ensure e.target.files exists and if not uses null as value
+          onChange={(e) => setImageUpload(e.target.files?.[0] ?? null)}
         />
         <button onClick={uploadFile}>Upload File</button>
       </div>
