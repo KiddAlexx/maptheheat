@@ -15,6 +15,7 @@ export interface Restaurant {
   dateAdded: string;
   id: string;
   images: string[];
+  averageRating: number;
 }
 
 // id not present at creation time, generate by Firestore

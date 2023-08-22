@@ -1,6 +1,11 @@
 import Rating from 'react-rating';
 
-function VenueRating({ initialRating, readonly }) {
+interface VenueRatingProps {
+  initialRating: number;
+  readonly: boolean;
+}
+
+function VenueRating({ initialRating, readonly }: VenueRatingProps) {
   const fullFlame = (
     <svg
       width="24"
