@@ -33,3 +33,14 @@
 .detailedViewContainer {
   padding: 2.5rem;
 }
+
+.iconTextContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.topAlignIcon {
+  align-items: flex-start;
+}

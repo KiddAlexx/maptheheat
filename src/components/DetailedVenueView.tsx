@@ -7,7 +7,14 @@ import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
 
 import styles from './DetailedVenueView.module.css';
 
+import clockIcon from '../assets/icons/clock.svg';
+import globeIcon from '../assets/icons/globe.svg';
+import mapPinIcon from '../assets/icons/map-pin.svg';
+import phoneIcon from '../assets/icons/phone.svg';
+import infoIcon from '../assets/icons/info.svg';
+
 function DetailedVenueView() {
+  // Will be used to load venue from params
   /* const { city, venue } = useParams(); */
 
   const { activeRestaurant } = useRestaurants();
@@ -54,11 +61,27 @@ function DetailedVenueView() {
         )}
       </div>
       <VenueRating initialRating={averageRating || null} readonly />
-      <p>{detailedAddress}</p>
-      <p>{description}</p>
-      <p>Open</p> {/* Calculate based on opening hours */}
-      <p>{phoneNumber}</p>
-      <a href={website}>{website}</a>
+      <div className={styles.iconTextContainer}>
+        <img src={clockIcon} alt="icon of a clock" />
+        <p>Open</p>
+      </div>
+      {/* Calculate based on opening hours */}
+      <div className={styles.iconTextContainer}>
+        <img src={mapPinIcon} alt="icon of a map pin" />
+        <p>{detailedAddress}</p>
+      </div>
+      <div className={`${styles.iconTextContainer} ${styles.topAlignIcon}`}>
+        <img src={infoIcon} alt="icon of an information symbol" />
+        <p>{description}</p>
+      </div>
+      <div className={styles.iconTextContainer}>
+        <img src={phoneIcon} alt="icon of a phone" />
+        <p>{phoneNumber}</p>
+      </div>
+      <div className={styles.iconTextContainer}>
+        <img src={globeIcon} alt="icon of a globe" />
+        <a href={website}>{website}</a>
+      </div>
       <Link to="/app/map" className="btn-default">
         Back to Map
       </Link>
