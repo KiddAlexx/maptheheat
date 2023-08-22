@@ -70,7 +70,9 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
 
   // Update venue data on each keystroke
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = e.target;
     setVenueData((prevData) => ({ ...prevData, [name]: value }));
@@ -155,7 +157,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
         <div className={styles.inputContainer}>
           <label htmlFor="description">Description</label>
           <textarea
-            rows="2"
+            rows={2}
             name="description"
             onChange={handleChange}
             value={description}
