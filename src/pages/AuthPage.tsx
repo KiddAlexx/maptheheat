@@ -7,6 +7,7 @@ import {
 import { FirebaseError } from '@firebase/util';
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
+import LoaderSpinner from '../components/LoaderSpinner';
 
 import styles from './AuthPage.module.css';
 import googleBtnLight from '../assets/btn_google_light_normal_ios.svg';
@@ -92,65 +93,69 @@ function Login() {
 
   return (
     <div className={styles.authContainer}>
-      <form className={styles.authFormContainer} onSubmit={handleSubmit}>
-        <div className={styles.inputContainer}>
-          <label htmlFor="email">Email</label>
-          <input
-            placeholder="Email..."
-            value={email}
-            id="email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className={styles.inputContainer}>
-          <label htmlFor="password">Password</label>
-          <input
-            placeholder="Password..."
-            value={password}
-            id="password"
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        {mode === 'signup' && (
+      {isLoadingAuth ? (
+        <LoaderSpinner />
+      ) : (
+        <form className={styles.authFormContainer} onSubmit={handleSubmit}>
           <div className={styles.inputContainer}>
-            <label htmlFor="confirm-password">Confirm Password</label>
+            <label htmlFor="email">Email</label>
             <input
-              placeholder="Confirm Password..."
-              value={confirmPassword}
-              id="confirm-password"
-              type="password"
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Email..."
+              value={email}
+              id="email"
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-        )}
-        <div className={styles.authButtonContainer}>
-          {mode === 'login' ? (
-            <>
-              <button className="btn-default" type="submit">
-                Sign In
-              </button>
-              <div className={styles.divider}>
-                <p>OR</p>
-              </div>
-
-              <button
-                type="button"
-                className={`btn-default ${styles.btnLoginGoogle}`}
-                onClick={signInWithGoogle}
-              >
-                <img src={googleBtnLight} alt="Google logo" />
-                Sign In With Google
-              </button>
-            </>
-          ) : (
-            <button className="btn-default" type="submit">
-              Create Account
-            </button>
+          <div className={styles.inputContainer}>
+            <label htmlFor="password">Password</label>
+            <input
+              placeholder="Password..."
+              value={password}
+              id="password"
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          {mode === 'signup' && (
+            <div className={styles.inputContainer}>
+              <label htmlFor="confirm-password">Confirm Password</label>
+              <input
+                placeholder="Confirm Password..."
+                value={confirmPassword}
+                id="confirm-password"
+                type="password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
           )}
-        </div>
-        {errorAuth ?? <p>{errorAuth}</p>}
-      </form>
+          <div className={styles.authButtonContainer}>
+            {mode === 'login' ? (
+              <>
+                <button className="btn-default" type="submit">
+                  Sign In
+                </button>
+                <div className={styles.divider}>
+                  <p>OR</p>
+                </div>
+
+                <button
+                  type="button"
+                  className={`btn-default ${styles.btnLoginGoogle}`}
+                  onClick={signInWithGoogle}
+                >
+                  <img src={googleBtnLight} alt="Google logo" />
+                  Sign In With Google
+                </button>
+              </>
+            ) : (
+              <button className="btn-default" type="submit">
+                Create Account
+              </button>
+            )}
+          </div>
+          {errorAuth ?? <p>{errorAuth}</p>}
+        </form>
+      )}
     </div>
   );
 }
