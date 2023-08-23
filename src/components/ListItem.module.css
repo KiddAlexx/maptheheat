@@ -46,10 +46,21 @@
   font-weight: 500;
 
   position: absolute;
-  bottom: 1rem;
+  bottom: 0.7rem;
   right: 1rem;
 }
 
 .moreInfoLink:hover {
   color: #a34e20;
+}
+
+.iconTextContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.iconTextContainer img {
+  width: 2.2rem;
 }

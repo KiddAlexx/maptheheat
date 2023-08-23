@@ -6,6 +6,10 @@ import VenueRating from './VenueRating';
 
 import { Restaurant } from '../models/restaurantTypes';
 
+import clockIcon from '../assets/icons/clock.svg';
+import mapPinIcon from '../assets/icons/map-pin.svg';
+import phoneIcon from '../assets/icons/phone.svg';
+
 interface ListItemProps {
   restaurant: Restaurant;
   handleClick: () => void;
@@ -41,9 +45,20 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
       <div>
         <h2>{name}</h2>
         <VenueRating initialRating={averageRating || null} readonly />
-        <p>{address}</p>
-        <p>Open</p> {/* Temp , calculate open state based on hours */}
-        <p>{phoneNumber}</p>
+        <div className={styles.iconTextContainer}>
+          <img src={clockIcon} alt="icon of a clock" />
+          <p>Open</p>
+        </div>
+        <div className={styles.iconTextContainer}>
+          <img src={mapPinIcon} alt="icon of a map pin" />
+          <p>{address}</p>
+        </div>
+
+        {/* Temp , calculate open state based on hours */}
+        <div className={styles.iconTextContainer}>
+          <img src={phoneIcon} alt="icon of a phone" />
+          <p>{phoneNumber}</p>
+        </div>
         <Link
           className={styles.moreInfoLink}
           to={`/app/venue/${city}/${urlSlug}`}
