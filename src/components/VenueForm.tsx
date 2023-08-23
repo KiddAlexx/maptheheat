@@ -114,7 +114,9 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     <>
       <form onSubmit={handleSubmit} className={styles.venueFormContainer}>
         {isLoading ? (
-          <LoaderSpinner />
+          <div className={styles.loaderSpinnerContainer}>
+            <LoaderSpinner />
+          </div>
         ) : (
           <>
             <div className={styles.inputContainer}>

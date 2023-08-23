@@ -1,3 +1,7 @@
+.loaderSpinnerContainer {
+  display: flex;
+  justify-content: center;
+}
 .venueFormContainer {
   overflow-y: scroll;
   height: 100%;
