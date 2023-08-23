@@ -44,7 +44,7 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
 
       <div>
         <h2>{name}</h2>
-        <VenueRating initialRating={averageRating || null} readonly />
+        <VenueRating initialRating={averageRating || 5} readonly />
         <div className={styles.iconTextContainer}>
           <img src={clockIcon} alt="icon of a clock" />
           <p>Open</p>

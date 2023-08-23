@@ -48,7 +48,7 @@ function MapPopupContent({ restaurant }: MapPopupContentProps) {
             {name}
           </h2>
         </Link>
-        <VenueRating initialRating={averageRating || null} readonly />
+        <VenueRating initialRating={averageRating || 5} readonly />
         <div className={styles.iconTextContainer}>
           <img src={mapPinIcon} alt="icon of a map pin" />
           <p>{address}</p>
