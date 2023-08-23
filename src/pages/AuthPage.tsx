@@ -135,6 +135,7 @@ function Login() {
               </div>
 
               <button
+                type="button"
                 className={`btn-default ${styles.btnLoginGoogle}`}
                 onClick={signInWithGoogle}
               >
