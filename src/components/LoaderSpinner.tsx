@@ -9,7 +9,7 @@ function LoaderSpinner() {
       ariaLabel="blocks-loading"
       wrapperStyle={{}}
       wrapperClass="blocks-wrapper"
-      colors={['#b8c480', '#B2A3B5', '#F4442E', '#51E5FF', '#429EA6']}
+      colors={['#2b6027', '#53b84c', '#d46326', '#fd7350', '#f18d74']}
     />
   );
 }

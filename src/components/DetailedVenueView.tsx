@@ -12,6 +12,7 @@ import globeIcon from '../assets/icons/globe.svg';
 import mapPinIcon from '../assets/icons/map-pin.svg';
 import phoneIcon from '../assets/icons/phone.svg';
 import infoIcon from '../assets/icons/info.svg';
+import LoaderSpinner from './LoaderSpinner';
 
 function DetailedVenueView() {
   // Will be used to load venue from params
@@ -88,6 +89,7 @@ function DetailedVenueView() {
       <Link to="/app/map" className={`btn-default ${styles.btnBackToMap}`}>
         Back to Map
       </Link>
+      <LoaderSpinner />
     </div>
   );
 }
