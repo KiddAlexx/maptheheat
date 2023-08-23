@@ -34,6 +34,12 @@
   padding: 2.5rem;
 }
 
+.ratingUploadContainer {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
 .iconTextContainer {
   display: flex;
   align-items: center;

@@ -60,7 +60,10 @@ function DetailedVenueView() {
           </div>
         )}
       </div>
-      <VenueRating initialRating={averageRating || null} readonly />
+      <div className={styles.ratingUploadContainer}>
+        <VenueRating initialRating={averageRating || null} readonly />
+        <ImageUpload />
+      </div>
       <div className={styles.iconTextContainer}>
         <img src={clockIcon} alt="icon of a clock" />
         <p>Open</p>
@@ -85,7 +88,6 @@ function DetailedVenueView() {
       <Link to="/app/map" className="btn-default">
         Back to Map
       </Link>
-      <ImageUpload />
     </div>
   );
 }
