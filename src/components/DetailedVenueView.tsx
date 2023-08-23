@@ -85,7 +85,7 @@ function DetailedVenueView() {
         <img src={globeIcon} alt="icon of a globe" />
         <a href={website}>{website}</a>
       </div>
-      <Link to="/app/map" className="btn-default">
+      <Link to="/app/map" className={`btn-default ${styles.btnBackToMap}`}>
         Back to Map
       </Link>
     </div>
