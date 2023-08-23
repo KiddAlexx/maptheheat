@@ -44,6 +44,7 @@ export interface RestaurantContextType extends State {
   addRestaurant: (restaurant: NewRestaurant) => void;
   setActiveRestaurant: (restaurant: Restaurant) => void;
   updateRestaurantImages: (id: string, imageURL: string) => void;
+  clearError: () => void;
 }
 
 export type Action =
@@ -52,4 +53,5 @@ export type Action =
     }
   | { type: 'restaurants/loaded'; payload: Restaurant[] }
   | { type: 'rejected'; payload: string }
-  | { type: 'set-active'; payload: Restaurant };
+  | { type: 'set-active'; payload: Restaurant }
+  | { type: 'clear-error' };

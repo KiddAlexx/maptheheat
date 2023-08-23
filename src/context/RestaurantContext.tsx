@@ -60,6 +60,11 @@ function reducer(state: State, action: Action) {
         ...state,
         activeRestaurant: action.payload,
       };
+    case 'clear-error':
+      return {
+        ...state,
+        errorMessage: null,
+      };
 
     default:
       throw new Error('Unknown action type');
@@ -135,7 +140,6 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
         setActiveRestaurant(updatedActiveRestaurant);
       }
     } catch (err) {
-      console.error(err);
       dispatch({
         type: 'rejected',
         payload: 'There was an error adding restaurant image, please try again',
@@ -146,6 +150,11 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
   // Used to set active restaurant, to help sync components
   function setActiveRestaurant(restaurant: Restaurant) {
     dispatch({ type: 'set-active', payload: restaurant });
+  }
+
+  function clearError() {
+    console.log('Clearing error...');
+    dispatch({ type: 'clear-error' });
   }
 
   return (
@@ -159,6 +168,7 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
         addRestaurant,
         setActiveRestaurant,
         updateRestaurantImages,
+        clearError,
       }}
     >
       {children}
