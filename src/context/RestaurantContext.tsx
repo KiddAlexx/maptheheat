@@ -89,7 +89,7 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       dispatch({
         type: 'rejected',
-        payload: 'There was an error loading restaurants',
+        payload: 'There was an error loading restaurants, please refresh',
       });
     }
   }
@@ -101,7 +101,7 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       dispatch({
         type: 'rejected',
-        payload: 'There was an error adding that restaurant',
+        payload: 'There was an error adding that restaurant, please try again',
       });
     }
   }
@@ -138,7 +138,7 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
       console.error(err);
       dispatch({
         type: 'rejected',
-        payload: 'There was an error adding restaurant image',
+        payload: 'There was an error adding restaurant image, please try again',
       });
     }
   }
