@@ -4,16 +4,10 @@ import ListItem from './ListItem';
 import { useEffect } from 'react';
 import styles from './ListView.module.css';
 import LoaderSpinner from './LoaderSpinner';
-import ErrorModal from './ErrorModal';
 
 function ListView() {
-  const {
-    restaurants,
-    setActiveRestaurant,
-    activeRestaurant,
-    isLoading,
-    errorMessage,
-  } = useRestaurants();
+  const { restaurants, setActiveRestaurant, activeRestaurant, isLoading } =
+    useRestaurants();
 
   const navigate = useNavigate();
 
@@ -46,7 +40,6 @@ function ListView() {
           key={restaurant.id}
         />
       ))}
-      {errorMessage && <ErrorModal errorMessage={errorMessage} />}
     </div>
   );
 }
