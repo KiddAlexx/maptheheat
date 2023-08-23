@@ -40,13 +40,17 @@
 }
 
 .venueNamePopup {
-  color: #132c12;
+  color: #414141;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+.venueNamePopup:hover {
+  color: #838383;
   font-size: 2rem;
   margin-bottom: 0.5rem;
 }
 
 .popUpContentContainer p {
-  color: #132c12;
   font-size: 1.5rem;
   font-weight: 500;
 }
