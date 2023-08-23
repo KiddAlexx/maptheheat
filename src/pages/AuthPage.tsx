@@ -11,15 +11,14 @@ import LoaderSpinner from '../components/LoaderSpinner';
 
 import styles from './AuthPage.module.css';
 import googleBtnLight from '../assets/btn_google_light_normal_ios.svg';
+import ErrorModal from '../components/ErrorModal';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoadingAuth, setIsLoadingAuth] = useState(false);
-  const [errorAuth, setErrorAuth] = useState('');
-
-  console.log(isLoadingAuth); /* temp - use loading state */
+  const [errorAuth, setErrorAuth] = useState<null | string>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,6 +28,10 @@ function Login() {
     setPassword('');
     setConfirmPassword('');
     setEmail('');
+  };
+
+  const clearErrorAuth = () => {
+    setErrorAuth(null);
   };
 
   const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
@@ -44,7 +47,7 @@ function Login() {
   const createAccountWithEmail = async function () {
     try {
       setIsLoadingAuth(true);
-      setErrorAuth('');
+      setErrorAuth(null);
       if (password !== confirmPassword) {
         setErrorAuth('Woops, the passwords do not match!');
         setPassword('');
@@ -64,7 +67,7 @@ function Login() {
   const signInWithEmail = async function () {
     try {
       setIsLoadingAuth(true);
-      setErrorAuth('');
+      setErrorAuth(null);
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/app');
       resetAuthState();
@@ -79,7 +82,7 @@ function Login() {
   const signInWithGoogle = async function () {
     try {
       setIsLoadingAuth(true);
-      setErrorAuth('');
+      setErrorAuth(null);
       await signInWithPopup(auth, googleProvider);
       navigate('/app');
       resetAuthState();
@@ -153,7 +156,12 @@ function Login() {
               </button>
             )}
           </div>
-          {errorAuth ?? <p>{errorAuth}</p>}
+          {errorAuth && (
+            <ErrorModal
+              errorMessage={errorAuth}
+              clearLocalError={clearErrorAuth}
+            />
+          )}
         </form>
       )}
     </div>

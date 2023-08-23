@@ -2,14 +2,20 @@ import styles from './ErrorModal.module.css';
 import { useRestaurants } from '../context/RestaurantContext';
 
 interface ErrorModalProps {
-  errorMessage?: string;
+  errorMessage?: string | null;
+  clearLocalError?: () => void;
 }
 
-function ErrorModal({ errorMessage: localErrorMessage }: ErrorModalProps) {
+function ErrorModal({
+  errorMessage: localErrorMessage,
+  clearLocalError,
+}: ErrorModalProps) {
   const { errorMessage: contextErrorMessage, clearError } = useRestaurants();
 
   // Gives option for error message via props or context
   const finalErrorMessage = localErrorMessage || contextErrorMessage;
+
+  const handleClearError = localErrorMessage ? clearLocalError : clearError;
 
   if (!finalErrorMessage) return null;
 
@@ -17,7 +23,7 @@ function ErrorModal({ errorMessage: localErrorMessage }: ErrorModalProps) {
     <div className={styles.errorModalBackdrop}>
       <div className={styles.errorModalContent}>
         <p>{finalErrorMessage}</p>
-        <button onClick={clearError}>Close</button>
+        <button onClick={handleClearError}>Close</button>
       </div>
     </div>
   );
