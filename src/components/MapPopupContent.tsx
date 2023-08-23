@@ -5,6 +5,9 @@ import styles from './MapPopupContent.module.css';
 import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
 import { Restaurant } from '../models/restaurantTypes';
 
+import mapPinIcon from '../assets/icons/map-pin.svg';
+import phoneIcon from '../assets/icons/phone.svg';
+
 interface MapPopupContentProps {
   restaurant: Restaurant;
 }
@@ -46,8 +49,14 @@ function MapPopupContent({ restaurant }: MapPopupContentProps) {
           </h2>
         </Link>
         <VenueRating initialRating={averageRating || null} readonly />
-        <p>{address}</p>
-        <p>{phoneNumber}</p>
+        <div className={styles.iconTextContainer}>
+          <img src={mapPinIcon} alt="icon of a map pin" />
+          <p>{address}</p>
+        </div>
+        <div className={styles.iconTextContainer}>
+          <img src={phoneIcon} alt="icon of a phone" />
+          <p>{phoneNumber}</p>
+        </div>
       </div>
     </>
   );

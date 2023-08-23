@@ -49,5 +49,15 @@
   color: #132c12;
   font-size: 1.5rem;
   font-weight: 500;
-  margin-bottom: 0.5rem;
+}
+
+.iconTextContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.iconTextContainer img {
+  width: 2.2rem;
 }

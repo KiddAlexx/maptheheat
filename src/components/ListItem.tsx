@@ -29,6 +29,7 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
             src={images[0]}
             alt="an image of restaurant"
           />
+          {/* Fix alt text - user input / somehow generated... */}
         </div>
       ) : (
         <div className={styles.mainImageContainer}>
@@ -41,7 +42,6 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
         </div>
       )}
 
-      {/* Fix alt text*/}
       <div>
         <h2>{name}</h2>
         <VenueRating initialRating={averageRating || null} readonly />
