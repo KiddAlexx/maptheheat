@@ -111,6 +111,29 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'loading' });
       const restaurantDocRef = doc(db, 'restaurant-details', id);
       await updateDoc(restaurantDocRef, { images: arrayUnion(imageURL) });
+
+      // Update image URL in local restaurants state
+      const updatedRestaurants = restaurants.map((restaurant) => {
+        if (restaurant.id === id) {
+          return {
+            ...restaurant,
+            // Check if image array containes values before spreading
+            images: restaurant.images
+              ? [...restaurant.images, imageURL]
+              : [imageURL],
+          };
+        }
+        return restaurant;
+      });
+      dispatch({ type: 'restaurants/loaded', payload: updatedRestaurants });
+
+      // Update the active restaurant to trigger re-load
+      const updatedActiveRestaurant = updatedRestaurants.find(
+        (restaurant) => restaurant.id === id
+      );
+      if (updatedActiveRestaurant) {
+        setActiveRestaurant(updatedActiveRestaurant);
+      }
     } catch (err) {
       console.error(err);
       dispatch({

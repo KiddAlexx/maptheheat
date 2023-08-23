@@ -40,7 +40,7 @@ function DetailedVenueView() {
         {images ? (
           // Slice first 5 images and map over
           // To be replaced with more refined component
-          images.slice(0, 5).map((image) => (
+          images.slice(0, 4).map((image) => (
             <div className={styles.mainImageContainer}>
               <img
                 className={styles.imageMainSmall}
