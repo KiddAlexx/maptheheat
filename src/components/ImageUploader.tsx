@@ -1,5 +1,5 @@
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { storage } from '../config/firebase-config';
 import { useRestaurants } from '../context/RestaurantContext';
 import imageCompression from 'browser-image-compression';
@@ -13,6 +13,12 @@ function ImageUploader() {
   const [uploadState, setUploadState] = useState<string>('Upload!');
 
   const { activeRestaurant, updateRestaurantImages } = useRestaurants();
+
+  /* Ensures state is reset if user changes active restaurant */
+  useEffect(() => {
+    setImageUpload(null);
+    setUploadState('Upload!');
+  }, [activeRestaurant]);
 
   // Return from function if activeRestaurant does not exist
   // Handle this with error message in future
@@ -45,8 +51,8 @@ function ImageUploader() {
       await uploadBytes(filesFolderRef, compressedImage);
       const downloadURL = await getDownloadURL(filesFolderRef);
       setUploadState('uploading');
-      await updateRestaurantImages(id, downloadURL);
-      setUploadState('Image uploaded'); //Temp until add visual confirmation of stages
+      updateRestaurantImages(id, downloadURL);
+      setUploadState('Image uploaded');
     } catch (err) {
       console.error(err);
     } finally {
