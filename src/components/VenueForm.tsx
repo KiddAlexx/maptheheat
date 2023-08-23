@@ -14,7 +14,6 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     address: '',
     detailedAddress: '',
     description: '',
-    hours: '',
     city: '',
     country: '',
     postcode: '',
@@ -33,7 +32,6 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     name,
     address,
     description,
-    hours,
     city,
     postcode,
     country,
@@ -164,7 +162,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
             id="description"
           ></textarea>
         </div>
-        <div className={styles.inputContainer}>
+        {/*  <div className={styles.inputContainer}>
           <label htmlFor="hours">Opening Hours</label>
           <input
             type="text"
@@ -173,7 +171,8 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
             value={hours}
             id="hours"
           />
-        </div>
+        </div> */}
+        {/* Add again once have proper input method */}
         <div className={styles.inputContainer}>
           <label htmlFor="phoneNumber">Phone Number</label>
           <input

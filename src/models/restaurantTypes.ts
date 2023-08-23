@@ -3,7 +3,6 @@ export interface Restaurant {
   address: string;
   detailedAddress: string;
   description: string;
-  hours: string;
   city: string;
   country: string;
   postcode: string;
