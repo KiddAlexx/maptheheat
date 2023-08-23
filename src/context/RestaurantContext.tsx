@@ -38,7 +38,7 @@ const RestaurantContext = createContext<RestaurantContextType | undefined>(
 const initialState = {
   restaurants: [],
   isLoading: false,
-  errorMessage: '',
+  errorMessage: null,
   activeRestaurant: null,
 };
 

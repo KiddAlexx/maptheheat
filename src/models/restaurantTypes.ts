@@ -35,7 +35,7 @@ export interface ActiveRestaurant {
 export interface State {
   restaurants: Restaurant[];
   isLoading: boolean;
-  errorMessage: string;
+  errorMessage: string | null;
   activeRestaurant: Restaurant | null;
 }
 
