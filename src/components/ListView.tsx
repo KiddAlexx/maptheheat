@@ -3,9 +3,10 @@ import { useRestaurants } from '../context/RestaurantContext';
 import ListItem from './ListItem';
 import { useEffect } from 'react';
 import styles from './ListView.module.css';
+import LoaderSpinner from './LoaderSpinner';
 
 function ListView() {
-  const { restaurants, setActiveRestaurant, activeRestaurant } =
+  const { restaurants, setActiveRestaurant, activeRestaurant, isLoading } =
     useRestaurants();
 
   const navigate = useNavigate();
@@ -26,7 +27,9 @@ function ListView() {
     }
   }, [activeRestaurant, navigate, mode]);
 
-  return (
+  return isLoading ? (
+    <LoaderSpinner />
+  ) : (
     <div className={styles.listView}>
       {restaurants.map((restaurant) => (
         <ListItem
