@@ -47,6 +47,12 @@
   margin-bottom: 1rem;
 }
 
+/* Ensure icon for multiple line content is aligned to the top */
 .topAlignIcon {
   align-items: flex-start;
+}
+
+/* Ensure first line of text is centered with icon */
+.topAlignIcon p {
+  padding-top: 0.4rem;
 }
