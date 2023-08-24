@@ -1,12 +1,19 @@
-/* import { useParams } from 'react-router'; */
+// React imports
 import { Link } from 'react-router-dom';
-import { useRestaurants } from '../context/RestaurantContext';
-import ImageUploader from './ImageUploader';
-import VenueRating from './VenueRating';
-import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
+/* import { useParams } from 'react-router'; */
 
+// Style imports
 import styles from './DetailedVenueView.module.css';
 
+// Hooks imports
+import { useRestaurants } from '../context/RestaurantContext';
+
+// Component imports
+import ImageUploader from './ImageUploader';
+import VenueRating from './VenueRating';
+
+// File imports
+import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
 import clockIcon from '../assets/icons/clock.svg';
 import globeIcon from '../assets/icons/globe.svg';
 import mapPinIcon from '../assets/icons/map-pin.svg';
@@ -38,7 +45,7 @@ function DetailedVenueView() {
       <h2>{name}</h2>
       <div className={styles.multipleImageContainer}>
         {images ? (
-          // Slice first 5 images and map over
+          // Slice first 4 images and map over
           // To be replaced with more refined component
           images.slice(0, 4).map((image) => (
             <div className={styles.mainImageContainer}>
@@ -87,6 +94,7 @@ function DetailedVenueView() {
           {website}
         </a>
       </div>
+      {/* Button to navigate back to map view. */}
       <Link to="/app/map" className={`btn-default ${styles.btnBackToMap}`}>
         Back to Map
       </Link>
