@@ -116,6 +116,8 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
         if (typeof value === 'string') {
           return value.trim() !== '';
         }
+        // Returns true for any field which is not a string
+        // Quick workaround to only check actual input fields
         return true;
       });
     };
