@@ -1,4 +1,7 @@
+// React imports
 import { Outlet } from 'react-router';
+
+// Style imports
 import styles from './RightPanel.module.css';
 
 function RightPanel() {
