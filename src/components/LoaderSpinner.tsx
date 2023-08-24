@@ -1,4 +1,7 @@
+// Third party imports
 import { ColorRing } from 'react-loader-spinner';
+
+// Style imports
 import styles from './LoaderSpinner.module.css';
 
 function LoaderSpinner() {
