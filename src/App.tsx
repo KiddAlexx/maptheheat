@@ -1,14 +1,18 @@
+// React imports
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
+// Styles imports
+import './App.css';
+
+// Hooks imports
+import { RestaurantsProvider } from './context/RestaurantContext';
+
+// Component imports
 import PageNav from './components/PageNav';
 import Homepage from './pages/Homepage';
 import AuthPage from './pages/AuthPage';
 import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
-
-import { RestaurantsProvider } from './context/RestaurantContext';
-
-import './App.css';
 import MapView from './components/MapView';
 import UserProfile from './components/UserProfile';
 import DetailedVenueView from './components/DetailedVenueView';
