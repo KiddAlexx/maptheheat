@@ -1,12 +1,22 @@
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+// React imports
 import { useEffect, useState } from 'react';
-import { storage } from '../config/firebase-config';
-import { useRestaurants } from '../context/RestaurantContext';
-import imageCompression from 'browser-image-compression';
-import styles from './ImageUploader.module.css';
-import { auth } from '../config/firebase-config';
 import { useNavigate } from 'react-router';
 
+// Firebase imports
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { storage } from '../config/firebase-config';
+import { auth } from '../config/firebase-config';
+
+// Third party imports
+import imageCompression from 'browser-image-compression';
+
+// Style imports
+import styles from './ImageUploader.module.css';
+
+// Hooks imports
+import { useRestaurants } from '../context/RestaurantContext';
+
+// File imports
 import cameraIcon from '../assets/icons/camera.svg';
 
 function ImageUploader() {
@@ -18,7 +28,7 @@ function ImageUploader() {
 
   const navigate = useNavigate();
 
-  /* Ensures state is reset if user changes active restaurant */
+  // Ensures image upload state is reset if user changes active restaurant
   useEffect(() => {
     setImageUpload(null);
     setUploadState('Upload!');
@@ -32,6 +42,7 @@ function ImageUploader() {
 
   const { city, id, urlSlug: restaurantName } = activeRestaurant;
 
+  // Function to handle compression and upload of selected image to Firebase storage.
   const uploadFile = async function () {
     if (!imageUpload) return;
 
