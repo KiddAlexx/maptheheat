@@ -1,14 +1,23 @@
+// React imports
 import { Link } from 'react-router-dom';
+
+// Style imports
 import styles from './ListItem.module.css';
+
+// Hooks imports
 import { useRestaurants } from '../context/RestaurantContext';
+
+// File imports
 import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
-import VenueRating from './VenueRating';
-
-import { Restaurant } from '../models/restaurantTypes';
-
 import clockIcon from '../assets/icons/clock.svg';
 import mapPinIcon from '../assets/icons/map-pin.svg';
 import phoneIcon from '../assets/icons/phone.svg';
+
+// Component imports
+import VenueRating from './VenueRating';
+
+// Type imports
+import { Restaurant } from '../models/restaurantTypes';
 
 interface ListItemProps {
   restaurant: Restaurant;
@@ -19,7 +28,6 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
   const { name, address, phoneNumber, city, urlSlug, images, averageRating } =
     restaurant;
   const { setActiveRestaurant } = useRestaurants();
-  console.log(restaurant);
   return (
     <div className={styles.listItemContainer} onClick={handleClick}>
       {images ? (
@@ -59,6 +67,8 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
           <img src={phoneIcon} alt="icon of a phone" />
           <p>{phoneNumber}</p>
         </div>
+        {/* Link to the detailed page of the restaurant. 
+            On click, set clicked restaurant as active restaurant. */}
         <Link
           className={styles.moreInfoLink}
           to={`/app/venue/${city}/${urlSlug}`}
