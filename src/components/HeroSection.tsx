@@ -1,4 +1,7 @@
+// React imports
 import { useNavigate } from 'react-router';
+
+// Style imports
 import styles from './HeroSection.module.css';
 
 function HeroSection() {

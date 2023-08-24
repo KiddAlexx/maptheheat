@@ -17,6 +17,7 @@
   transform: scale(1.05);
 }
 
+/* Hide input as label styled to use as file selector */
 .imgUploaderInput {
   display: none;
 }
