@@ -1,3 +1,4 @@
+// React imports
 import Rating from 'react-rating';
 
 interface VenueRatingProps {

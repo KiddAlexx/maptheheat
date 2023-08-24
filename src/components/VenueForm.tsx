@@ -1,12 +1,22 @@
+// React imports
 import { useEffect, useState } from 'react';
-import { useRestaurants } from '../context/RestaurantContext';
+
+// Firebase imports
 import { auth } from '../config/firebase-config';
 
+// Third party imports
 import slugify from 'slugify';
-import { VenueFormProps } from './SideBar';
 
+// Style imports
 import styles from './VenueForm.module.css';
 
+// Type imports
+import { VenueFormProps } from './SideBar';
+
+// Hooks imports
+import { useRestaurants } from '../context/RestaurantContext';
+
+// Component imports
 import LoaderSpinner from './LoaderSpinner';
 
 function VenueForm({ setIsAddingVenue }: VenueFormProps) {
@@ -41,6 +51,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     website,
   } = venueData;
 
+  // Assign country value based on chosen city
   useEffect(() => {
     if (city === 'Barcelona') {
       setVenueData((prevVenueData) => ({ ...prevVenueData, country: 'Spain' }));

@@ -80,7 +80,6 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
     getRestaurants();
   }, []);
 
-  // Function to fetch all restaurants from collection
   async function getRestaurants() {
     try {
       dispatch({ type: 'loading' });
