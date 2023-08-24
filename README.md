@@ -2,6 +2,14 @@
 
 Map The Heat is a community-driven web application that allows users to share and discover spicy food places around the world. Whether you're a spice connoisseur seeking the next challenge, or just looking for a place to try a hot dish for the first time, Map The Heat is here to guide you.
 
+More info coming soon!
+
+## Live Link
+
+Link will be live for a couple of weeks to get some feedback.
+
+[Map The Heat on Netlify](https://maptheheat.netlify.app/)
+
 ## Features
 
 Currently, in the early stages of development. Here's a glimpse of what's to come:
