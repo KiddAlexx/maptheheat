@@ -1,7 +1,14 @@
+// React imports
 import { useState } from 'react';
-import { auth } from '../config/firebase-config';
 import { useNavigate } from 'react-router';
+
+// Firebase imports
+import { auth } from '../config/firebase-config';
+
+// Type imports
 import { VenueFormProps } from './SideBar';
+
+// Style imports
 import styles from './SearchBar.module.css';
 
 function SearchBar({ setIsAddingVenue }: VenueFormProps) {
