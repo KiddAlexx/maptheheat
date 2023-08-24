@@ -1,15 +1,26 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { useRestaurants } from '../context/RestaurantContext';
-import styles from './MapView.module.css';
+// React imports
 import { useEffect } from 'react';
+
+// Third party imports
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import chilliPin from '../assets/chillipin.png';
 import MapPopupContent from './MapPopupContent';
+
+// Style imports
+import styles from './MapView.module.css';
+
+// Type imports
 import { Coords } from '../models/restaurantTypes';
+
+// Hooks imports
+import { useRestaurants } from '../context/RestaurantContext';
 
 function MapView() {
   const { restaurants, activeRestaurant } = useRestaurants();
 
+  // Sets coordinates based on active restaurant value if available
+  // Used to center map on active restaurant
   const lat = activeRestaurant?.coords?.lat || 41.3874;
   const lon = activeRestaurant?.coords?.lon || 2.17;
 
@@ -32,6 +43,7 @@ function MapView() {
     });
   };
 
+  // Render the map with markers for each restaurant and center it based on the active restaurant or default coordinates.
   return (
     <div className={styles.mapContainer}>
       <MapContainer
