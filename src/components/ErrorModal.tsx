@@ -1,4 +1,7 @@
+// Style imports
 import styles from './ErrorModal.module.css';
+
+// Hooks imports
 import { useRestaurants } from '../context/RestaurantContext';
 
 interface ErrorModalProps {
@@ -15,8 +18,10 @@ function ErrorModal({
   // Gives option for error message via props or context
   const finalErrorMessage = localErrorMessage || contextErrorMessage;
 
+  // Clears eror message in local file or context
   const handleClearError = localErrorMessage ? clearLocalError : clearError;
 
+  // Only render if error exist
   if (!finalErrorMessage) return null;
 
   return (
