@@ -96,6 +96,35 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
 
   const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    const fieldsToValidate: (keyof typeof venueData)[] = [
+      'name',
+      'address',
+      'description',
+      'city',
+      'postcode',
+      'country',
+      'phoneNumber',
+      'website',
+    ];
+
+    // Quick check to ensure all input fields have value
+    // To be replaced with proper validation
+    const checkInputFields = () => {
+      return fieldsToValidate.every((field) => {
+        const value = venueData[field];
+        if (typeof value === 'string') {
+          return value.trim() !== '';
+        }
+        return true;
+      });
+    };
+
+    if (!checkInputFields()) {
+      alert('Please fill in all fields before submitting.');
+      return;
+    }
+
     const additionalVenueData = await fetchAddressDetails();
     const currentTimeStamp = new Date().toISOString();
     const finalVenueData = {
