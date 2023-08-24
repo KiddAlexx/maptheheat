@@ -32,6 +32,7 @@ export interface ActiveRestaurant {
   urlSlug: string;
 }
 
+// Used for state in Restaurant Context
 export interface State {
   restaurants: Restaurant[];
   isLoading: boolean;
@@ -47,6 +48,7 @@ export interface RestaurantContextType extends State {
   clearError: () => void;
 }
 
+// Used for reducer in Restaurant Context
 export type Action =
   | {
       type: 'loading';
