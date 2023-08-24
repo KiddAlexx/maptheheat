@@ -1,6 +1,9 @@
+// Component imports
 import ErrorModal from '../components/ErrorModal';
 import RightPanel from '../components/RightPanel';
 import SideBar from '../components/SideBar';
+
+// Style imports
 import styles from './AppLayout.module.css';
 
 function AppLayout() {
