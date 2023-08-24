@@ -1,13 +1,17 @@
+// React imports
 import { NavLink, useNavigate } from 'react-router-dom';
 
+// Firebase imports
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase-config';
 
+// Style imports
 import styles from './PageNav.module.css';
 
 function PageNav() {
   const navigate = useNavigate();
 
+  // Sign out from firebase and navigate to homepage
   async function logOut() {
     try {
       await signOut(auth);
@@ -23,6 +27,8 @@ function PageNav() {
         <NavLink to="/">Map The Heat</NavLink>
       </h3>
       <ul className={styles.authButtons}>
+        {/* Checks user login state
+            Displays Login & Signup or Logout button */}
         {auth.currentUser === null ? (
           <>
             <li>
