@@ -1,3 +1,8 @@
+// React imports
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router';
+
+// Firebase imports
 import { auth, googleProvider } from '../config/firebase-config';
 import {
   createUserWithEmailAndPassword,
@@ -5,23 +10,32 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { FirebaseError } from '@firebase/util';
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router';
+
+// Third party imports
 import LoaderSpinner from '../components/LoaderSpinner';
 
+// Style imports
 import styles from './AuthPage.module.css';
+
+// File imports
 import googleBtnLight from '../assets/btn_google_light_normal_ios.svg';
+
+// Component imports
 import ErrorModal from '../components/ErrorModal';
 
 function Login() {
+  // State initialisation
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoadingAuth, setIsLoadingAuth] = useState(false);
   const [errorAuth, setErrorAuth] = useState<null | string>(null);
 
+  // React-router hooks
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Used to conditionaly render components
   const mode = location.pathname.includes('signup') ? 'signup' : 'login';
 
   const resetAuthState = function () {
