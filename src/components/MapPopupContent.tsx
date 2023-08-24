@@ -1,10 +1,20 @@
+// React imports
 import { Link } from 'react-router-dom';
-import { useRestaurants } from '../context/RestaurantContext';
-import VenueRating from './VenueRating';
+
+// Style imports
 import styles from './MapPopupContent.module.css';
-import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
+
+// Type imports
 import { Restaurant } from '../models/restaurantTypes';
 
+// Hooks imports
+import { useRestaurants } from '../context/RestaurantContext';
+
+// Component imports
+import VenueRating from './VenueRating';
+
+// File imports
+import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
 import mapPinIcon from '../assets/icons/map-pin.svg';
 import phoneIcon from '../assets/icons/phone.svg';
 
@@ -19,6 +29,7 @@ function MapPopupContent({ restaurant }: MapPopupContentProps) {
   return (
     <>
       {/* Duplication of code from ListItem - Move to own component */}
+      {/* Render restaurant image if available, otherwise show default greyed out image */}
       {images ? (
         <div className={styles.mainImageContainer}>
           <img
@@ -37,6 +48,8 @@ function MapPopupContent({ restaurant }: MapPopupContentProps) {
           <p className={styles.addPhotosText}>Add Photos</p>
         </div>
       )}
+      {/* Link to the detailed page of the restaurant. 
+          On click, set the active restaurant in the context. */}
       <div className={styles.popUpContentContainer}>
         <Link to={`/app/venue/${city}/${urlSlug}`}>
           <h2
