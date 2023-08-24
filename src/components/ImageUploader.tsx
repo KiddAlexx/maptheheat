@@ -38,7 +38,7 @@ function ImageUploader() {
 
     const compressionOptions = {
       maxSizeMB: 0.5,
-      maxWidthOrHeight: 1920,
+      maxWidthOrHeight: 960,
       useWebWorker: true,
     };
 
@@ -54,7 +54,7 @@ function ImageUploader() {
       updateRestaurantImages(id, downloadURL);
       setUploadState('Image uploaded');
     } catch (err) {
-      console.error(err);
+      console.error(err); // Handle error!
     } finally {
       setTimeout(() => {
         setUploadState('Upload!');
