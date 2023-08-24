@@ -4,6 +4,8 @@ import { storage } from '../config/firebase-config';
 import { useRestaurants } from '../context/RestaurantContext';
 import imageCompression from 'browser-image-compression';
 import styles from './ImageUploader.module.css';
+import { auth } from '../config/firebase-config';
+import { useNavigate } from 'react-router';
 
 import cameraIcon from '../assets/icons/camera.svg';
 
@@ -13,6 +15,8 @@ function ImageUploader() {
   const [uploadState, setUploadState] = useState<string>('Upload!');
 
   const { activeRestaurant, updateRestaurantImages } = useRestaurants();
+
+  const navigate = useNavigate();
 
   /* Ensures state is reset if user changes active restaurant */
   useEffect(() => {
@@ -30,6 +34,10 @@ function ImageUploader() {
 
   const uploadFile = async function () {
     if (!imageUpload) return;
+
+    if (!auth.currentUser) {
+      navigate('/login');
+    }
 
     const filesFolderRef = ref(
       storage,

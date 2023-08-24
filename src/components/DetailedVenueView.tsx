@@ -1,7 +1,7 @@
 /* import { useParams } from 'react-router'; */
 import { Link } from 'react-router-dom';
 import { useRestaurants } from '../context/RestaurantContext';
-import ImageUpload from './ImageUploader';
+import ImageUploader from './ImageUploader';
 import VenueRating from './VenueRating';
 import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
 
@@ -62,7 +62,7 @@ function DetailedVenueView() {
       </div>
       <div className={styles.ratingUploadContainer}>
         <VenueRating initialRating={averageRating || 5} readonly />
-        <ImageUpload />
+        <ImageUploader />
       </div>
       <div className={styles.iconTextContainer}>
         <img src={clockIcon} alt="icon of a clock" />
