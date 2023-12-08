@@ -6,15 +6,18 @@ import { useEffect } from 'react';
 import styles from './ListView.module.css';
 
 // Hooks imports
-import { useRestaurants } from '../context/RestaurantContext';
+import { useRestaurants as useRestaurantsContext } from '../context/RestaurantContext';
 
 // Component imports
 import ListItem from './ListItem';
 import LoaderSpinner from './LoaderSpinner';
+import { useRestaurants } from '../features/restaurants/useRestaurants';
 
 function ListView() {
   const { restaurants, setActiveRestaurant, activeRestaurant, isLoading } =
-    useRestaurants();
+    useRestaurantsContext();
+
+  useRestaurants();
 
   const navigate = useNavigate();
   const location = useLocation();
