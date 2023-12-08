@@ -1,0 +1,67 @@
+:global(.leaflet-popup .leaflet-popup-content) {
+  width: 25rem;
+  height: 28rem;
+  margin: 0; /* Reset default margin */
+}
+
+:global(.leaflet-popup-content p) {
+  margin: 0;
+}
+
+.mainImageContainer {
+  width: 100%;
+  height: 15rem;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.imageMainSmall {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 10;
+}
+.addPhotosText {
+  width: 100%;
+  position: absolute;
+  z-index: 20;
+  bottom: 2%;
+  left: 75%;
+  transform: translate(-50%);
+
+  font-size: 2rem;
+  font-weight: 500;
+  color: #414141;
+}
+
+.popUpContentContainer {
+  padding-left: 1rem;
+}
+
+.venueNamePopup {
+  color: #414141;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+.venueNamePopup:hover {
+  color: #838383;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.popUpContentContainer p {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.iconTextContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.iconTextContainer img {
+  width: 2.2rem;
+}

@@ -1,0 +1,47 @@
+form {
+  position: relative;
+}
+
+.searchBarInput {
+  height: 4rem;
+  z-index: 10;
+  width: 100%;
+  padding-left: 1rem;
+}
+form .searchBarButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 20;
+  border-radius: 0 0.5rem 0.5rem 0;
+  background-color: #2b6027;
+  transition: background-color 0.2s ease-in-out;
+}
+form .searchBarButton:hover {
+  background-color: #53b84c;
+}
+
+.addNewContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.37);
+}
+
+.addNewContainer p {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #414141;
+}
+
+.addNewContainer .btnAddNewVenue {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #2b6027;
+}
+
+.addNewContainer .btnAddNewVenue:hover {
+  color: #4ca546;
+}

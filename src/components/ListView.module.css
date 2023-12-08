@@ -1,0 +1,13 @@
+.listView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  overflow-y: scroll;
+  height: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.listView::-webkit-scrollbar {
+  display: none;
+}
