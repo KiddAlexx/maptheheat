@@ -14,15 +14,10 @@ import LoaderSpinner from './LoaderSpinner';
 import { useRestaurants } from '../features/restaurants/useRestaurants';
 
 function ListView() {
-  const { setActiveRestaurant, activeRestaurant, isLoading } =
+  const { restaurants, setActiveRestaurant, activeRestaurant, isLoading } =
     useRestaurantsContext();
 
-  // Load restaurants from supabase
-  const {
-    restaurants,
-    error,
-    isLoading: isLoadingRestaurants,
-  } = useRestaurants();
+  useRestaurants();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,13 +39,13 @@ function ListView() {
     }
   }, [activeRestaurant, navigate, mode]);
 
-  return isLoading || isLoadingRestaurants ? (
+  return isLoading ? (
     <LoaderSpinner />
   ) : (
     <div className={styles.listView}>
       {/* Map through list of restaurants and render ListItem component for
         each restaurant. Onclick set clicked restaurant as active restaurant */}
-      {restaurants?.map((restaurant) => (
+      {restaurants.map((restaurant) => (
         <ListItem
           handleClick={() => {
             setActiveRestaurant(restaurant);
