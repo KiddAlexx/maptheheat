@@ -68,13 +68,14 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   const formSubmit = async function (formData) {
     const additionalVenueData = await fetchAddressDetails(formData);
     const currentTimeStamp = new Date().toISOString();
+    console.log(formData);
     const finalVenueData = {
       country,
       ...formData,
       ...additionalVenueData,
       userId: auth!.currentUser!.uid, // Value will not be null, checks done prior, further validation to be added
       dateAdded: currentTimeStamp,
-      urlSlug: slugify(formData.name),
+      urlSlug: slugify(formData.venueName),
     };
     /* addRestaurant(finalVenueData);  TEMP DISABLE*/
 
