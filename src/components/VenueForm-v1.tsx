@@ -6,7 +6,6 @@ import { auth } from '../config/firebase-config';
 
 // Third party imports
 import slugify from 'slugify';
-import { useForm } from 'react-hook-form';
 
 // Style imports
 import styles from './VenueForm.module.css';
@@ -21,36 +20,76 @@ import { useRestaurants } from '../context/RestaurantContext';
 import LoaderSpinner from './LoaderSpinner';
 
 function VenueForm({ setIsAddingVenue }: VenueFormProps) {
+  // Data to be used for new venue entry
+  const [venueData, setVenueData] = useState({
+    name: '',
+    address: '',
+    detailedAddress: '',
+    description: '',
+    city: '',
+    country: '',
+    postcode: '',
+    phoneNumber: '',
+    website: '',
+    userId: '',
+    coords: { lat: '', lon: '' },
+    urlSlug: '',
+  });
+
   // Functions from Restaurant Context
-  const { isLoading } = useRestaurants();
+  const { addRestaurant, getRestaurants, isLoading } = useRestaurants();
 
-  const { register, handleSubmit, watch } = useForm();
-
-  const city = watch('city');
-  const [country, setCountry] = useState('');
+  const {
+    name,
+    address,
+    description,
+    city,
+    postcode,
+    country,
+    phoneNumber,
+    website,
+  } = venueData;
 
   // Assign country value based on chosen city
   useEffect(() => {
     if (city === 'Barcelona') {
-      setCountry(() => 'Spain');
+      setVenueData((prevVenueData) => ({ ...prevVenueData, country: 'Spain' }));
     }
     if (city === 'Madrid') {
-      setCountry(() => 'Spain');
+      setVenueData((prevVenueData) => ({ ...prevVenueData, country: 'Spain' }));
     }
     if (city === 'Glasgow') {
-      setCountry(() => 'UK');
+      setVenueData((prevVenueData) => ({
+        ...prevVenueData,
+        country: 'UK',
+      }));
     }
     if (city === 'Edinburgh') {
-      setCountry(() => 'UK');
+      setVenueData((prevVenueData) => ({
+        ...prevVenueData,
+        country: 'UK',
+      }));
     }
     if (city === 'London') {
-      setCountry(() => 'UK');
+      setVenueData((prevVenueData) => ({
+        ...prevVenueData,
+        country: 'UK',
+      }));
     }
   }, [city]);
 
+  // Update venue data on each keystroke
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setVenueData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
   // Fetches coordinates + detailed address from user input
-  const fetchAddressDetails = async function (formData) {
-    const { address, postcode } = formData;
+  const fetchAddressDetails = async function () {
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/search?street=${address}&city=${city}&country=${country}&postalcode=${postcode}&format=json`
@@ -65,36 +104,68 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     }
   };
 
-  const formSubmit = async function (formData) {
-    const additionalVenueData = await fetchAddressDetails(formData);
+  const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const fieldsToValidate: (keyof typeof venueData)[] = [
+      'name',
+      'address',
+      'description',
+      'city',
+      'postcode',
+      'country',
+      'phoneNumber',
+      'website',
+    ];
+
+    // Quick check to ensure all input fields have value
+    // To be replaced with proper validation
+    const checkInputFields = () => {
+      return fieldsToValidate.every((field) => {
+        const value = venueData[field];
+        if (typeof value === 'string') {
+          return value.trim() !== '';
+        }
+        // Returns true for any field which is not a string
+        // Quick workaround to only check actual input fields
+        return true;
+      });
+    };
+
+    if (!checkInputFields()) {
+      alert('Please fill in all fields before submitting.');
+      return;
+    }
+
+    const additionalVenueData = await fetchAddressDetails();
     const currentTimeStamp = new Date().toISOString();
     const finalVenueData = {
-      country,
-      ...formData,
+      ...venueData,
       ...additionalVenueData,
       userId: auth!.currentUser!.uid, // Value will not be null, checks done prior, further validation to be added
       dateAdded: currentTimeStamp,
-      urlSlug: slugify(formData.name),
+      urlSlug: slugify(venueData.name),
     };
-    /* addRestaurant(finalVenueData);  TEMP DISABLE*/
-
-    console.log(finalVenueData);
+    addRestaurant(finalVenueData);
     setIsAddingVenue(false);
+    getRestaurants(); // Fetches restaurant list after new entry (to change in future)
   };
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit(formSubmit)}
-        className={styles.venueFormContainer}
-      >
+      <form onSubmit={handleSubmit} className={styles.venueFormContainer}>
         {isLoading ? (
           <LoaderSpinner />
         ) : (
           <>
             <div className={styles.inputContainer}>
               <label htmlFor="city">City</label>
-              <select id="city" {...register('city')}>
+              <select
+                name="city"
+                onChange={handleChange}
+                value={city}
+                id="city"
+              >
                 <option value="">Choose City</option>
                 <option value="Barcelona">Barcelona</option>
                 <option value="Madrid">Madrid</option>
@@ -107,36 +178,44 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
               <label htmlFor="venueName">Restaurant Name</label>
               <input
                 type="text"
+                name="name"
                 placeholder="Restaurant Name..."
+                onChange={handleChange}
+                value={name}
                 id="venueName"
-                {...register('venueName')}
               />
             </div>
             <div className={styles.inputContainer}>
               <label htmlFor="address">Address - Number / Street Name</label>
               <input
                 type="text"
+                name="address"
                 placeholder="Number followed by street name..."
+                onChange={handleChange}
+                value={address}
                 id="address"
-                {...register('address')}
               />
             </div>
             <div className={styles.inputContainer}>
               <label htmlFor="postcode">Postcode</label>
               <input
                 type="text"
+                name="postcode"
                 placeholder="Postcode..."
+                onChange={handleChange}
+                value={postcode}
                 id="postcode"
-                {...register('postcode')}
               />
             </div>
             <div className={styles.inputContainer}>
               <label htmlFor="description">Description</label>
               <textarea
                 rows={2}
+                name="description"
                 placeholder="Please enter a detailed description of the restaurant..."
+                onChange={handleChange}
+                value={description}
                 id="description"
-                {...register('description')}
               ></textarea>
             </div>
             {/*  <div className={styles.inputContainer}>
@@ -154,18 +233,22 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
               <label htmlFor="phoneNumber">Phone Number</label>
               <input
                 type="text"
+                name="phoneNumber"
                 placeholder="Phone Number..."
+                onChange={handleChange}
+                value={phoneNumber}
                 id="phoneNumber"
-                {...register('phoneNumber')}
               />
             </div>
             <div className={styles.inputContainer}>
               <label htmlFor="website">Website</label>
               <input
                 type="text"
+                name="website"
                 placeholder="http://www.example.com..."
+                onChange={handleChange}
+                value={website}
                 id="website"
-                {...register('website')}
               />
             </div>
             <div className={styles.venueButtonContainer}>
