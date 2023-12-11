@@ -34,8 +34,8 @@ function MapPopupContent({ restaurant }: MapPopupContentProps) {
         <div className={styles.mainImageContainer}>
           <img
             className={styles.imageMainSmall}
-            src={images[0]}
-            alt="an image of restaurant"
+            src={images[0].url}
+            alt={images[0].alt}
           />
         </div>
       ) : (

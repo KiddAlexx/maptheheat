@@ -14,10 +14,18 @@ import styles from './MapView.module.css';
 import { Coords } from '../models/restaurantTypes';
 
 // Hooks imports
-import { useRestaurants } from '../context/RestaurantContext';
+import { useRestaurants as useRestaurantsContext } from '../context/RestaurantContext';
+import { useRestaurants } from '../features/restaurants/useRestaurants';
 
 function MapView() {
-  const { restaurants, activeRestaurant } = useRestaurants();
+  const { activeRestaurant } = useRestaurantsContext();
+
+  // Load restaurants from supabase
+  const {
+    restaurants,
+    error,
+    isLoading: isLoadingRestaurants,
+  } = useRestaurants();
 
   // Sets coordinates based on active restaurant value if available
   // Used to center map on active restaurant
