@@ -1,18 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
 
 //React imports
-import {
-  createContext,
-  useContext,
-  useReducer,
-  useEffect,
-  ReactNode,
-} from 'react';
+import { createContext, useContext, useReducer, ReactNode } from 'react';
 
 // Firebase imports
 import { db } from '../config/firebase-config';
 import {
-  getDocs,
   collection,
   addDoc,
   updateDoc,
@@ -74,29 +67,6 @@ function reducer(state: State, action: Action) {
 function RestaurantsProvider({ children }: { children: ReactNode }) {
   const [{ restaurants, isLoading, errorMessage, activeRestaurant }, dispatch] =
     useReducer(reducer, initialState);
-
-  // Ensure restaurant list is fetched on initial load
-  useEffect(function () {
-    getRestaurants();
-  }, []);
-
-  async function getRestaurants() {
-    try {
-      dispatch({ type: 'loading' });
-      const data = await getDocs(restaurantCollectionRef);
-      const filteredData: Restaurant[] = data.docs.map((doc) => ({
-        // This ensures TypeScript treats this as a Restaurant type, minus the id property
-        ...(doc.data() as Omit<Restaurant, 'id'>),
-        id: doc.id,
-      }));
-      dispatch({ type: 'restaurants/loaded', payload: filteredData });
-    } catch (err) {
-      dispatch({
-        type: 'rejected',
-        payload: 'There was an error loading restaurants, please refresh',
-      });
-    }
-  }
 
   async function addRestaurant(restaurant: NewRestaurant) {
     try {
@@ -163,7 +133,6 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
         isLoading,
         errorMessage,
         activeRestaurant,
-        getRestaurants,
         addRestaurant,
         setActiveRestaurant,
         updateRestaurantImages,

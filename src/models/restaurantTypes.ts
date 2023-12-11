@@ -41,7 +41,6 @@ export interface State {
 }
 
 export interface RestaurantContextType extends State {
-  getRestaurants: () => void;
   addRestaurant: (restaurant: NewRestaurant) => void;
   setActiveRestaurant: (restaurant: Restaurant) => void;
   updateRestaurantImages: (id: string, imageURL: string) => void;
