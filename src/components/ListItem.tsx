@@ -34,8 +34,8 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
         <div className={styles.mainImageContainer}>
           <img
             className={styles.imageMainSmall}
-            src={images[0]}
-            alt="an image of restaurant"
+            src={images[0].url}
+            alt={images[0].alt}
           />
           {/* Fix alt text - user input / somehow generated... */}
         </div>

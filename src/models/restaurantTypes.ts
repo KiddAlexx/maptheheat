@@ -13,7 +13,7 @@ export interface Restaurant {
   coords: Coords;
   dateAdded: string;
   id: string;
-  images?: string[];
+  images?: Image[];
   averageRating?: number | null;
 }
 
@@ -23,6 +23,11 @@ export type NewRestaurant = Omit<Restaurant, 'id'>;
 export interface Coords {
   lat: number;
   lon: number;
+}
+
+export interface Image {
+  url: string;
+  alt: string;
 }
 
 export interface ActiveRestaurant {

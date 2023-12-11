@@ -51,8 +51,8 @@ function DetailedVenueView() {
             <div className={styles.mainImageContainer}>
               <img
                 className={styles.imageMainSmall}
-                src={image}
-                alt="an image of restaurant"
+                src={image.url}
+                alt={image.alt}
               />
             </div>
           ))
