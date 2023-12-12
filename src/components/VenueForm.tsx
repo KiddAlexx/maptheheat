@@ -27,7 +27,8 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
 
   const [formError, setFormError] = useState('');
 
-  const { register, handleSubmit, watch } = useForm();
+  const { register, handleSubmit, watch, formState } = useForm();
+  const { errors } = formState;
 
   const city = watch('city');
   const [country, setCountry] = useState('');
@@ -65,7 +66,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
       };
     } catch (err) {
       throw new Error(
-        "Couldn't find address. Please confrim that the details are correct"
+        "Couldn't find address. Please confirm that the details are correct"
       );
     }
   };
@@ -110,7 +111,10 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
           <>
             <div className={styles.inputContainer}>
               <label htmlFor="city">City</label>
-              <select id="city" {...register('city')}>
+              <select
+                id="city"
+                {...register('city', { required: 'This field is required' })}
+              >
                 <option value="">Choose City</option>
                 <option value="Barcelona">Barcelona</option>
                 <option value="Madrid">Madrid</option>
@@ -118,6 +122,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                 <option value="Edinburgh">Edinburgh</option>
                 <option value="London">London</option>
               </select>
+              {errors?.city?.message && <span>{errors.city.message}</span>}
             </div>
             <div className={styles.inputContainer}>
               <label htmlFor="venueName">Restaurant Name</label>
@@ -125,8 +130,18 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                 type="text"
                 placeholder="Restaurant Name..."
                 id="venueName"
-                {...register('venueName')}
+                {...register('venueName', {
+                  required: 'This field is required',
+                  maxLength: {
+                    value: 100,
+                    message:
+                      'Restaurant name cannot be more than 100 characters',
+                  },
+                })}
               />
+              {errors?.venueName?.message && (
+                <span>{errors.venueName.message}</span>
+              )}
             </div>
             <div className={styles.inputContainer}>
               <label htmlFor="address">Address - Number / Street Name</label>
@@ -134,8 +149,11 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                 type="text"
                 placeholder="Number followed by street name..."
                 id="address"
-                {...register('address')}
+                {...register('address', { required: 'This field is required' })}
               />
+              {errors?.address?.message && (
+                <span>{errors.address.message}</span>
+              )}
             </div>
             <div className={styles.inputContainer}>
               <label htmlFor="postcode">Postcode</label>
@@ -143,8 +161,13 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                 type="text"
                 placeholder="Postcode..."
                 id="postcode"
-                {...register('postcode')}
-              />
+                {...register('postcode', {
+                  required: 'This field is required',
+                })}
+              />{' '}
+              {errors?.postcode?.message && (
+                <span>{errors.postcode.message}</span>
+              )}
             </div>
             <div className={styles.inputContainer}>
               <label htmlFor="description">Description</label>
@@ -152,8 +175,17 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                 rows={2}
                 placeholder="Please enter a detailed description of the restaurant..."
                 id="description"
-                {...register('description')}
-              ></textarea>
+                {...register('description', {
+                  required: 'This field is required',
+                  minLength: {
+                    value: 40,
+                    message: 'Description must be at least 40 characters long',
+                  },
+                })}
+              />
+              {errors?.description?.message && (
+                <span>{errors.description.message}</span>
+              )}
             </div>
             {/*  <div className={styles.inputContainer}>
           <label htmlFor="hours">Opening Hours</label>
@@ -172,8 +204,17 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                 type="text"
                 placeholder="Phone Number..."
                 id="phoneNumber"
-                {...register('phoneNumber')}
+                {...register('phoneNumber', {
+                  required: 'This field is required',
+                  pattern: {
+                    value: /^\+?[0-9\s-]+$/,
+                    message: 'Invalid phone number',
+                  },
+                })}
               />
+              {errors?.phoneNumber?.message && (
+                <span>{errors.phoneNumber.message}</span>
+              )}
             </div>
             <div className={styles.inputContainer}>
               <label htmlFor="website">Website</label>
@@ -181,8 +222,17 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                 type="text"
                 placeholder="http://www.example.com..."
                 id="website"
-                {...register('website')}
+                {...register('website', {
+                  pattern: {
+                    value:
+                      /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+                    message: 'Invalid web address',
+                  },
+                })}
               />
+              {errors?.website?.message && (
+                <span>{errors.website.message}</span>
+              )}
             </div>
             <div className={styles.venueButtonContainer}>
               <button
