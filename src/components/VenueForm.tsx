@@ -54,7 +54,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   }, [city]);
 
   // Fetches coordinates + detailed address from user input
-  const fetchAddressDetails = async function (formData) {
+  async function fetchAddressDetails(formData) {
     const { address, postcode } = formData;
     try {
       const res = await fetch(
@@ -70,9 +70,9 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
         "Couldn't find address. Please confirm that the details are correct"
       );
     }
-  };
+  }
 
-  const formSubmit = async function (formData) {
+  async function formSubmit(formData) {
     try {
       const additionalVenueData = await fetchAddressDetails(formData);
       const currentTimeStamp = new Date().toISOString();
@@ -96,7 +96,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
         setLocalFormError('An unexpected error occured');
       }
     }
-  };
+  }
 
   function toastFormError() {
     toast.error('Please fix the errors in the form');
