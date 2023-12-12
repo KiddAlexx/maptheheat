@@ -8,7 +8,7 @@ import styles from './MapPopupContent.module.css';
 import { Restaurant } from '../models/restaurantTypes';
 
 // Hooks imports
-import { useRestaurants } from '../context/RestaurantContext';
+import { useRestaurants as useRestaurantsContext } from '../context/RestaurantContext';
 
 // Component imports
 import VenueRating from './VenueRating';
@@ -23,9 +23,16 @@ interface MapPopupContentProps {
 }
 
 function MapPopupContent({ restaurant }: MapPopupContentProps) {
-  const { setActiveRestaurant } = useRestaurants();
-  const { city, urlSlug, name, averageRating, address, phoneNumber, images } =
-    restaurant;
+  const { setActiveRestaurant } = useRestaurantsContext();
+  const {
+    city,
+    urlSlug,
+    venueName,
+    averageRating,
+    address,
+    phoneNumber,
+    images,
+  } = restaurant;
   return (
     <>
       {/* Duplication of code from ListItem - Move to own component */}
@@ -58,7 +65,7 @@ function MapPopupContent({ restaurant }: MapPopupContentProps) {
               setActiveRestaurant(restaurant);
             }}
           >
-            {name}
+            {venueName}
           </h2>
         </Link>
         <VenueRating initialRating={averageRating || 5} readonly />
