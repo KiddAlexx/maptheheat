@@ -7,6 +7,7 @@ import { auth } from '../config/firebase-config';
 // Third party imports
 import slugify from 'slugify';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 // Style imports
 import styles from './VenueForm.module.css';
@@ -25,7 +26,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   // Functions from Restaurant Context
   const { isLoading } = useRestaurants();
 
-  const [formError, setFormError] = useState('');
+  const [localFormError, setLocalFormError] = useState('');
 
   const { register, handleSubmit, watch, formState } = useForm();
   const { errors } = formState;
@@ -89,20 +90,24 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
       console.log(finalVenueData);
       setIsAddingVenue(false);
     } catch (err) {
-      setFormError(err.message);
+      setLocalFormError(err.message);
     }
   };
 
+  function toastFormError() {
+    toast.error('Please fix the errors in the form');
+  }
+
   return (
     <>
-      {formError && (
+      {localFormError && (
         <ErrorModal
-          errorMessage={formError}
-          clearLocalError={() => setFormError('')}
+          errorMessage={localFormError}
+          clearLocalError={() => setLocalFormError('')}
         />
       )}
       <form
-        onSubmit={handleSubmit(formSubmit)}
+        onSubmit={handleSubmit(formSubmit, toastFormError)}
         className={styles.venueFormContainer}
       >
         {isLoading ? (
