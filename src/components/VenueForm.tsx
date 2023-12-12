@@ -74,14 +74,19 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
 
   async function formSubmit(formData) {
     try {
+      // Fetch detailed address + cooridinates
       const additionalVenueData = await fetchAddressDetails(formData);
-      console.log(formData);
+      // Remove spaces and dashes from phoneNumber before adding
+      const phoneNumber = formData.phoneNumber
+        .replaceAll(' ', '')
+        .replaceAll('-', '');
+      // Compile complete venue data
       const finalVenueData = {
         country,
         ...formData,
+        phoneNumber,
         ...additionalVenueData,
         userId: auth!.currentUser!.uid, // Value will not be null, checks done prior, further validation to be added
-        dateAdded: currentTimeStamp,
         urlSlug: slugify(formData.venueName),
       };
       /* addRestaurant(finalVenueData);  TEMP DISABLE*/
@@ -219,6 +224,10 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                   pattern: {
                     value: /^\+?[0-9\s-]+$/,
                     message: 'Invalid phone number',
+                  },
+                  minLength: {
+                    value: 9,
+                    message: 'Phone Number must be at least 9 digits long',
                   },
                 })}
               />
