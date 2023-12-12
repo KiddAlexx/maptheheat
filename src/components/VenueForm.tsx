@@ -90,7 +90,11 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
       console.log(finalVenueData);
       setIsAddingVenue(false);
     } catch (err) {
-      setLocalFormError(err.message);
+      if (err instanceof Error) {
+        setLocalFormError(err.message);
+      } else {
+        setLocalFormError('An unexpected error occured');
+      }
     }
   };
 
@@ -127,7 +131,9 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                 <option value="Edinburgh">Edinburgh</option>
                 <option value="London">London</option>
               </select>
-              {errors?.city?.message && <span>{errors.city.message}</span>}
+              {typeof errors?.city?.message === 'string' && (
+                <span>{errors.city.message}</span>
+              )}
             </div>
             <div className={styles.inputContainer}>
               <label htmlFor="venueName">Restaurant Name</label>
@@ -144,8 +150,8 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                   },
                 })}
               />
-              {errors?.venueName?.message && (
-                <span>{errors.venueName.message}</span>
+              {typeof errors?.venueName?.message === 'string' && (
+                <span> {errors.venueName.message}</span>
               )}
             </div>
             <div className={styles.inputContainer}>
@@ -156,7 +162,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                 id="address"
                 {...register('address', { required: 'This field is required' })}
               />
-              {errors?.address?.message && (
+              {typeof errors?.address?.message === 'string' && (
                 <span>{errors.address.message}</span>
               )}
             </div>
@@ -170,7 +176,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                   required: 'This field is required',
                 })}
               />{' '}
-              {errors?.postcode?.message && (
+              {typeof errors?.postcode?.message === 'string' && (
                 <span>{errors.postcode.message}</span>
               )}
             </div>
@@ -188,7 +194,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                   },
                 })}
               />
-              {errors?.description?.message && (
+              {typeof errors?.description?.message === 'string' && (
                 <span>{errors.description.message}</span>
               )}
             </div>
@@ -217,7 +223,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                   },
                 })}
               />
-              {errors?.phoneNumber?.message && (
+              {typeof errors?.phoneNumber?.message === 'string' && (
                 <span>{errors.phoneNumber.message}</span>
               )}
             </div>
@@ -235,7 +241,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                   },
                 })}
               />
-              {errors?.website?.message && (
+              {typeof errors?.website?.message === 'string' && (
                 <span>{errors.website.message}</span>
               )}
             </div>

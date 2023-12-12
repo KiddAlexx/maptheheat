@@ -1,5 +1,5 @@
 export interface Restaurant {
-  name: string;
+  venueName: string;
   address: string;
   detailedAddress: string;
   description: string;
