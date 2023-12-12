@@ -19,10 +19,13 @@ import { useRestaurants } from '../context/RestaurantContext';
 
 // Component imports
 import LoaderSpinner from './LoaderSpinner';
+import ErrorModal from './ErrorModal';
 
 function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   // Functions from Restaurant Context
   const { isLoading } = useRestaurants();
+
+  const [formError, setFormError] = useState('');
 
   const { register, handleSubmit, watch } = useForm();
 
@@ -61,30 +64,42 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
         coords: { lat: data.lat, lon: data.lon },
       };
     } catch (err) {
-      alert(err);
+      throw new Error(
+        "Couldn't find address. Please confrim that the details are correct"
+      );
     }
   };
 
   const formSubmit = async function (formData) {
-    const additionalVenueData = await fetchAddressDetails(formData);
-    const currentTimeStamp = new Date().toISOString();
-    console.log(formData);
-    const finalVenueData = {
-      country,
-      ...formData,
-      ...additionalVenueData,
-      userId: auth!.currentUser!.uid, // Value will not be null, checks done prior, further validation to be added
-      dateAdded: currentTimeStamp,
-      urlSlug: slugify(formData.venueName),
-    };
-    /* addRestaurant(finalVenueData);  TEMP DISABLE*/
+    try {
+      const additionalVenueData = await fetchAddressDetails(formData);
+      const currentTimeStamp = new Date().toISOString();
+      console.log(formData);
+      const finalVenueData = {
+        country,
+        ...formData,
+        ...additionalVenueData,
+        userId: auth!.currentUser!.uid, // Value will not be null, checks done prior, further validation to be added
+        dateAdded: currentTimeStamp,
+        urlSlug: slugify(formData.venueName),
+      };
+      /* addRestaurant(finalVenueData);  TEMP DISABLE*/
 
-    console.log(finalVenueData);
-    setIsAddingVenue(false);
+      console.log(finalVenueData);
+      setIsAddingVenue(false);
+    } catch (err) {
+      setFormError(err.message);
+    }
   };
 
   return (
     <>
+      {formError && (
+        <ErrorModal
+          errorMessage={formError}
+          clearLocalError={() => setFormError('')}
+        />
+      )}
       <form
         onSubmit={handleSubmit(formSubmit)}
         className={styles.venueFormContainer}
