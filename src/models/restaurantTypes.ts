@@ -11,7 +11,6 @@ export interface Restaurant {
   userId: string;
   urlSlug: string;
   coords: Coords;
-  dateAdded: string;
   id: string;
   images?: Image[];
   averageRating?: number | null;

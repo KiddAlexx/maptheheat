@@ -75,7 +75,6 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   async function formSubmit(formData) {
     try {
       const additionalVenueData = await fetchAddressDetails(formData);
-      const currentTimeStamp = new Date().toISOString();
       console.log(formData);
       const finalVenueData = {
         country,
