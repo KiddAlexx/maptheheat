@@ -1,5 +1,5 @@
 export interface Restaurant {
-  name: string;
+  venueName: string;
   address: string;
   detailedAddress: string;
   description: string;
@@ -11,9 +11,8 @@ export interface Restaurant {
   userId: string;
   urlSlug: string;
   coords: Coords;
-  dateAdded: string;
   id: string;
-  images?: string[];
+  images?: Image[];
   averageRating?: number | null;
 }
 
@@ -23,6 +22,11 @@ export type NewRestaurant = Omit<Restaurant, 'id'>;
 export interface Coords {
   lat: number;
   lon: number;
+}
+
+export interface Image {
+  url: string;
+  alt: string;
 }
 
 export interface ActiveRestaurant {

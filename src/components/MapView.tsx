@@ -14,10 +14,14 @@ import styles from './MapView.module.css';
 import { Coords } from '../models/restaurantTypes';
 
 // Hooks imports
-import { useRestaurants } from '../context/RestaurantContext';
+import { useRestaurants as useRestaurantsContext } from '../context/RestaurantContext';
+import { useRestaurants } from '../features/restaurants/useRestaurants';
 
 function MapView() {
-  const { restaurants, activeRestaurant } = useRestaurants();
+  const { activeRestaurant } = useRestaurantsContext();
+
+  // Load restaurants from supabase
+  const { restaurants, error } = useRestaurants();
 
   // Sets coordinates based on active restaurant value if available
   // Used to center map on active restaurant
@@ -56,7 +60,7 @@ function MapView() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
         />
-        {restaurants.map((restaurant) => (
+        {restaurants?.map((restaurant) => (
           <Marker
             key={restaurant.id}
             position={[restaurant.coords.lat, restaurant.coords.lon]}

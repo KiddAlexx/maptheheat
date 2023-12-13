@@ -25,8 +25,15 @@ interface ListItemProps {
 }
 
 function ListItem({ restaurant, handleClick }: ListItemProps) {
-  const { name, address, phoneNumber, city, urlSlug, images, averageRating } =
-    restaurant;
+  const {
+    venueName,
+    address,
+    phoneNumber,
+    city,
+    urlSlug,
+    images,
+    averageRating,
+  } = restaurant;
   const { setActiveRestaurant } = useRestaurants();
   return (
     <div className={styles.listItemContainer} onClick={handleClick}>
@@ -34,8 +41,8 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
         <div className={styles.mainImageContainer}>
           <img
             className={styles.imageMainSmall}
-            src={images[0]}
-            alt="an image of restaurant"
+            src={images[0].url}
+            alt={images[0].alt}
           />
           {/* Fix alt text - user input / somehow generated... */}
         </div>
@@ -51,7 +58,7 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
       )}
 
       <div>
-        <h2>{name}</h2>
+        <h2>{venueName}</h2>
         <VenueRating initialRating={averageRating || 5} readonly />
         <div className={styles.iconTextContainer}>
           <img src={clockIcon} alt="icon of a clock" />
