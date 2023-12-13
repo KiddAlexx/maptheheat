@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import toast from 'react-hot-toast/headless';
+import toast from 'react-hot-toast';
 import { createRestaurant as createRestaurantApi } from '../../services/apiRestaurants';
 
 export function useCreateRestaurant() {

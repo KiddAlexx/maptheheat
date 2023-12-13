@@ -17,6 +17,7 @@ import { VenueFormProps } from './SideBar';
 
 // Hooks imports
 import { useRestaurants } from '../context/RestaurantContext';
+import { useCreateRestaurant } from '../features/restaurants/useCreateRestaurant';
 
 // Component imports
 import LoaderSpinner from './LoaderSpinner';
@@ -25,6 +26,8 @@ import ErrorModal from './ErrorModal';
 function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   // Functions from Restaurant Context
   const { isLoading } = useRestaurants();
+
+  const { createRestaurant, isCreating } = useCreateRestaurant();
 
   const [localFormError, setLocalFormError] = useState('');
 
@@ -76,10 +79,12 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     try {
       // Fetch detailed address + cooridinates
       const additionalVenueData = await fetchAddressDetails(formData);
+
       // Remove spaces and dashes from phoneNumber before adding
       const phoneNumber = formData.phoneNumber
         .replaceAll(' ', '')
         .replaceAll('-', '');
+
       // Compile complete venue data
       const finalVenueData = {
         country,
@@ -89,9 +94,9 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
         userId: auth!.currentUser!.uid, // Value will not be null, checks done prior, further validation to be added
         urlSlug: slugify(formData.venueName),
       };
-      /* addRestaurant(finalVenueData);  TEMP DISABLE*/
 
-      console.log(finalVenueData);
+      // Add final restaurant data to supabase table
+      createRestaurant(finalVenueData);
       setIsAddingVenue(false);
     } catch (err) {
       if (err instanceof Error) {

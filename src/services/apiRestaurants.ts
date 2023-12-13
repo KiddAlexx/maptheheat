@@ -11,6 +11,7 @@ export async function getRestaurants() {
 }
 
 export async function createRestaurant(newRestaurant: NewRestaurant) {
+  console.log('Creating restaurant with data:', newRestaurant);
   const { data, error } = await supabase
     .from('restaurant-details')
     .insert(newRestaurant)
@@ -18,7 +19,8 @@ export async function createRestaurant(newRestaurant: NewRestaurant) {
     .single();
 
   if (error) {
-    throw new Error('Restaurant could not be created');
+    console.error('Supabase error:', error);
+    throw new Error(`Restaurant could not be created. Error:${error.message}`);
   }
   return data;
 }
