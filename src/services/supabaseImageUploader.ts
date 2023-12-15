@@ -1,6 +1,6 @@
 import supabase from './supabase';
 
-async function uploadImage(imageFile, bucketName, folder, subFolder) {
+async function uploadImage(imageFile, bucketName, ...folders) {
   if (!imageFile) {
     throw new Error('No image file provided');
   }
@@ -12,7 +12,8 @@ async function uploadImage(imageFile, bucketName, folder, subFolder) {
     .toLowerCase();
 
   // Create storage path
-  const imagePath = `${bucketName}/${folder}/${subFolder}/${imageName}`;
+  const folderPath = folders.join('/');
+  const imagePath = `${bucketName}/${folderPath}/${imageName}`;
 
   try {
     const { error } = await supabase.storage
