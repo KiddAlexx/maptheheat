@@ -1,5 +1,7 @@
 import { NewRestaurant } from '../models/restaurantTypes';
-import supabase from './supabase';
+import compressImage from '../utils/compressImage';
+import supabase, { supabaseUrl } from './supabase';
+import uploadImage from './supabaseImageUploader';
 
 export async function getRestaurants() {
   const { data, error } = await supabase.from('restaurant-details').select('*');
@@ -22,5 +24,55 @@ export async function createRestaurant(newRestaurant: NewRestaurant) {
     console.error('Supabase error:', error);
     throw new Error(`Restaurant could not be created. Error:${error.message}`);
   }
+  return data;
+}
+
+export async function createRestaurantImage(
+  id,
+  imageFile,
+  city,
+  restaurantName
+) {
+  // Compress image
+
+  const compressedImage = await compressImage(imageFile);
+
+  // Upload image to supabase bucket + return path
+  const imagePath = await uploadImage(
+    compressedImage,
+    'restaurant-images',
+    city,
+    restaurantName
+  );
+
+  const altText = `An image of ${restaurantName} in ${city}`;
+  const imageUrl = `${supabaseUrl}/storage/v1/object/public/restaurant-images/${imagePath}`;
+
+  // Fetch current images array
+  const { data: currentImages, error: fetchError } = await supabase
+    .from('restaurant-details')
+    .select('images')
+    .eq('id', id)
+    .single();
+
+  if (fetchError) {
+    throw new Error(`Error fetching current images: ${fetchError.message}`);
+  }
+
+  // Append new image object to existing array
+  // Or create new image array if one does not exist
+  const updatedImages = currentImages.images
+    ? [...currentImages.images, { alt: altText, url: imageUrl }]
+    : [{ alt: altText, url: imageUrl }];
+
+  const { data, error } = await supabase
+    .from('restaurant-details')
+    .update({ images: updatedImages })
+    .eq('id', id);
+
+  if (error) {
+    throw new Error(`Error adding image to database: ${error.message}`);
+  }
+
   return data;
 }
