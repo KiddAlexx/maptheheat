@@ -3,25 +3,23 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 // Firebase imports
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { storage } from '../config/firebase-config';
 import { auth } from '../config/firebase-config';
 
 // Third party imports
-import imageCompression from 'browser-image-compression';
 
 // Style imports
 import styles from './ImageUploader.module.css';
 
 // Hooks imports
 import { useRestaurants } from '../context/RestaurantContext';
+import { useUpdateRestaurantImage } from '../features/restaurants/useUpdateRestaurantImage';
 
 // File imports
 import cameraIcon from '../assets/icons/camera.svg';
 
 function ImageUploader() {
   //File Upload State
-  const [imageUpload, setImageUpload] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploadState, setUploadState] = useState<string>('Upload!');
 
   const { activeRestaurant, updateRestaurantImages } = useRestaurants();
@@ -30,7 +28,7 @@ function ImageUploader() {
 
   // Ensures image upload state is reset if user changes active restaurant
   useEffect(() => {
-    setImageUpload(null);
+    setImageFile(null);
     setUploadState('Upload!');
   }, [activeRestaurant]);
 
@@ -42,18 +40,15 @@ function ImageUploader() {
 
   const { city, id, urlSlug: restaurantName } = activeRestaurant;
 
-  // Function to handle compression and upload of selected image to Firebase storage.
+  const { uploadImageRef, isUploading } = useUpdateRestaurantImage();
+
+  // Function to handle compression and upload of selected image to Supabase storage.
   const uploadFile = async function () {
-    if (!imageUpload) return;
+    if (!imageFile) return;
 
     if (!auth.currentUser) {
       navigate('/login');
     }
-
-    const filesFolderRef = ref(
-      storage,
-      `restaurantImages/${city}/${restaurantName}/${imageUpload.name}`
-    );
 
     const compressionOptions = {
       maxSizeMB: 0.5,
@@ -62,22 +57,22 @@ function ImageUploader() {
     };
 
     try {
-      const compressedImage = await imageCompression(
-        imageUpload,
-        compressionOptions
+      console.log(
+        'log from image uploader ',
+        id,
+        imageFile,
+        city,
+        restaurantName
       );
-      setUploadState('compressing');
-      await uploadBytes(filesFolderRef, compressedImage);
-      const downloadURL = await getDownloadURL(filesFolderRef);
-      setUploadState('uploading');
-      updateRestaurantImages(id, downloadURL);
+      uploadImageRef({ id, imageFile, city, restaurantName });
+
       setUploadState('Image uploaded');
     } catch (err) {
       console.error(err); // Handle error!
     } finally {
       setTimeout(() => {
         setUploadState('Upload!');
-        setImageUpload(null);
+        setImageFile(null);
       }, 2000);
     }
   };
@@ -85,7 +80,7 @@ function ImageUploader() {
     <div className={styles.imgUploaderContainer}>
       <label className={styles.imgUploaderLabel} htmlFor="imgUploader">
         <img src={cameraIcon} alt="icon of a camera" />{' '}
-        {!imageUpload ? 'Add Photo' : 'Change Photo'}
+        {!imageFile ? 'Add Photo' : 'Change Photo'}
       </label>
 
       <input
@@ -93,12 +88,12 @@ function ImageUploader() {
         type="file"
         id="imgUploader"
         // Checks to ensure e.target.files exists and if not uses null as value
-        onChange={(e) => setImageUpload(e.target.files?.[0] ?? null)}
+        onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
       />
 
-      {imageUpload && (
+      {imageFile && (
         <>
-          <p>{imageUpload.name} ready to </p>
+          <p>{imageFile.name} ready to </p>
           <button className={styles.btnImgUploader} onClick={uploadFile}>
             {uploadState}
           </button>

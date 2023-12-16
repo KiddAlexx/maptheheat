@@ -13,7 +13,7 @@ async function uploadImage(imageFile, bucketName, ...folders) {
 
   // Create storage path
   const folderPath = folders.join('/');
-  const imagePath = `${bucketName}/${folderPath}/${imageName}`;
+  const imagePath = `${folderPath}/${imageName}`;
 
   try {
     const { error } = await supabase.storage

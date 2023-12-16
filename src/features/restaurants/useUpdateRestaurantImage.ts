@@ -6,8 +6,10 @@ export function useUpdateRestaurantImage() {
   const queryClient = useQueryClient();
 
   const { mutate: uploadImageRef, isPending: isUploading } = useMutation({
-    mutationFn: ({ restaurantId, imgFile, city, restaurantName }) =>
-      createRestaurantImage(restaurantId, imgFile, city, restaurantName),
+    mutationFn: ({ id, imageFile, city, restaurantName }) => {
+      console.log('log from react query', id, imageFile, city, restaurantName);
+      createRestaurantImage(id, imageFile, city, restaurantName);
+    },
     onSuccess: () => {
       toast.success('Image successfully uploaded');
       queryClient.invalidateQueries({ queryKey: ['restaurants'] });

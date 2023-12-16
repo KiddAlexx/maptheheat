@@ -28,13 +28,14 @@ export async function createRestaurant(newRestaurant: NewRestaurant) {
 }
 
 export async function createRestaurantImage(
-  restaurantId,
-  imgFile,
+  id,
+  imageFile,
   city,
   restaurantName
 ) {
   // Compress image
-  const compressedImage = await compressImage(imgFile);
+
+  const compressedImage = await compressImage(imageFile);
 
   // Upload image to supabase bucket + return path
   const imagePath = await uploadImage(
@@ -45,12 +46,29 @@ export async function createRestaurantImage(
   );
 
   const altText = `An image of ${restaurantName} in ${city}`;
-  const imageUrl = `${supabaseUrl}/storage/v1/object/public/${imagePath}`;
+  const imageUrl = `${supabaseUrl}/storage/v1/object/public/restaurant-images/${imagePath}`;
+
+  // Fetch current images array
+  const { data: currentImages, error: fetchError } = await supabase
+    .from('restaurant-details')
+    .select('images')
+    .eq('id', id)
+    .single();
+
+  if (fetchError) {
+    throw new Error(`Error fetching current images: ${fetchError.message}`);
+  }
+
+  // Append new image object to existing array
+  // Or create new image array if one does not exist
+  const updatedImages = currentImages.images
+    ? [...currentImages.images, { alt: altText, url: imageUrl }]
+    : [{ alt: altText, url: imageUrl }];
 
   const { data, error } = await supabase
     .from('restaurant-details')
-    .update([{ images: { alt: altText, url: imageUrl } }])
-    .eq('id', restaurantId);
+    .update({ images: updatedImages })
+    .eq('id', id);
 
   if (error) {
     throw new Error(`Error adding image to database: ${error.message}`);

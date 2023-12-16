@@ -1,7 +1,7 @@
 // Third party imports
 import imageCompression from 'browser-image-compression';
 
-export default async function compressImage(img, compressionOptions?) {
+export default async function compressImage(imageFile, compressionOptions?) {
   const finalCompressionOptions = compressionOptions || {
     maxSizeMB: 0.2,
     maxWidthOrHeight: 640,
@@ -9,8 +9,9 @@ export default async function compressImage(img, compressionOptions?) {
   };
 
   try {
+    console.log(imageFile);
     const compressedImage = await imageCompression(
-      img,
+      imageFile,
       finalCompressionOptions
     );
     return compressedImage;
