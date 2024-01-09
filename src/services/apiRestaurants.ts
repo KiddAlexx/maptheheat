@@ -73,6 +73,6 @@ export async function createRestaurantImage(
   if (error) {
     throw new Error(`Error adding image to database: ${error.message}`);
   }
-
+  console.log('this is the uploaded image data', data);
   return data;
 }
