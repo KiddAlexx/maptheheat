@@ -1,6 +1,7 @@
 // React imports
 import { useNavigate, useLocation } from 'react-router';
 import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 // Style imports
 import styles from './ListView.module.css';
@@ -27,12 +28,29 @@ function ListView() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // Determine the mode based on the current URL path
   const mode = location.pathname.includes('map') ? 'map' : 'venue';
 
+  function handleListItemCLick(restaurant) {
+    const params = {
+      city: restaurant.city,
+      venue: restaurant.urlSlug,
+      id: restaurant.id,
+    };
+
+    if (mode === 'map') {
+      params.lat = restaurant.lat;
+      params.lng = restaurant.lng;
+    }
+
+    setSearchParams(params);
+  }
+
   // If mode is 'venue' and there's an active restaurant with city and urlSlug values,
   // navigate to the detailed page of the active restaurant.
-  useEffect(() => {
+  /*   useEffect(() => {
     if (
       mode === 'venue' &&
       activeRestaurant?.city &&
@@ -42,7 +60,7 @@ function ListView() {
         `/app/venue/${activeRestaurant.city}/${activeRestaurant.urlSlug}`
       );
     }
-  }, [activeRestaurant, navigate, mode]);
+  }, [activeRestaurant, navigate, mode]); */
 
   return isLoading || isLoadingRestaurants ? (
     <LoaderSpinner />
@@ -52,9 +70,7 @@ function ListView() {
         each restaurant. Onclick set clicked restaurant as active restaurant */}
       {restaurants?.map((restaurant) => (
         <ListItem
-          handleClick={() => {
-            setActiveRestaurant(restaurant);
-          }}
+          handleClick={() => handleListItemCLick(restaurant)}
           restaurant={restaurant}
           key={restaurant.id}
         />
