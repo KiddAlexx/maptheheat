@@ -26,6 +26,7 @@ interface ListItemProps {
 
 function ListItem({ restaurant, handleClick }: ListItemProps) {
   const {
+    id,
     venueName,
     address,
     phoneNumber,
@@ -78,15 +79,9 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
             On click, set clicked restaurant as active restaurant. */}
         <Link
           className={styles.moreInfoLink}
-          to={`/app/venue/${city}/${urlSlug}`}
+          to={`/app/venue/${city}/${urlSlug}/${id}`}
         >
-          <p
-            onClick={() => {
-              setActiveRestaurant(restaurant);
-            }}
-          >
-            More information!
-          </p>
+          <p>More information!</p>
         </Link>
       </div>
     </div>

@@ -33,7 +33,7 @@ function ListView() {
   // Determine the mode based on the current URL path
   const mode = location.pathname.includes('map') ? 'map' : 'venue';
 
-  function handleListItemCLick(restaurant) {
+  function setRestaurantParams(restaurant) {
     const params = {
       city: restaurant.city,
       venue: restaurant.urlSlug,
@@ -70,7 +70,7 @@ function ListView() {
         each restaurant. Onclick set clicked restaurant as active restaurant */}
       {restaurants?.map((restaurant) => (
         <ListItem
-          handleClick={() => handleListItemCLick(restaurant)}
+          handleClick={() => setRestaurantParams(restaurant)}
           restaurant={restaurant}
           key={restaurant.id}
         />
