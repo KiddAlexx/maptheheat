@@ -7,7 +7,7 @@ export function useParamsAndNavigate() {
   function setParamsAndNavigate(venue, specifiedMode?) {
     if (!venue) return;
 
-    const { city, venueName, id, lat, lng } = venue;
+    const { city, urlSlug, id, lat, lng } = venue;
 
     // Determine the current mode based on URL path
     const mode = specifiedMode
@@ -22,7 +22,7 @@ export function useParamsAndNavigate() {
       queryString += `&lat=${lat}&lng=${lng}`;
     }
 
-    navigate(`/app/${mode}/${city}/${venueName}?${queryString}`);
+    navigate(`/app/${mode}/${city}/${urlSlug}?${queryString}`);
   }
   return setParamsAndNavigate;
 }
