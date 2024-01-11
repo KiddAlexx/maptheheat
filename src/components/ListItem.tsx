@@ -79,7 +79,11 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
             On click, set clicked restaurant as active restaurant. */}
         <Link
           className={styles.moreInfoLink}
-          to={`/app/venue/${city}/${urlSlug}/${id}`}
+          to={`/app/venue?city=${city}&venue=${urlSlug}&id=${id}`}
+          onClick={(e) => {
+            // Stop the click event from propagating to the list item
+            e.stopPropagation();
+          }}
         >
           <p>More information!</p>
         </Link>

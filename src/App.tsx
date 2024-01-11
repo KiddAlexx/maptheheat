@@ -44,15 +44,12 @@ function App() {
             <Route path="signup" element={<AuthPage />} />
             <Route path="app" element={<AppLayout />}>
               <Route index element={<Navigate replace to="map" />} />
+              <Route path="map/:city?/:venue?" element={<MapView />} />
               <Route
-                path="map/:city?/:venue?/:id?/:lat?/:lng?"
-                element={<MapView />}
-              />
-              <Route path="profile" element={<UserProfile />} />
-              <Route
-                path="venue/:city/:venue/:id"
+                path="venue/:city/:venue"
                 element={<DetailedVenueView />}
               />
+              <Route path="profile" element={<UserProfile />} />
             </Route>
             <Route path="*" element={<PageNotFound />} />
           </Routes>
