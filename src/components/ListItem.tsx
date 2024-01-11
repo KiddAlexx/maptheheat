@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import styles from './ListItem.module.css';
 
 // Hooks imports
-import { useRestaurants } from '../context/RestaurantContext';
+import { useParamsAndNavigate } from '../hooks/useParamsAndNavigate';
 
 // File imports
 import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
@@ -25,6 +25,8 @@ interface ListItemProps {
 }
 
 function ListItem({ restaurant, handleClick }: ListItemProps) {
+  const setParamsAndNavigate = useParamsAndNavigate();
+
   const {
     id,
     venueName,
@@ -35,7 +37,7 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
     images,
     averageRating,
   } = restaurant;
-  const { setActiveRestaurant } = useRestaurants();
+
   return (
     <div className={styles.listItemContainer} onClick={handleClick}>
       {images ? (
@@ -77,16 +79,16 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
         </div>
         {/* Link to the detailed page of the restaurant. 
             On click, set clicked restaurant as active restaurant. */}
-        <Link
+        <button
           className={styles.moreInfoLink}
-          to={`/app/venue?city=${city}&venue=${urlSlug}&id=${id}`}
           onClick={(e) => {
             // Stop the click event from propagating to the list item
             e.stopPropagation();
+            setParamsAndNavigate(restaurant, 'venue');
           }}
         >
           <p>More information!</p>
-        </Link>
+        </button>
       </div>
     </div>
   );

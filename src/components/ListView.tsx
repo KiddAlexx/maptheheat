@@ -13,8 +13,7 @@ import ListItem from './ListItem';
 import LoaderSpinner from './LoaderSpinner';
 
 function ListView() {
-  const { setActiveRestaurant, activeRestaurant, isLoading } =
-    useRestaurantsContext();
+  const { isLoading } = useRestaurantsContext();
 
   // Load restaurants from supabase
   const {
@@ -24,22 +23,6 @@ function ListView() {
   } = useRestaurants();
 
   const setParamsAndNavigate = useParamsAndNavigate();
-
-  // Determine the mode based on the current URL path
-
-  // If mode is 'venue' and there's an active restaurant with city and urlSlug values,
-  // navigate to the detailed page of the active restaurant.
-  /*   useEffect(() => {
-    if (
-      mode === 'venue' &&
-      activeRestaurant?.city &&
-      activeRestaurant?.urlSlug
-    ) {
-      navigate(
-        `/app/venue/${activeRestaurant.city}/${activeRestaurant.urlSlug}`
-      );
-    }
-  }, [activeRestaurant, navigate, mode]); */
 
   return isLoading || isLoadingRestaurants ? (
     <LoaderSpinner />
