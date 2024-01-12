@@ -7,9 +7,21 @@ export async function getRestaurants() {
   const { data, error } = await supabase.from('restaurant-details').select('*');
 
   if (error) {
-    throw new Error('Restaurants could not be loaded');
+    throw new Error(`Restaurants could not be loaded. Error:${error.message}`);
   }
   return data;
+}
+
+export async function getRestaurant(id) {
+  const { data, error } = await supabase
+    .from('restaurant-details')
+    .select('*')
+    .eq('id', id);
+
+  if (error) {
+    throw new Error(`Restaurant could not be loaded. Error:${error.message}`);
+  }
+  return data[0];
 }
 
 export async function createRestaurant(newRestaurant: NewRestaurant) {
