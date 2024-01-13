@@ -13,6 +13,7 @@ export function useUpdateRestaurantImage() {
     onSuccess: () => {
       toast.success('Image successfully uploaded');
       queryClient.invalidateQueries({ queryKey: ['restaurants'] });
+      queryClient.invalidateQueries({ queryKey: ['restaurant'] });
       console.log('Inavlidate queries should have ran');
     },
     onError: (err) => {
