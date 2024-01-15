@@ -23,9 +23,6 @@ import { useRestaurant } from '../features/restaurants/useRestaurant';
 import LoaderSpinner from './LoaderSpinner';
 
 function DetailedVenueView() {
-  // Will be used to load venue from params
-  /* const { city, venue } = useParams(); */
-
   const [searchParams, setSearchParam] = useSearchParams();
 
   const venueId = searchParams.get('id');

@@ -13,7 +13,6 @@ import styles from './SearchBar.module.css';
 
 function SearchBar({ setIsAddingVenue }: VenueFormProps) {
   const [searchValue, setSearchValue] = useState('');
-  console.log(searchValue);
 
   const navigate = useNavigate();
 

@@ -8,7 +8,7 @@ import styles from './MapPopupContent.module.css';
 import { Restaurant } from '../models/restaurantTypes';
 
 // Hooks imports
-import { useRestaurants as useRestaurantsContext } from '../context/RestaurantContext';
+import { useParamsAndNavigate } from '../hooks/useParamsAndNavigate';
 
 // Component imports
 import VenueRating from './VenueRating';
@@ -23,7 +23,8 @@ interface MapPopupContentProps {
 }
 
 function MapPopupContent({ restaurant }: MapPopupContentProps) {
-  const { setActiveRestaurant } = useRestaurantsContext();
+  const setParamsAndNavigate = useParamsAndNavigate();
+
   const {
     city,
     urlSlug,
@@ -58,16 +59,15 @@ function MapPopupContent({ restaurant }: MapPopupContentProps) {
       {/* Link to the detailed page of the restaurant. 
           On click, set the active restaurant in the context. */}
       <div className={styles.popUpContentContainer}>
-        <Link to={`/app/venue/${city}/${urlSlug}`}>
-          <h2
-            className={styles.venueNamePopup}
-            onClick={() => {
-              setActiveRestaurant(restaurant);
-            }}
-          >
-            {venueName}
-          </h2>
-        </Link>
+        <button
+          className={styles.venueNamePopup}
+          onClick={() => {
+            setParamsAndNavigate(restaurant, 'venue');
+          }}
+        >
+          {venueName}
+        </button>
+
         <VenueRating initialRating={averageRating || 5} readonly />
         <div className={styles.iconTextContainer}>
           <img src={mapPinIcon} alt="icon of a map pin" />
