@@ -1,6 +1,7 @@
 // React imports
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 // Firebase imports
 import { auth } from '../config/firebase-config';
@@ -11,7 +12,7 @@ import { auth } from '../config/firebase-config';
 import styles from './ImageUploader.module.css';
 
 // Hooks imports
-import { useRestaurants } from '../context/RestaurantContext';
+
 import { useUpdateRestaurantImage } from '../features/restaurants/useUpdateRestaurantImage';
 
 // File imports
@@ -22,23 +23,26 @@ function ImageUploader() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploadState, setUploadState] = useState<string>('Upload!');
 
-  const { activeRestaurant, updateRestaurantImages } = useRestaurants();
-
   const navigate = useNavigate();
+
+  const [searchParams, setSearchParam] = useSearchParams();
+  const id = searchParams.get('id');
+  const { city, venue } = useParams();
 
   // Ensures image upload state is reset if user changes active restaurant
   useEffect(() => {
     setImageFile(null);
     setUploadState('Upload!');
-  }, [activeRestaurant]);
+  }, [id]);
 
   // Return from function if activeRestaurant does not exist
   // Handle this with error message in future
-  if (!activeRestaurant) {
+
+  if (!id) {
     return;
   }
 
-  const { city, id, urlSlug: restaurantName } = activeRestaurant;
+  /*   const { city, id, urlSlug: restaurantName } = activeRestaurant; */
 
   const { uploadImageRef, isUploading } = useUpdateRestaurantImage();
 
@@ -57,14 +61,8 @@ function ImageUploader() {
     };
 
     try {
-      console.log(
-        'log from image uploader ',
-        id,
-        imageFile,
-        city,
-        restaurantName
-      );
-      uploadImageRef({ id, imageFile, city, restaurantName });
+      console.log('log from image uploader ', id, imageFile, city, venue);
+      uploadImageRef({ id, imageFile, city, venue });
 
       setUploadState('Image uploaded');
     } catch (err) {

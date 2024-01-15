@@ -1,5 +1,5 @@
 // React imports
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 /* import { useParams } from 'react-router'; */
 
 // Style imports
@@ -19,30 +19,45 @@ import globeIcon from '../assets/icons/globe.svg';
 import mapPinIcon from '../assets/icons/map-pin.svg';
 import phoneIcon from '../assets/icons/phone.svg';
 import infoIcon from '../assets/icons/info.svg';
+import { useRestaurant } from '../features/restaurants/useRestaurant';
+import LoaderSpinner from './LoaderSpinner';
 
 function DetailedVenueView() {
-  // Will be used to load venue from params
-  /* const { city, venue } = useParams(); */
+  const [searchParams, setSearchParam] = useSearchParams();
 
-  const { activeRestaurant } = useRestaurants();
+  const venueId = searchParams.get('id');
 
-  if (!activeRestaurant) {
+  const {
+    isLoading: isLoadingRestaurant,
+    error,
+    restaurant,
+  } = useRestaurant(venueId);
+
+  if (isLoadingRestaurant) {
+    return <LoaderSpinner />;
+  }
+
+  if (!venueId) {
     return;
   }
 
   const {
-    name,
+    venueName,
     phoneNumber,
     detailedAddress,
     website,
     description,
     averageRating,
     images,
-  } = activeRestaurant;
+  } = restaurant;
+
+  console.log(restaurant);
+
+  console.log(phoneNumber);
 
   return (
     <div className={styles.detailedViewContainer}>
-      <h2>{name}</h2>
+      <h2>{venueName}</h2>
       <div className={styles.multipleImageContainer}>
         {images ? (
           // Slice first 4 images and map over

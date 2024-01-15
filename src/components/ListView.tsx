@@ -1,21 +1,19 @@
 // React imports
-import { useNavigate, useLocation } from 'react-router';
-import { useEffect } from 'react';
 
 // Style imports
 import styles from './ListView.module.css';
 
 // Hooks imports
 import { useRestaurants as useRestaurantsContext } from '../context/RestaurantContext';
+import { useRestaurants } from '../features/restaurants/useRestaurants';
+import { useParamsAndNavigate } from '../hooks/useParamsAndNavigate';
 
 // Component imports
 import ListItem from './ListItem';
 import LoaderSpinner from './LoaderSpinner';
-import { useRestaurants } from '../features/restaurants/useRestaurants';
 
 function ListView() {
-  const { setActiveRestaurant, activeRestaurant, isLoading } =
-    useRestaurantsContext();
+  const { isLoading } = useRestaurantsContext();
 
   // Load restaurants from supabase
   const {
@@ -24,25 +22,7 @@ function ListView() {
     isLoading: isLoadingRestaurants,
   } = useRestaurants();
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  // Determine the mode based on the current URL path
-  const mode = location.pathname.includes('map') ? 'map' : 'venue';
-
-  // If mode is 'venue' and there's an active restaurant with city and urlSlug values,
-  // navigate to the detailed page of the active restaurant.
-  useEffect(() => {
-    if (
-      mode === 'venue' &&
-      activeRestaurant?.city &&
-      activeRestaurant?.urlSlug
-    ) {
-      navigate(
-        `/app/venue/${activeRestaurant.city}/${activeRestaurant.urlSlug}`
-      );
-    }
-  }, [activeRestaurant, navigate, mode]);
+  const setParamsAndNavigate = useParamsAndNavigate();
 
   return isLoading || isLoadingRestaurants ? (
     <LoaderSpinner />
@@ -52,9 +32,7 @@ function ListView() {
         each restaurant. Onclick set clicked restaurant as active restaurant */}
       {restaurants?.map((restaurant) => (
         <ListItem
-          handleClick={() => {
-            setActiveRestaurant(restaurant);
-          }}
+          handleClick={() => setParamsAndNavigate(restaurant)}
           restaurant={restaurant}
           key={restaurant.id}
         />

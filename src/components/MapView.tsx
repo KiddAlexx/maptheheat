@@ -14,19 +14,19 @@ import styles from './MapView.module.css';
 import { Coords } from '../models/restaurantTypes';
 
 // Hooks imports
-import { useRestaurants as useRestaurantsContext } from '../context/RestaurantContext';
 import { useRestaurants } from '../features/restaurants/useRestaurants';
+import { useSearchParams } from 'react-router-dom';
 
 function MapView() {
-  const { activeRestaurant } = useRestaurantsContext();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Load restaurants from supabase
   const { restaurants, error } = useRestaurants();
 
-  // Sets coordinates based on active restaurant value if available
-  // Used to center map on active restaurant
-  const lat = activeRestaurant?.coords?.lat || 41.3874;
-  const lon = activeRestaurant?.coords?.lon || 2.17;
+  // Sets coordinates based on searchParams if available
+  // Used to center map on selected restaurant
+  const lat = searchParams.get('lat') || 41.3874;
+  const lon = searchParams.get('lng') || 2.17;
 
   function ChangeCenter({ lat, lon }: Coords) {
     const map = useMap();
