@@ -8,3 +8,15 @@ export async function signup({ email, password }) {
   if (error) throw new Error(`Account could not be created ${error.message}`);
   return data;
 }
+
+export async function login({ email, password }) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (error)
+    throw new Error(
+      `unable to login in, please check credentials ${error.message}`
+    );
+  return data;
+}
