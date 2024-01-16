@@ -22,6 +22,7 @@ import googleBtnLight from '../assets/btn_google_light_normal_ios.svg';
 
 // Component imports
 import ErrorModal from '../components/ErrorModal';
+import { useEmailLogin } from '../features/authentication/useEmailLogin';
 
 function Login() {
   // State initialisation
@@ -38,6 +39,8 @@ function Login() {
   // Used to conditionaly render components
   const mode = location.pathname.includes('signup') ? 'signup' : 'login';
 
+  const { loginEmail, isLoading } = useEmailLogin();
+
   const resetAuthState = function () {
     setPassword('');
     setConfirmPassword('');
@@ -50,8 +53,22 @@ function Login() {
 
   const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!email || !password) return;
     if (mode === 'login') {
-      await signInWithEmail();
+      loginEmail(
+        { email, password },
+        {
+          onSuccess: () => {
+            // Clear both fields on successful login
+            setEmail('');
+            setPassword('');
+          },
+          onError: () => {
+            // Clear only the password field on error
+            setPassword('');
+          },
+        }
+      );
     }
     if (mode === 'signup') {
       await createAccountWithEmail();
@@ -69,20 +86,6 @@ function Login() {
         return;
       }
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate('/app');
-      resetAuthState();
-    } catch (err) {
-      const firebaseError = err as FirebaseError;
-      setErrorAuth(firebaseError.message);
-    } finally {
-      setIsLoadingAuth(false);
-    }
-  };
-  const signInWithEmail = async function () {
-    try {
-      setIsLoadingAuth(true);
-      setErrorAuth(null);
-      await signInWithEmailAndPassword(auth, email, password);
       navigate('/app');
       resetAuthState();
     } catch (err) {
