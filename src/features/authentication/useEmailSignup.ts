@@ -10,6 +10,13 @@ export function useEmailSignup() {
         'Account successfully created! Please check your emails and verify your account'
       );
     },
+    onError: (err) => {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('An unexpected error occurred');
+      }
+    },
   });
   return { signupEmail, isLoading };
 }
