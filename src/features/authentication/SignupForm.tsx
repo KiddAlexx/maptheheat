@@ -9,11 +9,14 @@ import googleBtnLight from '../../assets/btn_google_light_normal_ios.svg';
 import { useEmailSignup } from './useEmailSignup';
 
 function SignupForm() {
-  const { register, handleSubmit, reset, getValues } = useForm();
+  const { register, handleSubmit, reset, getValues, formState } = useForm();
+  const { errors } = formState;
 
   const { signupEmail, isLoading } = useEmailSignup();
 
   function formSubmit(formData) {
+    console.log(formData);
+    console.log(formState);
     const { email, password } = formData;
     console.log(email, password);
     if (!email || !password) return;
@@ -22,6 +25,7 @@ function SignupForm() {
   return (
     <form
       onSubmit={handleSubmit(formSubmit)}
+      noValidate
       className={styles.authFormContainer}
     >
       <div className={styles.inputContainer}>
@@ -38,6 +42,9 @@ function SignupForm() {
             },
           })}
         />
+        {typeof errors?.email?.message === 'string' && (
+          <span> {errors.email.message}</span>
+        )}
       </div>
       <div className={styles.inputContainer}>
         <label htmlFor="password">Password</label>
@@ -59,6 +66,9 @@ function SignupForm() {
             },
           })}
         />
+        {typeof errors?.password?.message === 'string' && (
+          <span> {errors.password.message}</span>
+        )}
       </div>
       <div className={styles.inputContainer}>
         <label htmlFor="confirmPassword">Confirm Password</label>
@@ -72,6 +82,9 @@ function SignupForm() {
               value === getValues().password || 'Passwords need to match',
           })}
         />
+        {typeof errors?.confirmPassword?.message === 'string' && (
+          <span> {errors.confirmPassword.message}</span>
+        )}
       </div>
 
       <div className={styles.authButtonContainer}>
