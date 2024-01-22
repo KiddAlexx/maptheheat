@@ -1,188 +1,24 @@
 // React imports
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router';
-
-// Firebase imports
-import { auth, googleProvider } from '../config/firebase-config';
-import {
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
-import { FirebaseError } from '@firebase/util';
 
 // Third party imports
-import LoaderSpinner from '../components/LoaderSpinner';
 
 // Style imports
 import styles from './AuthPage.module.css';
 
 // File imports
-import googleBtnLight from '../assets/btn_google_light_normal_ios.svg';
 
 // Component imports
-import ErrorModal from '../components/ErrorModal';
-import { useEmailLogin } from '../features/authentication/useEmailLogin';
 
-function Login() {
-  // State initialisation
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [isLoadingAuth, setIsLoadingAuth] = useState(false);
-  const [errorAuth, setErrorAuth] = useState<null | string>(null);
+import LoginForm from '../features/authentication/LoginForm';
+import SignupForm from '../features/authentication/SignupForm';
 
-  // React-router hooks
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  // Used to conditionaly render components
-  const mode = location.pathname.includes('signup') ? 'signup' : 'login';
-
-  const { loginEmail, isLoading } = useEmailLogin();
-
-  const resetAuthState = function () {
-    setPassword('');
-    setConfirmPassword('');
-    setEmail('');
-  };
-
-  const clearErrorAuth = () => {
-    setErrorAuth(null);
-  };
-
-  const handleSubmit = async function (e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!email || !password) return;
-    if (mode === 'login') {
-      loginEmail(
-        { email, password },
-        {
-          onSuccess: () => {
-            // Clear both fields on successful login
-            setEmail('');
-            setPassword('');
-          },
-          onError: () => {
-            // Clear only the password field on error
-            setPassword('');
-          },
-        }
-      );
-    }
-    if (mode === 'signup') {
-      await createAccountWithEmail();
-    }
-  };
-
-  const createAccountWithEmail = async function () {
-    try {
-      setIsLoadingAuth(true);
-      setErrorAuth(null);
-      if (password !== confirmPassword) {
-        setErrorAuth('Woops, the passwords do not match!');
-        setPassword('');
-        setConfirmPassword('');
-        return;
-      }
-      await createUserWithEmailAndPassword(auth, email, password);
-      navigate('/app');
-      resetAuthState();
-    } catch (err) {
-      const firebaseError = err as FirebaseError;
-      setErrorAuth(firebaseError.message);
-    } finally {
-      setIsLoadingAuth(false);
-    }
-  };
-
-  const signInWithGoogle = async function () {
-    try {
-      setIsLoadingAuth(true);
-      setErrorAuth(null);
-      await signInWithPopup(auth, googleProvider);
-      navigate('/app');
-      resetAuthState();
-    } catch (err) {
-      const firebaseError = err as FirebaseError;
-      setErrorAuth(firebaseError.message);
-    } finally {
-      setIsLoadingAuth(false);
-    }
-  };
-
+function AuthPage({ formType }) {
   return (
     <div className={styles.authContainer}>
-      {isLoadingAuth ? (
-        <LoaderSpinner />
-      ) : (
-        <form className={styles.authFormContainer} onSubmit={handleSubmit}>
-          <div className={styles.inputContainer}>
-            <label htmlFor="email">Email</label>
-            <input
-              placeholder="Email..."
-              value={email}
-              id="email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className={styles.inputContainer}>
-            <label htmlFor="password">Password</label>
-            <input
-              placeholder="Password..."
-              value={password}
-              id="password"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          {mode === 'signup' && (
-            <div className={styles.inputContainer}>
-              <label htmlFor="confirm-password">Confirm Password</label>
-              <input
-                placeholder="Confirm Password..."
-                value={confirmPassword}
-                id="confirm-password"
-                type="password"
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-          )}
-          <div className={styles.authButtonContainer}>
-            {mode === 'login' ? (
-              <>
-                <button className="btn-default" type="submit">
-                  Sign In
-                </button>
-                <div className={styles.divider}>
-                  <p>OR</p>
-                </div>
-
-                <button
-                  type="button"
-                  className={`btn-default ${styles.btnLoginGoogle}`}
-                  onClick={signInWithGoogle}
-                >
-                  <img src={googleBtnLight} alt="Google logo" />
-                  Sign In With Google
-                </button>
-              </>
-            ) : (
-              <button className="btn-default" type="submit">
-                Create Account
-              </button>
-            )}
-          </div>
-          {errorAuth && (
-            <ErrorModal
-              errorMessage={errorAuth}
-              clearLocalError={clearErrorAuth}
-            />
-          )}
-        </form>
-      )}
+      {formType === 'login' && <LoginForm />}
+      {formType === 'signup' && <SignupForm />}
     </div>
   );
 }
 
-export default Login;
+export default AuthPage;

@@ -40,8 +40,8 @@ function App() {
           <PageNav />
           <Routes>
             <Route path="/" element={<Homepage />} />
-            <Route path="login" element={<AuthPage />} />
-            <Route path="signup" element={<AuthPage />} />
+            <Route path="login" element={<AuthPage formType="login" />} />
+            <Route path="signup" element={<AuthPage formType="signup" />} />
             <Route path="app" element={<AppLayout />}>
               <Route index element={<Navigate replace to="map" />} />
               <Route path="map/:city?/:venue?" element={<MapView />} />
