@@ -9,7 +9,7 @@ import googleBtnLight from '../../assets/btn_google_light_normal_ios.svg';
 import { useEmailSignup } from './useEmailSignup';
 
 function SignupForm() {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, getValues } = useForm();
 
   const { signupEmail, isLoading } = useEmailSignup();
 
@@ -30,7 +30,13 @@ function SignupForm() {
           type="email"
           id="email"
           placeholder="Email..."
-          {...register('email')}
+          {...register('email', {
+            required: 'This field is required',
+            pattern: {
+              value: /\S+@\S+\.\S+/,
+              message: 'Please provide a valid email address',
+            },
+          })}
         />
       </div>
       <div className={styles.inputContainer}>
@@ -39,7 +45,19 @@ function SignupForm() {
           type="password"
           id="password"
           placeholder="Password..."
-          {...register('password')}
+          {...register('password', {
+            required: 'This field is required',
+            minLength: {
+              value: 8,
+              message: 'Password needs a minimum of 8 characters',
+            },
+            pattern: {
+              value:
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+              message:
+                'Password must contain at least one uppercase, one lowercase, one number and one special character',
+            },
+          })}
         />
       </div>
       <div className={styles.inputContainer}>
@@ -48,7 +66,11 @@ function SignupForm() {
           type="password"
           id="confirmPassword"
           placeholder="Confirm Password..."
-          {...register('confirmPassword')}
+          {...register('confirmPassword', {
+            required: 'This field is required',
+            validate: (value) =>
+              value === getValues().password || 'Passwords need to match',
+          })}
         />
       </div>
 
