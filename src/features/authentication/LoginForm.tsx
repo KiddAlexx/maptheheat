@@ -3,17 +3,43 @@ import styles from './AuthForm.module.css';
 
 // File imports
 import googleBtnLight from '../../assets/btn_google_light_normal_ios.svg';
+import { useForm } from 'react-hook-form';
 
 function LoginForm() {
+  const { register, handleSubmit, reset, formState } = useForm();
+  const { errors } = formState;
+
   return (
-    <form className={styles.authFormContainer}>
+    <form noValidate className={styles.authFormContainer}>
       <div className={styles.inputContainer}>
         <label htmlFor="email">Email</label>
-        <input placeholder="Email..." id="email" />
+        <input
+          type="email"
+          id="email"
+          placeholder="Email..."
+          {...register('email', {
+            required: 'This field is required',
+            pattern: {
+              value: /\S+@\S+\.\S+/,
+              message: 'Please provide a valid email address',
+            },
+          })}
+        />
+        {typeof errors?.email?.message === 'string' && (
+          <span> {errors.email.message}</span>
+        )}
       </div>
       <div className={styles.inputContainer}>
         <label htmlFor="password">Password</label>
-        <input placeholder="Password..." id="password" type="password" />
+        <input
+          id="password"
+          type="password"
+          placeholder="Password..."
+          {...register('password', { required: 'This field is required' })}
+        />
+        {typeof errors?.password?.message === 'string' && (
+          <span> {errors.password.message}</span>
+        )}
       </div>
 
       <div className={styles.authButtonContainer}>
