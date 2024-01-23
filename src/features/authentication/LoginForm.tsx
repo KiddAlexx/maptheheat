@@ -4,13 +4,41 @@ import styles from './AuthForm.module.css';
 // File imports
 import googleBtnLight from '../../assets/btn_google_light_normal_ios.svg';
 import { useForm } from 'react-hook-form';
+import { useEmailLogin } from './useEmailLogin';
 
 function LoginForm() {
   const { register, handleSubmit, reset, formState } = useForm();
   const { errors } = formState;
 
+  const { loginEmail, isLoading } = useEmailLogin();
+
+  function formSubmit(formData) {
+    console.log(formData);
+    console.log(formState);
+    const { email, password } = formData;
+    console.log(email, password);
+    if (!email || !password) return;
+    loginEmail(
+      { email, password },
+      {
+        onSuccess: () => {
+          // Reset all fields on success
+          reset();
+        },
+        onError: () => {
+          // Reset only the password field on error
+          reset({ password: '' });
+        },
+      }
+    );
+  }
+
   return (
-    <form noValidate className={styles.authFormContainer}>
+    <form
+      noValidate
+      onSubmit={handleSubmit(formSubmit)}
+      className={styles.authFormContainer}
+    >
       <div className={styles.inputContainer}>
         <label htmlFor="email">Email</label>
         <input
