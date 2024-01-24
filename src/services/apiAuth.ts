@@ -22,3 +22,12 @@ export async function loginApi({ email, password }) {
     );
   return data;
 }
+
+export async function getCurrentuser() {
+  const { data: session } = await supabase.auth.getSession();
+  if (!session.session) return null;
+  const { data, error } = await supabase.auth.getUser();
+  if (error)
+    throw new Error(`unable to retrieve current user ${error.message}`);
+  return data?.user;
+}
