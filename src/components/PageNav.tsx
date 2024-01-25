@@ -1,26 +1,13 @@
 // React imports
-import { NavLink, useNavigate } from 'react-router-dom';
-
-// Firebase imports
-import { signOut } from 'firebase/auth';
-import { auth } from '../config/firebase-config';
+import { NavLink } from 'react-router-dom';
 
 // Style imports
 import styles from './PageNav.module.css';
 import { useUser } from '../features/authentication/useUser';
+import { useLogout } from '../features/authentication/useLogout';
 
 function PageNav() {
-  const navigate = useNavigate();
-
-  // Sign out from firebase and navigate to homepage
-  async function logOut() {
-    try {
-      await signOut(auth);
-      navigate('/');
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  const { logout, isLoading: isLoadingLogout } = useLogout();
 
   const { isAuthenticated } = useUser();
 
@@ -51,7 +38,7 @@ function PageNav() {
         ) : (
           <li>
             <button
-              onClick={logOut}
+              onClick={logout}
               className={`btn-default ${styles.btnLogout}`}
             >
               Log Out
