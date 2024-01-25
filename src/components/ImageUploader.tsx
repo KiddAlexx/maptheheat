@@ -17,6 +17,7 @@ import { useUpdateRestaurantImage } from '../features/restaurants/useUpdateResta
 
 // File imports
 import cameraIcon from '../assets/icons/camera.svg';
+import { useUser } from '../features/authentication/useUser';
 
 function ImageUploader() {
   //File Upload State
@@ -46,13 +47,13 @@ function ImageUploader() {
 
   const { uploadImageRef, isUploading } = useUpdateRestaurantImage();
 
+  const { isAuthenticated } = useUser();
+
   // Function to handle compression and upload of selected image to Supabase storage.
   const uploadFile = async function () {
     if (!imageFile) return;
 
-    if (!auth.currentUser) {
-      navigate('/login');
-    }
+    if (!isAuthenticated) return navigate('/login');
 
     const compressionOptions = {
       maxSizeMB: 0.5,
@@ -76,8 +77,17 @@ function ImageUploader() {
   };
   return (
     <div className={styles.imgUploaderContainer}>
-      <label className={styles.imgUploaderLabel} htmlFor="imgUploader">
-        <img src={cameraIcon} alt="icon of a camera" />{' '}
+      <label
+        className={styles.imgUploaderLabel}
+        htmlFor="imgUploader"
+        onClick={(e) => {
+          if (!isAuthenticated) {
+            e.preventDefault();
+            navigate('/login');
+          }
+        }}
+      >
+        <img src={cameraIcon} alt="icon of a camera" />
         {!imageFile ? 'Add Photo' : 'Change Photo'}
       </label>
 

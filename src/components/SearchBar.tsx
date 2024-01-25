@@ -10,11 +10,14 @@ import { VenueFormProps } from './SideBar';
 
 // Style imports
 import styles from './SearchBar.module.css';
+import { useUser } from '../features/authentication/useUser';
 
 function SearchBar({ setIsAddingVenue }: VenueFormProps) {
   const [searchValue, setSearchValue] = useState('');
 
   const navigate = useNavigate();
+
+  const { isAuthenticated } = useUser();
 
   return (
     <>
@@ -38,13 +41,8 @@ function SearchBar({ setIsAddingVenue }: VenueFormProps) {
 
         <button
           onClick={() => {
-            //Redirect to login page if user is not logged in
-            if (!auth.currentUser) {
-              navigate('/login');
-            } else {
-              //Used in Sidebar to conditionally render VenueForm when set to true
-              setIsAddingVenue(true);
-            }
+            //Used in Sidebar to conditionally render VenueForm when set to true
+            setIsAddingVenue(true);
           }}
           className={` ${styles.btnAddNewVenue}`}
         >

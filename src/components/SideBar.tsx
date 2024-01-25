@@ -8,6 +8,7 @@ import VenueForm from '../components/VenueForm';
 
 // Style imports
 import styles from './SideBar.module.css';
+import ProtectedRoute from '../ui/ProtectedRoute';
 
 export interface VenueFormProps {
   setIsAddingVenue: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,7 +23,9 @@ function SideBar() {
     <div className={styles.sideBar}>
       <SearchBar setIsAddingVenue={setIsAddingVenue} />
       {isAddingVenue ? (
-        <VenueForm setIsAddingVenue={setIsAddingVenue} />
+        <ProtectedRoute>
+          <VenueForm setIsAddingVenue={setIsAddingVenue} />
+        </ProtectedRoute>
       ) : (
         <ListView />
       )}
