@@ -7,6 +7,7 @@ import { auth } from '../config/firebase-config';
 
 // Style imports
 import styles from './PageNav.module.css';
+import { useUser } from '../features/authentication/useUser';
 
 function PageNav() {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ function PageNav() {
     }
   }
 
+  const { isAuthenticated } = useUser();
+
   return (
     <nav className={styles.nav}>
       <h3 className={styles.logoMain}>
@@ -29,7 +32,7 @@ function PageNav() {
       <ul className={styles.authButtons}>
         {/* Checks user login state
             Displays Login & Signup or Logout button */}
-        {auth.currentUser === null ? (
+        {!isAuthenticated ? (
           <>
             <li>
               <NavLink to="/login" className={`btn-default ${styles.btnLogin}`}>

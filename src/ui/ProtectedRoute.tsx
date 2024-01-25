@@ -15,6 +15,7 @@ function ProtectedRoute({ children }) {
       if (!isAuthenticated && !isLoading && fetchStatus !== 'fetching') {
         navigate('/login');
       }
+      console.log(isAuthenticated);
     },
     [isAuthenticated, isLoading, navigate, fetchStatus]
   );

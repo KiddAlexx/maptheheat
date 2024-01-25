@@ -22,6 +22,7 @@ import DetailedVenueView from './components/DetailedVenueView';
 import MapView from './components/MapView';
 import UserProfile from './components/UserProfile';
 import PageNav from './components/PageNav';
+import ProtectedRoute from './ui/ProtectedRoute';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,7 +50,14 @@ function App() {
                 path="venue/:city/:venue"
                 element={<DetailedVenueView />}
               />
-              <Route path="profile" element={<UserProfile />} />
+              <Route
+                path="profile"
+                element={
+                  <ProtectedRoute>
+                    <UserProfile />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
             <Route path="*" element={<PageNotFound />} />
           </Routes>
