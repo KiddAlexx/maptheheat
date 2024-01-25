@@ -31,3 +31,8 @@ export async function getCurrentUser() {
     throw new Error(`unable to retrieve current user ${error.message}`);
   return data?.user;
 }
+
+export async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw new Error(`unable to logout ${error.message}`);
+}
