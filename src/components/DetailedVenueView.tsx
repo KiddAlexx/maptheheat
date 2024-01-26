@@ -6,11 +6,12 @@ import { Link, useSearchParams } from 'react-router-dom';
 import styles from './DetailedVenueView.module.css';
 
 // Hooks imports
-import { useRestaurants } from '../context/RestaurantContext';
+import { useRestaurant } from '../features/restaurants/useRestaurant';
 
 // Component imports
 import ImageUploader from './ImageUploader';
 import VenueRating from './VenueRating';
+import LoaderSpinner from './LoaderSpinner';
 
 // File imports
 import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
@@ -19,8 +20,6 @@ import globeIcon from '../assets/icons/globe.svg';
 import mapPinIcon from '../assets/icons/map-pin.svg';
 import phoneIcon from '../assets/icons/phone.svg';
 import infoIcon from '../assets/icons/info.svg';
-import { useRestaurant } from '../features/restaurants/useRestaurant';
-import LoaderSpinner from './LoaderSpinner';
 
 function DetailedVenueView() {
   const [searchParams, setSearchParam] = useSearchParams();
@@ -50,10 +49,6 @@ function DetailedVenueView() {
     averageRating,
     images,
   } = restaurant;
-
-  console.log(restaurant);
-
-  console.log(phoneNumber);
 
   return (
     <div className={styles.detailedViewContainer}>
