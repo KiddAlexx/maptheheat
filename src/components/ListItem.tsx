@@ -1,5 +1,4 @@
 // React imports
-import { Link } from 'react-router-dom';
 
 // Style imports
 import styles from './ListItem.module.css';
