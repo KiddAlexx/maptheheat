@@ -1,9 +1,6 @@
 // React imports
 import { useEffect, useState } from 'react';
 
-// Firebase imports
-import { auth } from '../config/firebase-config';
-
 // Third party imports
 import slugify from 'slugify';
 import { useForm } from 'react-hook-form';
@@ -16,18 +13,18 @@ import styles from './VenueForm.module.css';
 import { VenueFormProps } from './SideBar';
 
 // Hooks imports
-import { useRestaurants } from '../context/RestaurantContext';
+
 import { useCreateRestaurant } from '../features/restaurants/useCreateRestaurant';
+import { useUser } from '../features/authentication/useUser';
 
 // Component imports
 import LoaderSpinner from './LoaderSpinner';
 import ErrorModal from './ErrorModal';
 
 function VenueForm({ setIsAddingVenue }: VenueFormProps) {
-  // Functions from Restaurant Context
-  const { isLoading } = useRestaurants();
-
   const { createRestaurant, isCreating } = useCreateRestaurant();
+
+  const { user } = useUser();
 
   const [localFormError, setLocalFormError] = useState('');
 
@@ -91,7 +88,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
         ...formData,
         phoneNumber,
         ...additionalVenueData,
-        userId: auth!.currentUser!.uid, // Value will not be null, checks done prior, further validation to be added
+        userId: user!.id, // Value will not be null, checks done prior, further validation to be added
         urlSlug: slugify(formData.venueName),
       };
 
@@ -123,7 +120,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
         onSubmit={handleSubmit(formSubmit, toastFormError)}
         className={styles.venueFormContainer}
       >
-        {isLoading ? (
+        {isCreating ? (
           <LoaderSpinner />
         ) : (
           <>
