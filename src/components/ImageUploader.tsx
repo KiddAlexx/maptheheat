@@ -3,9 +3,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 
-// Firebase imports
-import { auth } from '../config/firebase-config';
-
 // Third party imports
 
 // Style imports
