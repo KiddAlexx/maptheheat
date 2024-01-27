@@ -3,16 +3,6 @@
 //React imports
 import { createContext, useContext, useReducer, ReactNode } from 'react';
 
-// Firebase imports
-import { db } from '../config/firebase-config';
-import {
-  collection,
-  addDoc,
-  updateDoc,
-  arrayUnion,
-  doc,
-} from 'firebase/firestore';
-
 // Type imports
 import {
   Restaurant,
@@ -21,8 +11,6 @@ import {
   Action,
   NewRestaurant,
 } from '../models/restaurantTypes';
-
-const restaurantCollectionRef = collection(db, 'restaurant-details');
 
 const RestaurantContext = createContext<RestaurantContextType | undefined>(
   undefined
@@ -37,16 +25,6 @@ const initialState = {
 
 function reducer(state: State, action: Action) {
   switch (action.type) {
-    case 'loading':
-      return { ...state, isLoading: true };
-    case 'restaurants/loaded':
-      return { ...state, isLoading: false, restaurants: action.payload };
-    case 'rejected':
-      return {
-        ...state,
-        isLoading: false,
-        errorMessage: action.payload,
-      };
     // Used to set active restaurant, to help sync components
     case 'set-active':
       return {
@@ -68,54 +46,6 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
   const [{ restaurants, isLoading, errorMessage, activeRestaurant }, dispatch] =
     useReducer(reducer, initialState);
 
-  async function addRestaurant(restaurant: NewRestaurant) {
-    try {
-      dispatch({ type: 'loading' });
-      await addDoc(restaurantCollectionRef, restaurant);
-    } catch (err) {
-      dispatch({
-        type: 'rejected',
-        payload: 'There was an error adding that restaurant, please try again',
-      });
-    }
-  }
-
-  async function updateRestaurantImages(id: string, imageURL: string) {
-    try {
-      dispatch({ type: 'loading' });
-      const restaurantDocRef = doc(db, 'restaurant-details', id);
-      await updateDoc(restaurantDocRef, { images: arrayUnion(imageURL) });
-
-      // Update image URL in local restaurants state
-      const updatedRestaurants = restaurants.map((restaurant) => {
-        if (restaurant.id === id) {
-          return {
-            ...restaurant,
-            // Check if image array containes values before spreading
-            images: restaurant.images
-              ? [...restaurant.images, imageURL]
-              : [imageURL],
-          };
-        }
-        return restaurant;
-      });
-      dispatch({ type: 'restaurants/loaded', payload: updatedRestaurants });
-
-      // Update the active restaurant to trigger re-load
-      const updatedActiveRestaurant = updatedRestaurants.find(
-        (restaurant) => restaurant.id === id
-      );
-      if (updatedActiveRestaurant) {
-        setActiveRestaurant(updatedActiveRestaurant);
-      }
-    } catch (err) {
-      dispatch({
-        type: 'rejected',
-        payload: 'There was an error adding restaurant image, please try again',
-      });
-    }
-  }
-
   // Used to set active restaurant, to help sync components
   function setActiveRestaurant(restaurant: Restaurant) {
     dispatch({ type: 'set-active', payload: restaurant });
@@ -133,9 +63,7 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
         isLoading,
         errorMessage,
         activeRestaurant,
-        addRestaurant,
         setActiveRestaurant,
-        updateRestaurantImages,
         clearError,
       }}
     >
