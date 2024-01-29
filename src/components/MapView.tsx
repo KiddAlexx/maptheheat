@@ -26,7 +26,7 @@ function MapView() {
   // Sets coordinates based on searchParams if available
   // Used to center map on selected restaurant
   const lat = searchParams.get('lat') || 41.3874;
-  const lon = searchParams.get('lng') || 2.17;
+  const lon = searchParams.get('lon') || 2.17;
 
   function ChangeCenter({ lat, lon }: Coords) {
     const map = useMap();

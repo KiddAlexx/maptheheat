@@ -7,7 +7,8 @@ export function useParamsAndNavigate() {
   function setParamsAndNavigate(venue, specifiedMode?) {
     if (!venue) return;
 
-    const { city, urlSlug, id, lat, lng } = venue;
+    const { city, urlSlug, id, coords } = venue;
+    const { lat, lon } = coords;
 
     console.log(venue);
 
@@ -20,8 +21,8 @@ export function useParamsAndNavigate() {
 
     // Construct the query string
     let queryString = `id=${id}`;
-    if (mode === 'map' && lat != null && lng != null) {
-      queryString += `&lat=${lat}&lng=${lng}`;
+    if (mode === 'map' && lat != null && lon != null) {
+      queryString += `&lat=${lat}&lon=${lon}`;
     }
 
     console.log(queryString);
