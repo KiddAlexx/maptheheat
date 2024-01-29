@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 // Type imports
-import { VenueFormProps } from './SideBar';
+import { VenueFormProps } from '../../layout/SideBar';
 
 // Style imports
 import styles from './SearchBar.module.css';

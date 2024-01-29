@@ -12,7 +12,7 @@ import {
 import { FirebaseError } from '@firebase/util';
 
 // Third party imports
-import LoaderSpinner from '../components/LoaderSpinner';
+import LoaderSpinner from '../ui/LoaderSpinner';
 
 // Style imports
 import styles from './AuthPage.module.css';
@@ -21,7 +21,7 @@ import styles from './AuthPage.module.css';
 import googleBtnLight from '../assets/btn_google_light_normal_ios.svg';
 
 // Component imports
-import ErrorModal from '../components/ErrorModal';
+import ErrorModal from '../ui/ErrorModal';
 import { useEmailLogin } from '../features/authentication/useEmailLogin';
 import { useEmailSignup } from '../features/authentication/useEmailSignup';
 

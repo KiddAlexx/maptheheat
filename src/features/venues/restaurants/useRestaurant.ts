@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getRestaurant } from '../../services/apiRestaurants';
+import { getRestaurant } from '../../../services/apiRestaurants';
 
 export function useRestaurant(id) {
   const {

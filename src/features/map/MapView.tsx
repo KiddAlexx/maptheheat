@@ -4,17 +4,17 @@ import { useEffect } from 'react';
 // Third party imports
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import chilliPin from '../assets/chillipin.png';
+import chilliPin from '../../assets/chillipin.png';
 import MapPopupContent from './MapPopupContent';
 
 // Style imports
 import styles from './MapView.module.css';
 
 // Type imports
-import { Coords } from '../models/restaurantTypes';
+import { Coords } from '../../models/restaurantTypes';
 
 // Hooks imports
-import { useRestaurants } from '../features/restaurants/useRestaurants';
+import { useRestaurants } from '../venues/restaurants/useRestaurants';
 import { useSearchParams } from 'react-router-dom';
 
 function MapView() {

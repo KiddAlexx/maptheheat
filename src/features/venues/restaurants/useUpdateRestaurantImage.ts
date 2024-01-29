@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createRestaurantImage } from '../../services/apiRestaurants';
+import { createRestaurantImage } from '../../../services/apiRestaurants';
 import toast from 'react-hot-toast';
 
 export function useUpdateRestaurantImage() {

@@ -10,7 +10,7 @@ import styles from './ImageUploader.module.css';
 
 // Hooks imports
 
-import { useUpdateRestaurantImage } from '../features/restaurants/useUpdateRestaurantImage';
+import { useUpdateRestaurantImage } from '../features/venues/restaurants/useUpdateRestaurantImage';
 
 // File imports
 import cameraIcon from '../assets/icons/camera.svg';

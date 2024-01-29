@@ -10,16 +10,16 @@ import toast from 'react-hot-toast';
 import styles from './VenueForm.module.css';
 
 // Type imports
-import { VenueFormProps } from './SideBar';
+import { VenueFormProps } from '../../layout/SideBar';
 
 // Hooks imports
 
-import { useCreateRestaurant } from '../features/restaurants/useCreateRestaurant';
-import { useUser } from '../features/authentication/useUser';
+import { useCreateRestaurant } from '../restaurants/useCreateRestaurant';
+import { useUser } from '../../authentication/useUser';
 
 // Component imports
-import LoaderSpinner from './LoaderSpinner';
-import ErrorModal from './ErrorModal';
+import LoaderSpinner from '../../../ui/LoaderSpinner';
+import ErrorModal from '../../../ui/ErrorModal';
 
 function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   const { createRestaurant, isCreating } = useCreateRestaurant();

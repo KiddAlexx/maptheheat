@@ -4,18 +4,17 @@
 import styles from './MapPopupContent.module.css';
 
 // Type imports
-import { Restaurant } from '../models/restaurantTypes';
-
+import { Restaurant } from '../../models/restaurantTypes';
 // Hooks imports
-import { useParamsAndNavigate } from '../hooks/useParamsAndNavigate';
+import { useParamsAndNavigate } from '../../hooks/useParamsAndNavigate';
 
 // Component imports
-import VenueRating from './VenueRating';
+import VenueRating from '../venues/shared/VenueRating';
 
 // File imports
-import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
-import mapPinIcon from '../assets/icons/map-pin.svg';
-import phoneIcon from '../assets/icons/phone.svg';
+import greyChilli from '../../assets/chilli-explosion-grey-md.jpg';
+import mapPinIcon from '../../assets/icons/map-pin.svg';
+import phoneIcon from '../../assets/icons/phone.svg';
 
 interface MapPopupContentProps {
   restaurant: Restaurant;

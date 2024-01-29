@@ -4,19 +4,19 @@
 import styles from './ListItem.module.css';
 
 // Hooks imports
-import { useParamsAndNavigate } from '../hooks/useParamsAndNavigate';
+import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 
 // File imports
-import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
-import clockIcon from '../assets/icons/clock.svg';
-import mapPinIcon from '../assets/icons/map-pin.svg';
-import phoneIcon from '../assets/icons/phone.svg';
+import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
+import clockIcon from '../../../assets/icons/clock.svg';
+import mapPinIcon from '../../../assets/icons/map-pin.svg';
+import phoneIcon from '../../../assets/icons/phone.svg';
 
 // Component imports
 import VenueRating from './VenueRating';
 
 // Type imports
-import { Restaurant } from '../models/restaurantTypes';
+import { Restaurant } from '../../../models/restaurantTypes';
 
 interface ListItemProps {
   restaurant: Restaurant;

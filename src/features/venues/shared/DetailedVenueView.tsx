@@ -6,20 +6,20 @@ import { Link, useSearchParams } from 'react-router-dom';
 import styles from './DetailedVenueView.module.css';
 
 // Hooks imports
-import { useRestaurant } from '../features/restaurants/useRestaurant';
+import { useRestaurant } from '../restaurants/useRestaurant';
 
 // Component imports
-import ImageUploader from './ImageUploader';
+import ImageUploader from '../../../components/ImageUploader';
 import VenueRating from './VenueRating';
-import LoaderSpinner from './LoaderSpinner';
+import LoaderSpinner from '../../../ui/LoaderSpinner';
 
 // File imports
-import greyChilli from '../assets/chilli-explosion-grey-md.jpg';
-import clockIcon from '../assets/icons/clock.svg';
-import globeIcon from '../assets/icons/globe.svg';
-import mapPinIcon from '../assets/icons/map-pin.svg';
-import phoneIcon from '../assets/icons/phone.svg';
-import infoIcon from '../assets/icons/info.svg';
+import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
+import clockIcon from '../../../assets/icons/clock.svg';
+import globeIcon from '../../../assets/icons/globe.svg';
+import mapPinIcon from '../../../assets/icons/map-pin.svg';
+import phoneIcon from '../../../assets/icons/phone.svg';
+import infoIcon from '../../../assets/icons/info.svg';
 
 function DetailedVenueView() {
   const [searchParams, setSearchParam] = useSearchParams();
