@@ -7,12 +7,14 @@ import { useForm } from 'react-hook-form';
 // File imports
 import googleBtnLight from '../../assets/btn_google_light_normal_ios.svg';
 import { useEmailSignup } from './useEmailSignup';
+import { useGoogleLogin } from './useGoogleLogin';
 
 function SignupForm() {
   const { register, handleSubmit, reset, getValues, formState } = useForm();
   const { errors } = formState;
 
   const { signupEmail, isLoading } = useEmailSignup();
+  const { loginGoogle, isPending } = useGoogleLogin();
 
   function formSubmit(formData) {
     console.log(formData);
@@ -94,6 +96,7 @@ function SignupForm() {
         <button
           type="button"
           className={`btn-default ${styles.btnLoginGoogle}`}
+          onClick={loginGoogle}
         >
           <img src={googleBtnLight} alt="Google logo" />
           Sign In With Google

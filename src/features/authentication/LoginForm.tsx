@@ -5,12 +5,14 @@ import styles from './AuthForm.module.css';
 import googleBtnLight from '../../assets/btn_google_light_normal_ios.svg';
 import { useForm } from 'react-hook-form';
 import { useEmailLogin } from './useEmailLogin';
+import { useGoogleLogin } from './useGoogleLogin';
 
 function LoginForm() {
   const { register, handleSubmit, reset, formState } = useForm();
   const { errors } = formState;
 
   const { loginEmail, isLoading } = useEmailLogin();
+  const { loginGoogle, isPending } = useGoogleLogin();
 
   function formSubmit(formData) {
     console.log(formData);
@@ -78,6 +80,7 @@ function LoginForm() {
         <button
           type="button"
           className={`btn-default ${styles.btnLoginGoogle}`}
+          onClick={loginGoogle}
         >
           <img src={googleBtnLight} alt="Google logo" />
           Sign In With Google
