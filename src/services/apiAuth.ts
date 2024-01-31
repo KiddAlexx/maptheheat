@@ -23,6 +23,14 @@ export async function loginApi({ email, password }) {
   return data;
 }
 
+export async function loginGoogleApi() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+  });
+  if (error) throw new Error(`Google sign in failed:  ${error.message}`);
+  return data;
+}
+
 export async function getCurrentUser() {
   const { data: session } = await supabase.auth.getSession();
   if (!session.session) return null;
