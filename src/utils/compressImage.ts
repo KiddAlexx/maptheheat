@@ -16,6 +16,10 @@ export default async function compressImage(imageFile, compressionOptions?) {
     );
     return compressedImage;
   } catch (err) {
-    throw new Error(`There was an error compressing your image ${err.message}`);
+    if (err instanceof Error) {
+      throw new Error(
+        `There was an error compressing your image ${err.message}`
+      );
+    }
   }
 }

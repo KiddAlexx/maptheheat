@@ -19,19 +19,25 @@ import { useUser } from '../features/authentication/useUser';
 function ImageUploader() {
   //File Upload State
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [uploadState, setUploadState] = useState<string>('Upload!');
 
   const navigate = useNavigate();
 
-  const [searchParams, setSearchParam] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const id = searchParams.get('id');
   const { city, venue } = useParams();
 
+  /*   const { city, id, urlSlug: restaurantName } = activeRestaurant; */
+
+  const { uploadImageRef, isUploading, fileUploaded } =
+    useUpdateRestaurantImage();
+
   // Ensures image upload state is reset if user changes active restaurant
+  // Or when image upload has completed sucessfuly
   useEffect(() => {
     setImageFile(null);
-    setUploadState('Upload!');
-  }, [id]);
+  }, [id, fileUploaded]);
+
+  const { isAuthenticated } = useUser();
 
   // Return from function if activeRestaurant does not exist
   // Handle this with error message in future
@@ -40,38 +46,16 @@ function ImageUploader() {
     return;
   }
 
-  /*   const { city, id, urlSlug: restaurantName } = activeRestaurant; */
-
-  const { uploadImageRef, isUploading } = useUpdateRestaurantImage();
-
-  const { isAuthenticated } = useUser();
-
   // Function to handle compression and upload of selected image to Supabase storage.
   const uploadFile = async function () {
     if (!imageFile) return;
 
     if (!isAuthenticated) return navigate('/login');
 
-    const compressionOptions = {
-      maxSizeMB: 0.5,
-      maxWidthOrHeight: 960,
-      useWebWorker: true,
-    };
-
-    try {
-      console.log('log from image uploader ', id, imageFile, city, venue);
-      uploadImageRef({ id, imageFile, city, venue });
-
-      setUploadState('Image uploaded');
-    } catch (err) {
-      console.error(err); // Handle error!
-    } finally {
-      setTimeout(() => {
-        setUploadState('Upload!');
-        setImageFile(null);
-      }, 2000);
-    }
+    console.log('log from image uploader ', id, imageFile, city, venue);
+    uploadImageRef({ id, imageFile, city, venue });
   };
+
   return (
     <div className={styles.imgUploaderContainer}>
       <label
@@ -100,7 +84,7 @@ function ImageUploader() {
         <>
           <p>{imageFile.name} ready to </p>
           <button className={styles.btnImgUploader} onClick={uploadFile}>
-            {uploadState}
+            {isUploading ? 'Uploading' : 'Upload'}
           </button>
         </>
       )}
