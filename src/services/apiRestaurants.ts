@@ -39,12 +39,7 @@ export async function createRestaurant(newRestaurant: NewRestaurant) {
   return data;
 }
 
-export async function createRestaurantImage(
-  id,
-  imageFile,
-  city,
-  restaurantName
-) {
+export async function createRestaurantImage({ id, imageFile, city, venue }) {
   // Compress image
 
   const compressedImage = await compressImage(imageFile);
@@ -54,10 +49,10 @@ export async function createRestaurantImage(
     compressedImage,
     'restaurant-images',
     city,
-    restaurantName
+    venue
   );
 
-  const altText = `An image of ${restaurantName} in ${city}`;
+  const altText = `An image of ${venue} in ${city}`;
   const imageUrl = `${supabaseUrl}/storage/v1/object/public/restaurant-images/${imagePath}`;
 
   // Fetch current images array
