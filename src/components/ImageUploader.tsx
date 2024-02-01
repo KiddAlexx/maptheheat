@@ -44,12 +44,9 @@ function ImageUploader() {
 
   const { isAuthenticated } = useUser();
 
-  // Return from function if activeRestaurant does not exist
-  // Handle this with error message in future
+  // Return from function if params do not exist
 
-  if (!id) {
-    return;
-  }
+  if (!id || !city || !venue) return;
 
   // Function to handle compression and upload of selected image to Supabase storage.
   const uploadFile = async function () {
