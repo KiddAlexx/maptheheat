@@ -1,4 +1,4 @@
-import { NewRestaurant } from '../models/restaurantTypes';
+import { ImageUploadParams, NewRestaurant } from '../models/restaurantTypes';
 import compressImage from '../utils/compressImage';
 import supabase, { supabaseUrl } from './supabase';
 import uploadImage from './supabaseImageUploader';
@@ -12,7 +12,7 @@ export async function getRestaurants() {
   return data;
 }
 
-export async function getRestaurant(id) {
+export async function getRestaurant(id: string) {
   const { data, error } = await supabase
     .from('restaurant-details')
     .select('*')
@@ -39,7 +39,12 @@ export async function createRestaurant(newRestaurant: NewRestaurant) {
   return data;
 }
 
-export async function createRestaurantImage({ id, imageFile, city, venue }) {
+export async function createRestaurantImage({
+  id,
+  imageFile,
+  city,
+  venue,
+}: ImageUploadParams) {
   // Compress image
 
   const compressedImage = await compressImage(imageFile);
