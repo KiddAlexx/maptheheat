@@ -29,6 +29,13 @@ export interface Image {
   alt: string;
 }
 
+export interface ImageUploadParams {
+  id: string;
+  imageFile: File;
+  city: string;
+  venue: string;
+}
+
 export interface ActiveRestaurant {
   id: string;
   coords: Coords;
