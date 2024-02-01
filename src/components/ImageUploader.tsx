@@ -34,7 +34,12 @@ function ImageUploader() {
   // Ensures image upload state is reset if user changes active restaurant
   // Or when image upload has completed sucessfuly
   useEffect(() => {
-    setImageFile(null);
+    if (id) {
+      setImageFile(null);
+    }
+    if (fileUploaded === true) {
+      setImageFile(null);
+    }
   }, [id, fileUploaded]);
 
   const { isAuthenticated } = useUser();
