@@ -45,8 +45,8 @@ export async function createRestaurantImage({
   city,
   venue,
 }: ImageUploadParams) {
-  // Compress image
-  const compressedImage = await compressImage(imageFile);
+  // Compress image. Type asserted as function will return File or throw an Error
+  const compressedImage = (await compressImage(imageFile)) as File;
 
   // Upload image to supabase bucket
   const imagePath = await uploadImage(
