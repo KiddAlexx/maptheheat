@@ -7,7 +7,7 @@ import { useUser } from '../authentication/useUser';
 import { useLogout } from '../authentication/useLogout';
 
 function PageNav() {
-  const { logout, isLoading: isLoadingLogout } = useLogout();
+  const { logout } = useLogout();
 
   const { isAuthenticated } = useUser();
 
@@ -38,7 +38,7 @@ function PageNav() {
         ) : (
           <li>
             <button
-              onClick={logout}
+              onClick={() => logout()}
               className={`btn-default ${styles.btnLogout}`}
             >
               Log Out
