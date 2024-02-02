@@ -5,14 +5,22 @@ import styles from './AuthForm.module.css';
 import googleBtnLight from '../../assets/btn_google_light_normal_ios.svg';
 import { useForm } from 'react-hook-form';
 import { useEmailLogin } from './useEmailLogin';
+import { useGoogleLogin } from './useGoogleLogin';
+import LoaderSpinner from '../../ui/LoaderSpinner';
 
 function LoginForm() {
-  const { register, handleSubmit, reset, formState } = useForm();
+  interface FormData {
+    email: string;
+    password: string;
+  }
+
+  const { register, handleSubmit, reset, formState } = useForm<FormData>();
   const { errors } = formState;
 
-  const { loginEmail, isLoading } = useEmailLogin();
+  const { loginEmail, isPending: isPendingEmail } = useEmailLogin();
+  const { loginGoogle, isPending: isPendingGoogle } = useGoogleLogin();
 
-  function formSubmit(formData) {
+  function formSubmit(formData: FormData) {
     console.log(formData);
     console.log(formState);
     const { email, password } = formData;
@@ -23,6 +31,7 @@ function LoginForm() {
       {
         onSuccess: () => {
           // Reset all fields on success
+
           reset();
         },
         onError: () => {
@@ -33,7 +42,9 @@ function LoginForm() {
     );
   }
 
-  return (
+  return isPendingEmail || isPendingGoogle ? (
+    <LoaderSpinner />
+  ) : (
     <form
       noValidate
       onSubmit={handleSubmit(formSubmit)}
@@ -77,6 +88,7 @@ function LoginForm() {
         <button
           type="button"
           className={`btn-default ${styles.btnLoginGoogle}`}
+          onClick={() => loginGoogle()}
         >
           <img src={googleBtnLight} alt="Google logo" />
           Sign In With Google

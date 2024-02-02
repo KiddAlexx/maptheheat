@@ -4,27 +4,20 @@
 import styles from './ListView.module.css';
 
 // Hooks imports
-import { useRestaurants as useRestaurantsContext } from '../context/RestaurantContext';
-import { useRestaurants } from '../features/restaurants/useRestaurants';
-import { useParamsAndNavigate } from '../hooks/useParamsAndNavigate';
+import { useRestaurants } from '../restaurants/useRestaurants';
+import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 
 // Component imports
 import ListItem from './ListItem';
-import LoaderSpinner from './LoaderSpinner';
+import LoaderSpinner from '../../../ui/LoaderSpinner';
 
 function ListView() {
-  const { isLoading } = useRestaurantsContext();
-
   // Load restaurants from supabase
-  const {
-    restaurants,
-    error,
-    isLoading: isLoadingRestaurants,
-  } = useRestaurants();
+  const { restaurants, isLoading: isLoadingRestaurants } = useRestaurants();
 
   const setParamsAndNavigate = useParamsAndNavigate();
 
-  return isLoading || isLoadingRestaurants ? (
+  return isLoadingRestaurants ? (
     <LoaderSpinner />
   ) : (
     <div className={styles.listView}>

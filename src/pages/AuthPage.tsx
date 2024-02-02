@@ -12,7 +12,11 @@ import styles from './AuthPage.module.css';
 import LoginForm from '../features/authentication/LoginForm';
 import SignupForm from '../features/authentication/SignupForm';
 
-function AuthPage({ formType }) {
+interface AuthPageProps {
+  formType: 'login' | 'signup';
+}
+
+function AuthPage({ formType }: AuthPageProps) {
   return (
     <div className={styles.authContainer}>
       {formType === 'login' && <LoginForm />}

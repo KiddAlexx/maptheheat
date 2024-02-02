@@ -1,23 +1,14 @@
 // React imports
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
-
-// Firebase imports
-import { auth } from '../config/firebase-config';
 
 // Type imports
-import { VenueFormProps } from './SideBar';
+import { VenueFormProps } from '../../layout/SideBar';
 
 // Style imports
 import styles from './SearchBar.module.css';
-import { useUser } from '../features/authentication/useUser';
 
 function SearchBar({ setIsAddingVenue }: VenueFormProps) {
   const [searchValue, setSearchValue] = useState('');
-
-  const navigate = useNavigate();
-
-  const { isAuthenticated } = useUser();
 
   return (
     <>

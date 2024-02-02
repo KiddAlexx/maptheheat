@@ -1,4 +1,4 @@
-import { NewRestaurant } from '../models/restaurantTypes';
+import { ImageUploadParams, NewRestaurant } from '../models/restaurantTypes';
 import compressImage from '../utils/compressImage';
 import supabase, { supabaseUrl } from './supabase';
 import uploadImage from './supabaseImageUploader';
@@ -12,7 +12,7 @@ export async function getRestaurants() {
   return data;
 }
 
-export async function getRestaurant(id) {
+export async function getRestaurant(id: string) {
   const { data, error } = await supabase
     .from('restaurant-details')
     .select('*')
@@ -39,25 +39,24 @@ export async function createRestaurant(newRestaurant: NewRestaurant) {
   return data;
 }
 
-export async function createRestaurantImage(
+export async function createRestaurantImage({
   id,
   imageFile,
   city,
-  restaurantName
-) {
-  // Compress image
+  venue,
+}: ImageUploadParams) {
+  // Compress image. Type asserted as function will return File or throw an Error
+  const compressedImage = (await compressImage(imageFile)) as File;
 
-  const compressedImage = await compressImage(imageFile);
-
-  // Upload image to supabase bucket + return path
+  // Upload image to supabase bucket
   const imagePath = await uploadImage(
     compressedImage,
     'restaurant-images',
     city,
-    restaurantName
+    venue
   );
-
-  const altText = `An image of ${restaurantName} in ${city}`;
+  // Generate alt text for image + full URL
+  const altText = `An image of ${venue} in ${city}`;
   const imageUrl = `${supabaseUrl}/storage/v1/object/public/restaurant-images/${imagePath}`;
 
   // Fetch current images array

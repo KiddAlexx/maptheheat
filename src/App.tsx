@@ -18,10 +18,10 @@ import Homepage from './pages/Homepage';
 import AuthPage from './pages/AuthPage';
 import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
-import DetailedVenueView from './components/DetailedVenueView';
-import MapView from './components/MapView';
-import UserProfile from './components/UserProfile';
-import PageNav from './components/PageNav';
+import DetailedVenueView from './features/venues/shared/DetailedVenueView';
+import MapView from './features/map/MapView';
+import UserProfile from './features/userProfile/UserProfile';
+import PageNav from './features/layout/PageNav';
 import ProtectedRoute from './ui/ProtectedRoute';
 
 const queryClient = new QueryClient({

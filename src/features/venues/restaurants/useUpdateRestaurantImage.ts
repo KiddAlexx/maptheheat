@@ -1,14 +1,21 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createRestaurantImage } from '../../services/apiRestaurants';
+import { createRestaurantImage } from '../../../services/apiRestaurants';
 import toast from 'react-hot-toast';
+
+// Type Imports
+import { ImageUploadParams } from '../../../models/restaurantTypes';
 
 export function useUpdateRestaurantImage() {
   const queryClient = useQueryClient();
 
-  const { mutate: uploadImageRef, isPending: isUploading } = useMutation({
-    mutationFn: async ({ id, imageFile, city, restaurantName }) => {
-      console.log('log from react query', id, imageFile, city, restaurantName);
-      await createRestaurantImage(id, imageFile, city, restaurantName);
+  const {
+    mutate: uploadImageRef,
+    isPending: isUploading,
+    isSuccess: fileUploaded,
+  } = useMutation<void, Error, ImageUploadParams>({
+    mutationFn: async ({ id, imageFile, city, venue }) => {
+      console.log('log from react query', id, imageFile, city, venue);
+      await createRestaurantImage({ id, imageFile, city, venue });
     },
     onSuccess: () => {
       toast.success('Image successfully uploaded');
@@ -24,5 +31,5 @@ export function useUpdateRestaurantImage() {
       }
     },
   });
-  return { uploadImageRef, isUploading };
+  return { uploadImageRef, isUploading, fileUploaded };
 }

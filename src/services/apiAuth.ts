@@ -1,6 +1,7 @@
+import { AuthCredentials } from '../models/authenticationTypes';
 import supabase from './supabase';
 
-export async function signupApi({ email, password }) {
+export async function signupApi({ email, password }: AuthCredentials) {
   console.log(email, password);
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -11,7 +12,7 @@ export async function signupApi({ email, password }) {
   return data;
 }
 
-export async function loginApi({ email, password }) {
+export async function loginApi({ email, password }: AuthCredentials) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -20,6 +21,17 @@ export async function loginApi({ email, password }) {
     throw new Error(
       `unable to login in, please check credentials ${error.message}`
     );
+  return data;
+}
+
+export async function loginGoogleApi() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'http://localhost:5173/app/map',
+    },
+  });
+  if (error) throw new Error(`Google sign in failed:  ${error.message}`);
   return data;
 }
 

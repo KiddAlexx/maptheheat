@@ -16,12 +16,12 @@ export interface Restaurant {
   averageRating?: number | null;
 }
 
-// id not present at creation time, generate by Firestore
+// id not present at creation time, generate by Supbase
 export type NewRestaurant = Omit<Restaurant, 'id'>;
 
 export interface Coords {
-  lat: number;
-  lon: number;
+  lat: number | string;
+  lon: number | string;
 }
 
 export interface Image {
@@ -29,34 +29,21 @@ export interface Image {
   alt: string;
 }
 
-export interface ActiveRestaurant {
+export interface ImageUploadParams {
   id: string;
-  coords: Coords;
+  imageFile: File;
   city: string;
-  urlSlug: string;
+  venue: string;
 }
 
 // Used for state in Restaurant Context
 export interface State {
-  restaurants: Restaurant[];
-  isLoading: boolean;
   errorMessage: string | null;
-  activeRestaurant: Restaurant | null;
 }
 
 export interface RestaurantContextType extends State {
-  addRestaurant: (restaurant: NewRestaurant) => void;
-  setActiveRestaurant: (restaurant: Restaurant) => void;
-  updateRestaurantImages: (id: string, imageURL: string) => void;
   clearError: () => void;
 }
 
 // Used for reducer in Restaurant Context
-export type Action =
-  | {
-      type: 'loading';
-    }
-  | { type: 'restaurants/loaded'; payload: Restaurant[] }
-  | { type: 'rejected'; payload: string }
-  | { type: 'set-active'; payload: Restaurant }
-  | { type: 'clear-error' };
+export type Action = { type: 'clear-error' };

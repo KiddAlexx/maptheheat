@@ -4,35 +4,35 @@ import { useEffect } from 'react';
 // Third party imports
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import chilliPin from '../assets/chillipin.png';
+import chilliPin from '../../assets/chillipin.png';
 import MapPopupContent from './MapPopupContent';
 
 // Style imports
 import styles from './MapView.module.css';
 
 // Type imports
-import { Coords } from '../models/restaurantTypes';
+import { Coords } from '../../models/restaurantTypes';
 
 // Hooks imports
-import { useRestaurants } from '../features/restaurants/useRestaurants';
+import { useRestaurants } from '../venues/restaurants/useRestaurants';
 import { useSearchParams } from 'react-router-dom';
 
 function MapView() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   // Load restaurants from supabase
-  const { restaurants, error } = useRestaurants();
+  const { restaurants } = useRestaurants();
 
   // Sets coordinates based on searchParams if available
   // Used to center map on selected restaurant
-  const lat = searchParams.get('lat') || 41.3874;
-  const lon = searchParams.get('lng') || 2.17;
+  const lat = Number(searchParams.get('lat')) || 41.3874;
+  const lon = Number(searchParams.get('lon')) || 2.17;
 
   function ChangeCenter({ lat, lon }: Coords) {
     const map = useMap();
 
     useEffect(() => {
-      map.setView([lat, lon], 13.5);
+      map.setView([Number(lat), Number(lon)], 13.5);
     }, [lat, lon, map]);
 
     return null;

@@ -3,11 +3,11 @@ import { NavLink } from 'react-router-dom';
 
 // Style imports
 import styles from './PageNav.module.css';
-import { useUser } from '../features/authentication/useUser';
-import { useLogout } from '../features/authentication/useLogout';
+import { useUser } from '../authentication/useUser';
+import { useLogout } from '../authentication/useLogout';
 
 function PageNav() {
-  const { logout, isLoading: isLoadingLogout } = useLogout();
+  const { logout } = useLogout();
 
   const { isAuthenticated } = useUser();
 
@@ -38,7 +38,7 @@ function PageNav() {
         ) : (
           <li>
             <button
-              onClick={logout}
+              onClick={() => logout()}
               className={`btn-default ${styles.btnLogout}`}
             >
               Log Out

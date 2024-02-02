@@ -1,12 +1,18 @@
 import supabase from './supabase';
 
-async function uploadImage(imageFile, bucketName, ...folders) {
+async function uploadImage(
+  imageFile: File,
+  bucketName: string,
+  ...folders: string[]
+) {
   if (!imageFile) {
     throw new Error('No image file provided');
   }
 
-  // Create file name
-  const imageName = `${Math.random()}-${imageFile.name}`
+  // Create unique file name
+  const imageName = `${Date.now()}-${Math.random().toString(36).substr(2)}-${
+    imageFile.name
+  }`
     .replaceAll('/', '-')
     .replaceAll(' ', '-')
     .toLowerCase();
@@ -24,8 +30,12 @@ async function uploadImage(imageFile, bucketName, ...folders) {
       });
     if (error) throw error;
     return imagePath;
-  } catch (err) {
-    throw new Error(`Error uploading image: ${err.message}`);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Error uploading image: ${error.message}`);
+    } else {
+      throw new Error('An unexpected error occured while uploading your image');
+    }
   }
 }
 

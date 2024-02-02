@@ -1,9 +1,6 @@
 // React imports
 import { useEffect, useState } from 'react';
 
-// Firebase imports
-import { auth } from '../config/firebase-config';
-
 // Third party imports
 import slugify from 'slugify';
 import { useForm } from 'react-hook-form';
@@ -13,25 +10,34 @@ import toast from 'react-hot-toast';
 import styles from './VenueForm.module.css';
 
 // Type imports
-import { VenueFormProps } from './SideBar';
+import { VenueFormProps } from '../../layout/SideBar';
 
 // Hooks imports
-import { useRestaurants } from '../context/RestaurantContext';
-import { useCreateRestaurant } from '../features/restaurants/useCreateRestaurant';
+
+import { useCreateRestaurant } from '../restaurants/useCreateRestaurant';
+import { useUser } from '../../authentication/useUser';
 
 // Component imports
-import LoaderSpinner from './LoaderSpinner';
-import ErrorModal from './ErrorModal';
+import LoaderSpinner from '../../../ui/LoaderSpinner';
+import ErrorModal from '../../../ui/ErrorModal';
 
 function VenueForm({ setIsAddingVenue }: VenueFormProps) {
-  // Functions from Restaurant Context
-  const { isLoading } = useRestaurants();
-
+  interface FormData {
+    city: string;
+    venueName: string;
+    address: string;
+    postcode: string;
+    description: string;
+    phoneNumber: string;
+    website: string;
+  }
   const { createRestaurant, isCreating } = useCreateRestaurant();
+
+  const { user } = useUser();
 
   const [localFormError, setLocalFormError] = useState('');
 
-  const { register, handleSubmit, watch, formState } = useForm();
+  const { register, handleSubmit, watch, formState } = useForm<FormData>();
   const { errors } = formState;
 
   const city = watch('city');
@@ -57,7 +63,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   }, [city]);
 
   // Fetches coordinates + detailed address from user input
-  async function fetchAddressDetails(formData) {
+  async function fetchAddressDetails(formData: FormData) {
     const { address, postcode } = formData;
     try {
       const res = await fetch(
@@ -75,7 +81,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     }
   }
 
-  async function formSubmit(formData) {
+  async function formSubmit(formData: FormData) {
     try {
       // Fetch detailed address + cooridinates
       const additionalVenueData = await fetchAddressDetails(formData);
@@ -91,7 +97,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
         ...formData,
         phoneNumber,
         ...additionalVenueData,
-        userId: auth!.currentUser!.uid, // Value will not be null, checks done prior, further validation to be added
+        userId: user!.id, // Value will not be null, checks done prior, further validation to be added
         urlSlug: slugify(formData.venueName),
       };
 
@@ -123,7 +129,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
         onSubmit={handleSubmit(formSubmit, toastFormError)}
         className={styles.venueFormContainer}
       >
-        {isLoading ? (
+        {isCreating ? (
           <LoaderSpinner />
         ) : (
           <>
