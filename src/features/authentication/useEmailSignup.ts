@@ -3,7 +3,7 @@ import { signupApi } from '../../services/apiAuth';
 import toast from 'react-hot-toast';
 
 export function useEmailSignup() {
-  const { mutate: signupEmail, isLoading } = useMutation({
+  const { mutate: signupEmail, isPending } = useMutation({
     mutationFn: signupApi,
     onSuccess: () => {
       toast.success(
@@ -18,5 +18,5 @@ export function useEmailSignup() {
       }
     },
   });
-  return { signupEmail, isLoading };
+  return { signupEmail, isPending };
 }

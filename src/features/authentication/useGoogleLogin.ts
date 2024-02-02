@@ -8,9 +8,10 @@ export function useGoogleLogin() {
   const { mutate: loginGoogle, isPending } = useMutation({
     mutationFn: () => loginGoogleApi(),
     onSuccess: (user) => {
-      queryClient.setQueryData(['user'], user.user);
+      queryClient.setQueryData(['user'], user);
+      console.log(user);
     },
-    onError: (err) => {
+    onError: () => {
       toast.error('Google authenticaion failed');
     },
   });

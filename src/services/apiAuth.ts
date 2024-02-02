@@ -1,6 +1,7 @@
+import { AuthCredentials } from '../models/authenticationTypes';
 import supabase from './supabase';
 
-export async function signupApi({ email, password }) {
+export async function signupApi({ email, password }: AuthCredentials) {
   console.log(email, password);
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -11,7 +12,7 @@ export async function signupApi({ email, password }) {
   return data;
 }
 
-export async function loginApi({ email, password }) {
+export async function loginApi({ email, password }: AuthCredentials) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
