@@ -1,9 +1,13 @@
 import { useNavigate } from 'react-router';
 import { useUser } from '../features/authentication/useUser';
-import { useEffect } from 'react';
+import { useEffect, ReactNode } from 'react';
 import LoaderSpinner from './LoaderSpinner';
 
-function ProtectedRoute({ children }) {
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
+
+function ProtectedRoute({ children }: ProtectedRouteProps) {
   const navigate = useNavigate();
 
   // 1. Load the authenticated user
