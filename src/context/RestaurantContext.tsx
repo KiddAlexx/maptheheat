@@ -5,11 +5,9 @@ import { createContext, useContext, useReducer, ReactNode } from 'react';
 
 // Type imports
 import {
-  Restaurant,
   RestaurantContextType,
   State,
   Action,
-  NewRestaurant,
 } from '../models/restaurantTypes';
 
 const RestaurantContext = createContext<RestaurantContextType | undefined>(
@@ -17,20 +15,11 @@ const RestaurantContext = createContext<RestaurantContextType | undefined>(
 );
 
 const initialState = {
-  restaurants: [],
-  isLoading: false,
   errorMessage: null,
-  activeRestaurant: null,
 };
 
 function reducer(state: State, action: Action) {
   switch (action.type) {
-    // Used to set active restaurant, to help sync components
-    case 'set-active':
-      return {
-        ...state,
-        activeRestaurant: action.payload,
-      };
     case 'clear-error':
       return {
         ...state,
@@ -43,13 +32,7 @@ function reducer(state: State, action: Action) {
 }
 
 function RestaurantsProvider({ children }: { children: ReactNode }) {
-  const [{ restaurants, isLoading, errorMessage, activeRestaurant }, dispatch] =
-    useReducer(reducer, initialState);
-
-  // Used to set active restaurant, to help sync components
-  function setActiveRestaurant(restaurant: Restaurant) {
-    dispatch({ type: 'set-active', payload: restaurant });
-  }
+  const [{ errorMessage }, dispatch] = useReducer(reducer, initialState);
 
   function clearError() {
     console.log('Clearing error...');
@@ -59,11 +42,7 @@ function RestaurantsProvider({ children }: { children: ReactNode }) {
   return (
     <RestaurantContext.Provider
       value={{
-        restaurants,
-        isLoading,
         errorMessage,
-        activeRestaurant,
-        setActiveRestaurant,
         clearError,
       }}
     >
