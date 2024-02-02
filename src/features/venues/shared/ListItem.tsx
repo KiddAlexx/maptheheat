@@ -26,16 +26,7 @@ interface ListItemProps {
 function ListItem({ restaurant, handleClick }: ListItemProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
 
-  const {
-    id,
-    venueName,
-    address,
-    phoneNumber,
-    city,
-    urlSlug,
-    images,
-    averageRating,
-  } = restaurant;
+  const { venueName, address, phoneNumber, images, averageRating } = restaurant;
 
   return (
     <div className={styles.listItemContainer} onClick={handleClick}>

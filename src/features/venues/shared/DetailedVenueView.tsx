@@ -13,6 +13,9 @@ import ImageUploader from '../../../components/ImageUploader';
 import VenueRating from './VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 
+// Type imports
+import { Image } from '../../../models/restaurantTypes';
+
 // File imports
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
 import clockIcon from '../../../assets/icons/clock.svg';
@@ -22,15 +25,11 @@ import phoneIcon from '../../../assets/icons/phone.svg';
 import infoIcon from '../../../assets/icons/info.svg';
 
 function DetailedVenueView() {
-  const [searchParams, setSearchParam] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const venueId = searchParams.get('id');
 
-  const {
-    isLoading: isLoadingRestaurant,
-    error,
-    restaurant,
-  } = useRestaurant(venueId);
+  const { isLoading: isLoadingRestaurant, restaurant } = useRestaurant(venueId);
 
   if (isLoadingRestaurant) {
     return <LoaderSpinner />;
@@ -57,7 +56,7 @@ function DetailedVenueView() {
         {images ? (
           // Slice first 4 images and map over
           // To be replaced with more refined component
-          images.slice(0, 4).map((image) => (
+          images.slice(0, 4).map((image: Image) => (
             <div className={styles.mainImageContainer}>
               <img
                 className={styles.imageMainSmall}
