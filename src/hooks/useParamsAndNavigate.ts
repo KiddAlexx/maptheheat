@@ -1,10 +1,11 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Restaurant } from '../models/restaurantTypes';
 
 export function useParamsAndNavigate() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  function setParamsAndNavigate(venue, specifiedMode?) {
+  function setParamsAndNavigate(venue: Restaurant, specifiedMode?: string) {
     if (!venue) return;
 
     const { city, urlSlug, id, coords } = venue;
