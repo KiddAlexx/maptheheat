@@ -23,15 +23,7 @@ interface MapPopupContentProps {
 function MapPopupContent({ restaurant }: MapPopupContentProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
 
-  const {
-    city,
-    urlSlug,
-    venueName,
-    averageRating,
-    address,
-    phoneNumber,
-    images,
-  } = restaurant;
+  const { venueName, averageRating, address, phoneNumber, images } = restaurant;
   return (
     <>
       {/* Duplication of code from ListItem - Move to own component */}

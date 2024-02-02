@@ -18,21 +18,21 @@ import { useRestaurants } from '../venues/restaurants/useRestaurants';
 import { useSearchParams } from 'react-router-dom';
 
 function MapView() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   // Load restaurants from supabase
-  const { restaurants, error } = useRestaurants();
+  const { restaurants } = useRestaurants();
 
   // Sets coordinates based on searchParams if available
   // Used to center map on selected restaurant
-  const lat = searchParams.get('lat') || 41.3874;
-  const lon = searchParams.get('lon') || 2.17;
+  const lat = Number(searchParams.get('lat')) || 41.3874;
+  const lon = Number(searchParams.get('lon')) || 2.17;
 
   function ChangeCenter({ lat, lon }: Coords) {
     const map = useMap();
 
     useEffect(() => {
-      map.setView([lat, lon], 13.5);
+      map.setView([Number(lat), Number(lon)], 13.5);
     }, [lat, lon, map]);
 
     return null;

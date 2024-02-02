@@ -20,8 +20,8 @@ export interface Restaurant {
 export type NewRestaurant = Omit<Restaurant, 'id'>;
 
 export interface Coords {
-  lat: number;
-  lon: number;
+  lat: number | string;
+  lon: number | string;
 }
 
 export interface Image {
