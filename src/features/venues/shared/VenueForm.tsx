@@ -22,13 +22,22 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ErrorModal from '../../../ui/ErrorModal';
 
 function VenueForm({ setIsAddingVenue }: VenueFormProps) {
+  interface FormData {
+    city: string;
+    venueName: string;
+    address: string;
+    postcode: string;
+    description: string;
+    phoneNumber: string;
+    website: string;
+  }
   const { createRestaurant, isCreating } = useCreateRestaurant();
 
   const { user } = useUser();
 
   const [localFormError, setLocalFormError] = useState('');
 
-  const { register, handleSubmit, watch, formState } = useForm();
+  const { register, handleSubmit, watch, formState } = useForm<FormData>();
   const { errors } = formState;
 
   const city = watch('city');
@@ -54,7 +63,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   }, [city]);
 
   // Fetches coordinates + detailed address from user input
-  async function fetchAddressDetails(formData) {
+  async function fetchAddressDetails(formData: FormData) {
     const { address, postcode } = formData;
     try {
       const res = await fetch(
@@ -72,7 +81,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     }
   }
 
-  async function formSubmit(formData) {
+  async function formSubmit(formData: FormData) {
     try {
       // Fetch detailed address + cooridinates
       const additionalVenueData = await fetchAddressDetails(formData);
