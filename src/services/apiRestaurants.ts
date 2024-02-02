@@ -46,17 +46,16 @@ export async function createRestaurantImage({
   venue,
 }: ImageUploadParams) {
   // Compress image
-
   const compressedImage = await compressImage(imageFile);
 
-  // Upload image to supabase bucket + return path
+  // Upload image to supabase bucket
   const imagePath = await uploadImage(
     compressedImage,
     'restaurant-images',
     city,
     venue
   );
-
+  // Generate alt text for image + full URL
   const altText = `An image of ${venue} in ${city}`;
   const imageUrl = `${supabaseUrl}/storage/v1/object/public/restaurant-images/${imagePath}`;
 

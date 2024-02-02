@@ -16,7 +16,7 @@ export interface Restaurant {
   averageRating?: number | null;
 }
 
-// id not present at creation time, generate by Firestore
+// id not present at creation time, generate by Supbase
 export type NewRestaurant = Omit<Restaurant, 'id'>;
 
 export interface Coords {

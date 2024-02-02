@@ -9,27 +9,27 @@ import { useSearchParams } from 'react-router-dom';
 import styles from './ImageUploader.module.css';
 
 // Hooks imports
-
 import { useUpdateRestaurantImage } from '../features/venues/restaurants/useUpdateRestaurantImage';
+import { useUser } from '../features/authentication/useUser';
 
 // File imports
 import cameraIcon from '../assets/icons/camera.svg';
-import { useUser } from '../features/authentication/useUser';
 
 function ImageUploader() {
+  // Fetch image upload functionality and states from React Query hook
+  const { uploadImageRef, isUploading, fileUploaded } =
+    useUpdateRestaurantImage();
+  // Load remaining hooks
+  const navigate = useNavigate();
+  const { isAuthenticated } = useUser();
+
   //File Upload State
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const navigate = useNavigate();
-
+  // Load paramater values
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id');
   const { city, venue } = useParams();
-
-  /*   const { city, id, urlSlug: restaurantName } = activeRestaurant; */
-
-  const { uploadImageRef, isUploading, fileUploaded } =
-    useUpdateRestaurantImage();
 
   // Ensures image upload state is reset if user changes active restaurant
   // Or when image upload has completed sucessfuly
@@ -42,10 +42,7 @@ function ImageUploader() {
     }
   }, [id, fileUploaded]);
 
-  const { isAuthenticated } = useUser();
-
   // Return from function if params do not exist
-
   if (!id || !city || !venue) return;
 
   // Function to handle compression and upload of selected image to Supabase storage.
@@ -55,6 +52,7 @@ function ImageUploader() {
     if (!isAuthenticated) return navigate('/login');
 
     console.log('log from image uploader ', id, imageFile, city, venue);
+
     uploadImageRef({ id, imageFile, city, venue });
   };
 
