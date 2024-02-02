@@ -1,16 +1,12 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import toast from 'react-hot-toast';
 import { loginGoogleApi } from '../../services/apiAuth';
 
 export function useGoogleLogin() {
-  const queryClient = useQueryClient();
   const { mutate: loginGoogle, isPending } = useMutation({
     mutationFn: () => loginGoogleApi(),
-    onSuccess: (user) => {
-      queryClient.setQueryData(['user'], user);
-      console.log(user);
-    },
+
     onError: () => {
       toast.error('Google authenticaion failed');
     },
