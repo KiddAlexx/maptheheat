@@ -28,16 +28,8 @@ function PageNav() {
                 onClick={() => openModal('login')}
                 className={`btn-default ${styles.btnLogin}`}
               >
-                Login
+                Login / Sign Up
               </button>
-            </li>
-            <li>
-              <NavLink
-                to="/signup"
-                className={`btn-default ${styles.btnLogin}`}
-              >
-                Sign Up!
-              </NavLink>
             </li>
           </>
         ) : (
