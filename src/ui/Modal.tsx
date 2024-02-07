@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import styles from './Modal.module.css';
@@ -11,18 +11,31 @@ interface ModalProps {
 function Modal({ children }: ModalProps) {
   const { closeModal } = useModalContext();
   const [modalRoot, setModalRoot] = useState<Element | null>(null);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     setModalRoot(document.querySelector('#modal-root'));
   }, []);
 
   useEffect(() => {
-    function escapeKeyHandler(e) {
+    function handleEscapeKeypress(e) {
       if (e.key === 'Escape') closeModal();
     }
-    document.addEventListener('keydown', escapeKeyHandler);
+    document.addEventListener('keydown', handleEscapeKeypress);
     return () => {
-      document.removeEventListener('keydown', escapeKeyHandler);
+      document.removeEventListener('keydown', handleEscapeKeypress);
+    };
+  }, [closeModal]);
+
+  useEffect(() => {
+    function handleOutsideClick(e) {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        closeModal();
+      }
+    }
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
     };
   }, [closeModal]);
 
@@ -30,7 +43,7 @@ function Modal({ children }: ModalProps) {
 
   return createPortal(
     <div className={styles.modalBackdrop}>
-      <div className={styles.modalContainer}>
+      <div className={styles.modalContainer} ref={modalRef}>
         <button onClick={() => closeModal()} className={styles.modalCloseBtn}>
           x
         </button>
