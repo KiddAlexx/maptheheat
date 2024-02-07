@@ -5,11 +5,13 @@ import { NavLink } from 'react-router-dom';
 import styles from './PageNav.module.css';
 import { useUser } from '../authentication/useUser';
 import { useLogout } from '../authentication/useLogout';
+import { useModalContext } from '../../context/ModalContext';
 
 function PageNav() {
   const { logout } = useLogout();
 
   const { isAuthenticated } = useUser();
+  const { openModal } = useModalContext();
 
   return (
     <nav className={styles.nav}>
@@ -22,7 +24,10 @@ function PageNav() {
         {!isAuthenticated ? (
           <>
             <li>
-              <button className={`btn-default ${styles.btnLogin}`}>
+              <button
+                onClick={() => openModal('login')}
+                className={`btn-default ${styles.btnLogin}`}
+              >
                 Login
               </button>
             </li>

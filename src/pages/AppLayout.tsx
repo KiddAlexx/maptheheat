@@ -12,9 +12,6 @@ function AppLayout() {
     <main className={styles.appContainer}>
       <SideBar />
       <RightPanel />
-      {/* Will only display if error message exists in context */}
-      <ErrorModal />
-      <ModalManager />
     </main>
   );
 }

@@ -23,6 +23,9 @@ import MapView from './features/map/MapView';
 import UserProfile from './features/userProfile/UserProfile';
 import PageNav from './features/layout/PageNav';
 import ProtectedRoute from './components/ProtectedRoute';
+import { ModalProvider } from './context/ModalContext';
+import ErrorModal from './ui/ErrorModal';
+import ModalManager from './components/ModalManager';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,50 +38,54 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <RestaurantsProvider>
-      <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
-        <BrowserRouter>
-          <PageNav />
-          <Routes>
-            <Route path="/" element={<Homepage />} />
-            <Route path="login" element={<AuthPage formType="login" />} />
-            <Route path="signup" element={<AuthPage formType="signup" />} />
-            <Route path="app" element={<AppLayout />}>
-              <Route index element={<Navigate replace to="map" />} />
-              <Route path="map/:city?/:venue?" element={<MapView />} />
-              <Route
-                path="venue/:city/:venue"
-                element={<DetailedVenueView />}
-              />
-              <Route
-                path="profile"
-                element={
-                  <ProtectedRoute>
-                    <UserProfile />
-                  </ProtectedRoute>
-                }
-              />
-            </Route>
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </BrowserRouter>
-        <Toaster
-          position="top-center"
-          gutter={12}
-          containerStyle={{ margin: '8px' }}
-          toastOptions={{
-            success: { duration: 3000 },
-            error: { duration: 5000 },
-            style: {
-              fontSize: '16',
-              maxWidth: '500px',
-              padding: '16px 24px',
-              backgroundColor: '#fff',
-              color: '#374151',
-            },
-          }}
-        />
-      </QueryClientProvider>
+      <ModalProvider>
+        <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={false} />
+          <BrowserRouter>
+            <PageNav />
+            <Routes>
+              <Route path="/" element={<Homepage />} />
+              <Route path="login" element={<AuthPage formType="login" />} />
+              <Route path="signup" element={<AuthPage formType="signup" />} />
+              <Route path="app" element={<AppLayout />}>
+                <Route index element={<Navigate replace to="map" />} />
+                <Route path="map/:city?/:venue?" element={<MapView />} />
+                <Route
+                  path="venue/:city/:venue"
+                  element={<DetailedVenueView />}
+                />
+                <Route
+                  path="profile"
+                  element={
+                    <ProtectedRoute>
+                      <UserProfile />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+            <ErrorModal />
+            <ModalManager />
+          </BrowserRouter>
+          <Toaster
+            position="top-center"
+            gutter={12}
+            containerStyle={{ margin: '8px' }}
+            toastOptions={{
+              success: { duration: 3000 },
+              error: { duration: 5000 },
+              style: {
+                fontSize: '16',
+                maxWidth: '500px',
+                padding: '16px 24px',
+                backgroundColor: '#fff',
+                color: '#374151',
+              },
+            }}
+          />
+        </QueryClientProvider>
+      </ModalProvider>
     </RestaurantsProvider>
   );
 }
