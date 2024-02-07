@@ -30,7 +30,12 @@ function Modal({ children }: ModalProps) {
 
   return createPortal(
     <div className={styles.modalBackdrop}>
-      <div className={styles.modalContainer}> {children}</div>
+      <div className={styles.modalContainer}>
+        <button onClick={() => closeModal()} className={styles.modalCloseBtn}>
+          x
+        </button>
+        {children}
+      </div>
     </div>,
     modalRoot
   );
