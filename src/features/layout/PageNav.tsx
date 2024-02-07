@@ -22,9 +22,9 @@ function PageNav() {
         {!isAuthenticated ? (
           <>
             <li>
-              <NavLink to="/login" className={`btn-default ${styles.btnLogin}`}>
+              <button className={`btn-default ${styles.btnLogin}`}>
                 Login
-              </NavLink>
+              </button>
             </li>
             <li>
               <NavLink

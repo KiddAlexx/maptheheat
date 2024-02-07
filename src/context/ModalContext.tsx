@@ -49,7 +49,9 @@ function ModalProvider({ children }) {
   }
 
   return (
-    <ModalContext.Provider value={{ modalName, modalOpen, openModal }}>
+    <ModalContext.Provider
+      value={{ modalName, modalOpen, openModal, closeModal }}
+    >
       {children}
     </ModalContext.Provider>
   );
