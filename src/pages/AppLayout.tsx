@@ -5,6 +5,7 @@ import SideBar from '../features/layout/SideBar';
 
 // Style imports
 import styles from './AppLayout.module.css';
+import ModalManager from '../components/ModalManager';
 
 function AppLayout() {
   return (
@@ -13,6 +14,7 @@ function AppLayout() {
       <RightPanel />
       {/* Will only display if error message exists in context */}
       <ErrorModal />
+      <ModalManager />
     </main>
   );
 }

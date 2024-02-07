@@ -22,7 +22,7 @@ import DetailedVenueView from './features/venues/shared/DetailedVenueView';
 import MapView from './features/map/MapView';
 import UserProfile from './features/userProfile/UserProfile';
 import PageNav from './features/layout/PageNav';
-import ProtectedRoute from './ui/ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -6,7 +6,7 @@ const ModalContext = createContext();
 
 const initialState = {
   modalName: null,
-  modalOpen: null,
+  modalOpen: false,
 };
 
 function reducer(state, action) {
