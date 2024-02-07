@@ -15,7 +15,6 @@ import { RestaurantsProvider } from './context/RestaurantContext';
 // Component imports
 
 import Homepage from './pages/Homepage';
-import AuthPage from './pages/AuthPage';
 import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
 import DetailedVenueView from './features/venues/shared/DetailedVenueView';
@@ -45,8 +44,6 @@ function App() {
             <PageNav />
             <Routes>
               <Route path="/" element={<Homepage />} />
-              <Route path="login" element={<AuthPage formType="login" />} />
-              <Route path="signup" element={<AuthPage formType="signup" />} />
               <Route path="app" element={<AppLayout />}>
                 <Route index element={<Navigate replace to="map" />} />
                 <Route path="map/:city?/:venue?" element={<MapView />} />
