@@ -17,12 +17,20 @@ function reducer(state, action) {
         modalName: action.payload,
         modalOpen: true,
       };
+
     case 'close-modal':
-      return {
-        ...state,
-        modalName: null,
-        modalOpen: false,
-      };
+      if (state.modalName === action.payload) {
+        return {
+          ...state,
+          modalName: null,
+          modalOpen: false,
+        };
+      }
+      console.log(
+        `attempted to close ${action.payload} when ${state.modalName} was open`
+      );
+      return state; // Return current state if the modal names do not match
+
     default:
       throw new Error('Unknown action type');
   }
@@ -35,6 +43,9 @@ function ModalProvider({ children }) {
   );
   function openModal(modal) {
     dispatch({ type: 'open-modal', payload: modal });
+  }
+  function closeModal(modal) {
+    dispatch({ type: 'close-modal', payload: modal });
   }
 
   return (
