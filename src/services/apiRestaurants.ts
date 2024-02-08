@@ -1,3 +1,4 @@
+import camelcaseKeys from 'camelcase-keys';
 import { ImageUploadParams, NewRestaurant } from '../models/restaurantTypes';
 import compressImage from '../utils/compressImage';
 import supabase, { supabaseUrl } from './supabase';
@@ -9,7 +10,7 @@ export async function getRestaurants() {
   if (error) {
     throw new Error(`Restaurants could not be loaded. Error:${error.message}`);
   }
-  return data;
+  return camelcaseKeys(data);
 }
 
 export async function getRestaurant(id: string) {
@@ -21,7 +22,7 @@ export async function getRestaurant(id: string) {
   if (error) {
     throw new Error(`Restaurant could not be loaded. Error:${error.message}`);
   }
-  return data[0];
+  return camelcaseKeys(data[0]);
 }
 
 export async function createRestaurant(newRestaurant: NewRestaurant) {
