@@ -1,7 +1,6 @@
 // React imports
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 // Third party imports
 
