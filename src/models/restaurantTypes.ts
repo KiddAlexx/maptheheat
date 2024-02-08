@@ -35,15 +35,3 @@ export interface ImageUploadParams {
   city: string;
   venue: string;
 }
-
-// Used for state in Restaurant Context
-export interface State {
-  errorMessage: string | null;
-}
-
-export interface RestaurantContextType extends State {
-  clearError: () => void;
-}
-
-// Used for reducer in Restaurant Context
-export type Action = { type: 'clear-error' };
