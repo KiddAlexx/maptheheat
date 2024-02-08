@@ -18,7 +18,7 @@ export async function getRestaurant(id: string) {
   const { data, error } = await supabase
     .from('restaurant_details')
     .select('*')
-    .eq('id', id);
+    .eq('restaurant_id', id);
 
   if (error) {
     throw new Error(`Restaurant could not be loaded. Error:${error.message}`);
