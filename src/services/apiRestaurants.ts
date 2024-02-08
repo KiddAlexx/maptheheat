@@ -3,6 +3,7 @@ import { ImageUploadParams, NewRestaurant } from '../models/restaurantTypes';
 import compressImage from '../utils/compressImage';
 import supabase, { supabaseUrl } from './supabase';
 import uploadImage from './supabaseImageUploader';
+import decamelizeKeys from 'decamelize-keys';
 
 export async function getRestaurants() {
   const { data, error } = await supabase.from('restaurant_details').select('*');
@@ -26,10 +27,10 @@ export async function getRestaurant(id: string) {
 }
 
 export async function createRestaurant(newRestaurant: NewRestaurant) {
-  console.log('Creating restaurant with data:', newRestaurant);
+  const convertedRestaurant = decamelizeKeys(newRestaurant);
   const { data, error } = await supabase
     .from('restaurant_details')
-    .insert(newRestaurant)
+    .insert(convertedRestaurant)
     .select()
     .single();
 
