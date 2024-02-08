@@ -14,14 +14,15 @@ import { useUser } from '../features/authentication/useUser';
 
 // File imports
 import cameraIcon from '../assets/icons/camera.svg';
+import { useModalContext } from '../context/ModalContext';
 
 function ImageUploader() {
   // Fetch image upload functionality and states from React Query hook
   const { uploadImageRef, isUploading, fileUploaded } =
     useUpdateRestaurantImage();
   // Load remaining hooks
-  const navigate = useNavigate();
   const { isAuthenticated } = useUser();
+  const { openModal } = useModalContext();
 
   //File Upload State
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -49,7 +50,7 @@ function ImageUploader() {
   const uploadFile = async function () {
     if (!imageFile) return;
 
-    if (!isAuthenticated) return navigate('/login');
+    if (!isAuthenticated) return;
 
     console.log('log from image uploader ', id, imageFile, city, venue);
 
@@ -64,7 +65,7 @@ function ImageUploader() {
         onClick={(e) => {
           if (!isAuthenticated) {
             e.preventDefault();
-            navigate('/login');
+            openModal('login');
           }
         }}
       >
