@@ -45,7 +45,7 @@ function reducer(state: State, action: Action) {
     }
 
     default:
-      throw new Error('Unknown action type');
+      return state;
   }
 }
 
