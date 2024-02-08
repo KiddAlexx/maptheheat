@@ -11,14 +11,14 @@ interface ModalProps {
 function Modal({ children }: ModalProps) {
   const { closeModal } = useModalContext();
   const [modalRoot, setModalRoot] = useState<Element | null>(null);
-  const modalRef = useRef(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setModalRoot(document.querySelector('#modal-root'));
   }, []);
 
   useEffect(() => {
-    function handleEscapeKeypress(e) {
+    function handleEscapeKeypress(e: KeyboardEvent) {
       if (e.key === 'Escape') closeModal();
     }
     document.addEventListener('keydown', handleEscapeKeypress);
@@ -28,8 +28,8 @@ function Modal({ children }: ModalProps) {
   }, [closeModal]);
 
   useEffect(() => {
-    function handleOutsideClick(e) {
-      if (modalRef.current && !modalRef.current.contains(e.target)) {
+    function handleOutsideClick(e: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
         closeModal();
       }
     }
