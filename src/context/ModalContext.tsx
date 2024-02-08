@@ -1,15 +1,33 @@
 /* eslint-disable react-refresh/only-export-components */
 
-import { createContext, useContext, useReducer } from 'react';
+// React imports
+import { ReactNode, createContext, useContext, useReducer } from 'react';
 
-const ModalContext = createContext();
+// Data types
+interface State {
+  modalName: null | string;
+  modalOpen: boolean;
+}
+
+interface ModalContextType extends State {
+  openModal: (modal: string) => void;
+  closeModal: () => void;
+}
+
+type Action = { type: 'open-modal'; payload: string } | { type: 'close-modal' };
+
+interface ModalProviderProps {
+  children: ReactNode;
+}
+
+const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 const initialState = {
   modalName: null,
   modalOpen: false,
 };
 
-function reducer(state, action) {
+function reducer(state: State, action: Action) {
   switch (action.type) {
     case 'open-modal':
       return {
@@ -31,12 +49,12 @@ function reducer(state, action) {
   }
 }
 
-function ModalProvider({ children }) {
+function ModalProvider({ children }: ModalProviderProps) {
   const [{ modalName, modalOpen }, dispatch] = useReducer(
     reducer,
     initialState
   );
-  function openModal(modal) {
+  function openModal(modal: string) {
     dispatch({ type: 'open-modal', payload: modal });
   }
   function closeModal() {
