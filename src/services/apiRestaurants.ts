@@ -4,7 +4,7 @@ import supabase, { supabaseUrl } from './supabase';
 import uploadImage from './supabaseImageUploader';
 
 export async function getRestaurants() {
-  const { data, error } = await supabase.from('restaurant-details').select('*');
+  const { data, error } = await supabase.from('restaurant_details').select('*');
 
   if (error) {
     throw new Error(`Restaurants could not be loaded. Error:${error.message}`);
@@ -14,7 +14,7 @@ export async function getRestaurants() {
 
 export async function getRestaurant(id: string) {
   const { data, error } = await supabase
-    .from('restaurant-details')
+    .from('restaurant_details')
     .select('*')
     .eq('id', id);
 
@@ -27,7 +27,7 @@ export async function getRestaurant(id: string) {
 export async function createRestaurant(newRestaurant: NewRestaurant) {
   console.log('Creating restaurant with data:', newRestaurant);
   const { data, error } = await supabase
-    .from('restaurant-details')
+    .from('restaurant_details')
     .insert(newRestaurant)
     .select()
     .single();
@@ -61,7 +61,7 @@ export async function createRestaurantImage({
 
   // Fetch current images array
   const { data: currentImages, error: fetchError } = await supabase
-    .from('restaurant-details')
+    .from('restaurant_details')
     .select('images')
     .eq('id', id)
     .single();
@@ -77,7 +77,7 @@ export async function createRestaurantImage({
     : [{ alt: altText, url: imageUrl }];
 
   const { data, error } = await supabase
-    .from('restaurant-details')
+    .from('restaurant_details')
     .update({ images: updatedImages })
     .eq('id', id);
 
