@@ -1,34 +1,36 @@
+import camelcaseKeys from 'camelcase-keys';
 import { ImageUploadParams, NewRestaurant } from '../models/restaurantTypes';
 import compressImage from '../utils/compressImage';
 import supabase, { supabaseUrl } from './supabase';
 import uploadImage from './supabaseImageUploader';
+import decamelizeKeys from 'decamelize-keys';
 
 export async function getRestaurants() {
-  const { data, error } = await supabase.from('restaurant-details').select('*');
+  const { data, error } = await supabase.from('restaurant_details').select('*');
 
   if (error) {
     throw new Error(`Restaurants could not be loaded. Error:${error.message}`);
   }
-  return data;
+  return camelcaseKeys(data);
 }
 
 export async function getRestaurant(id: string) {
   const { data, error } = await supabase
-    .from('restaurant-details')
+    .from('restaurant_details')
     .select('*')
-    .eq('id', id);
+    .eq('restaurant_id', id);
 
   if (error) {
     throw new Error(`Restaurant could not be loaded. Error:${error.message}`);
   }
-  return data[0];
+  return camelcaseKeys(data[0]);
 }
 
 export async function createRestaurant(newRestaurant: NewRestaurant) {
-  console.log('Creating restaurant with data:', newRestaurant);
+  const convertedRestaurant = decamelizeKeys(newRestaurant);
   const { data, error } = await supabase
-    .from('restaurant-details')
-    .insert(newRestaurant)
+    .from('restaurant_details')
+    .insert(convertedRestaurant)
     .select()
     .single();
 
@@ -61,9 +63,9 @@ export async function createRestaurantImage({
 
   // Fetch current images array
   const { data: currentImages, error: fetchError } = await supabase
-    .from('restaurant-details')
+    .from('restaurant_details')
     .select('images')
-    .eq('id', id)
+    .eq('restaurant_id', id)
     .single();
 
   if (fetchError) {
@@ -77,9 +79,9 @@ export async function createRestaurantImage({
     : [{ alt: altText, url: imageUrl }];
 
   const { data, error } = await supabase
-    .from('restaurant-details')
+    .from('restaurant_details')
     .update({ images: updatedImages })
-    .eq('id', id);
+    .eq('restaurant_id', id);
 
   if (error) {
     throw new Error(`Error adding image to database: ${error.message}`);

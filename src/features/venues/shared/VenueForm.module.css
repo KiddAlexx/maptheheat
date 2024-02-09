@@ -1,6 +1,7 @@
 .venueFormContainer {
+  background-color: rgb(255, 255, 255);
   overflow-y: scroll;
-  height: 100%;
+
   -ms-overflow-style: none;
   scrollbar-width: none;
 }

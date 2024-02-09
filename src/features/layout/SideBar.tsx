@@ -8,7 +8,7 @@ import VenueForm from '../venues/shared/VenueForm';
 
 // Style imports
 import styles from './SideBar.module.css';
-import ProtectedRoute from '../../ui/ProtectedRoute';
+import ProtectedRoute from '../../components/ProtectedRoute';
 
 export interface VenueFormProps {
   setIsAddingVenue: React.Dispatch<React.SetStateAction<boolean>>;

@@ -3,12 +3,20 @@
 //React imports
 import { createContext, useContext, useReducer, ReactNode } from 'react';
 
-// Type imports
-import {
-  RestaurantContextType,
-  State,
-  Action,
-} from '../models/restaurantTypes';
+// Data types
+interface State {
+  errorMessage: string | null;
+}
+
+interface RestaurantContextType extends State {
+  clearError: () => void;
+}
+
+type Action = { type: 'clear-error' };
+
+interface RestaurantProviderProps {
+  children: ReactNode;
+}
 
 const RestaurantContext = createContext<RestaurantContextType | undefined>(
   undefined
@@ -27,11 +35,11 @@ function reducer(state: State, action: Action) {
       };
 
     default:
-      throw new Error('Unknown action type');
+      return state;
   }
 }
 
-function RestaurantsProvider({ children }: { children: ReactNode }) {
+function RestaurantsProvider({ children }: RestaurantProviderProps) {
   const [{ errorMessage }, dispatch] = useReducer(reducer, initialState);
 
   function clearError() {

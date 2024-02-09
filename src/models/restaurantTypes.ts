@@ -11,13 +11,13 @@ export interface Restaurant {
   userId: string;
   urlSlug: string;
   coords: Coords;
-  id: string;
+  restaurantId: string;
   images?: Image[];
   averageRating?: number | null;
 }
 
 // id not present at creation time, generate by Supbase
-export type NewRestaurant = Omit<Restaurant, 'id'>;
+export type NewRestaurant = Omit<Restaurant, 'restaurantId'>;
 
 export interface Coords {
   lat: number | string;
@@ -35,15 +35,3 @@ export interface ImageUploadParams {
   city: string;
   venue: string;
 }
-
-// Used for state in Restaurant Context
-export interface State {
-  errorMessage: string | null;
-}
-
-export interface RestaurantContextType extends State {
-  clearError: () => void;
-}
-
-// Used for reducer in Restaurant Context
-export type Action = { type: 'clear-error' };

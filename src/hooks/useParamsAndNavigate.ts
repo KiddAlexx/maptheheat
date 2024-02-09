@@ -8,7 +8,7 @@ export function useParamsAndNavigate() {
   function setParamsAndNavigate(venue: Restaurant, specifiedMode?: string) {
     if (!venue) return;
 
-    const { city, urlSlug, id, coords } = venue;
+    const { city, urlSlug, restaurantId: id, coords } = venue;
     const { lat, lon } = coords;
 
     console.log(venue);

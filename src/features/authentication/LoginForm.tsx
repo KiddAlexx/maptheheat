@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useEmailLogin } from './useEmailLogin';
 import { useGoogleLogin } from './useGoogleLogin';
 import LoaderSpinner from '../../ui/LoaderSpinner';
+import { useModalContext } from '../../context/ModalContext';
 
 function LoginForm() {
   interface FormData {
@@ -19,6 +20,7 @@ function LoginForm() {
 
   const { loginEmail, isPending: isPendingEmail } = useEmailLogin();
   const { loginGoogle, isPending: isPendingGoogle } = useGoogleLogin();
+  const { openModal } = useModalContext();
 
   function formSubmit(formData: FormData) {
     console.log(formData);
@@ -92,6 +94,13 @@ function LoginForm() {
         >
           <img src={googleBtnLight} alt="Google logo" />
           Sign In With Google
+        </button>
+
+        <button
+          onClick={() => openModal('sign-up')}
+          className={`btn-default ${styles.btnLogin}`}
+        >
+          Sign Up!
         </button>
       </div>
     </form>
