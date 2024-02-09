@@ -65,7 +65,7 @@ export async function createRestaurantImage({
   const { data: currentImages, error: fetchError } = await supabase
     .from('restaurant_details')
     .select('images')
-    .eq('id', id)
+    .eq('restaurant_id', id)
     .single();
 
   if (fetchError) {
@@ -81,7 +81,7 @@ export async function createRestaurantImage({
   const { data, error } = await supabase
     .from('restaurant_details')
     .update({ images: updatedImages })
-    .eq('id', id);
+    .eq('restaurant_id', id);
 
   if (error) {
     throw new Error(`Error adding image to database: ${error.message}`);

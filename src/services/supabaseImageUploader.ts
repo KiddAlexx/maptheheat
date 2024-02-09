@@ -10,9 +10,7 @@ async function uploadImage(
   }
 
   // Create unique file name
-  const imageName = `${Date.now()}-${Math.random().toString(36).substr(2)}-${
-    imageFile.name
-  }`
+  const imageName = `${Date.now()}-${Math.random().toString(36).substr(2)}`
     .replaceAll('/', '-')
     .replaceAll(' ', '-')
     .toLowerCase();
