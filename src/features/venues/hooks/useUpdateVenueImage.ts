@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createRestaurantImage } from '../../../services/apiRestaurants';
+import { createVenueImage } from '../../../services/apiVenues';
 import toast from 'react-hot-toast';
 
 // Type Imports
-import { ImageUploadParams } from '../../../models/restaurantTypes';
+import { ImageUploadParams } from '../../../models/venueTypes';
 
-export function useUpdateRestaurantImage() {
+export function useUpdateVenueImage() {
   const queryClient = useQueryClient();
 
   const {
@@ -15,12 +15,12 @@ export function useUpdateRestaurantImage() {
   } = useMutation<void, Error, ImageUploadParams>({
     mutationFn: async ({ id, imageFile, city, venue }) => {
       console.log('log from react query', id, imageFile, city, venue);
-      await createRestaurantImage({ id, imageFile, city, venue });
+      await createVenueImage({ id, imageFile, city, venue });
     },
     onSuccess: () => {
       toast.success('Image successfully uploaded');
-      queryClient.invalidateQueries({ queryKey: ['restaurants'] });
-      queryClient.invalidateQueries({ queryKey: ['restaurant'] });
+      queryClient.invalidateQueries({ queryKey: ['venues'] });
+      queryClient.invalidateQueries({ queryKey: ['venue'] });
       console.log('Inavlidate queries should have ran');
     },
     onError: (err) => {

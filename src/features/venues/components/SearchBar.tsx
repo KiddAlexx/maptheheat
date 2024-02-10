@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { VenueFormProps } from '../../layout/SideBar';
 
 // Style imports
-import styles from './SearchBar.module.css';
+import styles from '../styles/SearchBar.module.css';
 
 function SearchBar({ setIsAddingVenue }: VenueFormProps) {
   const [searchValue, setSearchValue] = useState('');
@@ -15,7 +15,7 @@ function SearchBar({ setIsAddingVenue }: VenueFormProps) {
       <form>
         <input
           className={styles.searchBarInput}
-          placeholder="Search by restaurant name" /* Dynamically change to shop later */
+          placeholder="Search by venue name" /* Dynamically change to shop later */
           type="text"
           name="searchValue"
           onChange={(e) => setSearchValue(e.target.value)}
@@ -37,7 +37,7 @@ function SearchBar({ setIsAddingVenue }: VenueFormProps) {
           }}
           className={` ${styles.btnAddNewVenue}`}
         >
-          Add new restaurant!
+          Add new venue!
         </button>
       </div>
     </>

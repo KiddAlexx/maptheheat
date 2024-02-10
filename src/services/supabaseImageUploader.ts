@@ -29,10 +29,8 @@ async function uploadImage(
     if (error) throw error;
     return imagePath;
   } catch (error) {
-    if (error instanceof Error) {
+    if (error) {
       throw new Error(`Error uploading image: ${error.message}`);
-    } else {
-      throw new Error('An unexpected error occured while uploading your image');
     }
   }
 }

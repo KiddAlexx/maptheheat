@@ -1,7 +1,7 @@
 // React imports
 
 // Style imports
-import styles from './ListItem.module.css';
+import styles from '../styles/ListItem.module.css';
 
 // Hooks imports
 import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
@@ -16,17 +16,17 @@ import phoneIcon from '../../../assets/icons/phone.svg';
 import VenueRating from './VenueRating';
 
 // Type imports
-import { Restaurant } from '../../../models/restaurantTypes';
+import { Venue } from '../../../models/venueTypes';
 
 interface ListItemProps {
-  restaurant: Restaurant;
+  venue: Venue;
   handleClick: () => void;
 }
 
-function ListItem({ restaurant, handleClick }: ListItemProps) {
+function ListItem({ venue, handleClick }: ListItemProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
 
-  const { venueName, address, phoneNumber, images, averageRating } = restaurant;
+  const { venueName, address, phoneNumber, images, averageRating } = venue;
 
   return (
     <div className={styles.listItemContainer} onClick={handleClick}>
@@ -67,14 +67,14 @@ function ListItem({ restaurant, handleClick }: ListItemProps) {
           <img src={phoneIcon} alt="icon of a phone" />
           <p>{phoneNumber}</p>
         </div>
-        {/* Link to the detailed page of the restaurant. 
-            On click, set clicked restaurant as active restaurant. */}
+        {/* Link to the detailed page of the venue. 
+            On click, set clicked venue as active venue. */}
         <button
           className={styles.moreInfoLink}
           onClick={(e) => {
             // Stop the click event from propagating to the list item
             e.stopPropagation();
-            setParamsAndNavigate(restaurant, 'venue');
+            setParamsAndNavigate(venue, 'venue');
           }}
         >
           <p>More information!</p>

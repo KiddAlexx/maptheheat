@@ -1,14 +1,14 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Restaurant } from '../models/restaurantTypes';
+import { Venue } from '../models/venueTypes';
 
 export function useParamsAndNavigate() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  function setParamsAndNavigate(venue: Restaurant, specifiedMode?: string) {
+  function setParamsAndNavigate(venue: Venue, specifiedMode?: string) {
     if (!venue) return;
 
-    const { city, urlSlug, restaurantId: id, coords } = venue;
+    const { city, urlSlug, venueId: id, coords } = venue;
     const { lat, lon } = coords;
 
     console.log(venue);

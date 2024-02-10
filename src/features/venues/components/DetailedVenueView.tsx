@@ -3,10 +3,10 @@ import { Link, useSearchParams } from 'react-router-dom';
 /* import { useParams } from 'react-router'; */
 
 // Style imports
-import styles from './DetailedVenueView.module.css';
+import styles from '../styles/DetailedVenueView.module.css';
 
 // Hooks imports
-import { useRestaurant } from '../restaurants/useRestaurant';
+import { useVenue } from '../hooks/useVenue';
 
 // Component imports
 import ImageUploader from '../../../components/ImageUploader';
@@ -14,10 +14,10 @@ import VenueRating from './VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 
 // Type imports
-import { Image } from '../../../models/restaurantTypes';
+import { Image } from '../../../models/venueTypes';
 
 // File imports
-import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
+import greyChilli from '../../../assets/broken-chilli-grey-md.png';
 import clockIcon from '../../../assets/icons/clock.svg';
 import globeIcon from '../../../assets/icons/globe.svg';
 import mapPinIcon from '../../../assets/icons/map-pin.svg';
@@ -29,9 +29,9 @@ function DetailedVenueView() {
 
   const venueId = searchParams.get('id');
 
-  const { isLoading: isLoadingRestaurant, restaurant } = useRestaurant(venueId);
+  const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
 
-  if (isLoadingRestaurant) {
+  if (isLoadingVenue) {
     return <LoaderSpinner />;
   }
 
@@ -47,7 +47,7 @@ function DetailedVenueView() {
     description,
     averageRating,
     images,
-  } = restaurant;
+  } = venue;
 
   return (
     <div className={styles.detailedViewContainer}>

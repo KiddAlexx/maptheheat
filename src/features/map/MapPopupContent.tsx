@@ -4,12 +4,12 @@
 import styles from './MapPopupContent.module.css';
 
 // Type imports
-import { Restaurant } from '../../models/restaurantTypes';
+import { Venue } from '../../models/venueTypes';
 // Hooks imports
 import { useParamsAndNavigate } from '../../hooks/useParamsAndNavigate';
 
 // Component imports
-import VenueRating from '../venues/shared/VenueRating';
+import VenueRating from '../venues/components/VenueRating';
 
 // File imports
 import greyChilli from '../../assets/chilli-explosion-grey-md.jpg';
@@ -17,17 +17,17 @@ import mapPinIcon from '../../assets/icons/map-pin.svg';
 import phoneIcon from '../../assets/icons/phone.svg';
 
 interface MapPopupContentProps {
-  restaurant: Restaurant;
+  venue: Venue;
 }
 
-function MapPopupContent({ restaurant }: MapPopupContentProps) {
+function MapPopupContent({ venue }: MapPopupContentProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
 
-  const { venueName, averageRating, address, phoneNumber, images } = restaurant;
+  const { venueName, averageRating, address, phoneNumber, images } = venue;
   return (
     <>
       {/* Duplication of code from ListItem - Move to own component */}
-      {/* Render restaurant image if available, otherwise show default greyed out image */}
+      {/* Render venue image if available, otherwise show default greyed out image */}
       {images ? (
         <div className={styles.mainImageContainer}>
           <img
@@ -46,13 +46,13 @@ function MapPopupContent({ restaurant }: MapPopupContentProps) {
           <p className={styles.addPhotosText}>Add Photos</p>
         </div>
       )}
-      {/* Link to the detailed page of the restaurant. 
-          On click, set the active restaurant in the context. */}
+      {/* Link to the detailed page of the venue. 
+          On click, set the active venue in the context. */}
       <div className={styles.popUpContentContainer}>
         <button
           className={styles.venueNamePopup}
           onClick={() => {
-            setParamsAndNavigate(restaurant, 'venue');
+            setParamsAndNavigate(venue, 'venue');
           }}
         >
           {venueName}

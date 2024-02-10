@@ -10,14 +10,14 @@ import { Toaster } from 'react-hot-toast';
 import './App.css';
 
 // Hooks imports
-import { RestaurantsProvider } from './context/RestaurantContext';
+import { VenuesProvider } from './context/VenueContext';
 
 // Component imports
 
 import Homepage from './pages/Homepage';
 import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
-import DetailedVenueView from './features/venues/shared/DetailedVenueView';
+import DetailedVenueView from './features/venues/components/DetailedVenueView';
 import MapView from './features/map/MapView';
 import UserProfile from './features/userProfile/UserProfile';
 import PageNav from './features/layout/PageNav';
@@ -36,7 +36,7 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <RestaurantsProvider>
+    <VenuesProvider>
       <ModalProvider>
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
@@ -83,7 +83,7 @@ function App() {
           />
         </QueryClientProvider>
       </ModalProvider>
-    </RestaurantsProvider>
+    </VenuesProvider>
   );
 }
 

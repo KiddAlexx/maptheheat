@@ -8,7 +8,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import styles from './ImageUploader.module.css';
 
 // Hooks imports
-import { useUpdateRestaurantImage } from '../features/venues/restaurants/useUpdateRestaurantImage';
+import { useUpdateVenueImage } from '../features/venues/hooks/useUpdateVenueImage';
 import { useUser } from '../features/authentication/useUser';
 
 // File imports
@@ -17,8 +17,7 @@ import { useModalContext } from '../context/ModalContext';
 
 function ImageUploader() {
   // Fetch image upload functionality and states from React Query hook
-  const { uploadImageRef, isUploading, fileUploaded } =
-    useUpdateRestaurantImage();
+  const { uploadImageRef, isUploading, fileUploaded } = useUpdateVenueImage();
   // Load remaining hooks
   const { isAuthenticated } = useUser();
   const { openModal } = useModalContext();
@@ -31,7 +30,7 @@ function ImageUploader() {
   const id = searchParams.get('id');
   const { city, venue } = useParams();
 
-  // Ensures image upload state is reset if user changes active restaurant
+  // Ensures image upload state is reset if user changes active venue
   // Or when image upload has completed sucessfuly
   useEffect(() => {
     if (id) {
