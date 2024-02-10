@@ -30,6 +30,7 @@ async function uploadImage(
     return imagePath;
   } catch (error) {
     if (error) {
+      console.log(error);
       throw new Error(`Error uploading image: ${error.message}`);
     }
   }

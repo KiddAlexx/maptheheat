@@ -14,11 +14,7 @@ export function useEmailSignup() {
       navigate('/login', { replace: true });
     },
     onError: (err) => {
-      if (err instanceof Error) {
-        toast.error(err.message);
-      } else {
-        toast.error('An unexpected error occurred');
-      }
+      toast.error(err.message);
     },
   });
   return { signupEmail, isPending };

@@ -24,11 +24,7 @@ export function useUpdateVenueImage() {
       console.log('Inavlidate queries should have ran');
     },
     onError: (err) => {
-      if (err instanceof Error) {
-        toast.error(err.message);
-      } else {
-        toast.error('An unexpected error occurred');
-      }
+      toast.error(err.message);
     },
   });
   return { uploadImageRef, isUploading, fileUploaded };
