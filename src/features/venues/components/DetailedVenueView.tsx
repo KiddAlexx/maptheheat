@@ -52,6 +52,9 @@ function DetailedVenueView() {
   return (
     <div className={styles.detailedViewContainer}>
       <h2>{venueName}</h2>
+      <div className={styles.ratingUploadContainer}>
+        <VenueRating initialRating={averageRating || 5} readonly />
+      </div>
       <div className={styles.multipleImageContainer}>
         {images ? (
           // Slice first 4 images and map over
@@ -76,10 +79,8 @@ function DetailedVenueView() {
           </div>
         )}
       </div>
-      <div className={styles.ratingUploadContainer}>
-        <VenueRating initialRating={averageRating || 5} readonly />
-        <ImageUploader />
-      </div>
+      <ImageUploader />
+
       <div className={styles.iconTextContainer}>
         <img src={clockIcon} alt="icon of a clock" />
         <p>Open</p>

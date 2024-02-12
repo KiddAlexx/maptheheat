@@ -12,8 +12,12 @@ export interface Venue {
   urlSlug: string;
   coords: Coords;
   venueId: string;
+  venueType: 'restaurant' | 'shop';
   images?: Image[];
+  hottestSauces?: string[];
+  hottestDishes?: string[];
   averageRating?: number | null;
+  totalReviews?: number;
 }
 
 // id not present at creation time, generate by Supbase
