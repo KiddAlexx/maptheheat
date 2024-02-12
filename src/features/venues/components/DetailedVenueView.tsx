@@ -17,7 +17,7 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { Image } from '../../../models/venueTypes';
 
 // File imports
-import greyChilli from '../../../assets/broken-chilli-grey-md.png';
+import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
 import clockIcon from '../../../assets/icons/clock.svg';
 import globeIcon from '../../../assets/icons/globe.svg';
 import mapPinIcon from '../../../assets/icons/map-pin.svg';
