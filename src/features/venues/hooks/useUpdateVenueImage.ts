@@ -13,9 +13,9 @@ export function useUpdateVenueImage() {
     isPending: isUploading,
     isSuccess: fileUploaded,
   } = useMutation<void, Error, ImageUploadParams>({
-    mutationFn: async ({ id, imageFile, city, venue }) => {
-      console.log('log from react query', id, imageFile, city, venue);
-      await createVenueImage({ id, imageFile, city, venue });
+    mutationFn: async ({ venueId, imageFile, city, venue }) => {
+      console.log('log from react query', venueId, imageFile, city, venue);
+      await createVenueImage({ venueId, imageFile, city, venue });
     },
     onSuccess: () => {
       toast.success('Image successfully uploaded');

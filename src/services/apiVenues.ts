@@ -42,7 +42,7 @@ export async function createVenue(newVenue: NewVenue) {
 }
 
 export async function createVenueImage({
-  id,
+  venueId,
   imageFile,
   city,
   venue,
@@ -65,7 +65,7 @@ export async function createVenueImage({
   const { data: currentImages, error: fetchError } = await supabase
     .from('venue_details')
     .select('images')
-    .eq('venue_id', id)
+    .eq('venue_id', venueId)
     .single();
 
   if (fetchError) {
@@ -81,7 +81,7 @@ export async function createVenueImage({
   const { data, error } = await supabase
     .from('venue_details')
     .update({ images: updatedImages })
-    .eq('venue_id', id);
+    .eq('venue_id', venueId);
 
   if (error) {
     throw new Error(`Error adding image to database: ${error.message}`);

@@ -34,7 +34,7 @@ export interface Image {
 }
 
 export interface ImageUploadParams {
-  id: string;
+  venueId: string;
   imageFile: File;
   city: string;
   venue: string;
