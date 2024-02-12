@@ -24,6 +24,7 @@ import ErrorModal from '../../../ui/ErrorModal';
 function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   interface FormData {
     city: string;
+    venueType: 'shop' | 'restaurant';
     venueName: string;
     address: string;
     postcode: string;
@@ -145,6 +146,22 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
                 <option value="Glasgow">Glasgow</option>
                 <option value="Edinburgh">Edinburgh</option>
                 <option value="London">London</option>
+              </select>
+              {typeof errors?.city?.message === 'string' && (
+                <span>{errors.city.message}</span>
+              )}
+            </div>
+            <div className={styles.inputContainer}>
+              <label htmlFor="venueType">Venue Type</label>
+              <select
+                id="venueType"
+                {...register('venueType', {
+                  required: 'This field is required',
+                })}
+              >
+                <option value="">Choose Venue Type</option>
+                <option value="restaurant">Restaurant</option>
+                <option value="shop">Shop</option>
               </select>
               {typeof errors?.city?.message === 'string' && (
                 <span>{errors.city.message}</span>
