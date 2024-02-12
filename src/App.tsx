@@ -10,14 +10,14 @@ import { Toaster } from 'react-hot-toast';
 import './App.css';
 
 // Hooks imports
-import { RestaurantsProvider } from './context/RestaurantContext';
+import { VenuesProvider } from './context/VenueContext';
 
 // Component imports
 
 import Homepage from './pages/Homepage';
 import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
-import DetailedVenueView from './features/venues/shared/DetailedVenueView';
+import DetailedVenueView from './features/venues/components/DetailedVenueView';
 import MapView from './features/map/MapView';
 import UserProfile from './features/userProfile/UserProfile';
 import PageNav from './features/layout/PageNav';
@@ -25,6 +25,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { ModalProvider } from './context/ModalContext';
 import ErrorModal from './ui/ErrorModal';
 import ModalManager from './components/ModalManager';
+import ReviewForm from './features/reviews/reviewForm';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,7 +37,7 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <RestaurantsProvider>
+    <VenuesProvider>
       <ModalProvider>
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
@@ -46,10 +47,17 @@ function App() {
               <Route path="/" element={<Homepage />} />
               <Route path="app" element={<AppLayout />}>
                 <Route index element={<Navigate replace to="map" />} />
-                <Route path="map/:city?/:venue?" element={<MapView />} />
                 <Route
-                  path="venue/:city/:venue"
+                  path="map/:city?/:venue?/:venueId?"
+                  element={<MapView />}
+                />
+                <Route
+                  path="venue/:city/:venue/:venueId"
                   element={<DetailedVenueView />}
+                />
+                <Route
+                  path="venue/:city/:venue/reviews/new/:venueId"
+                  element={<ReviewForm />}
                 />
                 <Route
                   path="profile"
@@ -83,7 +91,7 @@ function App() {
           />
         </QueryClientProvider>
       </ModalProvider>
-    </RestaurantsProvider>
+    </VenuesProvider>
   );
 }
 

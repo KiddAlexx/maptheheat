@@ -8,19 +8,17 @@ interface State {
   errorMessage: string | null;
 }
 
-interface RestaurantContextType extends State {
+interface VenueContextType extends State {
   clearError: () => void;
 }
 
 type Action = { type: 'clear-error' };
 
-interface RestaurantProviderProps {
+interface VenueProviderProps {
   children: ReactNode;
 }
 
-const RestaurantContext = createContext<RestaurantContextType | undefined>(
-  undefined
-);
+const VenueContext = createContext<VenueContextType | undefined>(undefined);
 
 const initialState = {
   errorMessage: null,
@@ -39,7 +37,7 @@ function reducer(state: State, action: Action) {
   }
 }
 
-function RestaurantsProvider({ children }: RestaurantProviderProps) {
+function VenuesProvider({ children }: VenueProviderProps) {
   const [{ errorMessage }, dispatch] = useReducer(reducer, initialState);
 
   function clearError() {
@@ -48,25 +46,23 @@ function RestaurantsProvider({ children }: RestaurantProviderProps) {
   }
 
   return (
-    <RestaurantContext.Provider
+    <VenueContext.Provider
       value={{
         errorMessage,
         clearError,
       }}
     >
       {children}
-    </RestaurantContext.Provider>
+    </VenueContext.Provider>
   );
 }
 
-// A custom hook to provide easy access to the RestaurantContext
-function useRestaurants() {
-  const context = useContext(RestaurantContext);
+// A custom hook to provide easy access to the VenueContext
+function useVenues() {
+  const context = useContext(VenueContext);
   if (context === undefined)
-    throw new Error(
-      'Restaurant context was used outside the RestaurantsProvider'
-    );
+    throw new Error('Venue context was used outside the VenuesProvider');
   return context;
 }
 
-export { RestaurantsProvider, useRestaurants };
+export { VenuesProvider, useVenues };

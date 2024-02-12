@@ -1,4 +1,4 @@
-export interface Restaurant {
+export interface Venue {
   venueName: string;
   address: string;
   detailedAddress: string;
@@ -11,13 +11,17 @@ export interface Restaurant {
   userId: string;
   urlSlug: string;
   coords: Coords;
-  restaurantId: string;
+  venueId: string;
+  venueType: 'restaurant' | 'shop';
   images?: Image[];
+  hottestSauces?: string[];
+  hottestDishes?: string[];
   averageRating?: number | null;
+  totalReviews?: number;
 }
 
 // id not present at creation time, generate by Supbase
-export type NewRestaurant = Omit<Restaurant, 'restaurantId'>;
+export type NewVenue = Omit<Venue, 'venueId'>;
 
 export interface Coords {
   lat: number | string;
@@ -30,7 +34,7 @@ export interface Image {
 }
 
 export interface ImageUploadParams {
-  id: string;
+  venueId: string;
   imageFile: File;
   city: string;
   venue: string;

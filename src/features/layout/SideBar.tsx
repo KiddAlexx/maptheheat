@@ -2,9 +2,9 @@
 import { useState } from 'react';
 
 // Component imports
-import ListView from '../venues/shared/ListView';
-import SearchBar from '../venues/shared/SearchBar';
-import VenueForm from '../venues/shared/VenueForm';
+import ListView from '../venues/components/ListView';
+import SearchBar from '../venues/components/SearchBar';
+import VenueForm from '../venues/components/VenueForm';
 
 // Style imports
 import styles from './SideBar.module.css';

@@ -7,14 +7,14 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 // Style imports
-import styles from './VenueForm.module.css';
+import styles from '../styles/VenueForm.module.css';
 
 // Type imports
 import { VenueFormProps } from '../../layout/SideBar';
 
 // Hooks imports
 
-import { useCreateRestaurant } from '../restaurants/useCreateRestaurant';
+import { useCreateVenue } from '../hooks/useCreateVenue';
 import { useUser } from '../../authentication/useUser';
 
 // Component imports
@@ -24,6 +24,7 @@ import ErrorModal from '../../../ui/ErrorModal';
 function VenueForm({ setIsAddingVenue }: VenueFormProps) {
   interface FormData {
     city: string;
+    venueType: 'shop' | 'restaurant';
     venueName: string;
     address: string;
     postcode: string;
@@ -31,7 +32,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
     phoneNumber: string;
     website: string;
   }
-  const { createRestaurant, isCreating } = useCreateRestaurant();
+  const { createVenue, isCreating } = useCreateVenue();
 
   const { user } = useUser();
 
@@ -101,9 +102,9 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
         urlSlug: slugify(formData.venueName),
       };
 
-      // Add final restaurant data to supabase table
-      createRestaurant(finalVenueData);
-      setIsAddingVenue(false);
+      // Add final venue data to supabase table
+      createVenue(finalVenueData);
+      /*   setIsAddingVenue(false); */
     } catch (err) {
       if (err instanceof Error) {
         setLocalFormError(err.message);
@@ -151,17 +152,32 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
               )}
             </div>
             <div className={styles.inputContainer}>
-              <label htmlFor="venueName">Restaurant Name</label>
+              <label htmlFor="venueType">Venue Type</label>
+              <select
+                id="venueType"
+                {...register('venueType', {
+                  required: 'This field is required',
+                })}
+              >
+                <option value="">Choose Venue Type</option>
+                <option value="restaurant">Restaurant</option>
+                <option value="shop">Shop</option>
+              </select>
+              {typeof errors?.city?.message === 'string' && (
+                <span>{errors.city.message}</span>
+              )}
+            </div>
+            <div className={styles.inputContainer}>
+              <label htmlFor="venueName">Venue Name</label>
               <input
                 type="text"
-                placeholder="Restaurant Name..."
+                placeholder="Venue Name..."
                 id="venueName"
                 {...register('venueName', {
                   required: 'This field is required',
                   maxLength: {
                     value: 100,
-                    message:
-                      'Restaurant name cannot be more than 100 characters',
+                    message: 'Venue name cannot be more than 100 characters',
                   },
                 })}
               />
@@ -199,7 +215,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
               <label htmlFor="description">Description</label>
               <textarea
                 rows={2}
-                placeholder="Please enter a detailed description of the restaurant..."
+                placeholder="Please enter a detailed description of the venue..."
                 id="description"
                 {...register('description', {
                   required: 'This field is required',

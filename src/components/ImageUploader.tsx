@@ -1,6 +1,6 @@
 // React imports
 import { useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 // Third party imports
 
@@ -8,7 +8,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import styles from './ImageUploader.module.css';
 
 // Hooks imports
-import { useUpdateRestaurantImage } from '../features/venues/restaurants/useUpdateRestaurantImage';
+import { useUpdateVenueImage } from '../features/venues/hooks/useUpdateVenueImage';
 import { useUser } from '../features/authentication/useUser';
 
 // File imports
@@ -17,8 +17,7 @@ import { useModalContext } from '../context/ModalContext';
 
 function ImageUploader() {
   // Fetch image upload functionality and states from React Query hook
-  const { uploadImageRef, isUploading, fileUploaded } =
-    useUpdateRestaurantImage();
+  const { uploadImageRef, isUploading, fileUploaded } = useUpdateVenueImage();
   // Load remaining hooks
   const { isAuthenticated } = useUser();
   const { openModal } = useModalContext();
@@ -27,23 +26,21 @@ function ImageUploader() {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   // Load paramater values
-  const [searchParams] = useSearchParams();
-  const id = searchParams.get('id');
-  const { city, venue } = useParams();
+  const { city, venue, venueId } = useParams();
 
-  // Ensures image upload state is reset if user changes active restaurant
+  // Ensures image upload state is reset if user changes active venue
   // Or when image upload has completed sucessfuly
   useEffect(() => {
-    if (id) {
+    if (venueId) {
       setImageFile(null);
     }
     if (fileUploaded === true) {
       setImageFile(null);
     }
-  }, [id, fileUploaded]);
+  }, [venueId, fileUploaded]);
 
   // Return from function if params do not exist
-  if (!id || !city || !venue) return;
+  if (!venueId || !city || !venue) return;
 
   // Function to handle compression and upload of selected image to Supabase storage.
   const uploadFile = async function () {
@@ -51,9 +48,9 @@ function ImageUploader() {
 
     if (!isAuthenticated) return;
 
-    console.log('log from image uploader ', id, imageFile, city, venue);
+    console.log('log from image uploader ', venueId, imageFile, city, venue);
 
-    uploadImageRef({ id, imageFile, city, venue });
+    uploadImageRef({ venueId, imageFile, city, venue });
   };
 
   return (

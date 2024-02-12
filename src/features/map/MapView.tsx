@@ -11,20 +11,20 @@ import MapPopupContent from './MapPopupContent';
 import styles from './MapView.module.css';
 
 // Type imports
-import { Coords } from '../../models/restaurantTypes';
+import { Coords } from '../../models/venueTypes';
 
 // Hooks imports
-import { useRestaurants } from '../venues/restaurants/useRestaurants';
+import { useVenues } from '../venues/hooks/useVenues';
 import { useSearchParams } from 'react-router-dom';
 
 function MapView() {
   const [searchParams] = useSearchParams();
 
-  // Load restaurants from supabase
-  const { restaurants } = useRestaurants();
+  // Load venues from supabase
+  const { venues } = useVenues();
 
   // Sets coordinates based on searchParams if available
-  // Used to center map on selected restaurant
+  // Used to center map on selected venue
   const lat = Number(searchParams.get('lat')) || 41.3874;
   const lon = Number(searchParams.get('lon')) || 2.17;
 
@@ -47,7 +47,7 @@ function MapView() {
     });
   };
 
-  // Render the map with markers for each restaurant and center it based on the active restaurant or default coordinates.
+  // Render the map with markers for each venue and center it based on the active venue or default coordinates.
   return (
     <div className={styles.mapContainer}>
       <MapContainer
@@ -60,14 +60,14 @@ function MapView() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
         />
-        {restaurants?.map((restaurant) => (
+        {venues?.map((venue) => (
           <Marker
-            key={restaurant.id}
-            position={[restaurant.coords.lat, restaurant.coords.lon]}
+            key={venue.id}
+            position={[venue.coords.lat, venue.coords.lon]}
             icon={createCustomIcon()}
           >
             <Popup>
-              <MapPopupContent restaurant={restaurant} />
+              <MapPopupContent venue={venue} />
             </Popup>
           </Marker>
         ))}

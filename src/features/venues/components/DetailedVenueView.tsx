@@ -1,12 +1,12 @@
 // React imports
-import { Link, useSearchParams } from 'react-router-dom';
-/* import { useParams } from 'react-router'; */
+import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 
 // Style imports
-import styles from './DetailedVenueView.module.css';
+import styles from '../styles/DetailedVenueView.module.css';
 
 // Hooks imports
-import { useRestaurant } from '../restaurants/useRestaurant';
+import { useVenue } from '../hooks/useVenue';
 
 // Component imports
 import ImageUploader from '../../../components/ImageUploader';
@@ -14,7 +14,7 @@ import VenueRating from './VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 
 // Type imports
-import { Image } from '../../../models/restaurantTypes';
+import { Image } from '../../../models/venueTypes';
 
 // File imports
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
@@ -25,13 +25,12 @@ import phoneIcon from '../../../assets/icons/phone.svg';
 import infoIcon from '../../../assets/icons/info.svg';
 
 function DetailedVenueView() {
-  const [searchParams] = useSearchParams();
+  const { venueId } = useParams();
+  console.log(venueId);
 
-  const venueId = searchParams.get('id');
+  const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
 
-  const { isLoading: isLoadingRestaurant, restaurant } = useRestaurant(venueId);
-
-  if (isLoadingRestaurant) {
+  if (isLoadingVenue) {
     return <LoaderSpinner />;
   }
 
@@ -41,17 +40,22 @@ function DetailedVenueView() {
 
   const {
     venueName,
+    city,
+    urlSlug,
     phoneNumber,
     detailedAddress,
     website,
     description,
     averageRating,
     images,
-  } = restaurant;
+  } = venue;
 
   return (
     <div className={styles.detailedViewContainer}>
       <h2>{venueName}</h2>
+      <div className={styles.ratingUploadContainer}>
+        <VenueRating initialRating={averageRating || 5} readonly />
+      </div>
       <div className={styles.multipleImageContainer}>
         {images ? (
           // Slice first 4 images and map over
@@ -76,10 +80,11 @@ function DetailedVenueView() {
           </div>
         )}
       </div>
-      <div className={styles.ratingUploadContainer}>
-        <VenueRating initialRating={averageRating || 5} readonly />
-        <ImageUploader />
-      </div>
+      <ImageUploader />
+      <Link to={`/app/venue/${city}/${urlSlug}/reviews/new/${venueId}`}>
+        Leave a Review
+      </Link>
+
       <div className={styles.iconTextContainer}>
         <img src={clockIcon} alt="icon of a clock" />
         <p>Open</p>
