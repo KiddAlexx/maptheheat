@@ -2,11 +2,16 @@
 import Rating from 'react-rating';
 
 interface VenueRatingProps {
-  initialRating: number | null;
-  readonly: boolean;
+  initialRating?: number | null;
+  readonly?: boolean;
+  handleRatingChange: (rating: number) => void;
 }
 
-function VenueRating({ initialRating, readonly }: VenueRatingProps) {
+function VenueRating({
+  initialRating,
+  readonly,
+  handleRatingChange,
+}: VenueRatingProps) {
   const fullFlame = (
     <svg
       width="24"
@@ -39,7 +44,8 @@ function VenueRating({ initialRating, readonly }: VenueRatingProps) {
 
   return (
     <Rating
-      initialRating={initialRating}
+      initialRating={initialRating || 5}
+      onChange={(value) => handleRatingChange(value)}
       readonly={readonly}
       emptySymbol={emptyFlame}
       fullSymbol={fullFlame}
