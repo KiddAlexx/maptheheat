@@ -40,6 +40,8 @@ function DetailedVenueView() {
 
   const {
     venueName,
+    city,
+    urlSlug,
     phoneNumber,
     detailedAddress,
     website,
@@ -79,6 +81,9 @@ function DetailedVenueView() {
         )}
       </div>
       <ImageUploader />
+      <Link to={`/app/venue/${city}/${urlSlug}/reviews/new/${venueId}`}>
+        Leave a Review
+      </Link>
 
       <div className={styles.iconTextContainer}>
         <img src={clockIcon} alt="icon of a clock" />
