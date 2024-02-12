@@ -1,6 +1,6 @@
 // React imports
-import { Link, useSearchParams } from 'react-router-dom';
-/* import { useParams } from 'react-router'; */
+import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 
 // Style imports
 import styles from '../styles/DetailedVenueView.module.css';
@@ -25,9 +25,8 @@ import phoneIcon from '../../../assets/icons/phone.svg';
 import infoIcon from '../../../assets/icons/info.svg';
 
 function DetailedVenueView() {
-  const [searchParams] = useSearchParams();
-
-  const venueId = searchParams.get('id');
+  const { venueId } = useParams();
+  console.log(venueId);
 
   const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
 

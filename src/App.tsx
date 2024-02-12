@@ -25,6 +25,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { ModalProvider } from './context/ModalContext';
 import ErrorModal from './ui/ErrorModal';
 import ModalManager from './components/ModalManager';
+import ReviewForm from './features/reviews/reviewForm';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,10 +47,17 @@ function App() {
               <Route path="/" element={<Homepage />} />
               <Route path="app" element={<AppLayout />}>
                 <Route index element={<Navigate replace to="map" />} />
-                <Route path="map/:city?/:venue?" element={<MapView />} />
                 <Route
-                  path="venue/:city/:venue"
+                  path="map/:city?/:venue?/:venueId?"
+                  element={<MapView />}
+                />
+                <Route
+                  path="venue/:city/:venue/:venueId"
                   element={<DetailedVenueView />}
+                />
+                <Route
+                  path="venue/:city/:venue/reviews/new/:venueId"
+                  element={<ReviewForm />}
                 />
                 <Route
                   path="profile"
