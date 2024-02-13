@@ -4,11 +4,14 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import VenueRating from '../venues/components/VenueRating';
 import { useState } from 'react';
+import { useCreateReview } from './useCreateReview';
 
 function ReviewForm() {
-  const { venueId } = useParams();
-  const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
-  const { venueName, venueType } = venue;
+  const { venueId: venueIdParam } = useParams();
+  const { isLoading: isLoadingVenue, venue } = useVenue(venueIdParam);
+  const { venueName, venueType, venueId } = venue;
+
+  const { isCreating, createReview } = useCreateReview();
 
   const { register, handleSubmit, formState } = useForm();
   const { errors } = formState;
@@ -19,8 +22,12 @@ function ReviewForm() {
   }
 
   async function formSubmit(formData) {
-    console.log(formData);
-    console.log(heatRating);
+    const finalFormData = {
+      ...formData,
+      heatRating,
+      venueId,
+    };
+    createReview(finalFormData);
   }
 
   return (
