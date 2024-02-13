@@ -10,6 +10,8 @@ export function useCreateReview() {
     onSuccess: () => {
       toast.success('Your review has been successfully added!');
       queryClient.invalidateQueries({ queryKey: ['reviews'] });
+      queryClient.invalidateQueries({ queryKey: ['venue'] });
+      queryClient.invalidateQueries({ queryKey: ['venues'] });
     },
     onError: (err) => {
       toast.error(err.message);
