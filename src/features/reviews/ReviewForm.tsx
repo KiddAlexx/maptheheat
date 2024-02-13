@@ -26,6 +26,7 @@ function ReviewForm() {
       ...formData,
       heatRating,
       venueId,
+      reviewType: venueType,
     };
     createReview(finalFormData);
   }
