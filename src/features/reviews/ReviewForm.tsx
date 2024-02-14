@@ -1,4 +1,4 @@
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useVenue } from '../venues/hooks/useVenue';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -9,7 +9,8 @@ import { useCreateReview } from './useCreateReview';
 function ReviewForm() {
   const { venueId: venueIdParam } = useParams();
   const { isLoading: isLoadingVenue, venue } = useVenue(venueIdParam);
-  const { venueName, venueType, venueId } = venue;
+  const { venueName, venueType, venueId, city, urlSlug } = venue;
+  const navigate = useNavigate();
 
   const { isCreating, createReview } = useCreateReview();
 
@@ -28,9 +29,12 @@ function ReviewForm() {
       venueId,
       reviewType: venueType,
     };
-    createReview(finalFormData);
+    createReview(finalFormData, {
+      onSuccess: () => {
+        navigate(`/app/venue/${city}/${urlSlug}/${venueId}`, { replace: true });
+      },
+    });
   }
-
   return (
     <>
       <h2>Leave a review for {venueName}</h2>
