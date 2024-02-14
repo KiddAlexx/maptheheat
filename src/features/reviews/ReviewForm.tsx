@@ -83,6 +83,24 @@ function ReviewForm() {
           </div>
         )}
         <div>
+          <label htmlFor="reviewTitle">Review Title</label>
+          <input
+            type="text"
+            placeholder="Review Title"
+            id="reviewTitle"
+            {...register('reviewTitle', {
+              required: 'This field is required',
+              maxLength: {
+                value: 100,
+                message: 'Review Title cannot be more than 100 characters',
+              },
+            })}
+          />
+          {typeof errors?.reviewTitle?.message === 'string' && (
+            <span> {errors.reviewTitle.message}</span>
+          )}
+        </div>
+        <div>
           <label htmlFor="reviewContent">Review</label>
           <textarea
             rows={3}

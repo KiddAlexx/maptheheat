@@ -104,7 +104,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
 
       // Add final venue data to supabase table
       createVenue(finalVenueData);
-      /*   setIsAddingVenue(false); */
+      setIsAddingVenue(false);
     } catch (err) {
       if (err instanceof Error) {
         setLocalFormError(err.message);
