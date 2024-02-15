@@ -20,7 +20,7 @@ export async function createReview(newReview) {
 export async function getReviews(venueId: string) {
   const { data, error } = await supabase
     .from('venue_reviews')
-    .select('*')
+    .select('*, profiles(*), venue_details(*)')
     .eq('venue_id', venueId);
 
   if (error) {

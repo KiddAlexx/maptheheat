@@ -1,5 +1,5 @@
-import styles from './styles/ReviewListItem.module.css';
-import defaultAvatar from '../../assets/default-avatar.png';
+import styles from '../styles/ReviewListItem.module.css';
+import defaultAvatar from '../../../assets/default-avatar.png';
 import VenueRating from '../../venues/components/VenueRating';
 
 function ReviewListItem() {
