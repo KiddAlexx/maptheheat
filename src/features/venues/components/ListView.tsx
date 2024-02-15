@@ -27,7 +27,7 @@ function ListView() {
         <ListItem
           handleClick={() => setParamsAndNavigate(venue)}
           venue={venue}
-          key={venue.id}
+          key={venue.venueId}
         />
       ))}
     </div>
