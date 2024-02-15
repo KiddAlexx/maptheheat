@@ -19,7 +19,7 @@ import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
 import DetailedVenueView from './features/venues/components/DetailedVenueView';
 import MapView from './features/map/MapView';
-import UserProfile from './features/userProfile/UserProfile';
+import UserProfile from './features/userProfile/components/UserProfile';
 import PageNav from './features/layout/PageNav';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ModalProvider } from './context/ModalContext';
