@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createReview as createReviewApi } from '../../services/apiReviews';
+import { createReview as createReviewApi } from '../../../services/apiReviews';
 import toast from 'react-hot-toast';
 
 export function useCreateReview() {

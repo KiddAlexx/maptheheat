@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from 'react-router';
-import { useVenue } from '../venues/hooks/useVenue';
+import { useVenue } from '../../venues/hooks/useVenue';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import VenueRating from '../venues/components/VenueRating';
+import VenueRating from '../../venues/components/VenueRating';
 import { useState } from 'react';
-import { useCreateReview } from './useCreateReview';
+import { useCreateReview } from '../hooks/useCreateReview';
 
 function ReviewForm() {
   const { venueId: venueIdParam } = useParams();

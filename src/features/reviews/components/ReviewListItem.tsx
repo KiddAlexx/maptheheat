@@ -1,6 +1,6 @@
-import styles from './ReviewListItem.module.css';
+import styles from './styles/ReviewListItem.module.css';
 import defaultAvatar from '../../assets/default-avatar.png';
-import VenueRating from '../venues/components/VenueRating';
+import VenueRating from '../../venues/components/VenueRating';
 
 function ReviewListItem() {
   return (

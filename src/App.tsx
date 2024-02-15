@@ -25,7 +25,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { ModalProvider } from './context/ModalContext';
 import ErrorModal from './ui/ErrorModal';
 import ModalManager from './components/ModalManager';
-import ReviewForm from './features/reviews/reviewForm';
+import ReviewForm from './features/reviews/components/ReviewForm';
 
 const queryClient = new QueryClient({
   defaultOptions: {
