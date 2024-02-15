@@ -15,7 +15,7 @@ function ReviewListItem({ review }) {
     reviewTitle,
   } = review;
 
-  const { avatarUrl, username } = profiles;
+  const { avatarUrl, username, totalReviews } = profiles;
 
   return (
     <article className={styles.reviewCardContainer}>
@@ -27,7 +27,7 @@ function ReviewListItem({ review }) {
         />
         <div>
           <h3>{username}</h3>
-          <p>(15 Reviews)</p>
+          <p>({totalReviews} Reviews)</p>
         </div>
       </header>
       <section>
