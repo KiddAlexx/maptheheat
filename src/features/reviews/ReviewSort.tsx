@@ -1,5 +1,5 @@
 function ReviewSort() {
-  return <div></div>;
+  return <div>Review Sort</div>;
 }
 
 export default ReviewSort;

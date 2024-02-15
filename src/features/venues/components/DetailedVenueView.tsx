@@ -23,6 +23,7 @@ import globeIcon from '../../../assets/icons/globe.svg';
 import mapPinIcon from '../../../assets/icons/map-pin.svg';
 import phoneIcon from '../../../assets/icons/phone.svg';
 import infoIcon from '../../../assets/icons/info.svg';
+import ReviewContainer from '../../reviews/ReviewContainer';
 
 function DetailedVenueView() {
   const { venueId } = useParams();
@@ -112,6 +113,7 @@ function DetailedVenueView() {
       <Link to="/app/map" className={`btn-default ${styles.btnBackToMap}`}>
         Back to Map
       </Link>
+      <ReviewContainer />
     </div>
   );
 }

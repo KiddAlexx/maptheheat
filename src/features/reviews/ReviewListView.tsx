@@ -1,5 +1,11 @@
+import ReviewListItem from './ReviewListItem';
+
 function ReviewListView() {
-  return <div></div>;
+  return (
+    <>
+      <ReviewListItem />
+    </>
+  );
 }
 
 export default ReviewListView;

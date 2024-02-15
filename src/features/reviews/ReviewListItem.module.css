@@ -1,0 +1,14 @@
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  border-radius: 50%;
+  border: 2px solid green;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  display: inline-block;
+}
