@@ -12,3 +12,7 @@
   object-fit: cover;
   display: inline-block;
 }
+
+.reviewCardContainer {
+  margin-bottom: 2rem;
+}

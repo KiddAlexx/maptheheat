@@ -26,5 +26,5 @@ export async function getReviews(venueId: string) {
   if (error) {
     throw new Error(`Reviews could not be loaded. Error:${error.message}`);
   }
-  return camelcaseKeys(data);
+  return camelcaseKeys(data, { deep: true });
 }

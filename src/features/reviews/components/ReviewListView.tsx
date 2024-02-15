@@ -1,15 +1,16 @@
 import { useParams } from 'react-router';
 import ReviewListItem from './ReviewListItem';
 import { useGetReviews } from '../hooks/useGetReviews';
+import LoaderSpinner from '../../../ui/LoaderSpinner';
 
 function ReviewListView() {
   const { venueId: venueIdParam } = useParams();
-  const { isLoading, error, reviews } = useGetReviews(venueIdParam);
+  const { isLoading: isLoadingReviews, reviews } = useGetReviews(venueIdParam);
   console.log(reviews);
-  return (
-    <>
-      <ReviewListItem />
-    </>
+  return isLoadingReviews ? (
+    <LoaderSpinner />
+  ) : (
+    reviews?.map((review) => <ReviewListItem review={review} />)
   );
 }
 
