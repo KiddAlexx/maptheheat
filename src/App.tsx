@@ -57,7 +57,11 @@ function App() {
                 />
                 <Route
                   path="venue/:city/:venue/reviews/new/:venueId"
-                  element={<ReviewForm />}
+                  element={
+                    <ProtectedRoute>
+                      <ReviewForm />
+                    </ProtectedRoute>
+                  }
                 />
                 <Route
                   path="profile"
