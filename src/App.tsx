@@ -26,6 +26,7 @@ import { ModalProvider } from './context/ModalContext';
 import ErrorModal from './ui/ErrorModal';
 import ModalManager from './components/ModalManager';
 import ReviewForm from './features/reviews/components/ReviewForm';
+import AddNewVenue from './pages/AddNewVenue';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,6 +46,14 @@ function App() {
             <PageNav />
             <Routes>
               <Route path="/" element={<Homepage />} />
+              <Route
+                path="/add-venue"
+                element={
+                  <ProtectedRoute>
+                    <AddNewVenue />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="app" element={<AppLayout />}>
                 <Route index element={<Navigate replace to="map" />} />
                 <Route

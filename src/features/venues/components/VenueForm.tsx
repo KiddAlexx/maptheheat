@@ -10,7 +10,6 @@ import toast from 'react-hot-toast';
 import styles from '../styles/VenueForm.module.css';
 
 // Type imports
-import { VenueFormProps } from '../../layout/SideBar';
 
 // Hooks imports
 
@@ -21,7 +20,7 @@ import { useUser } from '../../authentication/useUser';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ErrorModal from '../../../ui/ErrorModal';
 
-function VenueForm({ setIsAddingVenue }: VenueFormProps) {
+function VenueForm() {
   interface FormData {
     city: string;
     venueType: 'shop' | 'restaurant';
@@ -104,7 +103,6 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
 
       // Add final venue data to supabase table
       createVenue(finalVenueData);
-      setIsAddingVenue(false);
     } catch (err) {
       if (err instanceof Error) {
         setLocalFormError(err.message);
@@ -282,7 +280,7 @@ function VenueForm({ setIsAddingVenue }: VenueFormProps) {
             </div>
             <div className={styles.venueButtonContainer}>
               <button
-                onClick={() => setIsAddingVenue(false)}
+                // ***************** Add functionality to reset form and navigate back
                 type="button"
                 className={`btn-default ${styles.btnCancel}`}
               >
