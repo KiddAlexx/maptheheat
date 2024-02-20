@@ -1,10 +1,14 @@
 import { useModalContext } from '../context/ModalContext';
 
-function ConfirmationDialog({ handleConfirm }) {
-  const { closeModal } = useModalContext();
+function ConfirmationDialog() {
+  const { closeModal, message, confirmAction } = useModalContext();
+  function handleSubmit(e) {
+    e.preventDefault();
+    confirmAction();
+  }
   return (
-    <form onSubmit={handleConfirm}>
-      <p>Are you sure you want to delete this review</p>
+    <form onSubmit={(e) => handleSubmit(e)}>
+      <p>{message}</p>
       <button type="button" onClick={closeModal}>
         Cancel
       </button>

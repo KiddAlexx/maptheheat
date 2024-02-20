@@ -24,13 +24,17 @@ function ReviewListItem({ review }) {
 
   const { isDeleting, deleteReview } = useDeleteReview();
 
-  const { openModal } = useModalContext();
+  const { openDialog } = useModalContext();
 
   const { user, isLoading, fetchStatus } = useUser();
   const currentUser = user?.id === userId;
 
   function handleDeleteReview() {
-    openModal('confirm-action');
+    const deleteReviewWithId = () => deleteReview(reviewId);
+    openDialog(
+      'Are you sure you want to delete this review? This action is permanent!',
+      deleteReviewWithId
+    );
   }
 
   return isLoading || fetchStatus == 'fetching' || isDeleting ? (
