@@ -28,3 +28,15 @@ export async function getReviews(venueId: string) {
   }
   return camelcaseKeys(data, { deep: true });
 }
+
+export async function deleteReview(reviewId: string) {
+  const { data, error } = await supabase
+    .from('venue_reviews')
+    .delete()
+    .eq('review_id', reviewId);
+
+  if (error) {
+    throw new Error(`Review could not be deleted. Error: ${error.message}`);
+  }
+  return data;
+}
