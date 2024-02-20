@@ -21,7 +21,7 @@ type Action =
   | { type: 'open-modal'; payload: string }
   | {
       type: 'open-dialog';
-      payload: { message: string; confirmAction: () => void };
+      payload: { message: string; confirmActionAndClose: () => void };
     }
   | { type: 'close-modal' };
 
@@ -52,7 +52,7 @@ function reducer(state: State, action: Action) {
         modalName: 'confirm-action',
         modalOpen: true,
         message: action.payload.message,
-        confirmAction: action.payload.confirmAction,
+        confirmAction: action.payload.confirmActionAndClose,
       };
 
     case 'close-modal': {
