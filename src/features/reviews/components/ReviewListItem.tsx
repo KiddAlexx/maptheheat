@@ -1,6 +1,8 @@
 import styles from '../styles/ReviewListItem.module.css';
 import defaultAvatar from '../../../assets/default-avatar.png';
 import VenueRating from '../../venues/components/VenueRating';
+import { useUser } from '../../authentication/useUser';
+import LoaderSpinner from '../../../ui/LoaderSpinner';
 
 function ReviewListItem({ review }) {
   const {
@@ -15,9 +17,15 @@ function ReviewListItem({ review }) {
     reviewTitle,
   } = review;
 
-  const { avatarUrl, username, totalReviews } = profiles;
+  const { avatarUrl, username, totalReviews, userId } = profiles;
 
-  return (
+  const { user, isLoading, fetchStatus } = useUser();
+  const currentUser = user?.id === userId;
+  console.log(currentUser);
+
+  return isLoading && fetchStatus == 'fetching' ? (
+    <LoaderSpinner />
+  ) : (
     <article className={styles.reviewCardContainer}>
       <header className={styles.userInfo}>
         <img
@@ -47,6 +55,7 @@ function ReviewListItem({ review }) {
             {hottestDish}
           </p>
         )}
+        {currentUser && <button className="btn-default">Delete Review</button>}
       </section>
     </article>
   );
