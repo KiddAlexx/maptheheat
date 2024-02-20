@@ -3,6 +3,7 @@ import defaultAvatar from '../../../assets/default-avatar.png';
 import VenueRating from '../../venues/components/VenueRating';
 import { useUser } from '../../authentication/useUser';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
+import { useDeleteReview } from '../hooks/useDeleteReview';
 
 function ReviewListItem({ review }) {
   const {
@@ -15,15 +16,21 @@ function ReviewListItem({ review }) {
     reviewContent,
     reviewType,
     reviewTitle,
+    reviewId,
   } = review;
 
   const { avatarUrl, username, totalReviews, userId } = profiles;
 
+  const { isDeleting, deleteReview } = useDeleteReview();
+
   const { user, isLoading, fetchStatus } = useUser();
   const currentUser = user?.id === userId;
-  console.log(currentUser);
 
-  return isLoading && fetchStatus == 'fetching' ? (
+  function handleDeleteReview() {
+    deleteReview(reviewId);
+  }
+
+  return isLoading || fetchStatus == 'fetching' || isDeleting ? (
     <LoaderSpinner />
   ) : (
     <article className={styles.reviewCardContainer}>
@@ -55,7 +62,11 @@ function ReviewListItem({ review }) {
             {hottestDish}
           </p>
         )}
-        {currentUser && <button className="btn-default">Delete Review</button>}
+        {currentUser && (
+          <button onClick={handleDeleteReview} className="btn-default">
+            Delete Review
+          </button>
+        )}
       </section>
     </article>
   );
