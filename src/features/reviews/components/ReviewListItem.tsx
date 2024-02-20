@@ -4,6 +4,7 @@ import VenueRating from '../../venues/components/VenueRating';
 import { useUser } from '../../authentication/useUser';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useDeleteReview } from '../hooks/useDeleteReview';
+import { useModalContext } from '../../../context/ModalContext';
 
 function ReviewListItem({ review }) {
   const {
@@ -23,11 +24,13 @@ function ReviewListItem({ review }) {
 
   const { isDeleting, deleteReview } = useDeleteReview();
 
+  const { openModal } = useModalContext();
+
   const { user, isLoading, fetchStatus } = useUser();
   const currentUser = user?.id === userId;
 
   function handleDeleteReview() {
-    deleteReview(reviewId);
+    openModal('confirm-action');
   }
 
   return isLoading || fetchStatus == 'fetching' || isDeleting ? (

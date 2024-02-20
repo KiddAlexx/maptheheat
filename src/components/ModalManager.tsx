@@ -1,6 +1,7 @@
 import { useModalContext } from '../context/ModalContext';
 import LoginForm from '../features/authentication/LoginForm';
 import SignupForm from '../features/authentication/SignupForm';
+import ConfirmationDialog from '../ui/ConfirmationDialog';
 import Modal from '../ui/Modal';
 
 function ModalManager() {
@@ -15,6 +16,9 @@ function ModalManager() {
 
     case 'sign-up':
       Component = <SignupForm />;
+      break;
+    case 'confirm-action':
+      Component = <ConfirmationDialog />;
       break;
     default:
       break;
