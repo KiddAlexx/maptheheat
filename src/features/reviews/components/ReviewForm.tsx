@@ -3,16 +3,35 @@ import { useVenue } from '../../venues/hooks/useVenue';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import VenueRating from '../../venues/components/VenueRating';
-import { useState } from 'react';
+
 import { useCreateReview } from '../hooks/useCreateReview';
+import { useGetReview } from '../hooks/useGetReview';
+import { useState } from 'react';
 
 function ReviewForm({ mode }) {
   const navigate = useNavigate();
 
   const { venueId: venueIdParam } = useParams();
-  const { isLoading: isLoadingVenue, venue } = useVenue(venueIdParam);
+  const { isLoading: isLoadingVenue, venue } = useVenue(
+    venueIdParam,
+    mode === 'creating'
+  );
+  const { venueName, venueType, venueId, city, urlSlug } = venue ?? {};
 
-  const { venueName, venueType, venueId, city, urlSlug } = venue;
+  const { reviewId: reviewIdParam } = useParams();
+  const { isLoading: isLoadingReview, review } = useGetReview(
+    reviewIdParam,
+    mode === 'editing'
+  );
+  const {
+    hottestDish,
+    hottestSauce,
+    images,
+    reviewContent,
+    reviewTitle,
+    reviewType,
+    venueDetails: { venueName: venueNameReview } = {},
+  } = review ?? {};
 
   const { isCreating, createReview } = useCreateReview();
 
@@ -40,7 +59,8 @@ function ReviewForm({ mode }) {
   return (
     <>
       <h2>
-        {mode === 'creating' ? 'Leave a ' : 'Edit your'} review for {venueName}
+        {mode === 'creating' ? 'Leave a ' : 'Edit your'} review for{' '}
+        {venueName || venueNameReview}
       </h2>
       <span>
         <h3>Heat Rating</h3>
@@ -50,13 +70,14 @@ function ReviewForm({ mode }) {
         />
       </span>
       <form onSubmit={handleSubmit(formSubmit, toastFormError)}>
-        {venueType === 'shop' && (
+        {(venueType || reviewType) === 'shop' && (
           <div>
             <label htmlFor="hottestSauce">Hottest Sauce</label>
             <input
               type="text"
               placeholder="Hottest Sauce"
               id="hottestSauce"
+              defaultValue={hottestSauce}
               {...register('hottestSauce', {
                 required: 'This field is required',
                 maxLength: {
@@ -70,13 +91,14 @@ function ReviewForm({ mode }) {
             )}
           </div>
         )}
-        {venueType === 'restaurant' && (
+        {(venueType || reviewType) === 'restaurant' && (
           <div>
             <label htmlFor="hottestDish">Hottest Dish</label>
             <input
               type="text"
               placeholder="Hottest Dish"
               id="hottestDish"
+              defaultValue={hottestDish}
               {...register('hottestDish', {
                 required: 'This field is required',
                 maxLength: {
@@ -96,6 +118,7 @@ function ReviewForm({ mode }) {
             type="text"
             placeholder="Review Title"
             id="reviewTitle"
+            defaultValue={reviewTitle}
             {...register('reviewTitle', {
               required: 'This field is required',
               maxLength: {
@@ -114,6 +137,7 @@ function ReviewForm({ mode }) {
             rows={3}
             placeholder="Please enter a detailed review of the venue..."
             id="reviewContent"
+            defaultValue={reviewContent}
             {...register('reviewContent', {
               required: 'This field is required',
               minLength: {

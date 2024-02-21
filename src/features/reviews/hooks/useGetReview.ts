@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getReview } from '../../../services/apiReviews';
 
-export function useVenue(reviewId) {
+export function useGetReview(reviewId, isEnabled = true) {
   const {
     isLoading,
     data: review,
@@ -9,6 +9,7 @@ export function useVenue(reviewId) {
   } = useQuery({
     queryKey: ['review', reviewId],
     queryFn: () => getReview(reviewId),
+    enabled: isEnabled,
   });
 
   return { isLoading, error, review };

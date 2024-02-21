@@ -32,13 +32,13 @@ export async function getReviews(venueId: string) {
 export async function getReview(reviewId: string) {
   const { data, error } = await supabase
     .from('venue_reviews')
-    .select('*')
+    .select('*, profiles(*), venue_details(*)')
     .eq('review_id', reviewId);
 
   if (error) {
     throw new Error(`Review could not be loaded. Error:${error.message}`);
   }
-  return camelcaseKeys(data[0]);
+  return camelcaseKeys(data[0], { deep: true });
 }
 
 export async function deleteReview(reviewId: string) {
