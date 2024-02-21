@@ -5,7 +5,7 @@ import { useUser } from '../../authentication/useUser';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useDeleteReview } from '../hooks/useDeleteReview';
 import { useModalContext } from '../../../context/ModalContext';
-import { format, parseISO } from 'date-fns';
+import { format, isAfter, parseISO, subHours } from 'date-fns';
 
 function ReviewListItem({ review }) {
   const {
@@ -32,6 +32,11 @@ function ReviewListItem({ review }) {
 
   const date = parseISO(createdAt);
   const formattedDate = format(date, 'dd MMM yyyy');
+
+  function within48hours(date) {
+    const hours48Ago = subHours(new Date(), 48);
+    return isAfter(date, hours48Ago);
+  }
 
   function handleDeleteReview() {
     const deleteReviewWithId = () => deleteReview(reviewId);
@@ -72,6 +77,9 @@ function ReviewListItem({ review }) {
             <strong>Hottest Dish: </strong>
             {hottestDish}
           </p>
+        )}
+        {within48hours(date) && (
+          <button className="btn-default">Edit Review</button>
         )}
         {currentUser && (
           <button onClick={handleDeleteReview} className="btn-default">
