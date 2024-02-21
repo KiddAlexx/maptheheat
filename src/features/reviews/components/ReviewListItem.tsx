@@ -6,10 +6,12 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useDeleteReview } from '../hooks/useDeleteReview';
 import { useModalContext } from '../../../context/ModalContext';
 import { format, isAfter, parseISO, subHours } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 function ReviewListItem({ review }) {
   const {
     profiles,
+    venueDetails,
     createdAt,
     heatRating,
     hottestDish,
@@ -22,6 +24,7 @@ function ReviewListItem({ review }) {
   } = review;
 
   const { avatarUrl, username, totalReviews, userId } = profiles;
+  const { city, urlSlug, venueId } = venueDetails;
 
   const { isDeleting, deleteReview } = useDeleteReview();
 
@@ -79,7 +82,12 @@ function ReviewListItem({ review }) {
           </p>
         )}
         {within48hours(date) && (
-          <button className="btn-default">Edit Review</button>
+          <Link
+            className="btn-default"
+            to={`/app/venue/${city}/${urlSlug}/reviews/edit/${reviewId}`}
+          >
+            Edit Review
+          </Link>
         )}
         {currentUser && (
           <button onClick={handleDeleteReview} className="btn-default">

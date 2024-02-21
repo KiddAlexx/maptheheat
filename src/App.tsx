@@ -68,7 +68,15 @@ function App() {
                   path="venue/:city/:venue/reviews/new/:venueId"
                   element={
                     <ProtectedRoute>
-                      <ReviewForm />
+                      <ReviewForm mode="creating" />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="venue/:city/:venue/reviews/edit/:reviewId"
+                  element={
+                    <ProtectedRoute>
+                      <ReviewForm mode="editing" />
                     </ProtectedRoute>
                   }
                 />

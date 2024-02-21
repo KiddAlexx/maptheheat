@@ -6,11 +6,13 @@ import VenueRating from '../../venues/components/VenueRating';
 import { useState } from 'react';
 import { useCreateReview } from '../hooks/useCreateReview';
 
-function ReviewForm() {
+function ReviewForm({ mode }) {
+  const navigate = useNavigate();
+
   const { venueId: venueIdParam } = useParams();
   const { isLoading: isLoadingVenue, venue } = useVenue(venueIdParam);
+
   const { venueName, venueType, venueId, city, urlSlug } = venue;
-  const navigate = useNavigate();
 
   const { isCreating, createReview } = useCreateReview();
 
@@ -37,7 +39,9 @@ function ReviewForm() {
   }
   return (
     <>
-      <h2>Leave a review for {venueName}</h2>
+      <h2>
+        {mode === 'creating' ? 'Leave a ' : 'Edit your'} review for {venueName}
+      </h2>
       <span>
         <h3>Heat Rating</h3>
         <VenueRating
