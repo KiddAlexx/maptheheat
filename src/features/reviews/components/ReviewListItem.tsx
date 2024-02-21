@@ -5,6 +5,7 @@ import { useUser } from '../../authentication/useUser';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useDeleteReview } from '../hooks/useDeleteReview';
 import { useModalContext } from '../../../context/ModalContext';
+import { format, parseISO } from 'date-fns';
 
 function ReviewListItem({ review }) {
   const {
@@ -28,6 +29,9 @@ function ReviewListItem({ review }) {
 
   const { user, isLoading, fetchStatus } = useUser();
   const currentUser = user?.id === userId;
+
+  const date = parseISO(createdAt);
+  const formattedDate = format(date, 'dd MMM yyyy');
 
   function handleDeleteReview() {
     const deleteReviewWithId = () => deleteReview(reviewId);
@@ -54,7 +58,7 @@ function ReviewListItem({ review }) {
       </header>
       <section>
         <VenueRating initialRating={heatRating} readonly />
-        <time dateTime="2024-01-22"> 22/01/2004</time>
+        <time dateTime={createdAt}> {formattedDate}</time>
         <h3>{reviewTitle}</h3>
         <p>{reviewContent}</p>
         {reviewType === 'shop' && (
