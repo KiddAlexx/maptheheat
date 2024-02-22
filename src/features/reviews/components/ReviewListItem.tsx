@@ -30,7 +30,7 @@ function ReviewListItem({ review }) {
 
   const { openDialog } = useModalContext();
 
-  const { user, isLoading, fetchStatus } = useUser();
+  const { user } = useUser();
   const currentUser = user?.id === userId;
 
   const date = parseISO(createdAt);
@@ -49,7 +49,7 @@ function ReviewListItem({ review }) {
     );
   }
 
-  return isLoading || fetchStatus == 'fetching' || isDeleting ? (
+  return isDeleting ? (
     <LoaderSpinner />
   ) : (
     <article className={styles.reviewCardContainer}>
