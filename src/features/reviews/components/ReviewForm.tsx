@@ -6,7 +6,7 @@ import VenueRating from '../../venues/components/VenueRating';
 
 import { useCreateReview } from '../hooks/useCreateReview';
 import { useGetReview } from '../hooks/useGetReview';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useUpdateReview } from '../hooks/useUpdateReview';
 
 function ReviewForm({ mode }) {
@@ -33,17 +33,29 @@ function ReviewForm({ mode }) {
     reviewTitle,
     reviewType,
     venueDetails: {
-      venueName: venueNameReview,
-      venueId: venueIdReview,
-      urlSlug: urlSlugReview,
-      city: cityReview,
+      venueName: venueNameReview = '',
+      venueId: venueIdReview = '',
+      urlSlug: urlSlugReview = '',
+      city: cityReview = '',
     } = {},
   } = review ?? {};
 
   const { isCreating, createReview } = useCreateReview();
-  const { isUpdaating, updateReview } = useUpdateReview();
+  const { isUpdating, updateReview } = useUpdateReview();
 
-  const { register, handleSubmit, formState } = useForm();
+  const { register, handleSubmit, formState, reset } = useForm();
+
+  useEffect(() => {
+    if (mode === 'editing' && review) {
+      reset({
+        hottestSauce: review.hottestSauce || '',
+        hottestDish: review.hottestDish || '',
+        reviewTitle: review.reviewTitle || '',
+        reviewContent: review.reviewContent || '',
+      });
+    }
+  }, [mode, review, reset]);
+
   const { errors } = formState;
   const [heatRating, setHeatRating] = useState(5);
 
@@ -52,13 +64,13 @@ function ReviewForm({ mode }) {
   }
 
   async function formSubmit(formData) {
-    const finalFormData = {
-      ...formData,
-      heatRating,
-      venueId,
-      reviewType: venueType,
-    };
     if (mode === 'creating') {
+      const finalFormData = {
+        ...formData,
+        heatRating,
+        venueId,
+        reviewType: venueType,
+      };
       createReview(finalFormData, {
         onSuccess: () => {
           navigate(`/app/venue/${city}/${urlSlug}/${venueId}`, {
@@ -67,6 +79,10 @@ function ReviewForm({ mode }) {
         },
       });
     } else if (mode === 'editing') {
+      const finalFormData = {
+        ...formData,
+        heatRating,
+      };
       updateReview(
         { finalFormData, reviewId },
         {
@@ -103,7 +119,6 @@ function ReviewForm({ mode }) {
               type="text"
               placeholder="Hottest Sauce"
               id="hottestSauce"
-              defaultValue={hottestSauce}
               {...register('hottestSauce', {
                 required: 'This field is required',
                 maxLength: {
@@ -124,7 +139,6 @@ function ReviewForm({ mode }) {
               type="text"
               placeholder="Hottest Dish"
               id="hottestDish"
-              defaultValue={hottestDish}
               {...register('hottestDish', {
                 required: 'This field is required',
                 maxLength: {
@@ -144,7 +158,6 @@ function ReviewForm({ mode }) {
             type="text"
             placeholder="Review Title"
             id="reviewTitle"
-            defaultValue={reviewTitle}
             {...register('reviewTitle', {
               required: 'This field is required',
               maxLength: {
@@ -163,7 +176,6 @@ function ReviewForm({ mode }) {
             rows={3}
             placeholder="Please enter a detailed review of the venue..."
             id="reviewContent"
-            defaultValue={reviewContent}
             {...register('reviewContent', {
               required: 'This field is required',
               minLength: {
@@ -176,7 +188,7 @@ function ReviewForm({ mode }) {
             <span>{errors.reviewContent.message}</span>
           )}
         </div>
-        <button>Submit</button>
+        <button disabled={isUpdating || isCreating}>Submit</button>
       </form>
     </>
   );
