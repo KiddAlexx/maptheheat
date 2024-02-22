@@ -41,8 +41,10 @@ export async function getReview(reviewId: string) {
   return camelcaseKeys(data[0], { deep: true });
 }
 
-export async function updateReview(updatedReview, reviewId: string) {
-  const convertedReview = decamelizeKeys(updatedReview);
+export async function updateReview(finalFormData, reviewId) {
+  console.log(finalFormData);
+  console.log(reviewId);
+  const convertedReview = decamelizeKeys(finalFormData);
   const { data, error } = await supabase
     .from('venue_reviews')
     .update({ ...convertedReview })

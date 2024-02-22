@@ -7,6 +7,7 @@ import VenueRating from '../../venues/components/VenueRating';
 import { useCreateReview } from '../hooks/useCreateReview';
 import { useGetReview } from '../hooks/useGetReview';
 import { useState } from 'react';
+import { useUpdateReview } from '../hooks/useUpdateReview';
 
 function ReviewForm({ mode }) {
   const navigate = useNavigate();
@@ -24,16 +25,23 @@ function ReviewForm({ mode }) {
     mode === 'editing'
   );
   const {
+    reviewId,
     hottestDish,
     hottestSauce,
     images,
     reviewContent,
     reviewTitle,
     reviewType,
-    venueDetails: { venueName: venueNameReview } = {},
+    venueDetails: {
+      venueName: venueNameReview,
+      venueId: venueIdReview,
+      urlSlug: urlSlugReview,
+      city: cityReview,
+    } = {},
   } = review ?? {};
 
   const { isCreating, createReview } = useCreateReview();
+  const { isUpdaating, updateReview } = useUpdateReview();
 
   const { register, handleSubmit, formState } = useForm();
   const { errors } = formState;
@@ -50,11 +58,29 @@ function ReviewForm({ mode }) {
       venueId,
       reviewType: venueType,
     };
-    createReview(finalFormData, {
-      onSuccess: () => {
-        navigate(`/app/venue/${city}/${urlSlug}/${venueId}`, { replace: true });
-      },
-    });
+    if (mode === 'creating') {
+      createReview(finalFormData, {
+        onSuccess: () => {
+          navigate(`/app/venue/${city}/${urlSlug}/${venueId}`, {
+            replace: true,
+          });
+        },
+      });
+    } else if (mode === 'editing') {
+      updateReview(
+        { finalFormData, reviewId },
+        {
+          onSuccess: () => {
+            navigate(
+              `/app/venue/${cityReview}/${urlSlugReview}/${venueIdReview}`,
+              {
+                replace: true,
+              }
+            );
+          },
+        }
+      );
+    }
   }
   return (
     <>

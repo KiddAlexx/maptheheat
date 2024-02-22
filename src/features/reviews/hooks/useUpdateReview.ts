@@ -4,11 +4,12 @@ import toast from 'react-hot-toast';
 
 export function useUpdateReview() {
   const queryClient = useQueryClient();
+
   const { mutate: updateReview, isPending: isUpdating } = useMutation({
-    mutationFn: ({ updatedReview, reviewId }) =>
-      updateReviewApi(updatedReview, reviewId),
+    mutationFn: ({ finalFormData, reviewId }) =>
+      updateReviewApi(finalFormData, reviewId),
     onSuccess: () => {
-      toast.success('Your review has been successfully added!');
+      toast.success('Your review has been successfully updated!');
       queryClient.invalidateQueries({ queryKey: ['reviews'] });
       queryClient.invalidateQueries({ queryKey: ['venue'] });
       queryClient.invalidateQueries({ queryKey: ['venues'] });
