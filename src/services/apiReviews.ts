@@ -41,6 +41,20 @@ export async function getReview(reviewId: string) {
   return camelcaseKeys(data[0], { deep: true });
 }
 
+export async function updateReview(updatedReview, reviewId: string) {
+  const convertedReview = decamelizeKeys(updatedReview);
+  const { data, error } = await supabase
+    .from('venue_reviews')
+    .update({ ...convertedReview })
+    .eq('review_id', reviewId)
+    .select();
+
+  if (error) {
+    throw new Error(`Review could not be updated' Error ${error.message}`);
+  }
+  return camelcaseKeys(data, { deep: true });
+}
+
 export async function deleteReview(reviewId: string) {
   const { data, error } = await supabase
     .from('venue_reviews')
