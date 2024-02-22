@@ -26,11 +26,7 @@ function ReviewForm({ mode }) {
   );
   const {
     reviewId,
-    hottestDish,
-    hottestSauce,
     images,
-    reviewContent,
-    reviewTitle,
     reviewType,
     venueDetails: {
       venueName: venueNameReview = '',
