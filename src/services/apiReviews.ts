@@ -28,7 +28,8 @@ export async function getReview(reviewId: string) {
 }
 
 export async function canUserReview(userId, venueId, days) {
-  const daysAfter = subDays(new Date(), days);
+  const daysAfter = subDays(new Date(), days).toISOString();
+
   const { data, error } = await supabase
     .from('venue_reviews')
     .select('*')
@@ -38,6 +39,7 @@ export async function canUserReview(userId, venueId, days) {
   if (error) {
     throw new Error(`Review could not be loaded. Error:${error.message}`);
   }
+  console.log('here is the data', data);
   return data.length === 0;
 }
 

@@ -1,15 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 import { canUserReview as canUserReviewApi } from '../../../services/apiReviews';
 
-export function useCanUserReview(userId, venueId, days) {
+export function useCanUserReview(userId, venueId, days, enabled) {
   const {
     isLoading,
     data: canUserReview,
     error,
+    refetch,
   } = useQuery({
-    queryKey: ['can-review'],
+    enabled: enabled,
+    queryKey: ['can-review', userId, venueId, days],
     queryFn: () => canUserReviewApi(userId, venueId, days),
   });
 
-  return { isLoading, error, canUserReview };
+  return { isLoading, error, canUserReview, refetch };
 }
