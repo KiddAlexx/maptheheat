@@ -7,6 +7,7 @@ import { useDeleteReview } from '../hooks/useDeleteReview';
 import { useModalContext } from '../../../context/ModalContext';
 import { format, isAfter, parseISO, subHours } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { withinTimeframe } from '../../../utils/withinTimeframe';
 
 function ReviewListItem({ review }) {
   const {
@@ -35,11 +36,7 @@ function ReviewListItem({ review }) {
 
   const date = parseISO(createdAt);
   const formattedDate = format(date, 'dd MMM yyyy');
-
-  function within48hours(date) {
-    const hours48Ago = subHours(new Date(), 48);
-    return isAfter(date, hours48Ago);
-  }
+  const within48hours = withinTimeframe(date, 2);
 
   function handleDeleteReview() {
     const deleteReviewWithId = () => deleteReview(reviewId);
@@ -81,7 +78,7 @@ function ReviewListItem({ review }) {
             {hottestDish}
           </p>
         )}
-        {within48hours(date) && (
+        {within48hours && (
           <Link
             className="btn-default"
             to={`/app/venue/${city}/${urlSlug}/reviews/edit/${reviewId}`}
