@@ -184,7 +184,9 @@ function ReviewForm({ mode }) {
             <span>{errors.reviewContent.message}</span>
           )}
         </div>
-        <button disabled={isUpdating || isCreating}>Submit</button>
+        <button disabled={isUpdating || isCreating}>
+          {mode === 'creating' ? 'Submit' : 'Edit'}
+        </button>
       </form>
     </>
   );
