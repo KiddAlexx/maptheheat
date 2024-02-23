@@ -51,11 +51,13 @@ function DetailedVenueView() {
     images,
   } = venue;
 
+  const finalRating = Math.round(averageRating * 2) / 2 || 5;
+
   return (
     <div className={styles.detailedViewContainer}>
       <h2>{venueName}</h2>
       <div className={styles.ratingUploadContainer}>
-        <VenueRating initialRating={averageRating || 5} readonly />
+        <VenueRating initialRating={finalRating} readonly />
       </div>
       <div className={styles.multipleImageContainer}>
         {images ? (
