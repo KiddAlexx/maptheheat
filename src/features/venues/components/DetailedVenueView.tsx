@@ -67,7 +67,7 @@ function DetailedVenueView() {
   const finalRating = Math.round(averageRating * 2) / 2 || 5;
 
   async function handleReview() {
-    if (!isAuthenticated && !isLoading && fetchStatus !== 'fetching') {
+    if (!isAuthenticated) {
       openModal('login');
       return;
     }
