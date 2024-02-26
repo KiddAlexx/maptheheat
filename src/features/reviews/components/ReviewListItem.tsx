@@ -78,7 +78,7 @@ function ReviewListItem({ review }) {
             {hottestDish}
           </p>
         )}
-        {within48hours && (
+        {within48hours && currentUser && (
           <Link
             className="btn-default"
             to={`/app/venue/${city}/${urlSlug}/reviews/edit/${reviewId}`}
