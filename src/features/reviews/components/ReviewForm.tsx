@@ -1,17 +1,46 @@
-import { useNavigate, useParams } from 'react-router';
-import { useVenue } from '../../venues/hooks/useVenue';
-import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import VenueRating from '../../venues/components/VenueRating';
+// React Imports
+import { useEffect, useState } from 'react';
 
+// Hooks Imports
 import { useCreateReview } from '../hooks/useCreateReview';
 import { useGetReview } from '../hooks/useGetReview';
-import { useEffect, useState } from 'react';
 import { useUpdateReview } from '../hooks/useUpdateReview';
+import { useVenue } from '../../venues/hooks/useVenue';
 
-function ReviewForm({ mode }) {
+// Third Party Imports
+import { useNavigate, useParams } from 'react-router';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+
+// Component Imports
+import VenueRating from '../../venues/components/VenueRating';
+
+// Types
+interface ReviewFormProps {
+  mode: 'creating' | 'editing';
+}
+
+interface FormData {
+  hottestSauce: string;
+  hottestDish: string;
+  reviewTitle: string;
+  reviewContent: string;
+}
+
+function ReviewForm({ mode }: ReviewFormProps) {
   const navigate = useNavigate();
 
+  const { isCreating, createReview } = useCreateReview();
+  const { isUpdating, updateReview } = useUpdateReview();
+
+  // Form and data state
+  const { register, handleSubmit, formState, reset } = useForm<FormData>();
+  const { errors } = formState;
+  const [heatRating, setHeatRating] = useState(5);
+
+  // Fetch venue details in "creating" mode.
+  // venueIdParam assigned value of "do-not-fetch" is param does not exist
+  // This ensures that that undefined is not being passed to useVenue hook
   const { venueId: venueIdParam } = useParams();
   const { isLoading: isLoadingVenue, venue } = useVenue(
     venueIdParam,
@@ -19,6 +48,7 @@ function ReviewForm({ mode }) {
   );
   const { venueName, venueType, venueId, city, urlSlug } = venue ?? {};
 
+  // Fetch review details in "editing" mode.
   const { reviewId: reviewIdParam } = useParams();
   const { isLoading: isLoadingReview, review } = useGetReview(
     reviewIdParam,
@@ -36,11 +66,7 @@ function ReviewForm({ mode }) {
     } = {},
   } = review ?? {};
 
-  const { isCreating, createReview } = useCreateReview();
-  const { isUpdating, updateReview } = useUpdateReview();
-
-  const { register, handleSubmit, formState, reset } = useForm();
-
+  // Effect to set default input values to current review values in editing mode.
   useEffect(() => {
     if (mode === 'editing' && review) {
       reset({
@@ -52,14 +78,13 @@ function ReviewForm({ mode }) {
     }
   }, [mode, review, reset]);
 
-  const { errors } = formState;
-  const [heatRating, setHeatRating] = useState(5);
-
   function toastFormError() {
     toast.error('Please fix the errors in the form');
   }
 
-  async function formSubmit(formData) {
+  // Handles form submission for editing or creating review.
+  // Navigates to relevant venue page on success.
+  async function formSubmit(formData: FormData) {
     if (mode === 'creating') {
       const finalFormData = {
         ...formData,
@@ -100,6 +125,7 @@ function ReviewForm({ mode }) {
         {mode === 'creating' ? 'Leave a ' : 'Edit your'} review for{' '}
         {venueName || venueNameReview}
       </h2>
+
       <span>
         <h3>Heat Rating</h3>
         <VenueRating
@@ -107,6 +133,7 @@ function ReviewForm({ mode }) {
           handleRatingChange={setHeatRating}
         />
       </span>
+      {/* Form dynamically renders fields based on venue type */}
       <form onSubmit={handleSubmit(formSubmit, toastFormError)}>
         {(venueType || reviewType) === 'shop' && (
           <div>
@@ -128,6 +155,7 @@ function ReviewForm({ mode }) {
             )}
           </div>
         )}
+
         {(venueType || reviewType) === 'restaurant' && (
           <div>
             <label htmlFor="hottestDish">Hottest Dish</label>
@@ -148,6 +176,7 @@ function ReviewForm({ mode }) {
             )}
           </div>
         )}
+
         <div>
           <label htmlFor="reviewTitle">Review Title</label>
           <input
@@ -166,6 +195,7 @@ function ReviewForm({ mode }) {
             <span> {errors.reviewTitle.message}</span>
           )}
         </div>
+
         <div>
           <label htmlFor="reviewContent">Review</label>
           <textarea
@@ -184,6 +214,7 @@ function ReviewForm({ mode }) {
             <span>{errors.reviewContent.message}</span>
           )}
         </div>
+
         <button disabled={isUpdating || isCreating}>
           {mode === 'creating' ? 'Submit' : 'Edit'}
         </button>
