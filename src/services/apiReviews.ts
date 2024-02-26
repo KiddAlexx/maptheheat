@@ -1,9 +1,13 @@
+//Third Party Imports
 import decamelizeKeys from 'decamelize-keys';
-import supabase from './supabase';
 import camelcaseKeys from 'camelcase-keys';
 import { subDays } from 'date-fns';
+import supabase from './supabase';
 
-export async function getReviews(venueId: string) {
+//Type Imports
+import { NewReview, Review } from '../models/reviewTypes';
+
+export async function getReviews(venueId: string): Promise<Review[]> {
   const { data, error } = await supabase
     .from('venue_reviews')
     .select('*, profiles(*), venue_details(*)')
@@ -15,7 +19,7 @@ export async function getReviews(venueId: string) {
   return camelcaseKeys(data, { deep: true });
 }
 
-export async function getReview(reviewId: string) {
+export async function getReview(reviewId: string): Promise<Review> {
   const { data, error } = await supabase
     .from('venue_reviews')
     .select('*, profiles(*), venue_details(*)')
@@ -27,7 +31,11 @@ export async function getReview(reviewId: string) {
   return camelcaseKeys(data[0], { deep: true });
 }
 
-export async function canUserReview(userId, venueId, days) {
+export async function canUserReview(
+  userId: string,
+  venueId: string,
+  days: number
+) {
   const daysAfter = subDays(new Date(), days).toISOString();
 
   const { data, error } = await supabase
@@ -43,7 +51,7 @@ export async function canUserReview(userId, venueId, days) {
   return data.length === 0;
 }
 
-export async function createReview(newReview) {
+export async function createReview(newReview: NewReview) {
   const convertedReview = decamelizeKeys(newReview);
   const { data, error } = await supabase
     .from('venue_reviews')
@@ -58,7 +66,7 @@ export async function createReview(newReview) {
   return data;
 }
 
-export async function updateReview(finalFormData, reviewId) {
+export async function updateReview(finalFormData, reviewId: string) {
   console.log(finalFormData);
   console.log(reviewId);
   const convertedReview = decamelizeKeys(finalFormData);

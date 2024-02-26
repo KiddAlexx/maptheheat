@@ -1,15 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 import { getReview } from '../../../services/apiReviews';
+import { Review } from '../../../models/reviewTypes';
 
-export function useGetReview(reviewId, isEnabled = true) {
+// useQuery is only enabled when reviewId is truthy and isEnabled is true.
+// The non-null assertion operator (!) is used when calling getReview,
+// because enabled check guarantees reviewId is not null/undefined.
+
+export function useGetReview(reviewId?: string, isEnabled = true) {
   const {
     isLoading,
     data: review,
     error,
-  } = useQuery({
+  } = useQuery<Review>({
     queryKey: ['review', reviewId],
-    queryFn: () => getReview(reviewId),
-    enabled: isEnabled,
+    queryFn: () => getReview(reviewId!),
+    enabled: !!reviewId && isEnabled,
   });
 
   return { isLoading, error, review };
