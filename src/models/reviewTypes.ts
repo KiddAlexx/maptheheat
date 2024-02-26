@@ -1,4 +1,4 @@
-import { Image } from './venueTypes';
+import { Image, Venue } from './venueTypes';
 
 export interface Review {
   reviewId: string;
@@ -12,6 +12,7 @@ export interface Review {
   reviewType: 'shop' | 'restaurant';
   reviewTitle: string;
   reviewContent: string;
+  venueDetails?: Venue;
 }
 
 // id not present at creation time, generate by Supbase
