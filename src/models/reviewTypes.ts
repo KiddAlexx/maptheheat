@@ -16,4 +16,4 @@ export interface Review {
 }
 
 // id not present at creation time, generate by Supbase
-export type NewReview = Omit<Review, 'reviewId'>;
+export type NewReview = Omit<Review, 'reviewId' | 'createdAt' | 'userId'>;

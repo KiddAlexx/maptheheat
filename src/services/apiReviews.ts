@@ -6,6 +6,7 @@ import supabase from './supabase';
 
 //Type Imports
 import { NewReview, Review } from '../models/reviewTypes';
+import { EditformData } from '../features/reviews/components/ReviewForm';
 
 export async function getReviews(venueId: string): Promise<Review[]> {
   const { data, error } = await supabase
@@ -66,7 +67,10 @@ export async function createReview(newReview: NewReview) {
   return data;
 }
 
-export async function updateReview(finalFormData, reviewId: string) {
+export async function updateReview(
+  finalFormData: EditformData,
+  reviewId: string
+) {
   console.log(finalFormData);
   console.log(reviewId);
   const convertedReview = decamelizeKeys(finalFormData);

@@ -27,6 +27,10 @@ interface FormData {
   reviewContent: string;
 }
 
+export interface EditformData extends FormData {
+  heatRating: number;
+}
+
 function ReviewForm({ mode }: ReviewFormProps) {
   const navigate = useNavigate();
 
@@ -83,14 +87,15 @@ function ReviewForm({ mode }: ReviewFormProps) {
   }
 
   // Handles form submission for editing or creating review.
+  // Checks mode and presence of venue or review object before proceeding.
   // Navigates to relevant venue page on success.
   async function formSubmit(formData: FormData) {
-    if (mode === 'creating') {
+    if (mode === 'creating' && venue) {
       const finalFormData = {
         ...formData,
         heatRating,
-        venueId,
-        reviewType: venueType,
+        venueId: venueId!,
+        reviewType: venueType!,
       };
       createReview(finalFormData, {
         onSuccess: () => {
@@ -99,13 +104,14 @@ function ReviewForm({ mode }: ReviewFormProps) {
           });
         },
       });
-    } else if (mode === 'editing') {
+    } else if (mode === 'editing' && review) {
       const finalFormData = {
         ...formData,
         heatRating,
       };
+      // Non null assertion on reviewId as check for review prior
       updateReview(
-        { finalFormData, reviewId },
+        { finalFormData, reviewId: reviewId! },
         {
           onSuccess: () => {
             navigate(
