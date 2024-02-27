@@ -43,8 +43,8 @@ function ReviewForm({ mode }: ReviewFormProps) {
   const [heatRating, setHeatRating] = useState(5);
 
   // Fetch venue details in "creating" mode.
-  // venueIdParam assigned value of "do-not-fetch" is param does not exist
-  // This ensures that that undefined is not being passed to useVenue hook
+  // All destructured variables assigned default values,
+  // For instances where venue does not exist.
   const { venueId: venueIdParam } = useParams();
   const { isLoading: isLoadingVenue, venue } = useVenue(
     venueIdParam,
@@ -53,6 +53,8 @@ function ReviewForm({ mode }: ReviewFormProps) {
   const { venueName, venueType, venueId, city, urlSlug } = venue ?? {};
 
   // Fetch review details in "editing" mode.
+  // All destructured variables assigned default values,
+  // For instances where review does not exist.
   const { reviewId: reviewIdParam } = useParams();
   const { isLoading: isLoadingReview, review } = useGetReview(
     reviewIdParam,
