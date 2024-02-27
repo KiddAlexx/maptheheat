@@ -1,11 +1,16 @@
+// Third Party Imports
 import camelcaseKeys from 'camelcase-keys';
-import { ImageUploadParams, NewVenue } from '../models/venueTypes';
-import compressImage from '../utils/compressImage';
-import supabase, { supabaseUrl } from './supabase';
-import uploadImage from './supabaseImageUploader';
 import decamelizeKeys from 'decamelize-keys';
+import supabase, { supabaseUrl } from './supabase';
 
-export async function getVenues() {
+// Type Imports
+import { ImageUploadParams, NewVenue, Venue } from '../models/venueTypes';
+
+// Util Imports
+import compressImage from '../utils/compressImage';
+import uploadImage from './supabaseImageUploader';
+
+export async function getVenues(): Promise<Venue[]> {
   const { data, error } = await supabase.from('venue_details').select('*');
 
   if (error) {
@@ -14,7 +19,7 @@ export async function getVenues() {
   return camelcaseKeys(data);
 }
 
-export async function getVenue(id: string) {
+export async function getVenue(id: string): Promise<Venue> {
   const { data, error } = await supabase
     .from('venue_details')
     .select('*')

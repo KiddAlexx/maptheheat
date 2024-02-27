@@ -19,13 +19,14 @@ import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
 import DetailedVenueView from './features/venues/components/DetailedVenueView';
 import MapView from './features/map/MapView';
-import UserProfile from './features/userProfile/UserProfile';
+import UserProfile from './features/userProfile/components/UserProfile';
 import PageNav from './features/layout/PageNav';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ModalProvider } from './context/ModalContext';
 import ErrorModal from './ui/ErrorModal';
 import ModalManager from './components/ModalManager';
-import ReviewForm from './features/reviews/reviewForm';
+import ReviewForm from './features/reviews/components/ReviewForm';
+import AddNewVenue from './pages/AddNewVenue';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,6 +46,14 @@ function App() {
             <PageNav />
             <Routes>
               <Route path="/" element={<Homepage />} />
+              <Route
+                path="/add-venue"
+                element={
+                  <ProtectedRoute>
+                    <AddNewVenue />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="app" element={<AppLayout />}>
                 <Route index element={<Navigate replace to="map" />} />
                 <Route
@@ -57,7 +66,19 @@ function App() {
                 />
                 <Route
                   path="venue/:city/:venue/reviews/new/:venueId"
-                  element={<ReviewForm />}
+                  element={
+                    <ProtectedRoute>
+                      <ReviewForm mode="creating" />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="venue/:city/:venue/reviews/edit/:reviewId"
+                  element={
+                    <ProtectedRoute>
+                      <ReviewForm mode="editing" />
+                    </ProtectedRoute>
+                  }
                 />
                 <Route
                   path="profile"

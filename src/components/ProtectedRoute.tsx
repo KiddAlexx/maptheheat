@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router';
 import { useUser } from '../features/authentication/useUser';
 import { useEffect, ReactNode } from 'react';
 import LoaderSpinner from '../ui/LoaderSpinner';
+import { useModalContext } from '../context/ModalContext';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -9,6 +10,7 @@ interface ProtectedRouteProps {
 
 function ProtectedRoute({ children }: ProtectedRouteProps) {
   const navigate = useNavigate();
+  const { openModal, modalOpen } = useModalContext();
 
   // 1. Load the authenticated user
   const { isLoading, isAuthenticated, fetchStatus } = useUser();
@@ -16,12 +18,19 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
   // 2. If there is no authenticated user, redirect to login page
   useEffect(
     function () {
-      if (!isAuthenticated && !isLoading && fetchStatus !== 'fetching') {
-        navigate('/login');
+      if (
+        !isAuthenticated &&
+        !isLoading &&
+        fetchStatus !== 'fetching' &&
+        !modalOpen
+      ) {
+        navigate('/app/map');
+
+        openModal('login');
       }
       console.log(isAuthenticated);
     },
-    [isAuthenticated, isLoading, navigate, fetchStatus]
+    [isAuthenticated, isLoading, fetchStatus, modalOpen, openModal, navigate]
   );
 
   // 3. Show spinner while loading

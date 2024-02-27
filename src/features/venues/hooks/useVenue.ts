@@ -1,14 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 import { getVenue } from '../../../services/apiVenues';
+import { Venue } from '../../../models/venueTypes';
 
-export function useVenue(venueId) {
+// useQuery is only enabled when venueId is truthy and isEnabled is true.
+// The non-null assertion operator (!) is used when calling getVenue,
+// because enabled check guarantees venueId is not null/undefined.
+
+export function useVenue(venueId?: string, isEnabled = true) {
   const {
     isLoading,
     data: venue,
     error,
-  } = useQuery({
+  } = useQuery<Venue>({
     queryKey: ['venue', venueId],
-    queryFn: () => getVenue(venueId),
+    queryFn: () => getVenue(venueId!),
+    enabled: !!venueId && isEnabled,
   });
 
   return { isLoading, error, venue };

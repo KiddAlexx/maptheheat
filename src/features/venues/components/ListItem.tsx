@@ -28,6 +28,8 @@ function ListItem({ venue, handleClick }: ListItemProps) {
 
   const { venueName, address, phoneNumber, images, averageRating } = venue;
 
+  const finalRating = Math.round(averageRating * 2) / 2 || 5;
+
   return (
     <div className={styles.listItemContainer} onClick={handleClick}>
       {images ? (
@@ -52,7 +54,7 @@ function ListItem({ venue, handleClick }: ListItemProps) {
 
       <div>
         <h2>{venueName}</h2>
-        <VenueRating initialRating={averageRating || 5} readonly />
+        <VenueRating initialRating={finalRating} readonly />
         <div className={styles.iconTextContainer}>
           <img src={clockIcon} alt="icon of a clock" />
           <p>Open</p>

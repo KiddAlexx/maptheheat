@@ -7,14 +7,23 @@ import { ReactNode, createContext, useContext, useReducer } from 'react';
 interface State {
   modalName: null | string;
   modalOpen: boolean;
+  message: null | string;
+  confirmAction: null | (() => void);
 }
 
 interface ModalContextType extends State {
   openModal: (modal: string) => void;
   closeModal: () => void;
+  openDialog: (message: string, confirmAction: () => void) => void;
 }
 
-type Action = { type: 'open-modal'; payload: string } | { type: 'close-modal' };
+type Action =
+  | { type: 'open-modal'; payload: string }
+  | {
+      type: 'open-dialog';
+      payload: { message: string; confirmActionAndClose: () => void };
+    }
+  | { type: 'close-modal' };
 
 interface ModalProviderProps {
   children: ReactNode;
@@ -25,6 +34,8 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 const initialState = {
   modalName: null,
   modalOpen: false,
+  message: null,
+  confirmAction: null,
 };
 
 function reducer(state: State, action: Action) {
@@ -35,12 +46,22 @@ function reducer(state: State, action: Action) {
         modalName: action.payload,
         modalOpen: true,
       };
+    case 'open-dialog':
+      return {
+        ...state,
+        modalName: 'confirm-action',
+        modalOpen: true,
+        message: action.payload.message,
+        confirmAction: action.payload.confirmActionAndClose,
+      };
 
     case 'close-modal': {
       return {
         ...state,
         modalName: null,
         modalOpen: false,
+        message: null,
+        confirmAction: null,
       };
     }
 
@@ -50,12 +71,20 @@ function reducer(state: State, action: Action) {
 }
 
 function ModalProvider({ children }: ModalProviderProps) {
-  const [{ modalName, modalOpen }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [{ modalName, modalOpen, message, confirmAction }, dispatch] =
+    useReducer(reducer, initialState);
   function openModal(modal: string) {
     dispatch({ type: 'open-modal', payload: modal });
+  }
+  function openDialog(message: string, confirmAction: () => void) {
+    const confirmActionAndClose = () => {
+      confirmAction();
+      closeModal();
+    };
+    dispatch({
+      type: 'open-dialog',
+      payload: { message, confirmActionAndClose },
+    });
   }
   function closeModal() {
     dispatch({ type: 'close-modal' });
@@ -63,7 +92,15 @@ function ModalProvider({ children }: ModalProviderProps) {
 
   return (
     <ModalContext.Provider
-      value={{ modalName, modalOpen, openModal, closeModal }}
+      value={{
+        modalName,
+        modalOpen,
+        openModal,
+        closeModal,
+        openDialog,
+        message,
+        confirmAction,
+      }}
     >
       {children}
     </ModalContext.Provider>

@@ -1,5 +1,5 @@
 // React imports
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 // Style imports
@@ -23,12 +23,26 @@ import globeIcon from '../../../assets/icons/globe.svg';
 import mapPinIcon from '../../../assets/icons/map-pin.svg';
 import phoneIcon from '../../../assets/icons/phone.svg';
 import infoIcon from '../../../assets/icons/info.svg';
+import ReviewContainer from '../../reviews/components/ReviewContainer';
+import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
+import { useUser } from '../../authentication/useUser';
+import { useModalContext } from '../../../context/ModalContext';
 
 function DetailedVenueView() {
   const { venueId } = useParams();
   console.log(venueId);
+  const navigate = useNavigate();
+
+  const { isLoading, isAuthenticated, fetchStatus, user } = useUser();
+  const { openModal } = useModalContext();
+  const userId = user?.id;
 
   const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
+  const {
+    isLoading: isLoadingReviewAuth,
+    error,
+    refetch: refetchUserPermission,
+  } = useCanUserReview(userId, venueId, 30, false);
 
   if (isLoadingVenue) {
     return <LoaderSpinner />;
@@ -50,11 +64,25 @@ function DetailedVenueView() {
     images,
   } = venue;
 
+  const finalRating = Math.round(averageRating * 2) / 2 || 5;
+
+  async function handleReview() {
+    if (!isAuthenticated) {
+      openModal('login');
+      return;
+    }
+    const { data: canUserReview } = await refetchUserPermission();
+    console.log('here is permission', canUserReview);
+    if (canUserReview) {
+      navigate(`/app/venue/${city}/${urlSlug}/reviews/new/${venueId}`);
+    } else alert('You cannot review the same venue within 30 days');
+  }
+
   return (
     <div className={styles.detailedViewContainer}>
       <h2>{venueName}</h2>
       <div className={styles.ratingUploadContainer}>
-        <VenueRating initialRating={averageRating || 5} readonly />
+        <VenueRating initialRating={finalRating} readonly />
       </div>
       <div className={styles.multipleImageContainer}>
         {images ? (
@@ -81,9 +109,10 @@ function DetailedVenueView() {
         )}
       </div>
       <ImageUploader />
-      <Link to={`/app/venue/${city}/${urlSlug}/reviews/new/${venueId}`}>
-        Leave a Review
-      </Link>
+
+      <button className="btn-default" onClick={handleReview}>
+        Leave a review
+      </button>
 
       <div className={styles.iconTextContainer}>
         <img src={clockIcon} alt="icon of a clock" />
@@ -112,6 +141,7 @@ function DetailedVenueView() {
       <Link to="/app/map" className={`btn-default ${styles.btnBackToMap}`}>
         Back to Map
       </Link>
+      <ReviewContainer />
     </div>
   );
 }
