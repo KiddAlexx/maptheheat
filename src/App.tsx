@@ -1,5 +1,5 @@
 // React imports
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 // Third Party Imports
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -27,6 +27,7 @@ import ErrorModal from './ui/ErrorModal';
 import ModalManager from './components/ModalManager';
 import ReviewForm from './features/reviews/components/ReviewForm';
 import AddNewVenue from './pages/AddNewVenue';
+import { NextUIProvider } from '@nextui-org/system';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,12 +38,14 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  const navigate = useNavigate();
   return (
-    <VenuesProvider>
-      <ModalProvider>
-        <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools initialIsOpen={false} />
-          <BrowserRouter>
+    <NextUIProvider navigate={navigate}>
+      <VenuesProvider>
+        <ModalProvider>
+          <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools initialIsOpen={false} />
+
             <PageNav />
             <Routes>
               <Route path="/" element={<Homepage />} />
@@ -93,26 +96,27 @@ function App() {
             </Routes>
             <ErrorModal />
             <ModalManager />
-          </BrowserRouter>
-          <Toaster
-            position="top-center"
-            gutter={12}
-            containerStyle={{ margin: '8px' }}
-            toastOptions={{
-              success: { duration: 3000 },
-              error: { duration: 5000 },
-              style: {
-                fontSize: '16',
-                maxWidth: '500px',
-                padding: '16px 24px',
-                backgroundColor: '#fff',
-                color: '#374151',
-              },
-            }}
-          />
-        </QueryClientProvider>
-      </ModalProvider>
-    </VenuesProvider>
+
+            <Toaster
+              position="top-center"
+              gutter={12}
+              containerStyle={{ margin: '8px' }}
+              toastOptions={{
+                success: { duration: 3000 },
+                error: { duration: 5000 },
+                style: {
+                  fontSize: '16',
+                  maxWidth: '500px',
+                  padding: '16px 24px',
+                  backgroundColor: '#fff',
+                  color: '#374151',
+                },
+              }}
+            />
+          </QueryClientProvider>
+        </ModalProvider>
+      </VenuesProvider>
+    </NextUIProvider>
   );
 }
 
