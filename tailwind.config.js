@@ -1,10 +1,16 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+const { nextui } = require('@nextui-org/theme');
+module.exports = {
+  content: [
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
+    './node_modules/@nextui-org/theme/dist/components/(navbar).js',
+  ],
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [nextui()],
+  darkMode: 'class',
   corePlugins: {
     preflight: false,
   },
