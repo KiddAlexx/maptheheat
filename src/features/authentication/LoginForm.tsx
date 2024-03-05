@@ -1,6 +1,10 @@
 // Style imports
 import styles from './AuthForm.module.css';
 
+// NextUI Components
+import { Input } from '@nextui-org/input';
+import { Button } from '@nextui-org/button';
+
 // File imports
 import googleBtnLight from '../../assets/btn_google_light_normal_ios.svg';
 import { useForm } from 'react-hook-form';

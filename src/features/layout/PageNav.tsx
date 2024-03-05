@@ -26,7 +26,7 @@ function PageNav() {
           <>
             <li>
               <Button
-                color="secondary"
+                color="primary"
                 size="lg"
                 radius="sm"
                 onClick={() => openModal('login')}
