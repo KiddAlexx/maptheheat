@@ -4,6 +4,7 @@ import styles from './AuthForm.module.css';
 // NextUI Components
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/button';
+import { Link } from '@nextui-org/link';
 
 // File imports
 import googleBtnLight from '../../assets/btn_google_light_normal_ios.svg';
@@ -51,63 +52,75 @@ function LoginForm() {
   return isPendingEmail || isPendingGoogle ? (
     <LoaderSpinner />
   ) : (
-    <form
-      noValidate
-      onSubmit={handleSubmit(formSubmit)}
-      className={styles.authFormContainer}
-    >
-      <div className={styles.inputContainer}>
-        <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          placeholder="Email..."
-          {...register('email', {
-            required: 'This field is required',
-            pattern: {
-              value: /\S+@\S+\.\S+/,
-              message: 'Please provide a valid email address',
-            },
-          })}
-        />
-        {typeof errors?.email?.message === 'string' && (
-          <span> {errors.email.message}</span>
-        )}
-      </div>
-      <div className={styles.inputContainer}>
-        <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Password..."
-          {...register('password', { required: 'This field is required' })}
-        />
-        {typeof errors?.password?.message === 'string' && (
-          <span> {errors.password.message}</span>
-        )}
-      </div>
+    <div>
+      <header>
+        <h2>Login</h2>
+      </header>
+      <form
+        noValidate
+        onSubmit={handleSubmit(formSubmit)}
+        className={styles.authFormContainer}
+      >
+        <div className={styles.inputContainer}>
+          <Input
+            type="email"
+            radius="sm"
+            variant="bordered"
+            label="Email"
+            isInvalid={!!errors.email}
+            errorMessage={
+              errors.email && typeof errors?.email?.message === 'string'
+                ? errors.email.message
+                : ''
+            }
+            {...register('email', {
+              required: 'This field is required',
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: 'Please provide a valid email address',
+              },
+            })}
+          />
 
-      <div className={styles.authButtonContainer}>
-        <button className="btn-default" type="submit">
-          Login
-        </button>
-        <button
-          type="button"
-          className={`btn-default ${styles.btnLoginGoogle}`}
-          onClick={() => loginGoogle()}
-        >
-          <img src={googleBtnLight} alt="Google logo" />
-          Sign In With Google
-        </button>
+          <Input
+            type="password"
+            radius="sm"
+            variant="bordered"
+            label="Password"
+            isInvalid={!!errors.password}
+            errorMessage={
+              errors.password && typeof errors?.password?.message === 'string'
+                ? errors.password.message
+                : ''
+            }
+            {...register('password', { required: 'This field is required' })}
+          />
+          <Link color="foreground" underline="hover">
+            Forgot Password
+          </Link>
+        </div>
+        <div className={styles.authButtonContainer}>
+          <Button className="w-full" radius="sm" size="lg" type="submit">
+            Login
+          </Button>
+          <Button
+            className="w-full"
+            radius="sm"
+            size="lg"
+            type="button"
+            onClick={() => loginGoogle()}
+          >
+            <img src={googleBtnLight} alt="Google logo" />
+            Sign In With Google
+          </Button>
 
-        <button
-          onClick={() => openModal('sign-up')}
-          className={`btn-default ${styles.btnLogin}`}
-        >
-          Sign Up!
-        </button>
-      </div>
-    </form>
+          <p>Not a member?</p>
+          <Link underline="hover" onPress={() => openModal('sign-up')}>
+            Sign up now
+          </Link>
+        </div>
+      </form>
+    </div>
   );
 }
 

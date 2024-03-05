@@ -13,17 +13,17 @@
 }
 
 .inputContainer label {
-  margin-bottom: 0.3rem;
+  /*   margin-bottom: 0.3rem;
   color: #2b6027;
   font-size: 2rem;
-  font-weight: 500;
+  font-weight: 500; */
 }
 
 .authButtonContainer {
   width: 100%;
 }
 
-.authFormContainer button {
+/* .authFormContainer button {
   width: 100%;
   height: 4.5rem;
   margin-bottom: 1.5rem;
@@ -50,35 +50,4 @@
   color: #53b84c;
   border: 1px solid #53b84c;
 }
-
-.divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  margin-bottom: 1.5rem;
-  color: #2b6027;
-}
-
-.divider p {
-  font-size: 1.8rem;
-  font-weight: 500;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  display: flex;
-  gap: 2rem;
-  height: 1px;
-  width: 50%;
-  background-color: rgba(43, 96, 39, 0.6);
-}
-
-.divider::before {
-  margin-right: 2rem;
-}
-
-.divider::after {
-  margin-left: 2rem;
-}
+ */
