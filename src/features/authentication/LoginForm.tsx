@@ -5,6 +5,7 @@ import styles from './AuthForm.module.css';
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/button';
 import { Link } from '@nextui-org/link';
+import { Divider } from '@nextui-org/divider';
 
 // File imports
 import googleBtnLight from '../../assets/btn_google_light_normal_ios.svg';
@@ -31,8 +32,9 @@ function LoginForm() {
     console.log(formData);
     console.log(formState);
     const { email, password } = formData;
-    console.log(email, password);
+
     if (!email || !password) return;
+
     loginEmail(
       { email, password },
       {
@@ -52,17 +54,18 @@ function LoginForm() {
   return isPendingEmail || isPendingGoogle ? (
     <LoaderSpinner />
   ) : (
-    <div>
+    <div className={styles.authFormContainer}>
       <header>
-        <h2>Login</h2>
+        <h2 className={styles.formHeading}>Login</h2>
       </header>
       <form
+        className={styles.authForm}
         noValidate
         onSubmit={handleSubmit(formSubmit)}
-        className={styles.authFormContainer}
       >
-        <div className={styles.inputContainer}>
+        <div className={styles.authInputContainer}>
           <Input
+            className={styles.formInput}
             type="email"
             radius="sm"
             variant="bordered"
@@ -83,6 +86,7 @@ function LoginForm() {
           />
 
           <Input
+            className={styles.formInput}
             type="password"
             radius="sm"
             variant="bordered"
@@ -95,16 +99,27 @@ function LoginForm() {
             }
             {...register('password', { required: 'This field is required' })}
           />
-          <Link color="foreground" underline="hover">
+          <Link className={styles.forgotPasswordLink} underline="hover">
             Forgot Password
           </Link>
         </div>
         <div className={styles.authButtonContainer}>
-          <Button className="w-full" radius="sm" size="lg" type="submit">
+          <Button
+            className={styles.authButton}
+            radius="sm"
+            size="lg"
+            type="submit"
+          >
             Login
           </Button>
+          <div className={styles.dividerContainer}>
+            <Divider />
+            <p>OR</p>
+            <Divider />
+          </div>
+
           <Button
-            className="w-full"
+            className={styles.authButton}
             radius="sm"
             size="lg"
             type="button"
@@ -113,13 +128,14 @@ function LoginForm() {
             <img src={googleBtnLight} alt="Google logo" />
             Sign In With Google
           </Button>
-
-          <p>Not a member?</p>
-          <Link underline="hover" onPress={() => openModal('sign-up')}>
-            Sign up now
-          </Link>
         </div>
       </form>
+      <footer className={styles.footerContainer}>
+        <p>Not a member?</p>
+        <Link underline="hover" onPress={() => openModal('sign-up')}>
+          Sign up now
+        </Link>
+      </footer>
     </div>
   );
 }
