@@ -28,7 +28,7 @@
 
 .forgotPasswordLink {
   margin-top: 0.8rem;
-  margin-right: 0.2rem;
+  margin-right: 0.6rem;
 }
 
 .authButtonContainer {
@@ -49,6 +49,10 @@
   width: 100%;
 }
 
+.signUpDivider {
+  margin-bottom: 2rem;
+}
+
 .authButton {
   width: 100%;
 }
@@ -56,8 +60,8 @@
 .footerContainer {
   width: 100%;
   display: flex;
-  justify-content: end;
+  justify-content: center;
   gap: 1rem;
-  margin-right: 0.2rem;
+
   margin-bottom: 1rem;
 }

@@ -67,9 +67,9 @@ function LoginForm() {
           <Input
             className={styles.formInput}
             type="email"
+            label="Email"
             radius="sm"
             variant="bordered"
-            label="Email"
             isInvalid={!!errors.email}
             errorMessage={
               errors.email && typeof errors?.email?.message === 'string'
@@ -99,7 +99,12 @@ function LoginForm() {
             }
             {...register('password', { required: 'This field is required' })}
           />
-          <Link className={styles.forgotPasswordLink} underline="hover">
+          <Link
+            className={styles.forgotPasswordLink}
+            underline="hover"
+            size="sm"
+            color="foreground"
+          >
             Forgot Password
           </Link>
         </div>
@@ -132,7 +137,7 @@ function LoginForm() {
       </form>
       <footer className={styles.footerContainer}>
         <p>Not a member?</p>
-        <Link underline="hover" onPress={() => openModal('sign-up')}>
+        <Link underline="hover" size="md" onPress={() => openModal('sign-up')}>
           Sign up now
         </Link>
       </footer>
