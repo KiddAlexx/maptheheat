@@ -1,8 +1,10 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { MdCancel } from 'react-icons/md';
 
 import styles from './Modal.module.css';
 import { useModalContext } from '../context/ModalContext';
+import { Button } from '@nextui-org/button';
 
 interface ModalProps {
   children: ReactNode;
@@ -45,7 +47,7 @@ function Modal({ children }: ModalProps) {
     <div className={styles.modalBackdrop}>
       <div className={styles.modalContainer} ref={modalRef}>
         <button onClick={() => closeModal()} className={styles.modalCloseBtn}>
-          x
+          <MdCancel className={styles.modalCloseIcon} />
         </button>
         {children}
       </div>

@@ -5,9 +5,8 @@ import styles from './AuthForm.module.css';
 import { useForm } from 'react-hook-form';
 
 // File imports
-import googleBtnLight from '../../assets/btn_google_light_normal_ios.svg';
+
 import { useEmailSignup } from './useEmailSignup';
-import { useGoogleLogin } from './useGoogleLogin';
 import LoaderSpinner from '../../ui/LoaderSpinner';
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/button';
