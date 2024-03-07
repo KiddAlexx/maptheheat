@@ -1,8 +1,10 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { MdCancel } from 'react-icons/md';
 
 import styles from './Modal.module.css';
 import { useModalContext } from '../context/ModalContext';
+import FocusTrap from 'focus-trap-react';
 
 interface ModalProps {
   children: ReactNode;
@@ -43,12 +45,18 @@ function Modal({ children }: ModalProps) {
 
   return createPortal(
     <div className={styles.modalBackdrop}>
-      <div className={styles.modalContainer} ref={modalRef}>
-        <button onClick={() => closeModal()} className={styles.modalCloseBtn}>
-          x
-        </button>
-        {children}
-      </div>
+      <FocusTrap
+        focusTrapOptions={{
+          initialFocus: '#firstElementToFocus',
+        }}
+      >
+        <div className={styles.modalContainer} ref={modalRef}>
+          <button onClick={() => closeModal()} className={styles.modalCloseBtn}>
+            <MdCancel className={styles.modalCloseIcon} />
+          </button>
+          {children}
+        </div>
+      </FocusTrap>
     </div>,
     modalRoot
   );
