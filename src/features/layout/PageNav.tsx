@@ -6,6 +6,7 @@ import styles from './PageNav.module.css';
 import { useUser } from '../authentication/useUser';
 import { useLogout } from '../authentication/useLogout';
 import { useModalContext } from '../../context/ModalContext';
+import { Button } from '@nextui-org/button';
 
 function PageNav() {
   const { logout } = useLogout();
@@ -24,12 +25,14 @@ function PageNav() {
         {!isAuthenticated ? (
           <>
             <li>
-              <button
+              <Button
+                color="primary"
+                size="lg"
+                radius="sm"
                 onClick={() => openModal('login')}
-                className={`btn-default ${styles.btnLogin}`}
               >
                 Login / Sign Up
-              </button>
+              </Button>
             </li>
           </>
         ) : (
