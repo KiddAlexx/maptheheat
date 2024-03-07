@@ -65,6 +65,7 @@ function LoginForm() {
       >
         <div className={styles.authInputContainer}>
           <Input
+            autoFocus
             className={styles.formInput}
             type="email"
             label="Email"

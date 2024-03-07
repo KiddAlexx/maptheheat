@@ -4,7 +4,7 @@ import { MdCancel } from 'react-icons/md';
 
 import styles from './Modal.module.css';
 import { useModalContext } from '../context/ModalContext';
-import { Button } from '@nextui-org/button';
+
 
 interface ModalProps {
   children: ReactNode;
