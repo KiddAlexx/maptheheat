@@ -51,6 +51,7 @@ function SignupForm() {
       >
         <div className={styles.authInputContainer}>
           <Input
+            id="firstElementToFocus"
             className={styles.formInput}
             type="email"
             label="Email"

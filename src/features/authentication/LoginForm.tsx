@@ -65,7 +65,7 @@ function LoginForm() {
       >
         <div className={styles.authInputContainer}>
           <Input
-            autoFocus
+            id="firstElementToFocus"
             className={styles.formInput}
             type="email"
             label="Email"
@@ -100,6 +100,7 @@ function LoginForm() {
             }
             {...register('password', { required: 'This field is required' })}
           />
+
           <Link
             className={styles.forgotPasswordLink}
             underline="hover"
@@ -109,6 +110,7 @@ function LoginForm() {
             Forgot Password
           </Link>
         </div>
+
         <div className={styles.authButtonContainer}>
           <Button
             className={styles.authButton}
