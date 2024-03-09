@@ -27,6 +27,7 @@ import ReviewContainer from '../../reviews/components/ReviewContainer';
 import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
 import { useUser } from '../../authentication/useUser';
 import { useModalContext } from '../../../context/ModalContext';
+import VenueImageCarousel from '../../../ui/ImageCarousel';
 
 function DetailedVenueView() {
   const { venueId } = useParams();
@@ -34,7 +35,7 @@ function DetailedVenueView() {
   const navigate = useNavigate();
 
   const { isLoading, isAuthenticated, fetchStatus, user } = useUser();
-  const { openModal } = useModalContext();
+  const { openModal, openModalImages } = useModalContext();
   const userId = user?.id;
 
   const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
@@ -84,7 +85,10 @@ function DetailedVenueView() {
       <div className={styles.ratingUploadContainer}>
         <VenueRating initialRating={finalRating} readonly />
       </div>
-      <div className={styles.multipleImageContainer}>
+      <div
+        className={styles.multipleImageContainer}
+        onClick={() => openModalImages('image-carousel', images)}
+      >
         {images ? (
           // Slice first 4 images and map over
           // To be replaced with more refined component
@@ -109,6 +113,7 @@ function DetailedVenueView() {
         )}
       </div>
       <ImageUploader />
+      {/*    <VenueImageCarousel venueImages={images} /> */}
 
       <button className="btn-default" onClick={handleReview}>
         Leave a review

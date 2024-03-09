@@ -7,18 +7,27 @@ import { ReactNode, createContext, useContext, useReducer } from 'react';
 interface State {
   modalName: null | string;
   modalOpen: boolean;
+  images: { url: string; alt: string }[];
   message: null | string;
   confirmAction: null | (() => void);
 }
 
 interface ModalContextType extends State {
   openModal: (modal: string) => void;
+  openModalImages: (
+    modal: string,
+    images: { url: string; alt: string }[]
+  ) => void;
   closeModal: () => void;
   openDialog: (message: string, confirmAction: () => void) => void;
 }
 
 type Action =
   | { type: 'open-modal'; payload: string }
+  | {
+      type: 'open-modal-images';
+      payload: { modal: string; images: { url: string; alt: string }[] };
+    }
   | {
       type: 'open-dialog';
       payload: { message: string; confirmActionAndClose: () => void };
@@ -34,6 +43,7 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 const initialState = {
   modalName: null,
   modalOpen: false,
+  images: [],
   message: null,
   confirmAction: null,
 };
@@ -44,6 +54,13 @@ function reducer(state: State, action: Action) {
       return {
         ...state,
         modalName: action.payload,
+        modalOpen: true,
+      };
+    case 'open-modal-images':
+      return {
+        ...state,
+        modalName: action.payload.modal,
+        images: action.payload.images,
         modalOpen: true,
       };
     case 'open-dialog':
@@ -62,6 +79,7 @@ function reducer(state: State, action: Action) {
         modalOpen: false,
         message: null,
         confirmAction: null,
+        images: [],
       };
     }
 
@@ -71,10 +89,16 @@ function reducer(state: State, action: Action) {
 }
 
 function ModalProvider({ children }: ModalProviderProps) {
-  const [{ modalName, modalOpen, message, confirmAction }, dispatch] =
+  const [{ modalName, modalOpen, message, confirmAction, images }, dispatch] =
     useReducer(reducer, initialState);
   function openModal(modal: string) {
     dispatch({ type: 'open-modal', payload: modal });
+  }
+  function openModalImages(
+    modal: string,
+    images: { url: string; alt: string }[]
+  ) {
+    dispatch({ type: 'open-modal-images', payload: { modal, images } });
   }
   function openDialog(message: string, confirmAction: () => void) {
     const confirmActionAndClose = () => {
@@ -98,6 +122,8 @@ function ModalProvider({ children }: ModalProviderProps) {
         openModal,
         closeModal,
         openDialog,
+        openModalImages,
+        images,
         message,
         confirmAction,
       }}
