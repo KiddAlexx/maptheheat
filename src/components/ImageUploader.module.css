@@ -1,36 +1,5 @@
-.imgUploaderContainer {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding-bottom: 0.4rem; /* Temp to line up with rating component */
-}
-
-.imgUploaderLabel {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: transform 0.2s ease-in-out;
-}
-
-.imgUploaderLabel:hover {
-  transform: scale(1.05);
-}
-
-/* Hide input as label styled to use as file selector */
-.imgUploaderInput {
-  display: none;
-}
-
-.btnImgUploader {
-  border-radius: 10rem;
-  background-color: #2b6027;
-  padding: 0.5rem 1.5rem;
-  color: #fff;
-  font-weight: 500;
-  transition: background-color 0.2s ease-in-out;
-}
-.btnImgUploader:hover {
-  background-color: #53b84c;
-  color: #fff;
+/* Temp height and width */
+.uploadContainer {
+  width: 60rem;
+  height: 40rem;
 }

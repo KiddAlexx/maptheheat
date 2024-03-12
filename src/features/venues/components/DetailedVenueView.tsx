@@ -9,7 +9,7 @@ import styles from '../styles/DetailedVenueView.module.css';
 import { useVenue } from '../hooks/useVenue';
 
 // Component imports
-import ImageUploader from '../../../components/ImageUploader';
+import ImageUploader from '../../../components/ImageUploader-old';
 import VenueRating from './VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 
@@ -27,7 +27,8 @@ import ReviewContainer from '../../reviews/components/ReviewContainer';
 import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
 import { useUser } from '../../authentication/useUser';
 import { useModalContext } from '../../../context/ModalContext';
-import VenueImageCarousel from '../../../ui/ImageCarousel';
+
+import { Button } from '@nextui-org/button';
 
 function DetailedVenueView() {
   const { venueId } = useParams();
@@ -35,7 +36,7 @@ function DetailedVenueView() {
   const navigate = useNavigate();
 
   const { isLoading, isAuthenticated, fetchStatus, user } = useUser();
-  const { openModal, openModalImages } = useModalContext();
+  const { openModal, openModalImages, openModalUpload } = useModalContext();
   const userId = user?.id;
 
   const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
@@ -112,7 +113,14 @@ function DetailedVenueView() {
           </div>
         )}
       </div>
-      <ImageUploader />
+
+      <Button
+        onClick={() =>
+          openModalUpload('image-uploader', venueId, city, venueName)
+        }
+      >
+        Add Images
+      </Button>
       {/*    <VenueImageCarousel venueImages={images} /> */}
 
       <button className="btn-default" onClick={handleReview}>

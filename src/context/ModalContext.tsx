@@ -5,10 +5,13 @@ import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 // Data types
 interface State {
-  modalName: null | string;
+  modalName: string;
   modalOpen: boolean;
   images: { url: string; alt: string }[];
-  message: null | string;
+  message: string;
+  venueId: string;
+  venueName: string;
+  city: string;
   confirmAction: null | (() => void);
 }
 
@@ -17,6 +20,12 @@ interface ModalContextType extends State {
   openModalImages: (
     modal: string,
     images: { url: string; alt: string }[]
+  ) => void;
+  openModalUpload: (
+    modal: string,
+    venueId: string,
+    venueName: string,
+    city: string
   ) => void;
   closeModal: () => void;
   openDialog: (message: string, confirmAction: () => void) => void;
@@ -27,6 +36,15 @@ type Action =
   | {
       type: 'open-modal-images';
       payload: { modal: string; images: { url: string; alt: string }[] };
+    }
+  | {
+      type: 'open-modal-upload';
+      payload: {
+        modal: string;
+        venueId: string;
+        venueName: string;
+        city: string;
+      };
     }
   | {
       type: 'open-dialog';
@@ -41,11 +59,14 @@ interface ModalProviderProps {
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 const initialState = {
-  modalName: null,
+  modalName: '',
   modalOpen: false,
   images: [],
-  message: null,
+  message: '',
   confirmAction: null,
+  venueId: '',
+  venueName: '',
+  city: '',
 };
 
 function reducer(state: State, action: Action) {
@@ -63,6 +84,15 @@ function reducer(state: State, action: Action) {
         images: action.payload.images,
         modalOpen: true,
       };
+    case 'open-modal-upload':
+      return {
+        ...state,
+        modalName: action.payload.modal,
+        venueId: action.payload.venueId,
+        city: action.payload.city,
+        venueName: action.payload.venueName,
+        modalOpen: true,
+      };
     case 'open-dialog':
       return {
         ...state,
@@ -75,11 +105,14 @@ function reducer(state: State, action: Action) {
     case 'close-modal': {
       return {
         ...state,
-        modalName: null,
+        modalName: '',
         modalOpen: false,
-        message: null,
+        message: '',
         confirmAction: null,
         images: [],
+        venueName: '',
+        venueId: '',
+        city: '',
       };
     }
 
@@ -89,8 +122,19 @@ function reducer(state: State, action: Action) {
 }
 
 function ModalProvider({ children }: ModalProviderProps) {
-  const [{ modalName, modalOpen, message, confirmAction, images }, dispatch] =
-    useReducer(reducer, initialState);
+  const [
+    {
+      modalName,
+      modalOpen,
+      message,
+      confirmAction,
+      images,
+      venueId,
+      city,
+      venueName,
+    },
+    dispatch,
+  ] = useReducer(reducer, initialState);
   function openModal(modal: string) {
     dispatch({ type: 'open-modal', payload: modal });
   }
@@ -99,6 +143,17 @@ function ModalProvider({ children }: ModalProviderProps) {
     images: { url: string; alt: string }[]
   ) {
     dispatch({ type: 'open-modal-images', payload: { modal, images } });
+  }
+  function openModalUpload(
+    modal: string,
+    venueId: string,
+    venueName: string,
+    city: string
+  ) {
+    dispatch({
+      type: 'open-modal-upload',
+      payload: { modal, venueId, venueName, city },
+    });
   }
   function openDialog(message: string, confirmAction: () => void) {
     const confirmActionAndClose = () => {
@@ -123,7 +178,11 @@ function ModalProvider({ children }: ModalProviderProps) {
         closeModal,
         openDialog,
         openModalImages,
+        openModalUpload,
         images,
+        venueId,
+        city,
+        venueName,
         message,
         confirmAction,
       }}
