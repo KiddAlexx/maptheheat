@@ -15,18 +15,20 @@ interface State {
   confirmAction: null | (() => void);
 }
 
+interface OpenModalUploadParams {
+  modal: string;
+  venueId: string;
+  venueName: string;
+  city: string;
+}
+
 interface ModalContextType extends State {
   openModal: (modal: string) => void;
   openModalImages: (
     modal: string,
     images: { url: string; alt: string }[]
   ) => void;
-  openModalUpload: (
-    modal: string,
-    venueId: string,
-    venueName: string,
-    city: string
-  ) => void;
+  openModalUpload: (params: OpenModalUploadParams) => void;
   closeModal: () => void;
   openDialog: (message: string, confirmAction: () => void) => void;
 }
@@ -144,12 +146,12 @@ function ModalProvider({ children }: ModalProviderProps) {
   ) {
     dispatch({ type: 'open-modal-images', payload: { modal, images } });
   }
-  function openModalUpload(
-    modal: string,
-    venueId: string,
-    venueName: string,
-    city: string
-  ) {
+  function openModalUpload({
+    modal,
+    venueId,
+    venueName,
+    city,
+  }: OpenModalUploadParams) {
     dispatch({
       type: 'open-modal-upload',
       payload: { modal, venueId, venueName, city },

@@ -116,7 +116,12 @@ function DetailedVenueView() {
 
       <Button
         onClick={() =>
-          openModalUpload('image-uploader', venueId, city, venueName)
+          openModalUpload({
+            modal: 'image-uploader',
+            venueId,
+            city,
+            venueName,
+          })
         }
       >
         Add Images
