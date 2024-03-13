@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 // Third party imports
 
 // Style imports
-import styles from './ImageUploader-old.module.css';
+import styles from './ImageUploader-old';
 
 // Hooks imports
 import { useUpdateVenueImage } from '../features/venues/hooks/useUpdateVenueImage';

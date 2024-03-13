@@ -57,7 +57,7 @@ function DetailedVenueView() {
   const {
     venueName,
     city,
-    urlSlug,
+    venueNameSlug,
     phoneNumber,
     detailedAddress,
     website,
@@ -76,7 +76,7 @@ function DetailedVenueView() {
     const { data: canUserReview } = await refetchUserPermission();
     console.log('here is permission', canUserReview);
     if (canUserReview) {
-      navigate(`/app/venue/${city}/${urlSlug}/reviews/new/${venueId}`);
+      navigate(`/app/venue/${city}/${venueNameSlug}/reviews/new/${venueId}`);
     } else alert('You cannot review the same venue within 30 days');
   }
 
@@ -120,7 +120,7 @@ function DetailedVenueView() {
             modal: 'image-uploader',
             venueId,
             city,
-            venueName,
+            venueNameSlug,
           })
         }
       >

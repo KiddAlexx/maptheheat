@@ -50,7 +50,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
     venueIdParam,
     mode === 'creating'
   );
-  const { venueName, venueType, venueId, city, urlSlug } = venue ?? {};
+  const { venueName, venueType, venueId, city, venueNameSlug } = venue ?? {};
 
   // Fetch review details in "editing" mode.
   // All destructured variables assigned default values,
@@ -67,7 +67,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
     venueDetails: {
       venueName: venueNameReview = '',
       venueId: venueIdReview = '',
-      urlSlug: urlSlugReview = '',
+      venueNameSlug: venueNameSlugReview = '',
       city: cityReview = '',
     } = {},
   } = review ?? {};
@@ -101,7 +101,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
       };
       createReview(finalFormData, {
         onSuccess: () => {
-          navigate(`/app/venue/${city}/${urlSlug}/${venueId}`, {
+          navigate(`/app/venue/${city}/${venueNameSlug}/${venueId}`, {
             replace: true,
           });
         },
@@ -117,7 +117,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
         {
           onSuccess: () => {
             navigate(
-              `/app/venue/${cityReview}/${urlSlugReview}/${venueIdReview}`,
+              `/app/venue/${cityReview}/${venueNameSlugReview}/${venueIdReview}`,
               {
                 replace: true,
               }

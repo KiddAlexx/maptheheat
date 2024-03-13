@@ -10,7 +10,7 @@ interface State {
   images: { url: string; alt: string }[];
   message: string;
   venueId: string;
-  venueName: string;
+  venueNameSlug: string;
   city: string;
   confirmAction: null | (() => void);
 }
@@ -18,7 +18,7 @@ interface State {
 interface OpenModalUploadParams {
   modal: string;
   venueId: string;
-  venueName: string;
+  venueNameSlug: string;
   city: string;
 }
 
@@ -44,7 +44,7 @@ type Action =
       payload: {
         modal: string;
         venueId: string;
-        venueName: string;
+        venueNameSlug: string;
         city: string;
       };
     }
@@ -67,7 +67,7 @@ const initialState = {
   message: '',
   confirmAction: null,
   venueId: '',
-  venueName: '',
+  venueNameSlug: '',
   city: '',
 };
 
@@ -92,7 +92,7 @@ function reducer(state: State, action: Action) {
         modalName: action.payload.modal,
         venueId: action.payload.venueId,
         city: action.payload.city,
-        venueName: action.payload.venueName,
+        venueNameSlug: action.payload.venueNameSlug,
         modalOpen: true,
       };
     case 'open-dialog':
@@ -112,7 +112,7 @@ function reducer(state: State, action: Action) {
         message: '',
         confirmAction: null,
         images: [],
-        venueName: '',
+        venueNameSlug: '',
         venueId: '',
         city: '',
       };
@@ -133,7 +133,7 @@ function ModalProvider({ children }: ModalProviderProps) {
       images,
       venueId,
       city,
-      venueName,
+      venueNameSlug,
     },
     dispatch,
   ] = useReducer(reducer, initialState);
@@ -149,12 +149,12 @@ function ModalProvider({ children }: ModalProviderProps) {
   function openModalUpload({
     modal,
     venueId,
-    venueName,
+    venueNameSlug,
     city,
   }: OpenModalUploadParams) {
     dispatch({
       type: 'open-modal-upload',
-      payload: { modal, venueId, venueName, city },
+      payload: { modal, venueId, venueNameSlug, city },
     });
   }
   function openDialog(message: string, confirmAction: () => void) {
@@ -184,7 +184,7 @@ function ModalProvider({ children }: ModalProviderProps) {
         images,
         venueId,
         city,
-        venueName,
+        venueNameSlug,
         message,
         confirmAction,
       }}

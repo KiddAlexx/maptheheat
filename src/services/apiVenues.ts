@@ -48,22 +48,22 @@ export async function createVenue(newVenue: NewVenue) {
 
 export async function createVenueImage({
   venueId,
-  imageFile,
+  imageFiles,
   city,
-  venue,
+  venueNameSlug,
 }: ImageUploadParams) {
   // Compress image. Type asserted as function will return File or throw an Error
-  const compressedImage = (await compressImage(imageFile)) as File;
+  const compressedImage = (await compressImage(imageFiles)) as File;
 
   // Upload image to supabase bucket
   const imagePath = await uploadImage(
     compressedImage,
     'venue-images',
     city,
-    venue
+    venueNameSlug
   );
   // Generate alt text for image + full URL
-  const altText = `An image of ${venue} in ${city}`;
+  const altText = `An image of ${venueNameSlug} in ${city}`;
   const imageUrl = `${supabaseUrl}/storage/v1/object/public/venue-images/${imagePath}`;
 
   // Fetch current images array

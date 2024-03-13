@@ -15,33 +15,59 @@ import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import { useState } from 'react';
 import { useModalContext } from '@/context/ModalContext';
+import { useUpdateVenueImage } from '@/features/venues/hooks/useUpdateVenueImage';
+import { useUser } from '@/features/authentication/useUser';
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
 function ImageUploader() {
-  const [files, setFiles] = useState<File[]>([]);
+  // Fetch image upload functionality and states from React Query hook
+  const { uploadImageRef, isUploading, fileUploaded } = useUpdateVenueImage();
 
-  const { venueName, city, venueId } = useModalContext();
+  // Load remaining hooks
+  const { isAuthenticated } = useUser();
+  const { venueNameSlug, city, venueId, openModal } = useModalContext();
+
+  //File Upload State
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+
+  // Function to handle compression and upload of selected image to Supabase storage.
+  const uploadFile = async function () {
+    if (!imageFiles) return;
+
+    // **** Add error message here too ****
+    if (!isAuthenticated) return openModal('login');
+
+    console.log(
+      'log from image uploader ',
+      venueId,
+      imageFiles,
+      city,
+      venueNameSlug
+    );
+
+    uploadImageRef({ venueId, imageFiles, city, venueNameSlug });
+  };
 
   return (
     <div className={styles.uploadContainer}>
       <FilePond
-        files={files}
-        onupdatefiles={(fileItems) => {
+        files={imageFiles}
+        onupdatefiles={(images) => {
           // Update state with new files array
-          const newFiles = fileItems.map((fileItem) => fileItem.file);
-          setFiles(newFiles);
+          const newImages = images.map((image) => image.file);
+          setImageFiles(newImages);
         }}
         allowMultiple={true}
         maxFiles={5}
         name="files"
         labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
       />
-      <div>{venueName}</div>
+      <div>{venueNameSlug}</div>
       <div>{venueId}</div>
       <div>{city}</div>
-      <button id="firstElementToFocus" onClick={() => console.log(files)}>
+      <button id="firstElementToFocus" onClick={uploadFile}>
         Log
       </button>
     </div>

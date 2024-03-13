@@ -98,7 +98,7 @@ function VenueForm() {
         phoneNumber,
         ...additionalVenueData,
         userId: user!.id, // Value will not be null, checks done prior, further validation to be added
-        urlSlug: slugify(formData.venueName),
+        venueNameSlug: slugify(formData.venueName),
       };
 
       // Add final venue data to supabase table
