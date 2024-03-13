@@ -24,7 +24,7 @@ export function useUpdateVenueImage() {
       await createVenueImage({ venueId, imageFiles, city, venueNameSlug });
     },
     onSuccess: () => {
-      toast.success('Image successfully uploaded');
+      toast.success('Images successfully uploaded');
       queryClient.invalidateQueries({ queryKey: ['venues'] });
       queryClient.invalidateQueries({ queryKey: ['venue'] });
       console.log('Inavlidate queries should have ran');

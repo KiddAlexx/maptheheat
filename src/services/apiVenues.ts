@@ -56,15 +56,17 @@ export async function createVenueImage({
   const compressedImages = (await compressImage(imageFiles)) as File[];
 
   // Upload image to supabase bucket
-  const imagePath = await uploadImages(
+  const imagePaths = await uploadImages(
     compressedImages,
     'venue-images',
     city,
     venueNameSlug
   );
   // Generate alt text for image + full URL
-  const altText = `An image of ${venueNameSlug} in ${city}`;
-  const imageUrl = `${supabaseUrl}/storage/v1/object/public/venue-images/${imagePath}`;
+  const newImages = imagePaths.map((imagePath) => ({
+    url: `${supabaseUrl}/storage/v1/object/public/venue-images/${imagePath}`,
+    alt: `An image of ${venueNameSlug} in ${city}`,
+  }));
 
   // Fetch current images array
   const { data: currentImages, error: fetchError } = await supabase
@@ -77,11 +79,11 @@ export async function createVenueImage({
     throw new Error(`Error fetching current images: ${fetchError.message}`);
   }
 
-  // Append new image object to existing array
+  // Append new image objects to existing array
   // Or create new image array if one does not exist
   const updatedImages = currentImages.images
-    ? [...currentImages.images, { alt: altText, url: imageUrl }]
-    : [{ alt: altText, url: imageUrl }];
+    ? [...currentImages.images, ...newImages]
+    : [...newImages];
 
   const { data, error } = await supabase
     .from('venue_details')
