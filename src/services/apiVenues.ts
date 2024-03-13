@@ -8,7 +8,7 @@ import { ImageUploadParams, NewVenue, Venue } from '../models/venueTypes';
 
 // Util Imports
 import compressImage from '../utils/compressImage';
-import uploadImage from './supabaseImageUploader';
+import uploadImages from './supabaseImageUploader';
 
 export async function getVenues(): Promise<Venue[]> {
   const { data, error } = await supabase.from('venue_details').select('*');
@@ -53,11 +53,11 @@ export async function createVenueImage({
   venueNameSlug,
 }: ImageUploadParams) {
   // Compress image. Type asserted as function will return File or throw an Error
-  const compressedImage = (await compressImage(imageFiles)) as File[];
+  const compressedImages = (await compressImage(imageFiles)) as File[];
 
   // Upload image to supabase bucket
-  const imagePath = await uploadImage(
-    compressedImage,
+  const imagePath = await uploadImages(
+    compressedImages,
     'venue-images',
     city,
     venueNameSlug
