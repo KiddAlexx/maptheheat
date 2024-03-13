@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { useModalContext } from '@/context/ModalContext';
 import { useUpdateVenueImage } from '@/features/venues/hooks/useUpdateVenueImage';
 import { useUser } from '@/features/authentication/useUser';
+import { Button } from '@nextui-org/button';
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
@@ -64,12 +65,10 @@ function ImageUploader() {
         name="files"
         labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
       />
-      <div>{venueNameSlug}</div>
-      <div>{venueId}</div>
-      <div>{city}</div>
-      <button id="firstElementToFocus" onClick={uploadFile}>
-        Log
-      </button>
+
+      <Button id="firstElementToFocus" onClick={uploadFile}>
+        Upload
+      </Button>
     </div>
   );
 }
