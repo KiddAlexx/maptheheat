@@ -2,7 +2,7 @@
 import styles from './ErrorModal.module.css';
 
 // Hooks imports
-import { useVenues } from '../context/VenueContext';
+import { useGlobalError } from '../context/ErrorContext';
 
 interface ErrorModalProps {
   errorMessage?: string | null;
@@ -13,7 +13,7 @@ function ErrorModal({
   errorMessage: localErrorMessage,
   clearLocalError,
 }: ErrorModalProps) {
-  const { errorMessage: contextErrorMessage, clearError } = useVenues();
+  const { errorMessage: contextErrorMessage, clearError } = useGlobalError();
 
   // Gives option for error message via props or context
   const finalErrorMessage = localErrorMessage || contextErrorMessage;

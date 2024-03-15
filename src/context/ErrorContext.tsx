@@ -8,17 +8,19 @@ interface State {
   errorMessage: string | null;
 }
 
-interface VenueContextType extends State {
+interface GlobalErrorContextType extends State {
   clearError: () => void;
 }
 
 type Action = { type: 'clear-error' };
 
-interface VenueProviderProps {
+interface GlobalErrorProviderProps {
   children: ReactNode;
 }
 
-const VenueContext = createContext<VenueContextType | undefined>(undefined);
+const GlobalErrorContext = createContext<GlobalErrorContextType | undefined>(
+  undefined
+);
 
 const initialState = {
   errorMessage: null,
@@ -37,7 +39,7 @@ function reducer(state: State, action: Action) {
   }
 }
 
-function VenuesProvider({ children }: VenueProviderProps) {
+function GlobalErrorProvider({ children }: GlobalErrorProviderProps) {
   const [{ errorMessage }, dispatch] = useReducer(reducer, initialState);
 
   function clearError() {
@@ -46,23 +48,25 @@ function VenuesProvider({ children }: VenueProviderProps) {
   }
 
   return (
-    <VenueContext.Provider
+    <GlobalErrorContext.Provider
       value={{
         errorMessage,
         clearError,
       }}
     >
       {children}
-    </VenueContext.Provider>
+    </GlobalErrorContext.Provider>
   );
 }
 
-// A custom hook to provide easy access to the VenueContext
-function useVenues() {
-  const context = useContext(VenueContext);
+// A custom hook to provide easy access to the GlobalErrorContext
+function useGlobalError() {
+  const context = useContext(GlobalErrorContext);
   if (context === undefined)
-    throw new Error('Venue context was used outside the VenuesProvider');
+    throw new Error(
+      'GlobalError context was used outside the GlobalErrorProvider'
+    );
   return context;
 }
 
-export { VenuesProvider, useVenues };
+export { GlobalErrorProvider, useGlobalError };
