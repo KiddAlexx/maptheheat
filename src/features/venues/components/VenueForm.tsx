@@ -1,10 +1,13 @@
 // React imports
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 // Third party imports
 import slugify from 'slugify';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+
+// NextUI Components
+import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
 
 // Style imports
 import styles from '../styles/VenueForm.module.css';
@@ -20,6 +23,9 @@ import { useUser } from '../../authentication/useUser';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ErrorModal from '../../../ui/ErrorModal';
 
+// Data imports
+import countries from '../../../shared/data/countries.json';
+
 function VenueForm() {
   interface FormData {
     city: string;
@@ -30,6 +36,7 @@ function VenueForm() {
     description: string;
     phoneNumber: string;
     website: string;
+    country: string;
   }
   const { createVenue, isCreating } = useCreateVenue();
 
@@ -41,26 +48,6 @@ function VenueForm() {
   const { errors } = formState;
 
   const city = watch('city');
-  const [country, setCountry] = useState('');
-
-  // Assign country value based on chosen city
-  useEffect(() => {
-    if (city === 'Barcelona') {
-      setCountry(() => 'Spain');
-    }
-    if (city === 'Madrid') {
-      setCountry(() => 'Spain');
-    }
-    if (city === 'Glasgow') {
-      setCountry(() => 'UK');
-    }
-    if (city === 'Edinburgh') {
-      setCountry(() => 'UK');
-    }
-    if (city === 'London') {
-      setCountry(() => 'UK');
-    }
-  }, [city]);
 
   // Fetches coordinates + detailed address from user input
   async function fetchAddressDetails(formData: FormData) {
@@ -82,6 +69,7 @@ function VenueForm() {
   }
 
   async function formSubmit(formData: FormData) {
+    console.log(formData);
     try {
       // Fetch detailed address + cooridinates
       const additionalVenueData = await fetchAddressDetails(formData);
@@ -93,7 +81,6 @@ function VenueForm() {
 
       // Compile complete venue data
       const finalVenueData = {
-        country,
         ...formData,
         phoneNumber,
         ...additionalVenueData,
@@ -209,6 +196,23 @@ function VenueForm() {
                 <span>{errors.city.message}</span>
               )}
             </div>
+
+            <Autocomplete
+              defaultItems={countries}
+              labelPlacement="outside"
+              label="Country"
+              radius="sm"
+              id="country"
+              {...register('country', {
+                required: 'This field is required',
+              })}
+            >
+              {(country) => (
+                <AutocompleteItem key={country.code}>
+                  {country.name}
+                </AutocompleteItem>
+              )}
+            </Autocomplete>
             <div className={styles.inputContainer}>
               <label htmlFor="description">Description</label>
               <textarea
