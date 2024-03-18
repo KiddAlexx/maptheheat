@@ -5,11 +5,11 @@ import { createContext, useContext, useReducer, ReactNode } from 'react';
 
 // Data types
 interface State {
-  errorMessage: string | null;
+  globalErrorMessage: string | null;
 }
 
 interface GlobalErrorContextType extends State {
-  clearError: () => void;
+  clearGlobalError: () => void;
 }
 
 type Action = { type: 'clear-error' };
@@ -23,7 +23,7 @@ const GlobalErrorContext = createContext<GlobalErrorContextType | undefined>(
 );
 
 const initialState = {
-  errorMessage: null,
+  globalErrorMessage: '',
 };
 
 function reducer(state: State, action: Action) {
@@ -31,7 +31,7 @@ function reducer(state: State, action: Action) {
     case 'clear-error':
       return {
         ...state,
-        errorMessage: null,
+        globalErrorMessage: null,
       };
 
     default:
@@ -40,9 +40,9 @@ function reducer(state: State, action: Action) {
 }
 
 function GlobalErrorProvider({ children }: GlobalErrorProviderProps) {
-  const [{ errorMessage }, dispatch] = useReducer(reducer, initialState);
+  const [{ globalErrorMessage }, dispatch] = useReducer(reducer, initialState);
 
-  function clearError() {
+  function clearGlobalError() {
     console.log('Clearing error...');
     dispatch({ type: 'clear-error' });
   }
@@ -50,8 +50,8 @@ function GlobalErrorProvider({ children }: GlobalErrorProviderProps) {
   return (
     <GlobalErrorContext.Provider
       value={{
-        errorMessage,
-        clearError,
+        globalErrorMessage,
+        clearGlobalError,
       }}
     >
       {children}
