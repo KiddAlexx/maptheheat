@@ -7,7 +7,12 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 // NextUI Components
-import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Select,
+  SelectItem,
+} from '@nextui-org/react';
 
 // Style imports
 import styles from '../styles/VenueForm.module.css';
@@ -51,7 +56,7 @@ function VenueForm() {
 
   // Fetches coordinates + detailed address from user input
   async function fetchAddressDetails(formData: FormData) {
-    const { address, postcode } = formData;
+    const { address, postcode, country } = formData;
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/search?street=${address}&city=${city}&country=${country}&postalcode=${postcode}&format=json`
@@ -120,20 +125,24 @@ function VenueForm() {
         ) : (
           <>
             <div className={styles.inputContainer}>
-              <label htmlFor="venueType">Venue Type</label>
-              <select
+              <Select
                 id="venueType"
+                label="Venue Type"
+                placeholder="Choose Venue Type"
+                isInvalid={!!errors.venueType}
+                errorMessage={
+                  errors.venueType &&
+                  typeof errors?.venueType?.message === 'string'
+                    ? errors.venueType.message
+                    : ''
+                }
                 {...register('venueType', {
                   required: 'This field is required',
                 })}
               >
-                <option value="">Choose Venue Type</option>
-                <option value="restaurant">Restaurant</option>
-                <option value="shop">Shop</option>
-              </select>
-              {typeof errors?.city?.message === 'string' && (
-                <span>{errors.city.message}</span>
-              )}
+                <SelectItem key="restaurant">Restaurant</SelectItem>
+                <SelectItem key="shop">Shop</SelectItem>
+              </Select>
             </div>
             <div className={styles.inputContainer}>
               <label htmlFor="venueName">Venue Name</label>
