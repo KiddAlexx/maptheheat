@@ -19,6 +19,7 @@ import { useUser } from '../../authentication/useUser';
 // Component imports
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ErrorModal from '../../../ui/ErrorModal';
+import { useGlobalError } from '@/context/ErrorContext';
 
 function VenueForm() {
   interface FormData {
@@ -34,6 +35,8 @@ function VenueForm() {
   const { createVenue, isCreating } = useCreateVenue();
 
   const { user } = useUser();
+
+  const { setGlobalError } = useGlobalError();
 
   const [localFormError, setLocalFormError] = useState('');
 

@@ -10,9 +10,12 @@ interface State {
 
 interface GlobalErrorContextType extends State {
   clearGlobalError: () => void;
+  setGlobalError: (message: string) => void;
 }
 
-type Action = { type: 'clear-error' };
+type Action =
+  | { type: 'clear-error' }
+  | { type: 'set-error'; payload: { message: string } };
 
 interface GlobalErrorProviderProps {
   children: ReactNode;
@@ -23,7 +26,7 @@ const GlobalErrorContext = createContext<GlobalErrorContextType | undefined>(
 );
 
 const initialState = {
-  globalErrorMessage: '',
+  globalErrorMessage: null,
 };
 
 function reducer(state: State, action: Action) {
@@ -32,6 +35,11 @@ function reducer(state: State, action: Action) {
       return {
         ...state,
         globalErrorMessage: null,
+      };
+    case 'set-error':
+      return {
+        ...state,
+        globalErrorMessage: action.payload.message,
       };
 
     default:
@@ -46,12 +54,16 @@ function GlobalErrorProvider({ children }: GlobalErrorProviderProps) {
     console.log('Clearing error...');
     dispatch({ type: 'clear-error' });
   }
+  function setGlobalError(message: string) {
+    dispatch({ type: 'set-error', payload: { message } });
+  }
 
   return (
     <GlobalErrorContext.Provider
       value={{
         globalErrorMessage,
         clearGlobalError,
+        setGlobalError,
       }}
     >
       {children}
