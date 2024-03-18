@@ -19,7 +19,6 @@ import { useUser } from '../../authentication/useUser';
 // Component imports
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ErrorModal from '../../../ui/ErrorModal';
-import { useGlobalError } from '@/context/ErrorContext';
 
 function VenueForm() {
   interface FormData {
@@ -35,8 +34,6 @@ function VenueForm() {
   const { createVenue, isCreating } = useCreateVenue();
 
   const { user } = useUser();
-
-  const { setGlobalError } = useGlobalError();
 
   const [localFormError, setLocalFormError] = useState('');
 
@@ -136,23 +133,6 @@ function VenueForm() {
         ) : (
           <>
             <div className={styles.inputContainer}>
-              <label htmlFor="city">City</label>
-              <select
-                id="city"
-                {...register('city', { required: 'This field is required' })}
-              >
-                <option value="">Choose City</option>
-                <option value="Barcelona">Barcelona</option>
-                <option value="Madrid">Madrid</option>
-                <option value="Glasgow">Glasgow</option>
-                <option value="Edinburgh">Edinburgh</option>
-                <option value="London">London</option>
-              </select>
-              {typeof errors?.city?.message === 'string' && (
-                <span>{errors.city.message}</span>
-              )}
-            </div>
-            <div className={styles.inputContainer}>
               <label htmlFor="venueType">Venue Type</label>
               <select
                 id="venueType"
@@ -210,6 +190,23 @@ function VenueForm() {
               />{' '}
               {typeof errors?.postcode?.message === 'string' && (
                 <span>{errors.postcode.message}</span>
+              )}
+            </div>
+            <div className={styles.inputContainer}>
+              <label htmlFor="city">City</label>
+              <select
+                id="city"
+                {...register('city', { required: 'This field is required' })}
+              >
+                <option value="">Choose City</option>
+                <option value="Barcelona">Barcelona</option>
+                <option value="Madrid">Madrid</option>
+                <option value="Glasgow">Glasgow</option>
+                <option value="Edinburgh">Edinburgh</option>
+                <option value="London">London</option>
+              </select>
+              {typeof errors?.city?.message === 'string' && (
+                <span>{errors.city.message}</span>
               )}
             </div>
             <div className={styles.inputContainer}>
