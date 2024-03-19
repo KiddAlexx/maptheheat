@@ -10,8 +10,11 @@ import toast from 'react-hot-toast';
 import {
   Autocomplete,
   AutocompleteItem,
+  Button,
+  Input,
   Select,
   SelectItem,
+  Textarea,
 } from '@nextui-org/react';
 
 // Style imports
@@ -128,6 +131,7 @@ function VenueForm() {
               <Select
                 id="venueType"
                 label="Venue Type"
+                labelPlacement="outside"
                 placeholder="Choose Venue Type"
                 isInvalid={!!errors.venueType}
                 errorMessage={
@@ -145,11 +149,20 @@ function VenueForm() {
               </Select>
             </div>
             <div className={styles.inputContainer}>
-              <label htmlFor="venueName">Venue Name</label>
-              <input
-                type="text"
-                placeholder="Venue Name..."
+              <Input
                 id="venueName"
+                type="text"
+                label="Venue Name"
+                labelPlacement="outside"
+                placeholder="Venue Name..."
+                radius="sm"
+                isInvalid={!!errors.venueName}
+                errorMessage={
+                  errors.venueName &&
+                  typeof errors?.venueName?.message === 'string'
+                    ? errors.venueName.message
+                    : ''
+                }
                 {...register('venueName', {
                   required: 'This field is required',
                   maxLength: {
@@ -158,52 +171,60 @@ function VenueForm() {
                   },
                 })}
               />
-              {typeof errors?.venueName?.message === 'string' && (
-                <span> {errors.venueName.message}</span>
-              )}
             </div>
             <div className={styles.inputContainer}>
-              <label htmlFor="address">Address - Number / Street Name</label>
-              <input
-                type="text"
-                placeholder="Number followed by street name..."
+              <Input
                 id="address"
+                type="text"
+                label="Address"
+                labelPlacement="outside"
+                placeholder="Number followed by street name..."
+                radius="sm"
+                isInvalid={!!errors.address}
+                errorMessage={
+                  errors.address && typeof errors?.address?.message === 'string'
+                    ? errors.address.message
+                    : ''
+                }
                 {...register('address', { required: 'This field is required' })}
               />
-              {typeof errors?.address?.message === 'string' && (
-                <span>{errors.address.message}</span>
-              )}
             </div>
             <div className={styles.inputContainer}>
-              <label htmlFor="postcode">Postcode</label>
-              <input
-                type="text"
-                placeholder="Postcode..."
+              <Input
                 id="postcode"
+                type="text"
+                label="Postcode"
+                labelPlacement="outside"
+                placeholder="Postcode..."
+                radius="sm"
+                isInvalid={!!errors.postcode}
+                errorMessage={
+                  errors.postcode &&
+                  typeof errors?.postcode?.message === 'string'
+                    ? errors.postcode.message
+                    : ''
+                }
                 {...register('postcode', {
                   required: 'This field is required',
                 })}
-              />{' '}
-              {typeof errors?.postcode?.message === 'string' && (
-                <span>{errors.postcode.message}</span>
-              )}
+              />
             </div>
             <div className={styles.inputContainer}>
-              <label htmlFor="city">City</label>
-              <select
+              <Input
                 id="city"
+                type="text"
+                label="City"
+                labelPlacement="outside"
+                placeholder="City..."
+                radius="sm"
+                isInvalid={!!errors.city}
+                errorMessage={
+                  errors.city && typeof errors?.city?.message === 'string'
+                    ? errors.city.message
+                    : ''
+                }
                 {...register('city', { required: 'This field is required' })}
-              >
-                <option value="">Choose City</option>
-                <option value="Barcelona">Barcelona</option>
-                <option value="Madrid">Madrid</option>
-                <option value="Glasgow">Glasgow</option>
-                <option value="Edinburgh">Edinburgh</option>
-                <option value="London">London</option>
-              </select>
-              {typeof errors?.city?.message === 'string' && (
-                <span>{errors.city.message}</span>
-              )}
+              />
             </div>
 
             <Autocomplete
@@ -223,11 +244,19 @@ function VenueForm() {
               )}
             </Autocomplete>
             <div className={styles.inputContainer}>
-              <label htmlFor="description">Description</label>
-              <textarea
-                rows={2}
-                placeholder="Please enter a detailed description of the venue..."
+              <Textarea
                 id="description"
+                label="Description"
+                labelPlacement="outside"
+                placeholder="Please enter a detailed description of the venue..."
+                radius="sm"
+                isInvalid={!!errors.description}
+                errorMessage={
+                  errors.description &&
+                  typeof errors?.description?.message === 'string'
+                    ? errors.description.message
+                    : ''
+                }
                 {...register('description', {
                   required: 'This field is required',
                   minLength: {
@@ -236,9 +265,6 @@ function VenueForm() {
                   },
                 })}
               />
-              {typeof errors?.description?.message === 'string' && (
-                <span>{errors.description.message}</span>
-              )}
             </div>
             {/*  <div className={styles.inputContainer}>
           <label htmlFor="hours">Opening Hours</label>
@@ -252,11 +278,20 @@ function VenueForm() {
         </div> */}
             {/* Add again once have proper input method */}
             <div className={styles.inputContainer}>
-              <label htmlFor="phoneNumber">Phone Number</label>
-              <input
-                type="text"
-                placeholder="Phone Number..."
+              <Input
                 id="phoneNumber"
+                type="text"
+                label="Phone Number"
+                labelPlacement="outside"
+                placeholder="Phone Number..."
+                radius="sm"
+                isInvalid={!!errors.phoneNumber}
+                errorMessage={
+                  errors.phoneNumber &&
+                  typeof errors?.phoneNumber?.message === 'string'
+                    ? errors.phoneNumber.message
+                    : ''
+                }
                 {...register('phoneNumber', {
                   required: 'This field is required',
                   pattern: {
@@ -269,16 +304,21 @@ function VenueForm() {
                   },
                 })}
               />
-              {typeof errors?.phoneNumber?.message === 'string' && (
-                <span>{errors.phoneNumber.message}</span>
-              )}
             </div>
             <div className={styles.inputContainer}>
-              <label htmlFor="website">Website</label>
-              <input
-                type="text"
-                placeholder="http://www.example.com..."
+              <Input
                 id="website"
+                type="text"
+                label="Website"
+                labelPlacement="outside"
+                placeholder="http://www.example.com..."
+                radius="sm"
+                isInvalid={!!errors.website}
+                errorMessage={
+                  errors.website && typeof errors?.website?.message === 'string'
+                    ? errors.website.message
+                    : ''
+                }
                 {...register('website', {
                   pattern: {
                     value:
@@ -287,24 +327,21 @@ function VenueForm() {
                   },
                 })}
               />
-              {typeof errors?.website?.message === 'string' && (
-                <span>{errors.website.message}</span>
-              )}
             </div>
             <div className={styles.venueButtonContainer}>
-              <button
+              <Button
                 // ***************** Add functionality to reset form and navigate back
                 type="button"
                 className={`btn-default ${styles.btnCancel}`}
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 className={`btn-default ${styles.btnSubmit}`}
               >
                 Submit
-              </button>
+              </Button>
             </div>
           </>
         )}
