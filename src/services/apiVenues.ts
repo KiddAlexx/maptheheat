@@ -43,7 +43,7 @@ export async function createVenue(newVenue: NewVenue) {
     console.error('Supabase error:', error);
     throw new Error(`Venue could not be created. Error:${error.message}`);
   }
-  return data;
+  return camelcaseKeys(data);
 }
 
 export async function createVenueImage({

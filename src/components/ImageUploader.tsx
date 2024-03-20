@@ -22,13 +22,29 @@ import { Button } from '@nextui-org/button';
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
-function ImageUploader() {
+function ImageUploader({ venue }) {
   // Fetch image upload functionality and states from React Query hook
   const { uploadImageRef, isUploading, fileUploaded } = useUpdateVenueImage();
 
   // Load remaining hooks
   const { isAuthenticated } = useUser();
-  const { venueNameSlug, city, venueId, openModal } = useModalContext();
+
+  const {
+    venueNameSlug: modalVenueNameSlug,
+    city: modalCity,
+    venueId: modalVenueId,
+    openModal,
+  } = useModalContext();
+
+  const {
+    venueNameSlug: propVenueNameSlug,
+    city: propCity,
+    venueId: propVenueId,
+  } = venue ?? {};
+
+  const venueNameSlug = propVenueNameSlug ?? modalVenueNameSlug;
+  const city = propCity ?? modalCity;
+  const venueId = propVenueId ?? modalVenueId;
 
   //File Upload State
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -61,7 +77,7 @@ function ImageUploader() {
           setImageFiles(newImages);
         }}
         allowMultiple={true}
-        maxFiles={5}
+        maxFiles={6}
         name="files"
         labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
       />
