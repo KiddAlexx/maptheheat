@@ -49,6 +49,7 @@ function ImageUploader({ venue }) {
 
   //File Upload State
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+
   const { setGlobalError } = useGlobalError();
 
   // Function to handle compression and upload of selected image to Supabase storage.

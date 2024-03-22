@@ -9,7 +9,7 @@ import styles from '../styles/DetailedVenueView.module.css';
 import { useVenue } from '../hooks/useVenue';
 
 // Component imports
-import ImageUploader from '../../../components/ImageUploader-old';
+
 import VenueRating from './VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 
@@ -80,6 +80,20 @@ function DetailedVenueView() {
     } else alert('You cannot review the same venue within 30 days');
   }
 
+  function handleAddImages() {
+    if (!isAuthenticated) {
+      openModal('login');
+      return;
+    } else {
+      openModalUpload({
+        modal: 'image-uploader',
+        venueId,
+        city,
+        venueNameSlug,
+      });
+    }
+  }
+
   return (
     <div className={styles.detailedViewContainer}>
       <h2>{venueName}</h2>
@@ -114,18 +128,7 @@ function DetailedVenueView() {
         )}
       </div>
 
-      <Button
-        onClick={() =>
-          openModalUpload({
-            modal: 'image-uploader',
-            venueId,
-            city,
-            venueNameSlug,
-          })
-        }
-      >
-        Add Images
-      </Button>
+      <Button onClick={handleAddImages}>Add Images</Button>
       {/*    <VenueImageCarousel venueImages={images} /> */}
 
       <button className="btn-default" onClick={handleReview}>

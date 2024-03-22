@@ -5,6 +5,7 @@ import ConfirmationDialog from '../ui/ConfirmationDialog';
 import Modal from '../ui/Modal';
 import ImageCarousel from '@/ui/ImageCarousel';
 import ImageUploader from './ImageUploader';
+import ProtectedRoute from './ProtectedRoute';
 
 function ModalManager() {
   const { modalName, modalOpen } = useModalContext();
