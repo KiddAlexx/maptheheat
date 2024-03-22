@@ -18,6 +18,7 @@ import { useModalContext } from '@/context/ModalContext';
 import { useUpdateVenueImage } from '@/features/venues/hooks/useUpdateVenueImage';
 import { useUser } from '@/features/authentication/useUser';
 import { Button } from '@nextui-org/button';
+import { useGlobalError } from '@/context/ErrorContext';
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
@@ -48,10 +49,14 @@ function ImageUploader({ venue }) {
 
   //File Upload State
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const { setGlobalError } = useGlobalError();
 
   // Function to handle compression and upload of selected image to Supabase storage.
   const uploadFile = async function () {
-    if (!imageFiles) return;
+    if (imageFiles.length === 0) {
+      setGlobalError('No images were selected!');
+      return;
+    }
 
     // **** Add error message here too ****
     if (!isAuthenticated) return openModal('login');
@@ -68,24 +73,26 @@ function ImageUploader({ venue }) {
   };
 
   return (
-    <div className={styles.uploadContainer}>
-      <FilePond
-        files={imageFiles}
-        onupdatefiles={(images) => {
-          // Update state with new files array
-          const newImages = images.map((image) => image.file);
-          setImageFiles(newImages);
-        }}
-        allowMultiple={true}
-        maxFiles={6}
-        name="files"
-        labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-      />
+    <>
+      <div className={styles.uploadContainer}>
+        <FilePond
+          files={imageFiles}
+          onupdatefiles={(images) => {
+            // Update state with new files array
+            const newImages = images.map((image) => image.file);
+            setImageFiles(newImages);
+          }}
+          allowMultiple={true}
+          maxFiles={6}
+          name="files"
+          labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+        />
 
-      <Button id="firstElementToFocus" onClick={uploadFile}>
-        Upload
-      </Button>
-    </div>
+        <Button id="firstElementToFocus" onClick={uploadFile}>
+          Upload
+        </Button>
+      </div>
+    </>
   );
 }
 
