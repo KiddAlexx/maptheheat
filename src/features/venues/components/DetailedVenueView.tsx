@@ -64,7 +64,10 @@ function DetailedVenueView() {
     description,
     averageRating,
     images,
+    coords,
   } = venue;
+
+  const { lat, lon } = coords;
 
   const finalRating = Math.round(averageRating * 2) / 2 || 5;
 
@@ -159,7 +162,10 @@ function DetailedVenueView() {
         </a>
       </div>
       {/* Button to navigate back to map view. */}
-      <Link to="/app/map" className={`btn-default ${styles.btnBackToMap}`}>
+      <Link
+        to={`/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`}
+        className={`btn-default ${styles.btnBackToMap}`}
+      >
         Back to Map
       </Link>
       <ReviewContainer />
