@@ -35,6 +35,7 @@ export interface Image {
 
 export interface ImageUploadParams {
   venueId: string;
+  reviewId?: string;
   imageFiles: File[];
   city: string;
   venueNameSlug: string;

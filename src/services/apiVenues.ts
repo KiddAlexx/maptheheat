@@ -48,6 +48,7 @@ export async function createVenue(newVenue: NewVenue) {
 
 export async function createVenueImage({
   venueId,
+  reviewId,
   imageFiles,
   city,
   venueNameSlug,
@@ -68,11 +69,16 @@ export async function createVenueImage({
     alt: `An image of ${venueNameSlug} in ${city}`,
   }));
 
+  // Determine table to store image path based on presence of reviewId
+  const tableName = reviewId ? 'venue_reviews' : 'venue_details';
+  const rowId = reviewId ? 'review_id' : 'venue_id';
+  const idValue = reviewId || venueId;
+
   // Fetch current images array
   const { data: currentImages, error: fetchError } = await supabase
-    .from('venue_details')
+    .from(tableName)
     .select('images')
-    .eq('venue_id', venueId)
+    .eq(rowId, idValue)
     .single();
 
   if (fetchError) {
@@ -86,9 +92,9 @@ export async function createVenueImage({
     : [...newImages];
 
   const { data, error } = await supabase
-    .from('venue_details')
+    .from(tableName)
     .update({ images: updatedImages })
-    .eq('venue_id', venueId);
+    .eq(rowId, idValue);
 
   if (error) {
     throw new Error(`Error adding image to database: ${error.message}`);

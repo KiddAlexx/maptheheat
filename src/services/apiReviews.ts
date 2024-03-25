@@ -64,7 +64,7 @@ export async function createReview(newReview: NewReview) {
     console.error('Supabase error:', error);
     throw new Error(`Review could not be created. Error:${error.message}`);
   }
-  return data;
+  return camelcaseKeys(data);
 }
 
 export async function updateReview(

@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router';
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
-function ImageUploader({ venue, maxPhotos = 6, mode }) {
+function ImageUploader({ venue, maxPhotos = 6, mode, reviewId }) {
   // Fetch image upload functionality and states from React Query hook
   const { uploadImageRef, isUploading, fileUploaded } = useUpdateVenueImage();
 
@@ -72,13 +72,14 @@ function ImageUploader({ venue, maxPhotos = 6, mode }) {
     console.log(
       'log from image uploader ',
       venueId,
+      reviewId,
       imageFiles,
       city,
       venueNameSlug
     );
 
     uploadImageRef(
-      { venueId, imageFiles, city, venueNameSlug },
+      { venueId, reviewId, imageFiles, city, venueNameSlug },
       {
         onSuccess: () => {
           handleClose();
