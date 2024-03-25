@@ -357,7 +357,12 @@ function VenueForm() {
           )}
         </form>
       )}
-      {formIndex === 2 && <ImageUploader venue={createdVenue} />}
+      {formIndex === 2 && (
+        <div>
+          <h2>Add photos for {createdVenue?.venueName ?? ''}</h2>
+          <ImageUploader venue={createdVenue} />
+        </div>
+      )}
     </>
   );
 }
