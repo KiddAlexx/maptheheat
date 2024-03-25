@@ -77,10 +77,17 @@ function ImageUploader({ venue, maxPhotos = 6, mode }) {
       venueNameSlug
     );
 
-    uploadImageRef({ venueId, imageFiles, city, venueNameSlug });
+    uploadImageRef(
+      { venueId, imageFiles, city, venueNameSlug },
+      {
+        onSuccess: () => {
+          handleClose();
+        },
+      }
+    );
   }
 
-  function handleCancel() {
+  function handleClose() {
     if (isModal) {
       closeModal();
     }
@@ -108,7 +115,7 @@ function ImageUploader({ venue, maxPhotos = 6, mode }) {
         />
         <h3>Add up to a maximum on {maxPhotos} photos</h3>
         <div className={styles.buttonContainer}>
-          <Button onClick={handleCancel}>Not right now</Button>
+          <Button onClick={handleClose}>Not right now</Button>
           <Button id="firstElementToFocus" onClick={uploadFile}>
             Upload
           </Button>
