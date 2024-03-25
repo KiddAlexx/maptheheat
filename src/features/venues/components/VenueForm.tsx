@@ -360,7 +360,7 @@ function VenueForm() {
       {formIndex === 2 && (
         <div>
           <h2>Add photos for {createdVenue?.venueName ?? ''}</h2>
-          <ImageUploader venue={createdVenue} />
+          <ImageUploader venue={createdVenue} mode="integrated" />
         </div>
       )}
     </>

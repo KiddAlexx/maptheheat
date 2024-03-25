@@ -19,11 +19,12 @@ import { useUpdateVenueImage } from '@/features/venues/hooks/useUpdateVenueImage
 import { useUser } from '@/features/authentication/useUser';
 import { Button } from '@nextui-org/button';
 import { useGlobalError } from '@/context/ErrorContext';
+import { useNavigate } from 'react-router';
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
-function ImageUploader({ venue }) {
+function ImageUploader({ venue, maxPhotos = 6, mode }) {
   // Fetch image upload functionality and states from React Query hook
   const { uploadImageRef, isUploading, fileUploaded } = useUpdateVenueImage();
 
@@ -35,6 +36,7 @@ function ImageUploader({ venue }) {
     city: modalCity,
     venueId: modalVenueId,
     openModal,
+    closeModal,
   } = useModalContext();
 
   const {
@@ -47,13 +49,18 @@ function ImageUploader({ venue }) {
   const city = propCity ?? modalCity;
   const venueId = propVenueId ?? modalVenueId;
 
+  const isModal = mode === 'modal';
+  const isIntegrated = mode === 'integrated';
+
+  const navigate = useNavigate();
+
   //File Upload State
   const [imageFiles, setImageFiles] = useState<File[]>([]);
 
   const { setGlobalError } = useGlobalError();
 
   // Function to handle compression and upload of selected image to Supabase storage.
-  const uploadFile = async function () {
+  async function uploadFile() {
     if (imageFiles.length === 0) {
       setGlobalError('No images were selected!');
       return;
@@ -71,7 +78,18 @@ function ImageUploader({ venue }) {
     );
 
     uploadImageRef({ venueId, imageFiles, city, venueNameSlug });
-  };
+  }
+
+  function handleCancel() {
+    if (isModal) {
+      closeModal();
+    }
+    if (isIntegrated) {
+      navigate(`/app/venue/${city}/${venueNameSlug}/${venueId}`, {
+        replace: true,
+      });
+    }
+  }
 
   return (
     <>
@@ -84,14 +102,17 @@ function ImageUploader({ venue }) {
             setImageFiles(newImages);
           }}
           allowMultiple={true}
-          maxFiles={6}
+          maxFiles={maxPhotos}
           name="files"
           labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
         />
-
-        <Button id="firstElementToFocus" onClick={uploadFile}>
-          Upload
-        </Button>
+        <h3>Add up to a maximum on {maxPhotos} photos</h3>
+        <div className={styles.buttonContainer}>
+          <Button onClick={handleCancel}>Not right now</Button>
+          <Button id="firstElementToFocus" onClick={uploadFile}>
+            Upload
+          </Button>
+        </div>
       </div>
     </>
   );
