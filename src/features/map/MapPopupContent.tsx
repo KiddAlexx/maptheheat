@@ -15,6 +15,8 @@ import VenueRating from '../venues/components/VenueRating';
 import greyChilli from '../../assets/chilli-explosion-grey-md.jpg';
 import mapPinIcon from '../../assets/icons/map-pin.svg';
 import phoneIcon from '../../assets/icons/phone.svg';
+import { useGetReviews } from '../reviews/hooks/useGetReviews';
+import LoaderSpinner from '@/ui/LoaderSpinner';
 
 interface MapPopupContentProps {
   venue: Venue;
@@ -23,18 +25,34 @@ interface MapPopupContentProps {
 function MapPopupContent({ venue }: MapPopupContentProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
 
-  const { venueName, averageRating, address, phoneNumber, images } = venue;
+  const { venueName, venueId, averageRating, address, phoneNumber, images } =
+    venue;
+
+  const {
+    isLoading: isLoadingReviews,
+    error: reviewError,
+    reviews,
+  } = useGetReviews(venueId);
+
+  if (isLoadingReviews) {
+    return <LoaderSpinner />;
+  }
+
+  const reviewImages = reviews?.flatMap((review) => review.images || []);
+  const allImages = [...(images || []), ...reviewImages];
+  console.log('final images', venueName, allImages);
   return (
     <>
       {/* Duplication of code from ListItem - Move to own component */}
       {/* Render venue image if available, otherwise show default greyed out image */}
-      {images ? (
+      {allImages.length > 0 ? (
         <div className={styles.mainImageContainer}>
           <img
             className={styles.imageMainSmall}
-            src={images[0].url}
-            alt={images[0].alt}
+            src={allImages[0].url}
+            alt={allImages[0].alt}
           />
+          {/* Fix alt text - user input / somehow generated... */}
         </div>
       ) : (
         <div className={styles.mainImageContainer}>
@@ -46,8 +64,7 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
           <p className={styles.addPhotosText}>Add Photos</p>
         </div>
       )}
-      {/* Link to the detailed page of the venue. 
-          On click, set the active venue in the context. */}
+      {/* Link to the detailed page of the venue.  */}
       <div className={styles.popUpContentContainer}>
         <button
           className={styles.venueNamePopup}

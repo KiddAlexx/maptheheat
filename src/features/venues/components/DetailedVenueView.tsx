@@ -7,11 +7,18 @@ import styles from '../styles/DetailedVenueView.module.css';
 
 // Hooks imports
 import { useVenue } from '../hooks/useVenue';
+import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
+import { useUser } from '../../authentication/useUser';
+import { useModalContext } from '../../../context/ModalContext';
+import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
 
 // Component imports
-import ImageUploader from '../../../components/ImageUploader';
 import VenueRating from './VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
+import ReviewContainer from '../../reviews/components/ReviewContainer';
+
+// NextUI Component imports
+import { Button } from '@nextui-org/react';
 
 // Type imports
 import { Image } from '../../../models/venueTypes';
@@ -23,46 +30,60 @@ import globeIcon from '../../../assets/icons/globe.svg';
 import mapPinIcon from '../../../assets/icons/map-pin.svg';
 import phoneIcon from '../../../assets/icons/phone.svg';
 import infoIcon from '../../../assets/icons/info.svg';
-import ReviewContainer from '../../reviews/components/ReviewContainer';
-import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
-import { useUser } from '../../authentication/useUser';
-import { useModalContext } from '../../../context/ModalContext';
 
 function DetailedVenueView() {
-  const { venueId } = useParams();
-  console.log(venueId);
   const navigate = useNavigate();
+  const { venueId } = useParams();
+  const { openModal, openModalImages, openModalUpload } = useModalContext();
 
-  const { isLoading, isAuthenticated, fetchStatus, user } = useUser();
-  const { openModal } = useModalContext();
+  const {
+    isLoading: isLoadingUser,
+    isAuthenticated,
+    fetchStatus,
+    user,
+  } = useUser();
   const userId = user?.id;
 
-  const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
   const {
     isLoading: isLoadingReviewAuth,
     error,
     refetch: refetchUserPermission,
   } = useCanUserReview(userId, venueId, 30, false);
 
-  if (isLoadingVenue) {
-    return <LoaderSpinner />;
-  }
+  const {
+    isLoading: isLoadingReviews,
+    error: reviewError,
+    reviews,
+  } = useGetReviews(venueId);
+
+  const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
 
   if (!venueId) {
     return;
   }
 
+  if (isLoadingVenue || isLoadingReviews) {
+    return <LoaderSpinner />;
+  }
+
   const {
     venueName,
     city,
-    urlSlug,
+    venueNameSlug,
     phoneNumber,
     detailedAddress,
     website,
     description,
     averageRating,
     images,
+    coords,
   } = venue;
+
+  const { lat, lon } = coords;
+
+  const reviewImages = reviews?.flatMap((review) => review.images || []);
+  const allImages = [...(images || []), ...reviewImages];
+  console.log('final images', allImages);
 
   const finalRating = Math.round(averageRating * 2) / 2 || 5;
 
@@ -74,8 +95,22 @@ function DetailedVenueView() {
     const { data: canUserReview } = await refetchUserPermission();
     console.log('here is permission', canUserReview);
     if (canUserReview) {
-      navigate(`/app/venue/${city}/${urlSlug}/reviews/new/${venueId}`);
+      navigate(`/app/venue/${city}/${venueNameSlug}/reviews/new/${venueId}`);
     } else alert('You cannot review the same venue within 30 days');
+  }
+
+  function handleAddImages() {
+    if (!isAuthenticated) {
+      openModal('login');
+      return;
+    } else {
+      openModalUpload({
+        modal: 'image-uploader',
+        venueId,
+        city,
+        venueNameSlug,
+      });
+    }
   }
 
   return (
@@ -84,11 +119,14 @@ function DetailedVenueView() {
       <div className={styles.ratingUploadContainer}>
         <VenueRating initialRating={finalRating} readonly />
       </div>
-      <div className={styles.multipleImageContainer}>
-        {images ? (
+      <div
+        className={styles.multipleImageContainer}
+        onClick={() => openModalImages('image-carousel', allImages)}
+      >
+        {allImages.length > 0 ? (
           // Slice first 4 images and map over
           // To be replaced with more refined component
-          images.slice(0, 4).map((image: Image) => (
+          allImages.slice(0, 4).map((image: Image) => (
             <div className={styles.mainImageContainer}>
               <img
                 className={styles.imageMainSmall}
@@ -108,7 +146,9 @@ function DetailedVenueView() {
           </div>
         )}
       </div>
-      <ImageUploader />
+
+      <Button onClick={handleAddImages}>Add Images</Button>
+      {/*    <VenueImageCarousel venueImages={images} /> */}
 
       <button className="btn-default" onClick={handleReview}>
         Leave a review
@@ -138,7 +178,10 @@ function DetailedVenueView() {
         </a>
       </div>
       {/* Button to navigate back to map view. */}
-      <Link to="/app/map" className={`btn-default ${styles.btnBackToMap}`}>
+      <Link
+        to={`/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`}
+        className={`btn-default ${styles.btnBackToMap}`}
+      >
         Back to Map
       </Link>
       <ReviewContainer />

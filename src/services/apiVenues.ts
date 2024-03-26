@@ -8,7 +8,7 @@ import { ImageUploadParams, NewVenue, Venue } from '../models/venueTypes';
 
 // Util Imports
 import compressImage from '../utils/compressImage';
-import uploadImage from './supabaseImageUploader';
+import uploadImages from './supabaseImageUploader';
 
 export async function getVenues(): Promise<Venue[]> {
   const { data, error } = await supabase.from('venue_details').select('*');
@@ -43,50 +43,58 @@ export async function createVenue(newVenue: NewVenue) {
     console.error('Supabase error:', error);
     throw new Error(`Venue could not be created. Error:${error.message}`);
   }
-  return data;
+  return camelcaseKeys(data);
 }
 
 export async function createVenueImage({
   venueId,
-  imageFile,
+  reviewId,
+  imageFiles,
   city,
-  venue,
+  venueNameSlug,
 }: ImageUploadParams) {
   // Compress image. Type asserted as function will return File or throw an Error
-  const compressedImage = (await compressImage(imageFile)) as File;
+  const compressedImages = (await compressImage(imageFiles)) as File[];
 
   // Upload image to supabase bucket
-  const imagePath = await uploadImage(
-    compressedImage,
+  const imagePaths = await uploadImages(
+    compressedImages,
     'venue-images',
     city,
-    venue
+    venueNameSlug
   );
   // Generate alt text for image + full URL
-  const altText = `An image of ${venue} in ${city}`;
-  const imageUrl = `${supabaseUrl}/storage/v1/object/public/venue-images/${imagePath}`;
+  const newImages = imagePaths.map((imagePath) => ({
+    url: `${supabaseUrl}/storage/v1/object/public/venue-images/${imagePath}`,
+    alt: `An image of ${venueNameSlug} in ${city}`,
+  }));
+
+  // Determine table to store image path based on presence of reviewId
+  const tableName = reviewId ? 'venue_reviews' : 'venue_details';
+  const rowId = reviewId ? 'review_id' : 'venue_id';
+  const idValue = reviewId || venueId;
 
   // Fetch current images array
   const { data: currentImages, error: fetchError } = await supabase
-    .from('venue_details')
+    .from(tableName)
     .select('images')
-    .eq('venue_id', venueId)
+    .eq(rowId, idValue)
     .single();
 
   if (fetchError) {
     throw new Error(`Error fetching current images: ${fetchError.message}`);
   }
 
-  // Append new image object to existing array
+  // Append new image objects to existing array
   // Or create new image array if one does not exist
   const updatedImages = currentImages.images
-    ? [...currentImages.images, { alt: altText, url: imageUrl }]
-    : [{ alt: altText, url: imageUrl }];
+    ? [...currentImages.images, ...newImages]
+    : [...newImages];
 
   const { data, error } = await supabase
-    .from('venue_details')
+    .from(tableName)
     .update({ images: updatedImages })
-    .eq('venue_id', venueId);
+    .eq(rowId, idValue);
 
   if (error) {
     throw new Error(`Error adding image to database: ${error.message}`);

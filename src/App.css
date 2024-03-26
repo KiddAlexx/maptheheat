@@ -7,10 +7,6 @@ body {
   color: #414141;
 }
 
-input {
-  border-radius: 0.5rem;
-}
-
 /********************Reusable Styles*******************/
 .btn-default {
   display: flex; /* Centers content for elements not centering by default */
@@ -25,4 +21,9 @@ input {
   flex-shrink: 0;
   background-color: #9f481a;
   color: #fff;
+}
+
+/********************For Filepond Uploader*******************/
+.filepond--item {
+  width: calc(50% - 0.5em);
 }

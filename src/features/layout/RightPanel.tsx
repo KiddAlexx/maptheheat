@@ -6,9 +6,9 @@ import styles from './RightPanel.module.css';
 
 function RightPanel() {
   return (
-    <div className={styles.rightPanelContainer}>
+    <main className={styles.rightPanelContainer}>
       <Outlet />
-    </div>
+    </main>
   );
 }
 

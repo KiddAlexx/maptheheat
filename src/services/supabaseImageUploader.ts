@@ -1,39 +1,45 @@
 import supabase from './supabase';
 
-async function uploadImage(
-  imageFile: File,
+async function uploadImages(
+  imageFiles: File[],
   bucketName: string,
   ...folders: string[]
 ) {
-  if (!imageFile) {
-    throw new Error('No image file provided');
+  if (!imageFiles) {
+    throw new Error('No image files provided');
   }
-
-  // Create unique file name
-  const imageName = `${Date.now()}-${Math.random().toString(36).substr(2)}`
-    .replaceAll('/', '-')
-    .replaceAll(' ', '-')
-    .toLowerCase();
 
   // Create storage path
   const folderPath = folders.join('/');
-  const imagePath = `${folderPath}/${imageName}`;
 
-  try {
-    const { error } = await supabase.storage
-      .from(bucketName)
-      .upload(imagePath, imageFile, {
-        cacheControl: '3600',
-        upsert: false,
-      });
-    if (error) throw error;
-    return imagePath;
-  } catch (error) {
-    if (error) {
-      console.log(error);
-      throw new Error(`Error uploading image: ${error.message}`);
+  const imagePaths = imageFiles.map(async (imageFile) => {
+    // Create unique file name
+    const imageName = `${Date.now()}-${Math.random().toString(36).substring(2)}`
+      .replaceAll('/', '-')
+      .replaceAll(' ', '-')
+      .toLowerCase();
+
+    const imagePath = `${folderPath}/${imageName}`;
+
+    try {
+      // Upload each image
+      const { error } = await supabase.storage
+        .from(bucketName)
+        .upload(imagePath, imageFile, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+      if (error) throw error;
+      return imagePath;
+    } catch (error) {
+      if (error) {
+        console.log(error);
+        throw new Error(`Error uploading image: ${error.message}`);
+      }
     }
-  }
+  });
+
+  return Promise.all(imagePaths);
 }
 
-export default uploadImage;
+export default uploadImages;

@@ -10,7 +10,7 @@ import { Toaster } from 'react-hot-toast';
 import './App.css';
 
 // Hooks imports
-import { VenuesProvider } from './context/VenueContext';
+import { GlobalErrorProvider } from './context/ErrorContext';
 
 // Component imports
 
@@ -41,7 +41,7 @@ function App() {
   const navigate = useNavigate();
   return (
     <NextUIProvider navigate={navigate}>
-      <VenuesProvider>
+      <GlobalErrorProvider>
         <ModalProvider>
           <QueryClientProvider client={queryClient}>
             <ReactQueryDevtools initialIsOpen={false} />
@@ -115,7 +115,7 @@ function App() {
             />
           </QueryClientProvider>
         </ModalProvider>
-      </VenuesProvider>
+      </GlobalErrorProvider>
     </NextUIProvider>
   );
 }

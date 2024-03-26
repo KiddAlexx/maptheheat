@@ -2,7 +2,7 @@
 import imageCompression from 'browser-image-compression';
 
 export default async function compressImage(
-  imageFile: File,
+  imageFiles: File[],
   compressionOptions?: object
 ) {
   const finalCompressionOptions = compressionOptions || {
@@ -11,18 +11,22 @@ export default async function compressImage(
     useWebWorker: true,
   };
 
-  try {
-    console.log(imageFile);
-    const compressedImage = await imageCompression(
-      imageFile,
-      finalCompressionOptions
-    );
-    return compressedImage;
-  } catch (err) {
-    if (err instanceof Error) {
-      throw new Error(
-        `There was an error compressing your image ${err.message}`
+  const compressedImages: File[] = [];
+
+  for (const imageFile of imageFiles) {
+    try {
+      const compressedImage = await imageCompression(
+        imageFile,
+        finalCompressionOptions
       );
+      compressedImages.push(compressedImage);
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new Error(
+          `There was an error compressing your image ${err.message}`
+        );
+      }
     }
   }
+  return compressedImages;
 }

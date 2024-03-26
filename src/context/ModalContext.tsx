@@ -5,20 +5,49 @@ import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 // Data types
 interface State {
-  modalName: null | string;
+  modalName: string;
   modalOpen: boolean;
-  message: null | string;
+  images: { url: string; alt: string }[];
+  message: string;
+  venueId: string;
+  venueNameSlug: string;
+  city: string;
   confirmAction: null | (() => void);
+}
+
+interface OpenModalUploadParams {
+  modal: string;
+  venueId: string;
+  venueNameSlug: string;
+  city: string;
 }
 
 interface ModalContextType extends State {
   openModal: (modal: string) => void;
+  openModalImages: (
+    modal: string,
+    images: { url: string; alt: string }[]
+  ) => void;
+  openModalUpload: (params: OpenModalUploadParams) => void;
   closeModal: () => void;
   openDialog: (message: string, confirmAction: () => void) => void;
 }
 
 type Action =
   | { type: 'open-modal'; payload: string }
+  | {
+      type: 'open-modal-images';
+      payload: { modal: string; images: { url: string; alt: string }[] };
+    }
+  | {
+      type: 'open-modal-upload';
+      payload: {
+        modal: string;
+        venueId: string;
+        venueNameSlug: string;
+        city: string;
+      };
+    }
   | {
       type: 'open-dialog';
       payload: { message: string; confirmActionAndClose: () => void };
@@ -32,10 +61,14 @@ interface ModalProviderProps {
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 const initialState = {
-  modalName: null,
+  modalName: '',
   modalOpen: false,
-  message: null,
+  images: [],
+  message: '',
   confirmAction: null,
+  venueId: '',
+  venueNameSlug: '',
+  city: '',
 };
 
 function reducer(state: State, action: Action) {
@@ -44,6 +77,22 @@ function reducer(state: State, action: Action) {
       return {
         ...state,
         modalName: action.payload,
+        modalOpen: true,
+      };
+    case 'open-modal-images':
+      return {
+        ...state,
+        modalName: action.payload.modal,
+        images: action.payload.images,
+        modalOpen: true,
+      };
+    case 'open-modal-upload':
+      return {
+        ...state,
+        modalName: action.payload.modal,
+        venueId: action.payload.venueId,
+        city: action.payload.city,
+        venueNameSlug: action.payload.venueNameSlug,
         modalOpen: true,
       };
     case 'open-dialog':
@@ -58,10 +107,14 @@ function reducer(state: State, action: Action) {
     case 'close-modal': {
       return {
         ...state,
-        modalName: null,
+        modalName: '',
         modalOpen: false,
-        message: null,
+        message: '',
         confirmAction: null,
+        images: [],
+        venueNameSlug: '',
+        venueId: '',
+        city: '',
       };
     }
 
@@ -71,10 +124,38 @@ function reducer(state: State, action: Action) {
 }
 
 function ModalProvider({ children }: ModalProviderProps) {
-  const [{ modalName, modalOpen, message, confirmAction }, dispatch] =
-    useReducer(reducer, initialState);
+  const [
+    {
+      modalName,
+      modalOpen,
+      message,
+      confirmAction,
+      images,
+      venueId,
+      city,
+      venueNameSlug,
+    },
+    dispatch,
+  ] = useReducer(reducer, initialState);
   function openModal(modal: string) {
     dispatch({ type: 'open-modal', payload: modal });
+  }
+  function openModalImages(
+    modal: string,
+    images: { url: string; alt: string }[]
+  ) {
+    dispatch({ type: 'open-modal-images', payload: { modal, images } });
+  }
+  function openModalUpload({
+    modal,
+    venueId,
+    venueNameSlug,
+    city,
+  }: OpenModalUploadParams) {
+    dispatch({
+      type: 'open-modal-upload',
+      payload: { modal, venueId, venueNameSlug, city },
+    });
   }
   function openDialog(message: string, confirmAction: () => void) {
     const confirmActionAndClose = () => {
@@ -98,6 +179,12 @@ function ModalProvider({ children }: ModalProviderProps) {
         openModal,
         closeModal,
         openDialog,
+        openModalImages,
+        openModalUpload,
+        images,
+        venueId,
+        city,
+        venueNameSlug,
         message,
         confirmAction,
       }}
