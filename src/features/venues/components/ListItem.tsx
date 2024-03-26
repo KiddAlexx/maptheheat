@@ -17,6 +17,8 @@ import VenueRating from './VenueRating';
 
 // Type imports
 import { Venue } from '../../../models/venueTypes';
+import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
+import LoaderSpinner from '@/ui/LoaderSpinner';
 
 interface ListItemProps {
   venue: Venue;
@@ -26,18 +28,33 @@ interface ListItemProps {
 function ListItem({ venue, handleClick }: ListItemProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
 
-  const { venueName, address, phoneNumber, images, averageRating } = venue;
+  const { venueName, venueId, address, phoneNumber, images, averageRating } =
+    venue;
+
+  const {
+    isLoading: isLoadingReviews,
+    error: reviewError,
+    reviews,
+  } = useGetReviews(venueId);
+
+  if (isLoadingReviews) {
+    return <LoaderSpinner />;
+  }
+
+  const reviewImages = reviews?.flatMap((review) => review.images || []);
+  const allImages = [...(images || []), ...reviewImages];
+  console.log('final images', venueName, allImages);
 
   const finalRating = Math.round(averageRating * 2) / 2 || 5;
 
   return (
     <div className={styles.listItemContainer} onClick={handleClick}>
-      {images ? (
+      {allImages.length > 0 ? (
         <div className={styles.mainImageContainer}>
           <img
             className={styles.imageMainSmall}
-            src={images[0].url}
-            alt={images[0].alt}
+            src={allImages[0].url}
+            alt={allImages[0].alt}
           />
           {/* Fix alt text - user input / somehow generated... */}
         </div>

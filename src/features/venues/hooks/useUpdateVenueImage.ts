@@ -35,10 +35,13 @@ export function useUpdateVenueImage() {
         venueNameSlug,
       });
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       toast.success('Images successfully uploaded');
       queryClient.invalidateQueries({ queryKey: ['venues'] });
       queryClient.invalidateQueries({ queryKey: ['venue'] });
+      queryClient.invalidateQueries({
+        queryKey: ['reviews', variables.venueId],
+      });
       console.log('Inavlidate queries should have ran');
     },
     onError: (err) => {

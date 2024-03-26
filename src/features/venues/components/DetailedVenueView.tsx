@@ -123,7 +123,7 @@ function DetailedVenueView() {
         className={styles.multipleImageContainer}
         onClick={() => openModalImages('image-carousel', allImages)}
       >
-        {allImages ? (
+        {allImages.length > 0 ? (
           // Slice first 4 images and map over
           // To be replaced with more refined component
           allImages.slice(0, 4).map((image: Image) => (
