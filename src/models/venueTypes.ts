@@ -9,7 +9,7 @@ export interface Venue {
   phoneNumber: string;
   website: string;
   userId: string;
-  urlSlug: string;
+  venueNameSlug: string;
   coords: Coords;
   venueId: string;
   venueType: 'restaurant' | 'shop';
@@ -35,7 +35,8 @@ export interface Image {
 
 export interface ImageUploadParams {
   venueId: string;
-  imageFile: File;
+  reviewId?: string;
+  imageFiles: File[];
   city: string;
-  venue: string;
+  venueNameSlug: string;
 }

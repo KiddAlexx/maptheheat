@@ -25,7 +25,7 @@ function ReviewListItem({ review }) {
   } = review;
 
   const { avatarUrl, username, totalReviews, userId } = profiles;
-  const { city, urlSlug, venueId } = venueDetails;
+  const { city, venueNameSlug, venueId } = venueDetails;
 
   const { isDeleting, deleteReview } = useDeleteReview();
 
@@ -81,7 +81,7 @@ function ReviewListItem({ review }) {
         {within48hours && currentUser && (
           <Link
             className="btn-default"
-            to={`/app/venue/${city}/${urlSlug}/reviews/edit/${reviewId}`}
+            to={`/app/venue/${city}/${venueNameSlug}/reviews/edit/${reviewId}`}
           >
             Edit Review
           </Link>

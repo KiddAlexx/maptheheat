@@ -14,6 +14,7 @@ import toast from 'react-hot-toast';
 
 // Component Imports
 import VenueRating from '../../venues/components/VenueRating';
+import ImageUploader from '@/components/ImageUploader';
 
 // Types
 interface ReviewFormProps {
@@ -34,6 +35,10 @@ export interface EditformData extends FormData {
 function ReviewForm({ mode }: ReviewFormProps) {
   const navigate = useNavigate();
 
+  const [formIndex, setFormIndex] = useState(1);
+  const [createdReview, setCreatedReview] = useState('');
+  const { reviewId: createdReviewId } = createdReview;
+
   const { isCreating, createReview } = useCreateReview();
   const { isUpdating, updateReview } = useUpdateReview();
 
@@ -50,7 +55,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
     venueIdParam,
     mode === 'creating'
   );
-  const { venueName, venueType, venueId, city, urlSlug } = venue ?? {};
+  const { venueName, venueType, venueId, city, venueNameSlug } = venue ?? {};
 
   // Fetch review details in "editing" mode.
   // All destructured variables assigned default values,
@@ -64,10 +69,11 @@ function ReviewForm({ mode }: ReviewFormProps) {
     reviewId,
     images,
     reviewType,
+    venueDetails,
     venueDetails: {
       venueName: venueNameReview = '',
       venueId: venueIdReview = '',
-      urlSlug: urlSlugReview = '',
+      venueNameSlug: venueNameSlugReview = '',
       city: cityReview = '',
     } = {},
   } = review ?? {};
@@ -99,13 +105,12 @@ function ReviewForm({ mode }: ReviewFormProps) {
         venueId: venueId!,
         reviewType: venueType!,
       };
-      createReview(finalFormData, {
+      const newReview = await createReview(finalFormData, {
         onSuccess: () => {
-          navigate(`/app/venue/${city}/${urlSlug}/${venueId}`, {
-            replace: true,
-          });
+          setFormIndex(2);
         },
       });
+      setCreatedReview(newReview);
     } else if (mode === 'editing' && review) {
       const finalFormData = {
         ...formData,
@@ -116,12 +121,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
         { finalFormData, reviewId: reviewId! },
         {
           onSuccess: () => {
-            navigate(
-              `/app/venue/${cityReview}/${urlSlugReview}/${venueIdReview}`,
-              {
-                replace: true,
-              }
-            );
+            setFormIndex(2);
           },
         }
       );
@@ -129,104 +129,118 @@ function ReviewForm({ mode }: ReviewFormProps) {
   }
   return (
     <>
-      <h2>
-        {mode === 'creating' ? 'Leave a ' : 'Edit your'} review for{' '}
-        {venueName || venueNameReview}
-      </h2>
+      {formIndex === 1 && (
+        <>
+          <h2>
+            {mode === 'creating' ? 'Leave a ' : 'Edit your'} review for{' '}
+            {venueName || venueNameReview}
+          </h2>
 
-      <span>
-        <h3>Heat Rating</h3>
-        <VenueRating
-          initialRating={heatRating}
-          handleRatingChange={setHeatRating}
-        />
-      </span>
-      {/* Form dynamically renders fields based on venue type */}
-      <form onSubmit={handleSubmit(formSubmit, toastFormError)}>
-        {(venueType || reviewType) === 'shop' && (
-          <div>
-            <label htmlFor="hottestSauce">Hottest Sauce</label>
-            <input
-              type="text"
-              placeholder="Hottest Sauce"
-              id="hottestSauce"
-              {...register('hottestSauce', {
-                required: 'This field is required',
-                maxLength: {
-                  value: 100,
-                  message: 'Venue name cannot be more than 100 characters',
-                },
-              })}
+          <span>
+            <h3>Heat Rating</h3>
+            <VenueRating
+              initialRating={heatRating}
+              handleRatingChange={setHeatRating}
             />
-            {typeof errors?.hottestSauce?.message === 'string' && (
-              <span> {errors.hottestSauce.message}</span>
+          </span>
+          {/* Form dynamically renders fields based on venue type */}
+          <form onSubmit={handleSubmit(formSubmit, toastFormError)}>
+            {(venueType || reviewType) === 'shop' && (
+              <div>
+                <label htmlFor="hottestSauce">Hottest Sauce</label>
+                <input
+                  type="text"
+                  placeholder="Hottest Sauce"
+                  id="hottestSauce"
+                  {...register('hottestSauce', {
+                    required: 'This field is required',
+                    maxLength: {
+                      value: 100,
+                      message: 'Venue name cannot be more than 100 characters',
+                    },
+                  })}
+                />
+                {typeof errors?.hottestSauce?.message === 'string' && (
+                  <span> {errors.hottestSauce.message}</span>
+                )}
+              </div>
             )}
-          </div>
-        )}
 
-        {(venueType || reviewType) === 'restaurant' && (
-          <div>
-            <label htmlFor="hottestDish">Hottest Dish</label>
-            <input
-              type="text"
-              placeholder="Hottest Dish"
-              id="hottestDish"
-              {...register('hottestDish', {
-                required: 'This field is required',
-                maxLength: {
-                  value: 100,
-                  message: 'Venue name cannot be more than 100 characters',
-                },
-              })}
-            />
-            {typeof errors?.hottestDish?.message === 'string' && (
-              <span> {errors.hottestDish.message}</span>
+            {(venueType || reviewType) === 'restaurant' && (
+              <div>
+                <label htmlFor="hottestDish">Hottest Dish</label>
+                <input
+                  type="text"
+                  placeholder="Hottest Dish"
+                  id="hottestDish"
+                  {...register('hottestDish', {
+                    required: 'This field is required',
+                    maxLength: {
+                      value: 100,
+                      message: 'Venue name cannot be more than 100 characters',
+                    },
+                  })}
+                />
+                {typeof errors?.hottestDish?.message === 'string' && (
+                  <span> {errors.hottestDish.message}</span>
+                )}
+              </div>
             )}
-          </div>
-        )}
 
+            <div>
+              <label htmlFor="reviewTitle">Review Title</label>
+              <input
+                type="text"
+                placeholder="Review Title"
+                id="reviewTitle"
+                {...register('reviewTitle', {
+                  required: 'This field is required',
+                  maxLength: {
+                    value: 100,
+                    message: 'Review Title cannot be more than 100 characters',
+                  },
+                })}
+              />
+              {typeof errors?.reviewTitle?.message === 'string' && (
+                <span> {errors.reviewTitle.message}</span>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="reviewContent">Review</label>
+              <textarea
+                rows={3}
+                placeholder="Please enter a detailed review of the venue..."
+                id="reviewContent"
+                {...register('reviewContent', {
+                  required: 'This field is required',
+                  minLength: {
+                    value: 40,
+                    message: 'Review must be at least 40 characters long',
+                  },
+                })}
+              />
+              {typeof errors?.reviewContent?.message === 'string' && (
+                <span>{errors.reviewContent.message}</span>
+              )}
+            </div>
+
+            <button disabled={isUpdating || isCreating}>
+              {mode === 'creating' ? 'Submit' : 'Edit'}
+            </button>
+          </form>
+        </>
+      )}
+      {formIndex === 2 && (
         <div>
-          <label htmlFor="reviewTitle">Review Title</label>
-          <input
-            type="text"
-            placeholder="Review Title"
-            id="reviewTitle"
-            {...register('reviewTitle', {
-              required: 'This field is required',
-              maxLength: {
-                value: 100,
-                message: 'Review Title cannot be more than 100 characters',
-              },
-            })}
+          <h2>Add photos to your review</h2>
+          <ImageUploader
+            venue={venue || venueDetails}
+            reviewId={createdReviewId || reviewId}
+            mode="integrated"
           />
-          {typeof errors?.reviewTitle?.message === 'string' && (
-            <span> {errors.reviewTitle.message}</span>
-          )}
         </div>
-
-        <div>
-          <label htmlFor="reviewContent">Review</label>
-          <textarea
-            rows={3}
-            placeholder="Please enter a detailed review of the venue..."
-            id="reviewContent"
-            {...register('reviewContent', {
-              required: 'This field is required',
-              minLength: {
-                value: 40,
-                message: 'Review must be at least 40 characters long',
-              },
-            })}
-          />
-          {typeof errors?.reviewContent?.message === 'string' && (
-            <span>{errors.reviewContent.message}</span>
-          )}
-        </div>
-
-        <button disabled={isUpdating || isCreating}>
-          {mode === 'creating' ? 'Submit' : 'Edit'}
-        </button>
-      </form>
+      )}
     </>
   );
 }

@@ -1,91 +1,128 @@
-// React imports
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+// Import React FilePond
+import { FilePond, registerPlugin } from 'react-filepond';
 
-// Third party imports
+// Import FilePond styles
+import 'filepond/dist/filepond.min.css';
 
 // Style imports
 import styles from './ImageUploader.module.css';
 
-// Hooks imports
-import { useUpdateVenueImage } from '../features/venues/hooks/useUpdateVenueImage';
-import { useUser } from '../features/authentication/useUser';
+// Import the Image EXIF Orientation and Image Preview plugins
+// Note: These need to be installed separately
+// `npm i filepond-plugin-image-preview filepond-plugin-image-exif-orientation --save`
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import { useState } from 'react';
+import { useModalContext } from '@/context/ModalContext';
+import { useUpdateVenueImage } from '@/features/venues/hooks/useUpdateVenueImage';
+import { useUser } from '@/features/authentication/useUser';
+import { Button } from '@nextui-org/button';
+import { useGlobalError } from '@/context/ErrorContext';
+import { useNavigate } from 'react-router';
 
-// File imports
-import cameraIcon from '../assets/icons/camera.svg';
-import { useModalContext } from '../context/ModalContext';
+// Register the plugins
+registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
-function ImageUploader() {
+function ImageUploader({ venue, maxPhotos = 6, mode, reviewId }) {
   // Fetch image upload functionality and states from React Query hook
   const { uploadImageRef, isUploading, fileUploaded } = useUpdateVenueImage();
+
   // Load remaining hooks
   const { isAuthenticated } = useUser();
-  const { openModal } = useModalContext();
+
+  const {
+    venueNameSlug: modalVenueNameSlug,
+    city: modalCity,
+    venueId: modalVenueId,
+    openModal,
+    closeModal,
+  } = useModalContext();
+
+  const {
+    venueNameSlug: propVenueNameSlug,
+    city: propCity,
+    venueId: propVenueId,
+  } = venue ?? {};
+
+  const venueNameSlug = propVenueNameSlug ?? modalVenueNameSlug;
+  const city = propCity ?? modalCity;
+  const venueId = propVenueId ?? modalVenueId;
+
+  const isModal = mode === 'modal';
+  const isIntegrated = mode === 'integrated';
+
+  const navigate = useNavigate();
 
   //File Upload State
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
 
-  // Load paramater values
-  const { city, venue, venueId } = useParams();
-
-  // Ensures image upload state is reset if user changes active venue
-  // Or when image upload has completed sucessfuly
-  useEffect(() => {
-    if (venueId) {
-      setImageFile(null);
-    }
-    if (fileUploaded === true) {
-      setImageFile(null);
-    }
-  }, [venueId, fileUploaded]);
-
-  // Return from function if params do not exist
-  if (!venueId || !city || !venue) return;
+  const { setGlobalError } = useGlobalError();
 
   // Function to handle compression and upload of selected image to Supabase storage.
-  const uploadFile = async function () {
-    if (!imageFile) return;
+  async function uploadFile() {
+    if (imageFiles.length === 0) {
+      setGlobalError('No images were selected!');
+      return;
+    }
 
-    if (!isAuthenticated) return;
+    // **** Add error message here too ****
+    if (!isAuthenticated) return openModal('login');
 
-    console.log('log from image uploader ', venueId, imageFile, city, venue);
+    console.log(
+      'log from image uploader ',
+      venueId,
+      reviewId,
+      imageFiles,
+      city,
+      venueNameSlug
+    );
 
-    uploadImageRef({ venueId, imageFile, city, venue });
-  };
+    uploadImageRef(
+      { venueId, reviewId, imageFiles, city, venueNameSlug },
+      {
+        onSuccess: () => {
+          handleClose();
+        },
+      }
+    );
+  }
+
+  function handleClose() {
+    if (isModal) {
+      closeModal();
+    }
+    if (isIntegrated) {
+      navigate(`/app/venue/${city}/${venueNameSlug}/${venueId}`, {
+        replace: true,
+      });
+    }
+  }
 
   return (
-    <div className={styles.imgUploaderContainer}>
-      <label
-        className={styles.imgUploaderLabel}
-        htmlFor="imgUploader"
-        onClick={(e) => {
-          if (!isAuthenticated) {
-            e.preventDefault();
-            openModal('login');
-          }
-        }}
-      >
-        <img src={cameraIcon} alt="icon of a camera" />
-        {!imageFile ? 'Add Photo' : 'Change Photo'}
-      </label>
-
-      <input
-        className={styles.imgUploaderInput}
-        type="file"
-        id="imgUploader"
-        // Checks to ensure e.target.files exists and if not uses null as value
-        onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
-      />
-
-      {imageFile && (
-        <>
-          <p>{imageFile.name} ready to </p>
-          <button className={styles.btnImgUploader} onClick={uploadFile}>
-            {isUploading ? 'Uploading' : 'Upload'}
-          </button>
-        </>
-      )}
-    </div>
+    <>
+      <div className={styles.uploadContainer}>
+        <FilePond
+          files={imageFiles}
+          onupdatefiles={(images) => {
+            // Update state with new files array
+            const newImages = images.map((image) => image.file);
+            setImageFiles(newImages);
+          }}
+          allowMultiple={true}
+          maxFiles={maxPhotos}
+          name="files"
+          labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+        />
+        <h3>Add up to a maximum on {maxPhotos} photos</h3>
+        <div className={styles.buttonContainer}>
+          <Button onClick={handleClose}>Not right now</Button>
+          <Button id="firstElementToFocus" onClick={uploadFile}>
+            Upload
+          </Button>
+        </div>
+      </div>
+    </>
   );
 }
 

@@ -5,7 +5,7 @@ import { createVenue as createVenueApi } from '../../../services/apiVenues';
 export function useCreateVenue() {
   const queryClient = useQueryClient();
 
-  const { mutate: createVenue, isPending: isCreating } = useMutation({
+  const { mutateAsync: createVenue, isPending: isCreating } = useMutation({
     mutationFn: createVenueApi,
     onSuccess: () => {
       toast.success('New venue successfully created');

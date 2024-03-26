@@ -3,6 +3,9 @@ import LoginForm from '../features/authentication/LoginForm';
 import SignupForm from '../features/authentication/SignupForm';
 import ConfirmationDialog from '../ui/ConfirmationDialog';
 import Modal from '../ui/Modal';
+import ImageCarousel from '@/ui/ImageCarousel';
+import ImageUploader from './ImageUploader';
+import ProtectedRoute from './ProtectedRoute';
 
 function ModalManager() {
   const { modalName, modalOpen } = useModalContext();
@@ -16,6 +19,13 @@ function ModalManager() {
 
     case 'sign-up':
       Component = <SignupForm />;
+      break;
+
+    case 'image-carousel':
+      Component = <ImageCarousel />;
+      break;
+    case 'image-uploader':
+      Component = <ImageUploader mode="modal" />;
       break;
     case 'confirm-action':
       Component = <ConfirmationDialog />;
