@@ -7,11 +7,18 @@ import styles from '../styles/DetailedVenueView.module.css';
 
 // Hooks imports
 import { useVenue } from '../hooks/useVenue';
+import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
+import { useUser } from '../../authentication/useUser';
+import { useModalContext } from '../../../context/ModalContext';
+import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
 
 // Component imports
-
 import VenueRating from './VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
+import ReviewContainer from '../../reviews/components/ReviewContainer';
+
+// NextUI Component imports
+import { Button } from '@nextui-org/react';
 
 // Type imports
 import { Image } from '../../../models/venueTypes';
@@ -23,35 +30,40 @@ import globeIcon from '../../../assets/icons/globe.svg';
 import mapPinIcon from '../../../assets/icons/map-pin.svg';
 import phoneIcon from '../../../assets/icons/phone.svg';
 import infoIcon from '../../../assets/icons/info.svg';
-import ReviewContainer from '../../reviews/components/ReviewContainer';
-import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
-import { useUser } from '../../authentication/useUser';
-import { useModalContext } from '../../../context/ModalContext';
-
-import { Button } from '@nextui-org/button';
 
 function DetailedVenueView() {
-  const { venueId } = useParams();
-  console.log(venueId);
   const navigate = useNavigate();
-
-  const { isLoading, isAuthenticated, fetchStatus, user } = useUser();
+  const { venueId } = useParams();
   const { openModal, openModalImages, openModalUpload } = useModalContext();
+
+  const {
+    isLoading: isLoadingUser,
+    isAuthenticated,
+    fetchStatus,
+    user,
+  } = useUser();
   const userId = user?.id;
 
-  const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
   const {
     isLoading: isLoadingReviewAuth,
     error,
     refetch: refetchUserPermission,
   } = useCanUserReview(userId, venueId, 30, false);
 
-  if (isLoadingVenue) {
-    return <LoaderSpinner />;
-  }
+  const {
+    isLoading: isLoadingReviews,
+    error: reviewError,
+    reviews,
+  } = useGetReviews(venueId);
+
+  const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
 
   if (!venueId) {
     return;
+  }
+
+  if (isLoadingVenue || isLoadingReviews) {
+    return <LoaderSpinner />;
   }
 
   const {
@@ -68,6 +80,10 @@ function DetailedVenueView() {
   } = venue;
 
   const { lat, lon } = coords;
+
+  const reviewImages = reviews?.flatMap((review) => review.images || []);
+  const allImages = [...(images || []), ...reviewImages];
+  console.log('final images', allImages);
 
   const finalRating = Math.round(averageRating * 2) / 2 || 5;
 
@@ -105,12 +121,12 @@ function DetailedVenueView() {
       </div>
       <div
         className={styles.multipleImageContainer}
-        onClick={() => openModalImages('image-carousel', images)}
+        onClick={() => openModalImages('image-carousel', allImages)}
       >
-        {images ? (
+        {allImages ? (
           // Slice first 4 images and map over
           // To be replaced with more refined component
-          images.slice(0, 4).map((image: Image) => (
+          allImages.slice(0, 4).map((image: Image) => (
             <div className={styles.mainImageContainer}>
               <img
                 className={styles.imageMainSmall}
