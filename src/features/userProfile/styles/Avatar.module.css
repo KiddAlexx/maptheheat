@@ -1,8 +1,8 @@
 .avatar {
   border-radius: 50%;
   border: 2px solid green;
-  width: 100px;
-  height: 100px;
+  width: 7rem;
+  height: 7rem;
   object-fit: cover;
   display: inline-block;
 }
