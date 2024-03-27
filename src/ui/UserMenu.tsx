@@ -7,9 +7,11 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@nextui-org/react';
+import { useLogout } from '@/features/authentication/useLogout';
 
 function UserMenu() {
   const { user, isLoading: isLoadingUser } = useUser();
+  const { logout } = useLogout();
 
   if (isLoadingUser) return;
 
@@ -24,7 +26,9 @@ function UserMenu() {
       </DropdownTrigger>
       <DropdownMenu>
         <DropdownItem>Profile</DropdownItem>
-        <DropdownItem>Logout</DropdownItem>
+        <DropdownItem onPress={() => logout()} color="danger">
+          Logout
+        </DropdownItem>
       </DropdownMenu>
     </Dropdown>
   );
