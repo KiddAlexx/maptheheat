@@ -8,10 +8,12 @@ import {
   DropdownItem,
 } from '@nextui-org/react';
 import { useLogout } from '@/features/authentication/useLogout';
+import { useNavigate } from 'react-router';
 
 function UserMenu() {
   const { user, isLoading: isLoadingUser } = useUser();
   const { logout } = useLogout();
+  const navigate = useNavigate();
 
   if (isLoadingUser) return;
 
@@ -25,7 +27,9 @@ function UserMenu() {
         </button>
       </DropdownTrigger>
       <DropdownMenu>
-        <DropdownItem>Profile</DropdownItem>
+        <DropdownItem onPress={() => navigate('/app/profile')}>
+          Profile
+        </DropdownItem>
         <DropdownItem onPress={() => logout()} color="danger">
           Logout
         </DropdownItem>
