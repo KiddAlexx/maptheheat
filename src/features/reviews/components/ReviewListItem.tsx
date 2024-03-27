@@ -1,13 +1,13 @@
 import styles from '../styles/ReviewListItem.module.css';
-import defaultAvatar from '../../../assets/default-avatar.png';
 import VenueRating from '../../venues/components/VenueRating';
 import { useUser } from '../../authentication/useUser';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useDeleteReview } from '../hooks/useDeleteReview';
 import { useModalContext } from '../../../context/ModalContext';
-import { format, isAfter, parseISO, subHours } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { withinTimeframe } from '../../../utils/withinTimeframe';
+import Avatar from '@/ui/Avatar';
 
 function ReviewListItem({ review }) {
   const {
@@ -24,7 +24,7 @@ function ReviewListItem({ review }) {
     reviewId,
   } = review;
 
-  const { avatarUrl, username, totalReviews, userId } = profiles;
+  const { username, totalReviews, userId } = profiles;
   const { city, venueNameSlug, venueId } = venueDetails;
 
   const { isDeleting, deleteReview } = useDeleteReview();
@@ -51,11 +51,7 @@ function ReviewListItem({ review }) {
   ) : (
     <article className={styles.reviewCardContainer}>
       <header className={styles.userInfo}>
-        <img
-          src={avatarUrl ? avatarUrl : defaultAvatar}
-          alt="users avatar"
-          className={styles.avatar}
-        />
+        <Avatar userId={userId} />
         <div>
           <h3>{username}</h3>
           <p>({totalReviews} Reviews)</p>
