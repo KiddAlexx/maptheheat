@@ -7,7 +7,7 @@ import { useModalContext } from '../../../context/ModalContext';
 import { format, parseISO } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { withinTimeframe } from '../../../utils/withinTimeframe';
-import Avatar from '@/ui/Avatar';
+import Avatar from '@/features/userProfile/components/Avatar';
 
 function ReviewListItem({ review }) {
   const {
