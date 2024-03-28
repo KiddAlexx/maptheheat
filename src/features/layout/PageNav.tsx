@@ -4,13 +4,11 @@ import { NavLink } from 'react-router-dom';
 // Style imports
 import styles from './PageNav.module.css';
 import { useUser } from '../authentication/useUser';
-import { useLogout } from '../authentication/useLogout';
 import { useModalContext } from '../../context/ModalContext';
 import { Button } from '@nextui-org/button';
+import UserMenu from '@/ui/UserMenu';
 
 function PageNav() {
-  const { logout } = useLogout();
-
   const { isAuthenticated } = useUser();
   const { openModal } = useModalContext();
 
@@ -37,12 +35,13 @@ function PageNav() {
           </>
         ) : (
           <li>
-            <button
+            <UserMenu />
+            {/*   <button
               onClick={() => logout()}
               className={`btn-default ${styles.btnLogout}`}
             >
               Log Out
-            </button>
+            </button> */}
           </li>
         )}
       </ul>
