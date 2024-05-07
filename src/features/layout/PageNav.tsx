@@ -23,12 +23,7 @@ function PageNav() {
         {!isAuthenticated ? (
           <>
             <li>
-              <Button
-                color="primary"
-                size="lg"
-                radius="sm"
-                onClick={() => openModal('login')}
-              >
+              <Button size="lg" radius="sm" onClick={() => openModal('login')}>
                 Login / Sign Up
               </Button>
             </li>

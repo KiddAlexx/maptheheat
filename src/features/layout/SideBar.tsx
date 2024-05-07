@@ -2,7 +2,7 @@
 
 // Component imports
 import ListView from '../venues/components/ListView';
-import SearchBar from '../venues/components/SearchBar';
+import SearchAndFilterPanel from '../venues/components/SearchAndFilterPanel';
 
 // Style imports
 import styles from './SideBar.module.css';
@@ -10,8 +10,7 @@ import styles from './SideBar.module.css';
 function SideBar() {
   return (
     <div className={styles.sideBar}>
-      <SearchBar />
-
+      <SearchAndFilterPanel />
       <ListView />
     </div>
   );
