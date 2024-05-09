@@ -7,28 +7,12 @@ import { useState } from 'react';
 import styles from '../styles/SearchBar.module.css';
 import { Link } from 'react-router-dom';
 import VenueTypeFilter from './VenueTypeFilter';
+import VenueSearchBar from './VenueSearchBar';
 
 function SearchAndFilterPanel() {
-  const [searchValue, setSearchValue] = useState('');
-
   return (
     <>
-      <form>
-        <input
-          className={styles.searchBarInput}
-          placeholder="Search by venue name" /* Dynamically change to shop later */
-          type="text"
-          name="searchValue"
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
-        <button
-          type="submit"
-          className={`${styles.searchBarButton} btn-default`}
-        >
-          Search
-        </button>
-      </form>
-
+      <VenueSearchBar />
       <VenueTypeFilter />
 
       <div className={styles.addNewContainer}>
