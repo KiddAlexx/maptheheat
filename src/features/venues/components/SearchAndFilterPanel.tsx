@@ -1,12 +1,12 @@
 // React imports
 import { useState } from 'react';
-import { Button, ButtonGroup } from '@nextui-org/react';
 
 // Type imports
 
 // Style imports
 import styles from '../styles/SearchBar.module.css';
 import { Link } from 'react-router-dom';
+import VenueTypeFilter from './VenueTypeFilter';
 
 function SearchAndFilterPanel() {
   const [searchValue, setSearchValue] = useState('');
@@ -28,11 +28,8 @@ function SearchAndFilterPanel() {
           Search
         </button>
       </form>
-      <ButtonGroup>
-        <Button>All</Button>
-        <Button>Restaurants</Button>
-        <Button>Shops</Button>
-      </ButtonGroup>
+
+      <VenueTypeFilter />
 
       <div className={styles.addNewContainer}>
         <p>Can't find what you are looking for?</p>
