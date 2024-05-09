@@ -1,17 +1,35 @@
 import { useState } from 'react';
 import styles from '../styles/SearchBar.module.css';
+import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
 
 function VenueSearchBar() {
-  const [searchValue, setSearchValue] = useState('');
+  const cities = ['Berlin', 'Barcelona'];
+  const [selectedCity, setSelectedCity] = useState('');
+
+  const handleSelectCity = (value) => {
+    setSelectedCity(value);
+  };
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    console.log(selectedCity);
+  }
+
   return (
-    <form>
-      <input
-        className={styles.searchBarInput}
+    <form onSubmit={handleSubmit}>
+      <Autocomplete
         placeholder="Search by city"
-        type="text"
-        name="searchValue"
-        onChange={(e) => setSearchValue(e.target.value)}
-      />
+        aria-label="city"
+        radius="sm"
+        value={selectedCity}
+        onInputChange={handleSelectCity}
+        onSelectionChange={handleSelectCity}
+      >
+        {cities.map((city, index) => (
+          // Using city + index as key for uniqueness in case of duplicate city names
+          <AutocompleteItem key={`${city}-${index}`}>{city}</AutocompleteItem>
+        ))}
+      </Autocomplete>
       <button type="submit" className={`${styles.searchBarButton} btn-default`}>
         Search
       </button>
