@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from '../styles/SearchBar.module.css';
 import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
+import { useVenueFilterContext } from '@/context/VenueFilterContext';
 
 function VenueSearchBar() {
   const cities = ['Berlin', 'Barcelona'];
@@ -9,10 +10,11 @@ function VenueSearchBar() {
   const handleSelectCity = (value) => {
     setSelectedCity(value);
   };
+  const { updateFilterCity } = useVenueFilterContext();
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(selectedCity);
+    updateFilterCity(selectedCity, 'eq');
   }
 
   return (
