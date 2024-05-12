@@ -4,21 +4,26 @@
 import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 // Data types
+interface Filter {
+  field: string;
+  value: string;
+  method: string;
+}
+
 interface State {
-  city: { value: string; method: string };
-  venueType: { value: string; method: string };
+  filters: Filter[];
 }
 
 interface VenueFilterContextType extends State {
-  updateFilterCity: (value: string, method: string) => void;
-  updateFilterVenueType: (value: string, method: string) => void;
+  updateVenueFilter: (filter: Filter) => void;
+  removeVenueFilter: (field: string) => void;
 }
 
 type Action =
-  | { type: 'update-filter-city'; payload: { value: string; method: string } }
+  | { type: 'update-filter'; payload: { filter: Filter } }
   | {
-      type: 'update-filter-venueType';
-      payload: { value: string; method: string };
+      type: 'remove-filter';
+      payload: { field: string };
     };
 
 interface VenueFilterProviderProps {
@@ -30,45 +35,62 @@ const VenueFilterContext = createContext<VenueFilterContextType | undefined>(
 );
 
 const initialState = {
-  city: { value: 'Barcelona', method: 'eq' },
-  venueType: { value: '*', method: 'eq' },
+  filters: [{ field: 'city', value: 'Barcelona', method: 'eq' }],
 };
 
 function reducer(state: State, action: Action) {
   switch (action.type) {
-    case 'update-filter-city':
+    case 'update-filter': {
+      let matchedFilter = false;
+      const updatedFilters = state.filters.map((currentFilter) => {
+        if (currentFilter.field === action.payload.filter.field) {
+          matchedFilter = true;
+          return {
+            ...currentFilter,
+            value: action.payload.filter.value,
+            method: action.payload.filter.method,
+          };
+        }
+        return currentFilter;
+      });
+
+      // If no existing filter was updated, add the new filter
+      if (!matchedFilter) {
+        updatedFilters.push(action.payload.filter);
+      }
+
       return {
         ...state,
-        city: { value: action.payload.value, method: action.payload.method },
+        filters: updatedFilters,
       };
-    case 'update-filter-venueType':
+    }
+    case 'remove-filter': {
       return {
         ...state,
-        venueType: {
-          value: action.payload.value,
-          method: action.payload.method,
-        },
+        filters: state.filters.filter(
+          (filter) => filter.field !== action.payload.field
+        ),
       };
+    }
     default:
       return state;
   }
 }
 
 function VenueFilterProvider({ children }: VenueFilterProviderProps) {
-  const [{ city, venueType }, dispatch] = useReducer(reducer, initialState);
-  function updateFilterCity(value, method) {
-    dispatch({ type: 'update-filter-city', payload: { value, method } });
+  const [{ filters }, dispatch] = useReducer(reducer, initialState);
+  function updateVenueFilter(filter: Filter) {
+    dispatch({ type: 'update-filter', payload: { filter } });
   }
-  function updateFilterVenueType(value, method) {
-    dispatch({ type: 'update-filter-venueType', payload: { value, method } });
+  function removeVenueFilter(field: string) {
+    dispatch({ type: 'remove-filter', payload: { field } });
   }
   return (
     <VenueFilterContext.Provider
       value={{
-        city,
-        venueType,
-        updateFilterCity,
-        updateFilterVenueType,
+        filters,
+        updateVenueFilter,
+        removeVenueFilter,
       }}
     >
       {children}

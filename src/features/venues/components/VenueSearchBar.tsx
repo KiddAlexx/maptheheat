@@ -10,11 +10,11 @@ function VenueSearchBar() {
   const handleSelectCity = (value) => {
     setSelectedCity(value);
   };
-  const { updateFilterCity } = useVenueFilterContext();
+  const { updateVenueFilter } = useVenueFilterContext();
 
   function handleSubmit(e) {
     e.preventDefault();
-    updateFilterCity(selectedCity, 'eq');
+    updateVenueFilter({ field: 'city', value: selectedCity, method: 'eq' });
   }
 
   return (
