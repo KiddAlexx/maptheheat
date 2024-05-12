@@ -2,9 +2,11 @@ import { useState } from 'react';
 import styles from '../styles/SearchBar.module.css';
 import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
+import { getUniqueCities } from '@/services/apiVenues';
 
 function VenueSearchBar() {
   const cities = ['Berlin', 'Barcelona'];
+
   const [selectedCity, setSelectedCity] = useState('');
 
   const handleSelectCity = (value) => {

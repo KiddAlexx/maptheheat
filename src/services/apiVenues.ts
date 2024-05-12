@@ -31,6 +31,16 @@ export async function getVenue(id: string): Promise<Venue> {
   return camelcaseKeys(data[0]);
 }
 
+export async function getUniqueCities(): Promise<string[]> {
+  const { data, error } = await supabase.rpc('get_unique_cities');
+
+  if (error) {
+    throw new Error(`Cities could not be loaded. Error:${error.message}`);
+  }
+
+  return data;
+}
+
 export async function createVenue(newVenue: NewVenue) {
   const convertedVenue = decamelizeKeys(newVenue);
   const { data, error } = await supabase
