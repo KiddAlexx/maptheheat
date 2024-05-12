@@ -9,7 +9,7 @@ export function useVenues(filters: VenueFilter[]) {
     isLoading,
     data: venues,
   } = useQuery<Venue[]>({
-    queryKey: ['venues'],
+    queryKey: ['venues', filters],
     queryFn: () => getVenues(filters),
   });
   return { error, isLoading, venues };

@@ -10,10 +10,12 @@ import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 // Component imports
 import ListItem from './ListItem';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
+import { useVenueFilterContext } from '@/context/VenueFilterContext';
 
 function ListView() {
+  const { filters: venueFilters } = useVenueFilterContext();
   // Load venues from supabase
-  const { venues, isLoading: isLoadingVenues } = useVenues();
+  const { venues, isLoading: isLoadingVenues } = useVenues(venueFilters);
 
   const setParamsAndNavigate = useParamsAndNavigate();
 
