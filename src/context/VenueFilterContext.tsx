@@ -51,18 +51,24 @@ interface VenueFilterProviderProps {
   children: ReactNode;
 }
 
+// Create a context with an undefined default value
 const VenueFilterContext = createContext<VenueFilterContextType | undefined>(
   undefined
 );
 
+// Initial state for the filters
 const initialState: State = {
   filters: [{ field: 'city', value: 'Barcelona', method: 'eq' }],
 };
 
+// Reducer function to handle filter updates and removals
 function reducer(state: State, action: Action) {
   switch (action.type) {
     case 'update-filter': {
+      // Track if an existing filter was updated
       let matchedFilter = false;
+
+      // Update existing filters or add a new one
       const updatedFilters = state.filters.map((currentFilter) => {
         if (currentFilter.field === action.payload.filter.field) {
           matchedFilter = true;
@@ -86,6 +92,7 @@ function reducer(state: State, action: Action) {
       };
     }
     case 'remove-filter': {
+      // Remove a filter by its field name
       return {
         ...state,
         filters: state.filters.filter(
@@ -98,11 +105,15 @@ function reducer(state: State, action: Action) {
   }
 }
 
+// Context provider component
 function VenueFilterProvider({ children }: VenueFilterProviderProps) {
   const [{ filters }, dispatch] = useReducer(reducer, initialState);
+
+  // Function to update filter
   function updateVenueFilter(filter: Filter) {
     dispatch({ type: 'update-filter', payload: { filter } });
   }
+  // Function to remove filter
   function removeVenueFilter(field: FilterField) {
     dispatch({ type: 'remove-filter', payload: { field } });
   }
@@ -119,7 +130,7 @@ function VenueFilterProvider({ children }: VenueFilterProviderProps) {
   );
 }
 
-// A custom hook to provide easy access to the VenueFilterContex
+// A custom hook to provide easy access to the VenueFilterContext
 function useVenueFilterContext() {
   const context = useContext(VenueFilterContext);
   if (context === undefined)
