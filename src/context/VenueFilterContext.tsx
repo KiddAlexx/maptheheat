@@ -7,41 +7,25 @@ import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 type FilterField = 'city' | 'venueType';
 
-type SupabaseQueryMethod =
-  | 'eq'
-  | 'neq'
-  | 'gt'
-  | 'lt'
-  | 'gte'
-  | 'lte'
-  | 'like'
-  | 'ilike'
-  | 'is'
-  | 'in'
-  | 'not'
-  | 'isnull'
-  | 'notnull'
-  | 'between'
-  | 'nbetween'
-  | 'match';
+type SupabaseQueryMethod = 'eq' | 'gt' | 'lt' | 'gte' | 'lte';
 
-interface Filter {
+export interface VenueFilter {
   field: FilterField;
   value: string;
   method: SupabaseQueryMethod;
 }
 
 interface State {
-  filters: Filter[];
+  filters: VenueFilter[];
 }
 
 interface VenueFilterContextType extends State {
-  updateVenueFilter: (filter: Filter) => void;
+  updateVenueFilter: (filter: VenueFilter) => void;
   removeVenueFilter: (field: FilterField) => void;
 }
 
 type Action =
-  | { type: 'update-filter'; payload: { filter: Filter } }
+  | { type: 'update-filter'; payload: { filter: VenueFilter } }
   | {
       type: 'remove-filter';
       payload: { field: FilterField };
@@ -110,7 +94,7 @@ function VenueFilterProvider({ children }: VenueFilterProviderProps) {
   const [{ filters }, dispatch] = useReducer(reducer, initialState);
 
   // Function to update filter
-  function updateVenueFilter(filter: Filter) {
+  function updateVenueFilter(filter: VenueFilter) {
     dispatch({ type: 'update-filter', payload: { filter } });
   }
   // Function to remove filter

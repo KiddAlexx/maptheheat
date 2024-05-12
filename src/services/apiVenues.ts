@@ -9,9 +9,19 @@ import { ImageUploadParams, NewVenue, Venue } from '../models/venueTypes';
 // Util Imports
 import compressImage from '../utils/compressImage';
 import uploadImages from './supabaseImageUploader';
+import { VenueFilter } from '@/context/VenueFilterContext';
 
-export async function getVenues(): Promise<Venue[]> {
-  const { data, error } = await supabase.from('venue_details').select('*');
+export async function getVenues(filters: VenueFilter[]): Promise<Venue[]> {
+  let query = supabase.from('venue_details').select('*');
+
+  // Apply each filter in the filters array if any
+  if (filters.length > 0) {
+    filters.forEach((filter) => {
+      query = query[filter.method](filter.field, filter.value);
+    });
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     throw new Error(`Venues could not be loaded. Error:${error.message}`);
