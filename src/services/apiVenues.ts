@@ -1,6 +1,7 @@
 // Third Party Imports
 import camelcaseKeys from 'camelcase-keys';
 import decamelizeKeys from 'decamelize-keys';
+import decamelize from 'decamelize';
 import supabase, { supabaseUrl } from './supabase';
 
 // Type Imports
@@ -15,9 +16,11 @@ export async function getVenues(filters: VenueFilter[]): Promise<Venue[]> {
   let query = supabase.from('venue_details').select('*');
 
   // Apply each filter in the filters array if any
+
   if (filters.length > 0) {
     filters.forEach((filter) => {
-      query = query[filter.method](filter.field, filter.value);
+      const convertedField = decamelize(filter.field);
+      query = query[filter.method](convertedField, filter.value);
     });
   }
 
@@ -53,6 +56,7 @@ export async function getUniqueCities(): Promise<string[]> {
 
 export async function createVenue(newVenue: NewVenue) {
   const convertedVenue = decamelizeKeys(newVenue);
+
   const { data, error } = await supabase
     .from('venue_details')
     .insert(convertedVenue)

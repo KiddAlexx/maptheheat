@@ -1,5 +1,4 @@
 // React imports
-import { useState } from 'react';
 
 // Type imports
 
