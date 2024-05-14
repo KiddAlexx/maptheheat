@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from '../styles/SearchBar.module.css';
+import styles from '../styles/SearchAndFilterPanel.module.css';
 import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
 import { useUniqueCities } from '../hooks/useUniqueCities';

@@ -21,6 +21,10 @@ form .searchBarButton:hover {
   background-color: #53b84c;
 }
 
+.filterSortWrapper {
+  display: flex;
+}
+
 .addNewContainer {
   display: flex;
   align-items: center;
