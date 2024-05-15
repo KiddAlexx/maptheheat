@@ -1,13 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
+import VenueSort from '@/features/venues/components/VenueSort';
 import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 // Data types
 
 type FilterField = 'city' | 'venueType';
+type SortField = 'heatRating' | 'totalReviews' | 'createdAt';
 
 type SupabaseQueryMethod = 'eq' | 'gt' | 'lt' | 'gte' | 'lte';
+type Direction = 'asc' | 'desc';
 
 export interface VenueFilter {
   field: FilterField;
@@ -15,13 +18,21 @@ export interface VenueFilter {
   method: SupabaseQueryMethod;
 }
 
+export interface VenueSort {
+  field: SortField;
+  direction: Direction;
+}
+
 interface State {
   filters: VenueFilter[];
+  sort: VenueSort | null;
 }
 
 interface VenueFilterContextType extends State {
   updateVenueFilter: (filter: VenueFilter) => void;
   removeVenueFilter: (field: FilterField) => void;
+  updateSort: (sortBy: VenueSort) => void;
+  resetSort: () => void;
 }
 
 type Action =
@@ -29,7 +40,9 @@ type Action =
   | {
       type: 'remove-filter';
       payload: { field: FilterField };
-    };
+    }
+  | { type: 'update-sort'; payload: { sortBy: VenueSort } }
+  | { type: 'reset-sort' };
 
 interface VenueFilterProviderProps {
   children: ReactNode;
@@ -43,6 +56,7 @@ const VenueFilterContext = createContext<VenueFilterContextType | undefined>(
 // Initial state for the filters
 const initialState: State = {
   filters: [{ field: 'city', value: 'Barcelona', method: 'eq' }],
+  sort: null,
 };
 
 // Reducer function to handle filter updates and removals
@@ -84,6 +98,22 @@ function reducer(state: State, action: Action) {
         ),
       };
     }
+
+    // Update sort field / direction
+    case 'update-sort': {
+      return {
+        ...state,
+        sort: action.payload.sortBy,
+      };
+    }
+
+    // Reset sort to null
+    case 'reset-sort': {
+      return {
+        ...state,
+        sort: null,
+      };
+    }
     default:
       return state;
   }
@@ -91,22 +121,34 @@ function reducer(state: State, action: Action) {
 
 // Context provider component
 function VenueFilterProvider({ children }: VenueFilterProviderProps) {
-  const [{ filters }, dispatch] = useReducer(reducer, initialState);
+  const [{ filters, sort }, dispatch] = useReducer(reducer, initialState);
 
   // Function to update filter
   function updateVenueFilter(filter: VenueFilter) {
     dispatch({ type: 'update-filter', payload: { filter } });
   }
+
   // Function to remove filter
   function removeVenueFilter(field: FilterField) {
     dispatch({ type: 'remove-filter', payload: { field } });
+  }
+  // Function to update sort
+  function updateSort(sortBy: VenueSort) {
+    dispatch({ type: 'update-sort', payload: { sortBy } });
+  }
+  // Function to reset sort to null
+  function resetSort() {
+    dispatch({ type: 'reset-sort' });
   }
   return (
     <VenueFilterContext.Provider
       value={{
         filters,
+        sort,
         updateVenueFilter,
         removeVenueFilter,
+        updateSort,
+        resetSort,
       }}
     >
       {children}
