@@ -14,7 +14,7 @@ import { VenueFilter, VenueSort } from '@/context/VenueFilterContext';
 
 export async function getVenues(
   filters: VenueFilter[],
-  sort: VenueSort | null
+  sort?: VenueSort | null
 ): Promise<Venue[]> {
   let query = supabase.from('venue_details').select('*');
 
