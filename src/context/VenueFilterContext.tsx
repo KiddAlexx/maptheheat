@@ -7,10 +7,10 @@ import { ReactNode, createContext, useContext, useReducer } from 'react';
 // Data types
 
 type FilterField = 'city' | 'venueType';
-type SortField = 'heatRating' | 'totalReviews' | 'createdAt';
+export type SortField = 'averageRating' | 'totalReviews' | 'createdAt';
 
 type SupabaseQueryMethod = 'eq' | 'gt' | 'lt' | 'gte' | 'lte';
-type Direction = 'asc' | 'desc';
+export type Direction = 'asc' | 'desc';
 
 export interface VenueFilter {
   field: FilterField;
