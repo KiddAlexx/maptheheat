@@ -3,7 +3,7 @@ import { getVenues } from '../../../services/apiVenues';
 import { Venue } from '../../../models/venueTypes';
 import { VenueFilter, VenueSort } from '@/context/VenueFilterContext';
 
-export function useVenues(filters: VenueFilter[], sort: VenueSort) {
+export function useVenues(filters: VenueFilter[], sort: VenueSort | null) {
   const {
     error,
     isLoading,

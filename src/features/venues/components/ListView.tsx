@@ -13,9 +13,12 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
 
 function ListView() {
-  const { filters: venueFilters } = useVenueFilterContext();
+  const { filters: venueFilters, sort: venueSort } = useVenueFilterContext();
   // Load venues from supabase
-  const { venues, isLoading: isLoadingVenues } = useVenues(venueFilters);
+  const { venues, isLoading: isLoadingVenues } = useVenues(
+    venueFilters,
+    venueSort
+  );
 
   const setParamsAndNavigate = useParamsAndNavigate();
 
