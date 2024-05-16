@@ -29,7 +29,10 @@ export async function getVenues(
 
   // Apply sort value + direction
   if (sort) {
-    query = query.order(sort.field, { ascending: sort.direction === 'asc' });
+    const convertedSortField = decamelize(sort.field);
+    query = query.order(convertedSortField, {
+      ascending: sort.direction === 'asc',
+    });
   }
 
   const { data, error } = await query;
