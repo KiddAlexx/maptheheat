@@ -10,9 +10,12 @@ import { ImageUploadParams, NewVenue, Venue } from '../models/venueTypes';
 // Util Imports
 import compressImage from '../utils/compressImage';
 import uploadImages from './supabaseImageUploader';
-import { VenueFilter } from '@/context/VenueFilterContext';
+import { VenueFilter, VenueSort } from '@/context/VenueFilterContext';
 
-export async function getVenues(filters: VenueFilter[]): Promise<Venue[]> {
+export async function getVenues(
+  filters: VenueFilter[],
+  sort: VenueSort
+): Promise<Venue[]> {
   let query = supabase.from('venue_details').select('*');
 
   // Apply each filter in the filters array if any
@@ -22,6 +25,11 @@ export async function getVenues(filters: VenueFilter[]): Promise<Venue[]> {
       const convertedField = decamelize(filter.field);
       query = query[filter.method](convertedField, filter.value);
     });
+  }
+
+  // Apply sort value + direction
+  if (sort) {
+    query = query.order(sort.field, { ascending: sort.direction === 'asc' });
   }
 
   const { data, error } = await query;
