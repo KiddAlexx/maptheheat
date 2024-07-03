@@ -12,11 +12,18 @@ import compressImage from '../utils/compressImage';
 import uploadImages from './supabaseImageUploader';
 import { VenueFilter, VenueSort } from '@/context/VenueFilterContext';
 
+export interface VenuesResponse {
+  data: Venue[];
+  count: number | null;
+}
+
 export async function getVenues(
   filters: VenueFilter[],
-  sort?: VenueSort | null
-): Promise<Venue[]> {
-  let query = supabase.from('venue_details').select('*');
+  sort?: VenueSort | null,
+  page?: number,
+  maxResults?: number
+): Promise<VenuesResponse> {
+  let query = supabase.from('venue_details').select('*', { count: 'exact' });
 
   // Apply each filter in the filters array if any
 
@@ -35,12 +42,19 @@ export async function getVenues(
     });
   }
 
-  const { data, error } = await query;
+  // Apply pagination
+  if (page) {
+    const from = (page - 1) * maxResults;
+    const to = from + maxResults - 1;
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query;
 
   if (error) {
     throw new Error(`Venues could not be loaded. Error:${error.message}`);
   }
-  return camelcaseKeys(data);
+  return { data: camelcaseKeys(data), count };
 }
 
 export async function getVenue(id: string): Promise<Venue> {
