@@ -9,19 +9,13 @@ function VenuePagination() {
   const pageCount = totalCount ? Math.ceil(totalCount / maxResults) : 0;
 
   return (
-    <>
-      <p>
-        {totalCount}
-        {pageCount}
-      </p>
-      <Pagination
-        showControls
-        total={pageCount}
-        initialPage={pageNumber}
-        page={pageNumber}
-        onChange={updatePageNumber}
-      />
-    </>
+    <Pagination
+      showControls
+      total={pageCount}
+      initialPage={pageNumber}
+      page={pageNumber}
+      onChange={updatePageNumber}
+    />
   );
 }
 
