@@ -39,6 +39,7 @@ interface VenueFilterContextType extends State {
   removeVenueFilter: (field: FilterField) => void;
   updateSort: (sortBy: VenueSort) => void;
   resetSort: () => void;
+  updatePageNumber: (pageNumber: number) => void;
 }
 
 type Action =
@@ -48,7 +49,8 @@ type Action =
       payload: { field: FilterField };
     }
   | { type: 'update-sort'; payload: { sortBy: VenueSort } }
-  | { type: 'reset-sort' };
+  | { type: 'reset-sort' }
+  | { type: 'update-page'; payload: number };
 
 interface VenueFilterProviderProps {
   children: ReactNode;
@@ -121,6 +123,16 @@ function reducer(state: State, action: Action) {
         sort: null,
       };
     }
+    // Update page number
+    case 'update-page': {
+      return {
+        ...state,
+        pagination: {
+          ...state.pagination,
+          pageNumber: action.payload,
+        },
+      };
+    }
     default:
       return state;
   }
@@ -150,6 +162,10 @@ function VenueFilterProvider({ children }: VenueFilterProviderProps) {
   function resetSort() {
     dispatch({ type: 'reset-sort' });
   }
+  // Function to update page number
+  function updatePageNumber(pageNumber: number) {
+    dispatch({ type: 'update-page', payload: pageNumber });
+  }
   return (
     <VenueFilterContext.Provider
       value={{
@@ -160,6 +176,7 @@ function VenueFilterProvider({ children }: VenueFilterProviderProps) {
         removeVenueFilter,
         updateSort,
         resetSort,
+        updatePageNumber,
       }}
     >
       {children}
