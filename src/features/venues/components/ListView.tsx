@@ -32,7 +32,6 @@ function ListView() {
     <LoaderSpinner />
   ) : (
     <div className={styles.listView}>
-      <VenuePagination />
       {/* Map through list of venues and render ListItem component for
         each venue. Onclick set clicked venue as active venue */}
       {venues?.map((venue) => (
@@ -42,7 +41,6 @@ function ListView() {
           key={venue.venueId}
         />
       ))}
-      <VenuePagination />
     </div>
   );
 }
