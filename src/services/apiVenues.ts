@@ -10,7 +10,11 @@ import { ImageUploadParams, NewVenue, Venue } from '../models/venueTypes';
 // Util Imports
 import compressImage from '../utils/compressImage';
 import uploadImages from './supabaseImageUploader';
-import { VenueFilter, VenueSort } from '@/context/VenueFilterContext';
+import {
+  VenueFilter,
+  VenuePagination,
+  VenueSort,
+} from '@/context/VenueFilterContext';
 
 export interface VenuesResponse {
   data: Venue[];
@@ -20,8 +24,7 @@ export interface VenuesResponse {
 export async function getVenues(
   filters: VenueFilter[],
   sort?: VenueSort | null,
-  page?: number,
-  maxResults?: number
+  pagination?: VenuePagination
 ): Promise<VenuesResponse> {
   let query = supabase.from('venue_details').select('*', { count: 'exact' });
 
@@ -43,8 +46,9 @@ export async function getVenues(
   }
 
   // Apply pagination
-  if (page) {
-    const from = (page - 1) * maxResults;
+  if (pagination) {
+    const { pageNumber, maxResults } = pagination;
+    const from = (pageNumber - 1) * maxResults;
     const to = from + maxResults - 1;
     query = query.range(from, to);
   }

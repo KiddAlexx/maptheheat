@@ -14,11 +14,16 @@ import { useVenueFilterContext } from '@/context/VenueFilterContext';
 import VenuePagination from './VenuePagination';
 
 function ListView() {
-  const { filters: venueFilters, sort: venueSort } = useVenueFilterContext();
+  const {
+    filters: venueFilters,
+    sort: venueSort,
+    pagination: venuePagination,
+  } = useVenueFilterContext();
   // Load venues from supabase
   const { venues, isLoading: isLoadingVenues } = useVenues(
     venueFilters,
-    venueSort
+    venueSort,
+    venuePagination
   );
 
   const setParamsAndNavigate = useParamsAndNavigate();
