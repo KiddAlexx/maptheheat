@@ -11,7 +11,6 @@ import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 import ListItem from './ListItem';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
-import VenuePagination from './VenuePagination';
 
 function ListView() {
   const {
