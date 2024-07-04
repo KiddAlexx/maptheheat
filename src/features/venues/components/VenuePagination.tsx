@@ -12,7 +12,7 @@ function VenuePagination() {
     <Pagination
       showControls
       total={pageCount}
-      initialPage={pageNumber}
+      initialPage={1}
       page={pageNumber}
       onChange={updatePageNumber}
     />

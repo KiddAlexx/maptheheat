@@ -65,7 +65,7 @@ const VenueFilterContext = createContext<VenueFilterContextType | undefined>(
 const initialState: State = {
   filters: [{ field: 'city', value: 'Barcelona', method: 'eq' }],
   sort: null,
-  pagination: { pageNumber: 1, maxResults: 5 },
+  pagination: { pageNumber: 1, maxResults: 10 },
 };
 
 // Reducer function to handle filter updates and removals

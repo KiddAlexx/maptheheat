@@ -12,6 +12,7 @@ function VenueSearchBar() {
 
   const handleSelectCity = (value) => {
     setSelectedCity(value);
+    console.log(selectedCity);
   };
   const { updateVenueFilter } = useVenueFilterContext();
 
@@ -30,11 +31,11 @@ function VenueSearchBar() {
         radius="sm"
         value={selectedCity}
         onInputChange={handleSelectCity}
-        onSelectionChange={handleSelectCity}
+        /* onSelectionChange={handleSelectCity} */
       >
         {uniqueCities!.map((city, index) => (
           // Using city + index as key for uniqueness in case of duplicate city names
-          <AutocompleteItem key={`${city}-${index}`}>{city}</AutocompleteItem>
+          <AutocompleteItem key={index}>{city}</AutocompleteItem>
         ))}
       </Autocomplete>
       <button type="submit" className={`${styles.searchBarButton} btn-default`}>
