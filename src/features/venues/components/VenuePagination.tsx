@@ -6,14 +6,18 @@ function VenuePagination() {
   const { pagination, filters, updatePageNumber } = useVenueFilterContext();
   const { pageNumber, maxResults } = pagination;
   const { totalCount } = useVenues(filters);
-  const pageCount = Math.ceil(totalCount / maxResults);
+  const pageCount = totalCount ? Math.ceil(totalCount / maxResults) : 0;
 
   return (
     <>
+      <p>
+        {totalCount}
+        {pageCount}
+      </p>
       <Pagination
         showControls
         total={pageCount}
-        initialPage={1}
+        initialPage={pageNumber}
         page={pageNumber}
         onChange={updatePageNumber}
       />
