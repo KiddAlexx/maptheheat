@@ -96,6 +96,10 @@ function reducer(state: State, action: Action) {
       return {
         ...state,
         filters: updatedFilters,
+        pagination: {
+          ...state.pagination,
+          pageNumber: 1,
+        },
       };
     }
     case 'remove-filter': {
@@ -105,6 +109,10 @@ function reducer(state: State, action: Action) {
         filters: state.filters.filter(
           (filter) => filter.field !== action.payload.field
         ),
+        pagination: {
+          ...state.pagination,
+          pageNumber: 1,
+        },
       };
     }
 
@@ -113,6 +121,10 @@ function reducer(state: State, action: Action) {
       return {
         ...state,
         sort: action.payload.sortBy,
+        pagination: {
+          ...state.pagination,
+          pageNumber: 1,
+        },
       };
     }
 
@@ -121,6 +133,10 @@ function reducer(state: State, action: Action) {
       return {
         ...state,
         sort: null,
+        pagination: {
+          ...state.pagination,
+          pageNumber: 1,
+        },
       };
     }
     // Update page number
