@@ -43,7 +43,7 @@ function ListItem({ venue, handleClick }: ListItemProps) {
 
   const reviewImages = reviews?.flatMap((review) => review.images || []);
   const allImages = [...(images || []), ...reviewImages];
-  console.log('final images', venueName, allImages);
+  /*  console.log('final images', venueName, allImages); */
 
   const finalRating = Math.round(averageRating * 2) / 2 || 5;
 
