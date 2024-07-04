@@ -23,9 +23,15 @@ export interface VenueSort {
   direction: Direction;
 }
 
+export interface VenuePagination {
+  pageNumber: number;
+  maxResults: number;
+}
+
 interface State {
   filters: VenueFilter[];
   sort: VenueSort | null;
+  pagination: VenuePagination;
 }
 
 interface VenueFilterContextType extends State {
@@ -57,6 +63,7 @@ const VenueFilterContext = createContext<VenueFilterContextType | undefined>(
 const initialState: State = {
   filters: [{ field: 'city', value: 'Barcelona', method: 'eq' }],
   sort: null,
+  pagination: { pageNumber: 1, maxResults: 10 },
 };
 
 // Reducer function to handle filter updates and removals
@@ -121,7 +128,10 @@ function reducer(state: State, action: Action) {
 
 // Context provider component
 function VenueFilterProvider({ children }: VenueFilterProviderProps) {
-  const [{ filters, sort }, dispatch] = useReducer(reducer, initialState);
+  const [{ filters, sort, pagination }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
 
   // Function to update filter
   function updateVenueFilter(filter: VenueFilter) {
@@ -145,6 +155,7 @@ function VenueFilterProvider({ children }: VenueFilterProviderProps) {
       value={{
         filters,
         sort,
+        pagination,
         updateVenueFilter,
         removeVenueFilter,
         updateSort,
