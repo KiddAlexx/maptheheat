@@ -8,6 +8,10 @@ function VenuePagination() {
   const { totalCount } = useVenues(filters);
   const pageCount = totalCount ? Math.ceil(totalCount / maxResults) : 0;
 
+  if (pageCount <= 1) {
+    return null;
+  }
+
   return (
     <Pagination
       showControls
