@@ -1,13 +1,53 @@
-import { createContext, useContext, useReducer } from 'react';
+/* eslint-disable react-refresh/only-export-components */
 
-const ReviewSortContext = createContext(undefined);
+// React imports
+import { createContext, ReactNode, useContext, useReducer } from 'react';
+import { Direction } from './VenueFilterContext';
 
-const initialState = {
+// Data types
+
+export type ReviewSortField = 'averageRating' | 'createdAt';
+
+export interface ReviewSort {
+  field: ReviewSortField;
+  direction: Direction;
+}
+
+export interface ReviewPagination {
+  pageNumber: number;
+  maxResults: number;
+}
+
+interface State {
+  sort: ReviewSort | null;
+  pagination: ReviewPagination;
+}
+
+interface ReviewFilterContextType extends State {
+  updateSort: (sortBy: ReviewSort) => void;
+  resetSort: () => void;
+  updatePageNumber: (pageNumber: number) => void;
+}
+
+type Action =
+  | { type: 'update-sort'; payload: { sortBy: ReviewSort } }
+  | { type: 'reset-sort' }
+  | { type: 'update-page'; payload: number };
+
+interface ReviewFilterProviderProps {
+  children: ReactNode;
+}
+
+const ReviewSortContext = createContext<ReviewFilterContextType | undefined>(
+  undefined
+);
+
+const initialState: State = {
   sort: null,
   pagination: { pageNumber: 1, maxResults: 10 },
 };
 
-function reducer(state, action) {
+function reducer(state: State, action: Action) {
   switch (action.type) {
     // Update sort field / direction
     case 'update-sort': {
@@ -48,11 +88,11 @@ function reducer(state, action) {
   }
 }
 
-function ReviewSortProvider({ children }) {
+function ReviewSortProvider({ children }: ReviewFilterProviderProps) {
   const [{ sort, pagination }, dispatch] = useReducer(reducer, initialState);
 
   // Function to update sort
-  function updateSort(sortBy: VenueSort) {
+  function updateSort(sortBy: ReviewSort) {
     dispatch({ type: 'update-sort', payload: { sortBy } });
   }
   // Function to reset sort to null
@@ -81,3 +121,5 @@ function useReviewSortContext() {
     );
   return context;
 }
+
+export { ReviewSortProvider, useReviewSortContext };
