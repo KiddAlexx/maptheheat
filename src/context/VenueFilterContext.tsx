@@ -7,7 +7,7 @@ import { ReactNode, createContext, useContext, useReducer } from 'react';
 // Data types
 
 type FilterField = 'city' | 'venueType';
-export type SortField = 'averageRating' | 'totalReviews' | 'createdAt';
+export type VenueSortField = 'averageRating' | 'totalReviews' | 'createdAt';
 
 type SupabaseQueryMethod = 'eq' | 'gt' | 'lt' | 'gte' | 'lte';
 export type Direction = 'asc' | 'desc';
@@ -19,7 +19,7 @@ export interface VenueFilter {
 }
 
 export interface VenueSort {
-  field: SortField;
+  field: VenueSortField;
   direction: Direction;
 }
 
