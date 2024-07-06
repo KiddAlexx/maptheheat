@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
-import VenueSort from '@/features/venues/components/VenueSort';
+
 import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 // Data types
