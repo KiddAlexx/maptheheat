@@ -28,15 +28,15 @@ function ReviewSort() {
       </SelectItem>
       <SelectItem
         endContent={<FaSortAmountUp />}
-        value={'averageRating-desc'}
-        key={'averageRating-desc'}
+        value={'heatRating-desc'}
+        key={'heatRating-desc'}
       >
         Heat Rating
       </SelectItem>
       <SelectItem
         endContent={<FaSortAmountDownAlt />}
-        value={'averageRating-asc'}
-        key={'averageRating-asc'}
+        value={'heatRating-asc'}
+        key={'heatRating-asc'}
       >
         Heat Rating
       </SelectItem>
