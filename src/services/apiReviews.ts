@@ -7,17 +7,47 @@ import supabase from './supabase';
 //Type Imports
 import { NewReview, Review } from '../models/reviewTypes';
 import { EditformData } from '../features/reviews/components/ReviewForm';
+import { ReviewPagination, ReviewSort } from '@/context/ReviewSortContext';
+import decamelize from 'decamelize';
 
-export async function getReviews(venueId: string): Promise<Review[]> {
-  const { data, error } = await supabase
+export interface ReviewsResponse {
+  data: Review[];
+  count: number | null;
+}
+
+export async function getReviews(
+  venueId: string,
+  sort?: ReviewSort,
+  pagination?: ReviewPagination
+): Promise<ReviewsResponse> {
+  let query = supabase
     .from('venue_reviews')
-    .select('*, profiles(*), venue_details(*)')
+    .select('*, profiles(*), venue_details(*)', { count: 'exact' })
     .eq('venue_id', venueId);
+
+  // Apply sort value + direction
+  if (sort) {
+    const convertedSortField = decamelize(sort.field);
+    query = query.order(convertedSortField, {
+      ascending: sort.direction === 'asc',
+    });
+  }
+
+  // Apply pagination
+  if (pagination) {
+    const { pageNumber, maxResults } = pagination;
+    const from = (pageNumber - 1) * maxResults;
+    const to = from + maxResults - 1;
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query;
 
   if (error) {
     throw new Error(`Reviews could not be loaded. Error:${error.message}`);
   }
-  return camelcaseKeys(data, { deep: true });
+
+  return { data: camelcaseKeys(data, { deep: true }), count };
 }
 
 export async function getReview(reviewId: string): Promise<Review> {
