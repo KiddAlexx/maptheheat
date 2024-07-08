@@ -1,13 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
-import VenueSort from '@/features/venues/components/VenueSort';
+
 import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 // Data types
 
 type FilterField = 'city' | 'venueType';
-export type SortField = 'averageRating' | 'totalReviews' | 'createdAt';
+export type VenueSortField = 'averageRating' | 'totalReviews' | 'createdAt';
 
 type SupabaseQueryMethod = 'eq' | 'gt' | 'lt' | 'gte' | 'lte';
 export type Direction = 'asc' | 'desc';
@@ -19,7 +19,7 @@ export interface VenueFilter {
 }
 
 export interface VenueSort {
-  field: SortField;
+  field: VenueSortField;
   direction: Direction;
 }
 
@@ -65,7 +65,7 @@ const VenueFilterContext = createContext<VenueFilterContextType | undefined>(
 const initialState: State = {
   filters: [{ field: 'city', value: 'Barcelona', method: 'eq' }],
   sort: null,
-  pagination: { pageNumber: 1, maxResults: 5 },
+  pagination: { pageNumber: 1, maxResults: 10 },
 };
 
 // Reducer function to handle filter updates and removals

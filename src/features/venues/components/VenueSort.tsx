@@ -1,8 +1,7 @@
 import { Select, SelectItem } from '@nextui-org/react';
 import { FaSortAmountDownAlt, FaSortAmountUp } from 'react-icons/fa';
-import styles from '../styles/VenueSort.module.css';
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
-import { SortField, Direction } from '@/context/VenueFilterContext';
+import { VenueSortField, Direction } from '@/context/VenueFilterContext';
 
 function VenueSort() {
   const { updateSort, resetSort } = useVenueFilterContext();
@@ -13,7 +12,7 @@ function VenueSort() {
       const [field, direction] = e.target.value.split('-');
       // Types asserted due to TypeScript interpreting event value as a string
       updateSort({
-        field: field as SortField,
+        field: field as VenueSortField,
         direction: direction as Direction,
       });
     }
