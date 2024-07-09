@@ -1,15 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
-import { getReviews, ReviewsResponse } from '../../../services/apiReviews';
-import { ReviewPagination, ReviewSort } from '@/context/ReviewSortContext';
+import {
+  getReviews,
+  ReviewsRequestParams,
+  ReviewsResponse,
+} from '../../../services/apiReviews';
 
-export function useGetReviews(
-  venueId: string,
-  sort?: ReviewSort,
-  pagination?: ReviewPagination
-) {
+export function useGetReviews({
+  venueId,
+  userId,
+  sort,
+  pagination,
+}: ReviewsRequestParams) {
   const { isLoading, data, error } = useQuery<ReviewsResponse>({
-    queryKey: ['reviews', venueId, sort, pagination],
-    queryFn: () => getReviews(venueId, sort, pagination),
+    queryKey: ['reviews', venueId, userId, sort, pagination],
+    queryFn: () => getReviews({ venueId, userId, sort, pagination }),
   });
 
   const reviews = data?.data;
