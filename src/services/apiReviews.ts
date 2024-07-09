@@ -13,7 +13,7 @@ import decamelize from 'decamelize';
 export interface ReviewsRequestParams {
   venueId?: string;
   userId?: string;
-  sort?: ReviewSort;
+  sort?: ReviewSort | null;
   pagination?: ReviewPagination;
 }
 

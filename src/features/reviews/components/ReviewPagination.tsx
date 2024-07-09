@@ -6,8 +6,8 @@ import { useGetReviews } from '../hooks/useGetReviews';
 function ReviewPagination() {
   const { pagination, updatePageNumber } = useReviewSortContext();
   const { pageNumber, maxResults } = pagination;
-  const { venueId: venueIdParam } = useParams();
-  const { totalCount } = useGetReviews(venueIdParam);
+  const { venueId } = useParams();
+  const { totalCount } = useGetReviews({ venueId });
   const pageCount = totalCount ? Math.ceil(totalCount / maxResults) : 0;
 
   if (pageCount <= 1) {
