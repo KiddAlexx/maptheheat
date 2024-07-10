@@ -54,7 +54,7 @@ function DetailedVenueView() {
     isLoading: isLoadingReviews,
     error: reviewError,
     reviews,
-  } = useGetReviews(venueId);
+  } = useGetReviews({ venueId });
 
   const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
 

@@ -35,7 +35,7 @@ function ListItem({ venue, handleClick }: ListItemProps) {
     isLoading: isLoadingReviews,
     error: reviewError,
     reviews,
-  } = useGetReviews(venueId);
+  } = useGetReviews({ venueId });
 
   if (isLoadingReviews) {
     return <LoaderSpinner />;

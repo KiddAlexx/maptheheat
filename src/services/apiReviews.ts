@@ -10,20 +10,35 @@ import { EditformData } from '../features/reviews/components/ReviewForm';
 import { ReviewPagination, ReviewSort } from '@/context/ReviewSortContext';
 import decamelize from 'decamelize';
 
+export interface ReviewsRequestParams {
+  venueId?: string;
+  userId?: string;
+  sort?: ReviewSort | null;
+  pagination?: ReviewPagination;
+}
+
 export interface ReviewsResponse {
   data: Review[];
   count: number | null;
 }
 
-export async function getReviews(
-  venueId: string,
-  sort?: ReviewSort,
-  pagination?: ReviewPagination
-): Promise<ReviewsResponse> {
+export async function getReviews({
+  venueId,
+  userId,
+  sort,
+  pagination,
+}: ReviewsRequestParams): Promise<ReviewsResponse> {
   let query = supabase
     .from('venue_reviews')
-    .select('*, profiles(*), venue_details(*)', { count: 'exact' })
-    .eq('venue_id', venueId);
+    .select('*, profiles(*), venue_details(*)', { count: 'exact' });
+
+  // Apply venueId or userId filter
+  if (venueId) {
+    query = query.eq('venue_id', venueId);
+  }
+  if (userId) {
+    query = query.eq('user_id', userId);
+  }
 
   // Apply sort value + direction
   if (sort) {

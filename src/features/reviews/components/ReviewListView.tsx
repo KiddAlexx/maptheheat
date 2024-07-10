@@ -6,14 +6,13 @@ import { useUser } from '../../authentication/useUser';
 import { useReviewSortContext } from '@/context/ReviewSortContext';
 
 function ReviewListView() {
-  const { venueId: venueIdParam } = useParams();
-  const { sort: reviewSort, pagination: reviewPagination } =
-    useReviewSortContext();
-  const { isLoading: isLoadingReviews, reviews } = useGetReviews(
-    venueIdParam,
-    reviewSort,
-    reviewPagination
-  );
+  const { venueId } = useParams();
+  const { sort, pagination } = useReviewSortContext();
+  const { isLoading: isLoadingReviews, reviews } = useGetReviews({
+    venueId,
+    sort,
+    pagination,
+  });
   const { isLoading: isLoadingUser, fetchStatus } = useUser();
   console.log(reviews);
 

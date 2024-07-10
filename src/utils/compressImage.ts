@@ -6,7 +6,7 @@ export default async function compressImage(
   compressionOptions?: object
 ) {
   const finalCompressionOptions = compressionOptions || {
-    maxSizeMB: 0.2,
+    maxSizeMB: 0.1,
     maxWidthOrHeight: 640,
     useWebWorker: true,
   };
