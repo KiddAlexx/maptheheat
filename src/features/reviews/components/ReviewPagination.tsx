@@ -1,13 +1,7 @@
-import { useReviewSortContext } from '@/context/ReviewSortContext';
 import { Pagination } from '@nextui-org/react';
-import { useParams } from 'react-router';
-import { useGetReviews } from '../hooks/useGetReviews';
 
-function ReviewPagination() {
-  const { pagination, updatePageNumber } = useReviewSortContext();
+function ReviewPagination({ pagination, updatePageNumber, totalCount }) {
   const { pageNumber, maxResults } = pagination;
-  const { venueId } = useParams();
-  const { totalCount } = useGetReviews({ venueId });
   const pageCount = totalCount ? Math.ceil(totalCount / maxResults) : 0;
 
   if (pageCount <= 1) {

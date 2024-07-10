@@ -19,14 +19,18 @@ function ReviewContainer({ mode }: Props) {
     mode === 'venue' ? useReviewSortContext : useUserReviewsContext;
 
   // Fetch data from hooks
-  const { sort, pagination } = reviewContext();
+  const { sort, pagination, updatePageNumber, updateSort } = reviewContext();
   const { venueId } = useParams();
   const { user, isLoading: isLoadingUser, fetchStatus } = useUser();
   const userId = user?.id;
 
   // Fetch reviews - use mode prop to conditionally pass either
   // venueId or userId
-  const { isLoading: isLoadingReviews, reviews } = useGetReviews({
+  const {
+    isLoading: isLoadingReviews,
+    totalCount,
+    reviews,
+  } = useGetReviews({
     venueId: mode === 'venue' ? venueId : undefined,
     userId: mode === 'user' ? userId : undefined,
     sort,
@@ -38,9 +42,17 @@ function ReviewContainer({ mode }: Props) {
   ) : (
     <>
       <ReviewSort />
-      <ReviewPagination />
+      <ReviewPagination
+        pagination={pagination}
+        updatePageNumber={updatePageNumber}
+        totalCount={totalCount}
+      />
       <ReviewListView reviews={reviews} />
-      <ReviewPagination />
+      <ReviewPagination
+        pagination={pagination}
+        updatePageNumber={updatePageNumber}
+        totalCount={totalCount}
+      />
     </>
   );
 }
