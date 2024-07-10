@@ -19,7 +19,8 @@ function ReviewContainer({ mode }: Props) {
     mode === 'venue' ? useReviewSortContext : useUserReviewsContext;
 
   // Fetch data from hooks
-  const { sort, pagination, updatePageNumber, updateSort } = reviewContext();
+  const { sort, pagination, updatePageNumber, updateSort, resetSort } =
+    reviewContext();
   const { venueId } = useParams();
   const { user, isLoading: isLoadingUser, fetchStatus } = useUser();
   const userId = user?.id;
@@ -41,7 +42,7 @@ function ReviewContainer({ mode }: Props) {
     <LoaderSpinner />
   ) : (
     <>
-      <ReviewSort />
+      <ReviewSort updateSort={updateSort} resetSort={resetSort} />
       <ReviewPagination
         pagination={pagination}
         updatePageNumber={updatePageNumber}
