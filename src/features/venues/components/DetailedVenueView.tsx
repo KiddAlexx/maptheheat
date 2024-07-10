@@ -184,7 +184,7 @@ function DetailedVenueView() {
       >
         Back to Map
       </Link>
-      <ReviewContainer />
+      <ReviewContainer mode="venue" />
     </div>
   );
 }
