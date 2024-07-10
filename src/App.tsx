@@ -30,6 +30,7 @@ import AddNewVenue from './pages/AddNewVenue';
 import { NextUIProvider } from '@nextui-org/system';
 import { VenueFilterProvider } from './context/VenueFilterContext';
 import { ReviewSortProvider } from './context/ReviewSortContext';
+import { UserReviewsProvider } from './context/UserReviewsContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,79 +47,81 @@ function App() {
       <GlobalErrorProvider>
         <VenueFilterProvider>
           <ReviewSortProvider>
-            <ModalProvider>
-              <QueryClientProvider client={queryClient}>
-                <ReactQueryDevtools initialIsOpen={false} />
+            <UserReviewsProvider>
+              <ModalProvider>
+                <QueryClientProvider client={queryClient}>
+                  <ReactQueryDevtools initialIsOpen={false} />
 
-                <PageNav />
-                <Routes>
-                  <Route path="/" element={<Homepage />} />
-                  <Route
-                    path="/add-venue"
-                    element={
-                      <ProtectedRoute>
-                        <AddNewVenue />
-                      </ProtectedRoute>
-                    }
+                  <PageNav />
+                  <Routes>
+                    <Route path="/" element={<Homepage />} />
+                    <Route
+                      path="/add-venue"
+                      element={
+                        <ProtectedRoute>
+                          <AddNewVenue />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route path="app" element={<AppLayout />}>
+                      <Route index element={<Navigate replace to="map" />} />
+                      <Route
+                        path="map/:city?/:venue?/:venueId?"
+                        element={<MapView />}
+                      />
+                      <Route
+                        path="venue/:city/:venue/:venueId"
+                        element={<DetailedVenueView />}
+                      />
+                      <Route
+                        path="venue/:city/:venue/reviews/new/:venueId"
+                        element={
+                          <ProtectedRoute>
+                            <ReviewForm mode="creating" />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="venue/:city/:venue/reviews/edit/:reviewId"
+                        element={
+                          <ProtectedRoute>
+                            <ReviewForm mode="editing" />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="profile"
+                        element={
+                          <ProtectedRoute>
+                            <UserProfile />
+                          </ProtectedRoute>
+                        }
+                      />
+                    </Route>
+                    <Route path="*" element={<PageNotFound />} />
+                  </Routes>
+                  <ErrorModal />
+                  <ModalManager />
+
+                  <Toaster
+                    position="top-center"
+                    gutter={12}
+                    containerStyle={{ margin: '8px' }}
+                    toastOptions={{
+                      success: { duration: 3000 },
+                      error: { duration: 5000 },
+                      style: {
+                        fontSize: '16',
+                        maxWidth: '500px',
+                        padding: '16px 24px',
+                        backgroundColor: '#fff',
+                        color: '#374151',
+                      },
+                    }}
                   />
-                  <Route path="app" element={<AppLayout />}>
-                    <Route index element={<Navigate replace to="map" />} />
-                    <Route
-                      path="map/:city?/:venue?/:venueId?"
-                      element={<MapView />}
-                    />
-                    <Route
-                      path="venue/:city/:venue/:venueId"
-                      element={<DetailedVenueView />}
-                    />
-                    <Route
-                      path="venue/:city/:venue/reviews/new/:venueId"
-                      element={
-                        <ProtectedRoute>
-                          <ReviewForm mode="creating" />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="venue/:city/:venue/reviews/edit/:reviewId"
-                      element={
-                        <ProtectedRoute>
-                          <ReviewForm mode="editing" />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="profile"
-                      element={
-                        <ProtectedRoute>
-                          <UserProfile />
-                        </ProtectedRoute>
-                      }
-                    />
-                  </Route>
-                  <Route path="*" element={<PageNotFound />} />
-                </Routes>
-                <ErrorModal />
-                <ModalManager />
-
-                <Toaster
-                  position="top-center"
-                  gutter={12}
-                  containerStyle={{ margin: '8px' }}
-                  toastOptions={{
-                    success: { duration: 3000 },
-                    error: { duration: 5000 },
-                    style: {
-                      fontSize: '16',
-                      maxWidth: '500px',
-                      padding: '16px 24px',
-                      backgroundColor: '#fff',
-                      color: '#374151',
-                    },
-                  }}
-                />
-              </QueryClientProvider>
-            </ModalProvider>
+                </QueryClientProvider>
+              </ModalProvider>
+            </UserReviewsProvider>
           </ReviewSortProvider>
         </VenueFilterProvider>
       </GlobalErrorProvider>
