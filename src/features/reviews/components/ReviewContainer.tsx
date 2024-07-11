@@ -38,9 +38,7 @@ function ReviewContainer({ mode }: Props) {
     pagination,
   });
 
-  return isLoadingReviews || fetchStatus == 'fetching' || isLoadingUser ? (
-    <LoaderSpinner />
-  ) : (
+  return (
     <>
       <ReviewSort updateSort={updateSort} resetSort={resetSort} />
       <ReviewPagination
@@ -48,7 +46,11 @@ function ReviewContainer({ mode }: Props) {
         updatePageNumber={updatePageNumber}
         totalCount={totalCount}
       />
-      <ReviewListView reviews={reviews} />
+      {isLoadingReviews || fetchStatus == 'fetching' || isLoadingUser ? (
+        <LoaderSpinner />
+      ) : (
+        <ReviewListView reviews={reviews} />
+      )}
       <ReviewPagination
         pagination={pagination}
         updatePageNumber={updatePageNumber}

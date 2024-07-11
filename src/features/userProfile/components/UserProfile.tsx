@@ -1,5 +1,11 @@
+import ReviewContainer from '@/features/reviews/components/ReviewContainer';
+
 function UserProfile() {
-  return <div>User Profile</div>;
+  return (
+    <div>
+      <ReviewContainer mode="user" />
+    </div>
+  );
 }
 
 export default UserProfile;
