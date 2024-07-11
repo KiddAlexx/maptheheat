@@ -1,37 +1,30 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
-
 import { createContext, ReactNode, useContext, useReducer } from 'react';
-import { Direction } from './VenueFilterContext';
+import {
+  ResetSort,
+  ReviewPaginationParams,
+  ReviewSort,
+  UpdatePageNumber,
+  UpdateSort,
+} from '@/types/reviewTypes';
 
 // Data types
 
-export type UserReviewsField = 'averageRating' | 'createdAt';
-
-export interface UserReviews {
-  field: UserReviewsField;
-  direction: Direction;
-}
-
-export interface ReviewPagination {
-  pageNumber: number;
-  maxResults: number;
-}
-
 interface State {
-  sort: UserReviews | null;
-  pagination: ReviewPagination;
+  sort: ReviewSort | null;
+  pagination: ReviewPaginationParams;
 }
 
 interface UserReviewsContextType extends State {
-  updateSort: (sortBy: UserReviews) => void;
-  resetSort: () => void;
-  updatePageNumber: (pageNumber: number) => void;
+  updateSort: UpdateSort;
+  resetSort: ResetSort;
+  updatePageNumber: UpdatePageNumber;
 }
 
 type Action =
-  | { type: 'update-sort'; payload: { sortBy: UserReviews } }
+  | { type: 'update-sort'; payload: { sortBy: ReviewSort } }
   | { type: 'reset-sort' }
   | { type: 'update-page'; payload: number };
 
@@ -93,7 +86,7 @@ function UserReviewsProvider({ children }: UserReviewsProviderProps) {
   const [{ sort, pagination }, dispatch] = useReducer(reducer, initialState);
 
   // Function to update sort
-  function updateSort(sortBy: UserReviews) {
+  function updateSort(sortBy: ReviewSort) {
     dispatch({ type: 'update-sort', payload: { sortBy } });
   }
   // Function to reset sort to null

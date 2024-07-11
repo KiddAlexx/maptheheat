@@ -1,6 +1,17 @@
+import { ReviewPaginationParams, UpdatePageNumber } from '@/types/reviewTypes';
 import { Pagination } from '@nextui-org/react';
 
-function ReviewPagination({ pagination, updatePageNumber, totalCount }) {
+interface ReviewPaginationProps {
+  pagination: ReviewPaginationParams;
+  updatePageNumber: UpdatePageNumber;
+  totalCount: number;
+}
+
+function ReviewPagination({
+  pagination,
+  updatePageNumber,
+  totalCount,
+}: ReviewPaginationProps) {
   const { pageNumber, maxResults } = pagination;
   const pageCount = totalCount ? Math.ceil(totalCount / maxResults) : 0;
 

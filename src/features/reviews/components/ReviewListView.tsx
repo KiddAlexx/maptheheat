@@ -1,12 +1,15 @@
-import { useParams } from 'react-router';
+import { ReviewWithRelations } from '@/types/reviewTypes';
 import ReviewListItem from './ReviewListItem';
 
-import { useReviewSortContext } from '@/context/ReviewSortContext';
+interface ReviewListViewProps {
+  reviews: ReviewWithRelations[];
+}
 
-function ReviewListView({ reviews }) {
-  const { venueId } = useParams();
-  const { sort, pagination } = useReviewSortContext();
-  return reviews?.map((review) => <ReviewListItem review={review} />);
+function ReviewListView({ reviews }: ReviewListViewProps) {
+  console.log(reviews);
+  return reviews?.map((review: ReviewWithRelations) => (
+    <ReviewListItem review={review} key={review.reviewId} />
+  ));
 }
 
 export default ReviewListView;

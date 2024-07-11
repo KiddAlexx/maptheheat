@@ -1,18 +1,20 @@
 import { useReviewSortContext } from '@/context/ReviewSortContext';
+import { useUserReviewsContext } from '@/context/UserReviewsContext';
+
 import ReviewListView from './ReviewListView';
 import ReviewPagination from './ReviewPagination';
 import ReviewSort from './ReviewSort';
-import { useUserReviewsContext } from '@/context/UserReviewsContext';
+import LoaderSpinner from '@/ui/LoaderSpinner';
+
 import { useParams } from 'react-router';
 import { useUser } from '@/features/authentication/useUser';
-import LoaderSpinner from '@/ui/LoaderSpinner';
 import { useGetReviews } from '../hooks/useGetReviews';
 
-interface Props {
+interface ReviewContainerProps {
   mode: 'venue' | 'user';
 }
 
-function ReviewContainer({ mode }: Props) {
+function ReviewContainer({ mode }: ReviewContainerProps) {
   // Assigns which context to use for pagination and sorting
   // based on mode prop
   const reviewContext =
@@ -38,7 +40,7 @@ function ReviewContainer({ mode }: Props) {
     pagination,
   });
 
-  return (
+  return reviews ? (
     <>
       <ReviewSort updateSort={updateSort} resetSort={resetSort} />
       <ReviewPagination
@@ -57,7 +59,7 @@ function ReviewContainer({ mode }: Props) {
         totalCount={totalCount}
       />
     </>
-  );
+  ) : null;
 }
 
 export default ReviewContainer;

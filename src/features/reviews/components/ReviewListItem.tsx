@@ -1,15 +1,26 @@
 import styles from '../styles/ReviewListItem.module.css';
+
 import VenueRating from '../../venues/components/VenueRating';
-import { useUser } from '../../authentication/useUser';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
-import { useDeleteReview } from '../hooks/useDeleteReview';
-import { useModalContext } from '../../../context/ModalContext';
-import { format, parseISO } from 'date-fns';
-import { Link } from 'react-router-dom';
-import { withinTimeframe } from '../../../utils/withinTimeframe';
 import Avatar from '@/features/userProfile/components/Avatar';
 
-function ReviewListItem({ review }) {
+import { useUser } from '../../authentication/useUser';
+import { useDeleteReview } from '../hooks/useDeleteReview';
+import { useModalContext } from '../../../context/ModalContext';
+
+import { format, parseISO } from 'date-fns';
+
+import { Link } from 'react-router-dom';
+
+import { withinTimeframe } from '../../../utils/withinTimeframe';
+
+import { ReviewWithRelations } from '@/types/reviewTypes';
+
+interface ReviewListItemProps {
+  review: ReviewWithRelations;
+}
+
+function ReviewListItem({ review }: ReviewListItemProps) {
   const {
     profiles,
     venueDetails,
@@ -25,7 +36,7 @@ function ReviewListItem({ review }) {
   } = review;
 
   const { username, totalReviews, userId } = profiles;
-  const { city, venueNameSlug, venueId } = venueDetails;
+  const { city, venueNameSlug } = venueDetails;
 
   const { isDeleting, deleteReview } = useDeleteReview();
 

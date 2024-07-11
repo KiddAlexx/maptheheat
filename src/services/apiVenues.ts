@@ -5,7 +5,7 @@ import decamelize from 'decamelize';
 import supabase, { supabaseUrl } from './supabase';
 
 // Type Imports
-import { ImageUploadParams, NewVenue, Venue } from '../models/venueTypes';
+import { ImageUploadParams, NewVenue, Venue } from '../types/venueTypes';
 
 // Util Imports
 import compressImage from '../utils/compressImage';

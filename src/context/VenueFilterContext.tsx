@@ -2,15 +2,13 @@
 
 // React imports
 
+import { Direction, SupabaseQueryMethod } from '@/types/commonTypes';
 import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 // Data types
 
 type FilterField = 'city' | 'venueType';
 export type VenueSortField = 'averageRating' | 'totalReviews' | 'createdAt';
-
-type SupabaseQueryMethod = 'eq' | 'gt' | 'lt' | 'gte' | 'lte';
-export type Direction = 'asc' | 'desc';
 
 export interface VenueFilter {
   field: FilterField;

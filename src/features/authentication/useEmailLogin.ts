@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { loginApi } from '../../services/apiAuth';
 import toast from 'react-hot-toast';
-import { AuthCredentials } from '../../models/authenticationTypes';
+import { AuthCredentials } from '../../types/authenticationTypes';
 import { useModalContext } from '../../context/ModalContext';
 
 export function useEmailLogin() {

@@ -7,14 +7,17 @@ import supabase from './supabase';
 //Type Imports
 import { NewReview, Review } from '../models/reviewTypes';
 import { EditformData } from '../features/reviews/components/ReviewForm';
-import { ReviewPagination, ReviewSort } from '@/context/ReviewSortContext';
+import {
+  ReviewPaginationParams,
+  ReviewSort,
+} from '@/context/ReviewSortContext';
 import decamelize from 'decamelize';
 
 export interface ReviewsRequestParams {
   venueId?: string;
   userId?: string;
   sort?: ReviewSort | null;
-  pagination?: ReviewPagination;
+  pagination?: ReviewPaginationParams;
 }
 
 export interface ReviewsResponse {

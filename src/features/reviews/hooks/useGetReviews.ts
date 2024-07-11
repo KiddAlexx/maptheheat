@@ -17,6 +17,6 @@ export function useGetReviews({
   });
 
   const reviews = data?.data;
-  const totalCount = data?.count;
+  const totalCount = data?.count ?? 0;
   return { error, isLoading, reviews, totalCount };
 }

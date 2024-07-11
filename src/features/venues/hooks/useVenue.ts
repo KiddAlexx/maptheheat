@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getVenue } from '../../../services/apiVenues';
-import { Venue } from '../../../models/venueTypes';
+import { Venue } from '../../../types/venueTypes';
 
 // useQuery is only enabled when venueId is truthy and isEnabled is true.
 // The non-null assertion operator (!) is used when calling getVenue,

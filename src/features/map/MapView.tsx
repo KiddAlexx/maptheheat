@@ -11,7 +11,7 @@ import MapPopupContent from './MapPopupContent';
 import styles from './MapView.module.css';
 
 // Type imports
-import { Coords } from '../../models/venueTypes';
+import { Coords } from '../../types/venueTypes';
 
 // Hooks imports
 import { useVenues } from '../venues/hooks/useVenues';
