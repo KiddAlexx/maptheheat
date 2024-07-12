@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getReview } from '../../../services/apiReviews';
-import { Review } from '../../../models/reviewTypes';
+import { Review } from '@/types/reviewTypes';
 
 // useQuery is only enabled when reviewId is truthy and isEnabled is true.
 // The non-null assertion operator (!) is used when calling getReview,
