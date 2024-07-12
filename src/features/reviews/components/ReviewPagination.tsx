@@ -13,6 +13,9 @@ function ReviewPagination({
   totalCount,
 }: ReviewPaginationProps) {
   const { pageNumber, maxResults } = pagination;
+
+  // Calculates total number of pages required based on the total number
+  // of results divided by the maxResults per page.
   const pageCount = totalCount ? Math.ceil(totalCount / maxResults) : 0;
 
   if (pageCount <= 1) {

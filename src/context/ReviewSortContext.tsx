@@ -100,7 +100,7 @@ function ReviewSortProvider({ children }: ReviewFilterProviderProps) {
   );
 }
 
-// A custom hook to provide easy access to the VenueFilterContext
+// A custom hook to provide easy access to the ReviewSortContext
 function useReviewSortContext() {
   const context = useContext(ReviewSortContext);
   if (context === undefined)

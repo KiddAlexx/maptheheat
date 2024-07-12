@@ -1,4 +1,5 @@
 import { ReviewWithRelations } from '@/types/reviewTypes';
+
 import ReviewListItem from './ReviewListItem';
 
 interface ReviewListViewProps {
@@ -6,7 +7,6 @@ interface ReviewListViewProps {
 }
 
 function ReviewListView({ reviews }: ReviewListViewProps) {
-  console.log(reviews);
   return reviews?.map((review: ReviewWithRelations) => (
     <ReviewListItem review={review} key={review.reviewId} />
   ));
