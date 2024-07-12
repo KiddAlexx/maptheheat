@@ -8,13 +8,14 @@ import { useUpdateReview } from '../hooks/useUpdateReview';
 import { useVenue } from '../../venues/hooks/useVenue';
 
 // Third Party Imports
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 // Component Imports
 import VenueRating from '../../venues/components/VenueRating';
 import ImageUploader from '@/components/ImageUploader';
+import { Review } from '@/types/reviewTypes';
 
 // Types
 interface ReviewFormProps {
@@ -33,11 +34,9 @@ export interface EditformData extends FormData {
 }
 
 function ReviewForm({ mode }: ReviewFormProps) {
-  const navigate = useNavigate();
-
   const [formIndex, setFormIndex] = useState(1);
-  const [createdReview, setCreatedReview] = useState('');
-  const { reviewId: createdReviewId } = createdReview;
+  const [createdReview, setCreatedReview] = useState<Review | null>(null);
+  const createdReviewId = createdReview ? createdReview.reviewId : null;
 
   const { isCreating, createReview } = useCreateReview();
   const { isUpdating, updateReview } = useUpdateReview();
@@ -55,7 +54,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
     venueIdParam,
     mode === 'creating'
   );
-  const { venueName, venueType, venueId, city, venueNameSlug } = venue ?? {};
+  const { venueName, venueType, venueId } = venue ?? {};
 
   // Fetch review details in "editing" mode.
   // All destructured variables assigned default values,
@@ -67,15 +66,9 @@ function ReviewForm({ mode }: ReviewFormProps) {
   );
   const {
     reviewId,
-    images,
     reviewType,
     venueDetails,
-    venueDetails: {
-      venueName: venueNameReview = '',
-      venueId: venueIdReview = '',
-      venueNameSlug: venueNameSlugReview = '',
-      city: cityReview = '',
-    } = {},
+    venueDetails: { venueName: venueNameReview = '' } = {},
   } = review ?? {};
 
   // Effect to set default input values to current review values in editing mode.
@@ -96,7 +89,6 @@ function ReviewForm({ mode }: ReviewFormProps) {
 
   // Handles form submission for editing or creating review.
   // Checks mode and presence of venue or review object before proceeding.
-  // Navigates to relevant venue page on success.
   async function formSubmit(formData: FormData) {
     if (mode === 'creating' && venue) {
       const finalFormData = {
