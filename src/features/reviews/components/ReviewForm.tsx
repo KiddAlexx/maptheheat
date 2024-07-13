@@ -16,7 +16,7 @@ import toast from 'react-hot-toast';
 import VenueRating from '../../venues/components/VenueRating';
 import ImageUploader from '@/components/ImageUploader';
 import { Review } from '@/types/reviewTypes';
-import { Input, Textarea } from '@nextui-org/react';
+import { Button, Input, Textarea } from '@nextui-org/react';
 
 // Types
 interface ReviewFormProps {
@@ -244,9 +244,14 @@ function ReviewForm({ mode }: ReviewFormProps) {
               />
             </div>
 
-            <button disabled={isUpdating || isCreating}>
+            <Button
+              disabled={isUpdating || isCreating}
+              radius="sm"
+              size="md"
+              type="submit"
+            >
               {mode === 'creating' ? 'Submit' : 'Edit'}
-            </button>
+            </Button>
           </form>
         </>
       )}
