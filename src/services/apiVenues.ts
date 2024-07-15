@@ -5,27 +5,35 @@ import decamelize from 'decamelize';
 import supabase, { supabaseUrl } from './supabase';
 
 // Type Imports
-import { ImageUploadParams, NewVenue, Venue } from '../types/venueTypes';
+import {
+  ImageUploadParams,
+  NewVenue,
+  Venue,
+  VenueFilter,
+  VenuePagination,
+  VenueSort,
+} from '../types/venueTypes';
 
 // Util Imports
 import compressImage from '../utils/compressImage';
 import uploadImages from './supabaseImageUploader';
-import {
-  VenueFilter,
-  VenuePagination,
-  VenueSort,
-} from '@/context/VenueFilterContext';
+
+export interface VenuesRequestParams {
+  filters: VenueFilter[];
+  sort?: VenueSort | null;
+  pagination?: VenuePagination;
+}
 
 export interface VenuesResponse {
   data: Venue[];
   count: number | null;
 }
 
-export async function getVenues(
-  filters: VenueFilter[],
-  sort?: VenueSort | null,
-  pagination?: VenuePagination
-): Promise<VenuesResponse> {
+export async function getVenues({
+  filters,
+  sort,
+  pagination,
+}: VenuesRequestParams): Promise<VenuesResponse> {
   let query = supabase.from('venue_details').select('*', { count: 'exact' });
 
   // Apply each filter in the filters array if any

@@ -13,17 +13,13 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
 
 function ListView() {
-  const {
-    filters: venueFilters,
-    sort: venueSort,
-    pagination: venuePagination,
-  } = useVenueFilterContext();
+  const { filters, sort, pagination } = useVenueFilterContext();
   // Load venues from supabase
-  const { venues, isLoading: isLoadingVenues } = useVenues(
-    venueFilters,
-    venueSort,
-    venuePagination
-  );
+  const { venues, isLoading: isLoadingVenues } = useVenues({
+    filters,
+    sort,
+    pagination,
+  });
 
   const setParamsAndNavigate = useParamsAndNavigate();
 

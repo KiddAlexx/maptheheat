@@ -5,7 +5,7 @@ import { useVenues } from '../hooks/useVenues';
 function VenuePagination() {
   const { pagination, filters, updatePageNumber } = useVenueFilterContext();
   const { pageNumber, maxResults } = pagination;
-  const { totalCount } = useVenues(filters);
+  const { totalCount } = useVenues({ filters });
   const pageCount = totalCount ? Math.ceil(totalCount / maxResults) : 0;
 
   if (pageCount <= 1) {

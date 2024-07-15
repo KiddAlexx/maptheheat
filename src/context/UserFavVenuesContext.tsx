@@ -1,30 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
-
-import { Direction, SupabaseQueryMethod } from '@/types/commonTypes';
+import { FilterField, VenueFilter, VenuePagination, VenueSort } from '@/types/venueTypes';
 import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 // Data types
-
-type FilterField = 'city' | 'venueType';
-export type VenueSortField = 'averageRating' | 'totalReviews' | 'createdAt';
-
-export interface VenueFilter {
-  field: FilterField;
-  value: string;
-  method: SupabaseQueryMethod;
-}
-
-export interface VenueSort {
-  field: VenueSortField;
-  direction: Direction;
-}
-
-export interface VenuePagination {
-  pageNumber: number;
-  maxResults: number;
-}
 
 interface State {
   filters: VenueFilter[];
