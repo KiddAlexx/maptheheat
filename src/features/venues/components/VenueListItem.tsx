@@ -16,7 +16,7 @@ import phoneIcon from '../../../assets/icons/phone.svg';
 import VenueRating from './VenueRating';
 
 // Type imports
-import { Venue } from '../../../models/venueTypes';
+import { Venue } from '../../../types/venueTypes';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 

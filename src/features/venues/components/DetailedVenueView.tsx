@@ -21,7 +21,7 @@ import ReviewContainer from '../../reviews/components/ReviewContainer';
 import { Button } from '@nextui-org/react';
 
 // Type imports
-import { Image } from '../../../models/venueTypes';
+import { Image } from '../../../types/venueTypes';
 
 // File imports
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
@@ -184,7 +184,7 @@ function DetailedVenueView() {
       >
         Back to Map
       </Link>
-      <ReviewContainer />
+      <ReviewContainer mode="venue" />
     </div>
   );
 }

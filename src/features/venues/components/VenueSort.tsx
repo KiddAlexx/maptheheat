@@ -1,10 +1,10 @@
 import { Select, SelectItem } from '@nextui-org/react';
 import { FaSortAmountDownAlt, FaSortAmountUp } from 'react-icons/fa';
-import { useVenueFilterContext } from '@/context/VenueFilterContext';
-import { VenueSortField, Direction } from '@/context/VenueFilterContext';
+import { VenueSortField } from '@/types/venueTypes';
+import { Direction } from '@/types/commonTypes';
 
-function VenueSort() {
-  const { updateSort, resetSort } = useVenueFilterContext();
+function VenueSort({ useVenueContext }) {
+  const { updateSort, resetSort } = useVenueContext();
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     if (e.target.value === 'default') {
       resetSort();

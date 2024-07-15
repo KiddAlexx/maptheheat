@@ -1,14 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
-
-import { ReactNode, createContext, useContext, useReducer } from 'react';
 import {
   FilterField,
   VenueFilter,
   VenuePagination,
   VenueSort,
 } from '@/types/venueTypes';
+import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 // Data types
 
@@ -18,7 +17,7 @@ interface State {
   pagination: VenuePagination;
 }
 
-interface VenueFilterContextType extends State {
+interface UserFavVenuesContextType extends State {
   updateVenueFilter: (filter: VenueFilter) => void;
   removeVenueFilter: (field: FilterField) => void;
   updateSort: (sortBy: VenueSort) => void;
@@ -36,20 +35,20 @@ type Action =
   | { type: 'reset-sort' }
   | { type: 'update-page'; payload: number };
 
-interface VenueFilterProviderProps {
+interface UserFavVenuesProviderProps {
   children: ReactNode;
 }
 
 // Create a context with an undefined default value
-const VenueFilterContext = createContext<VenueFilterContextType | undefined>(
-  undefined
-);
+const UserFavVenuesContext = createContext<
+  UserFavVenuesContextType | undefined
+>(undefined);
 
 // Initial state for the filters
 const initialState: State = {
-  filters: [{ field: 'city', value: 'Barcelona', method: 'eq' }],
+  filters: [],
   sort: null,
-  pagination: { pageNumber: 1, maxResults: 10 },
+  pagination: { pageNumber: 1, maxResults: 5 },
 };
 
 // Reducer function to handle filter updates and removals
@@ -139,7 +138,7 @@ function reducer(state: State, action: Action) {
 }
 
 // Context provider component
-function VenueFilterProvider({ children }: VenueFilterProviderProps) {
+function UserFavVenuesProvider({ children }: UserFavVenuesProviderProps) {
   const [{ filters, sort, pagination }, dispatch] = useReducer(
     reducer,
     initialState
@@ -167,7 +166,7 @@ function VenueFilterProvider({ children }: VenueFilterProviderProps) {
     dispatch({ type: 'update-page', payload: pageNumber });
   }
   return (
-    <VenueFilterContext.Provider
+    <UserFavVenuesContext.Provider
       value={{
         filters,
         sort,
@@ -180,18 +179,18 @@ function VenueFilterProvider({ children }: VenueFilterProviderProps) {
       }}
     >
       {children}
-    </VenueFilterContext.Provider>
+    </UserFavVenuesContext.Provider>
   );
 }
 
 // A custom hook to provide easy access to the VenueFilterContext
-function useVenueFilterContext() {
-  const context = useContext(VenueFilterContext);
+function useUserFavVenuesContext() {
+  const context = useContext(UserFavVenuesContext);
   if (context === undefined)
     throw new Error(
-      'Venue filter context was used outside the VenueFilterProvider'
+      'Venue filter context was used outside the UserFavVenuesProvider'
     );
   return context;
 }
 
-export { VenueFilterProvider, useVenueFilterContext };
+export { UserFavVenuesProvider, useUserFavVenuesContext };

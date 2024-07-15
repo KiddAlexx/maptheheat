@@ -8,22 +8,18 @@ import { useVenues } from '../hooks/useVenues';
 import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 
 // Component imports
-import ListItem from './ListItem';
+import ListItem from './VenueListItem';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
-import { useVenueFilterContext } from '@/context/VenueFilterContext';
 
-function ListView() {
-  const {
-    filters: venueFilters,
-    sort: venueSort,
-    pagination: venuePagination,
-  } = useVenueFilterContext();
+function ListView({ useVenueContext, favouriteVenues }) {
+  const { filters, sort, pagination } = useVenueContext();
   // Load venues from supabase
-  const { venues, isLoading: isLoadingVenues } = useVenues(
-    venueFilters,
-    venueSort,
-    venuePagination
-  );
+  const { venues, isLoading: isLoadingVenues } = useVenues({
+    favouriteVenues,
+    filters,
+    sort,
+    pagination,
+  });
 
   const setParamsAndNavigate = useParamsAndNavigate();
 

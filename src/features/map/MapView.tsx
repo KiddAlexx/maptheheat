@@ -11,7 +11,7 @@ import MapPopupContent from './MapPopupContent';
 import styles from './MapView.module.css';
 
 // Type imports
-import { Coords } from '../../models/venueTypes';
+import { Coords } from '../../types/venueTypes';
 
 // Hooks imports
 import { useVenues } from '../venues/hooks/useVenues';
@@ -20,9 +20,9 @@ import { useVenueFilterContext } from '@/context/VenueFilterContext';
 
 function MapView() {
   const [searchParams] = useSearchParams();
-  const { filters: venueFilters } = useVenueFilterContext();
+  const { filters } = useVenueFilterContext();
   // Load venues from supabase
-  const { venues, isLoading: isLoadingVenues } = useVenues(venueFilters);
+  const { venues, isLoading: isLoadingVenues } = useVenues({ filters });
 
   // Sets coordinates based on searchParams if available
   // Used to center map on selected venue

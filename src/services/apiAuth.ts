@@ -1,4 +1,4 @@
-import { AuthCredentials } from '../models/authenticationTypes';
+import { AuthCredentials } from '../types/authenticationTypes';
 import supabase from './supabase';
 
 export async function signupApi({ email, password }: AuthCredentials) {

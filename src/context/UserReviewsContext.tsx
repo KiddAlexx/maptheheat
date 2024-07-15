@@ -2,7 +2,13 @@
 
 // React imports
 import { createContext, ReactNode, useContext, useReducer } from 'react';
-import { ReviewPaginationParams, ReviewSort } from '@/types/reviewTypes';
+import {
+  ResetSort,
+  ReviewPaginationParams,
+  ReviewSort,
+  UpdatePageNumber,
+  UpdateSort,
+} from '@/types/reviewTypes';
 
 // Data types
 
@@ -11,10 +17,10 @@ interface State {
   pagination: ReviewPaginationParams;
 }
 
-interface ReviewFilterContextType extends State {
-  updateSort: (sortBy: ReviewSort) => void;
-  resetSort: () => void;
-  updatePageNumber: (pageNumber: number) => void;
+interface UserReviewsContextType extends State {
+  updateSort: UpdateSort;
+  resetSort: ResetSort;
+  updatePageNumber: UpdatePageNumber;
 }
 
 type Action =
@@ -22,17 +28,17 @@ type Action =
   | { type: 'reset-sort' }
   | { type: 'update-page'; payload: number };
 
-interface ReviewFilterProviderProps {
+interface UserReviewsProviderProps {
   children: ReactNode;
 }
 
-const ReviewSortContext = createContext<ReviewFilterContextType | undefined>(
+const UserReviewsContext = createContext<UserReviewsContextType | undefined>(
   undefined
 );
 
 const initialState: State = {
   sort: null,
-  pagination: { pageNumber: 1, maxResults: 1 },
+  pagination: { pageNumber: 1, maxResults: 5 },
 };
 
 function reducer(state: State, action: Action) {
@@ -76,7 +82,7 @@ function reducer(state: State, action: Action) {
   }
 }
 
-function ReviewSortProvider({ children }: ReviewFilterProviderProps) {
+function UserReviewsProvider({ children }: UserReviewsProviderProps) {
   const [{ sort, pagination }, dispatch] = useReducer(reducer, initialState);
 
   // Function to update sort
@@ -92,22 +98,22 @@ function ReviewSortProvider({ children }: ReviewFilterProviderProps) {
     dispatch({ type: 'update-page', payload: pageNumber });
   }
   return (
-    <ReviewSortContext.Provider
+    <UserReviewsContext.Provider
       value={{ sort, pagination, updateSort, resetSort, updatePageNumber }}
     >
       {children}
-    </ReviewSortContext.Provider>
+    </UserReviewsContext.Provider>
   );
 }
 
-// A custom hook to provide easy access to the ReviewSortContext
-function useReviewSortContext() {
-  const context = useContext(ReviewSortContext);
+// A custom hook to provide easy access to the UserReviewsContext
+function useUserReviewsContext() {
+  const context = useContext(UserReviewsContext);
   if (context === undefined)
     throw new Error(
-      'Review Sort context was used outside the ReviewSortProvider'
+      'User Reviews context was used outside the UserReviewsProvider'
     );
   return context;
 }
 
-export { ReviewSortProvider, useReviewSortContext };
+export { UserReviewsProvider, useUserReviewsContext };

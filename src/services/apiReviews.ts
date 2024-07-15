@@ -1,27 +1,34 @@
 //Third Party Imports
 import decamelizeKeys from 'decamelize-keys';
 import camelcaseKeys from 'camelcase-keys';
+import decamelize from 'decamelize';
 import { subDays } from 'date-fns';
 import supabase from './supabase';
 
-//Type Imports
-import { NewReview, Review } from '../models/reviewTypes';
 import { EditformData } from '../features/reviews/components/ReviewForm';
-import { ReviewPagination, ReviewSort } from '@/context/ReviewSortContext';
-import decamelize from 'decamelize';
+
+//Type Imports
+import {
+  NewReview,
+  ReviewPaginationParams,
+  ReviewSort,
+  ReviewWithRelations,
+} from '@/types/reviewTypes';
 
 export interface ReviewsRequestParams {
   venueId?: string;
   userId?: string;
   sort?: ReviewSort | null;
-  pagination?: ReviewPagination;
+  pagination?: ReviewPaginationParams;
 }
 
 export interface ReviewsResponse {
-  data: Review[];
+  data: ReviewWithRelations[];
   count: number | null;
 }
 
+// Function to fetch reviews matching a specific venue
+// or specific user
 export async function getReviews({
   venueId,
   userId,
@@ -65,7 +72,10 @@ export async function getReviews({
   return { data: camelcaseKeys(data, { deep: true }), count };
 }
 
-export async function getReview(reviewId: string): Promise<Review> {
+// Function to fetch single review matching review id
+export async function getReview(
+  reviewId: string
+): Promise<ReviewWithRelations> {
   const { data, error } = await supabase
     .from('venue_reviews')
     .select('*, profiles(*), venue_details(*)')
@@ -77,6 +87,8 @@ export async function getReview(reviewId: string): Promise<Review> {
   return camelcaseKeys(data[0], { deep: true });
 }
 
+// Function to check whether user has left a review for specified venue
+// within number of days provided
 export async function canUserReview(
   userId: string,
   venueId: string,
@@ -93,10 +105,11 @@ export async function canUserReview(
   if (error) {
     throw new Error(`Review could not be loaded. Error:${error.message}`);
   }
-  console.log('here is the data', data);
+
   return data.length === 0;
 }
 
+// Function to create a new review
 export async function createReview(newReview: NewReview) {
   const convertedReview = decamelizeKeys(newReview);
   const { data, error } = await supabase
@@ -112,6 +125,7 @@ export async function createReview(newReview: NewReview) {
   return camelcaseKeys(data);
 }
 
+// Function to update a review
 export async function updateReview(
   finalFormData: EditformData,
   reviewId: string
@@ -131,6 +145,7 @@ export async function updateReview(
   return camelcaseKeys(data, { deep: true });
 }
 
+// Function to delete a review
 export async function deleteReview(reviewId: string) {
   const { data, error } = await supabase
     .from('venue_reviews')

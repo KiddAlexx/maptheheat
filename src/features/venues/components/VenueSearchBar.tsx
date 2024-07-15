@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import styles from '../styles/SearchAndFilterPanel.module.css';
 import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
-import { useVenueFilterContext } from '@/context/VenueFilterContext';
 import { useUniqueCities } from '../hooks/useUniqueCities';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 
-function VenueSearchBar() {
+function VenueSearchBar({ useVenueContext }) {
   const [selectedCity, setSelectedCity] = useState('');
 
   const { uniqueCities, error, isPending: isPendingCities } = useUniqueCities();
@@ -14,7 +13,7 @@ function VenueSearchBar() {
     setSelectedCity(value);
     console.log(selectedCity);
   };
-  const { updateVenueFilter } = useVenueFilterContext();
+  const { updateVenueFilter } = useVenueContext();
 
   function handleSubmit(e) {
     e.preventDefault();
