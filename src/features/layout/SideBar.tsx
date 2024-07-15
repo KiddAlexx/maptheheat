@@ -7,7 +7,7 @@ import VenueListContainer from '../venues/components/VenueListContainer';
 function SideBar() {
   return (
     <div className={styles.sideBar}>
-      <VenueListContainer />
+      <VenueListContainer mode="venue" />
     </div>
   );
 }

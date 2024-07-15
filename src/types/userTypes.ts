@@ -4,4 +4,5 @@ export interface Profile {
   username: string | null;
   avatarUrl: string;
   totalReviews: number | null;
+  favouriteVenues: string[] | null;
 }

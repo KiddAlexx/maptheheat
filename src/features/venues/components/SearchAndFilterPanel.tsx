@@ -9,13 +9,13 @@ import VenueTypeFilter from './VenueTypeFilter';
 import VenueSearchBar from './VenueSearchBar';
 import VenueSort from './VenueSort';
 
-function SearchAndFilterPanel() {
+function SearchAndFilterPanel({ useVenueContext }) {
   return (
     <>
-      <VenueSearchBar />
+      <VenueSearchBar useVenueContext={useVenueContext} />
       <div className={styles.filterSortWrapper}>
-        <VenueTypeFilter />
-        <VenueSort />
+        <VenueTypeFilter useVenueContext={useVenueContext} />
+        <VenueSort useVenueContext={useVenueContext} />
       </div>
 
       <div className={styles.addNewContainer}>
