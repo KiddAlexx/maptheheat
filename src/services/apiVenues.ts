@@ -22,6 +22,7 @@ export interface VenuesRequestParams {
   filters: VenueFilter[];
   sort?: VenueSort | null;
   pagination?: VenuePagination;
+  favouriteVenues?: string[];
 }
 
 export interface VenuesResponse {
@@ -33,8 +34,16 @@ export async function getVenues({
   filters,
   sort,
   pagination,
+  favouriteVenues,
 }: VenuesRequestParams): Promise<VenuesResponse> {
   let query = supabase.from('venue_details').select('*', { count: 'exact' });
+
+  // Apply favouriteVenue filter when in user mode
+  // Used to display favourtite venues on profile page
+
+  if (favouriteVenues) {
+    query = query.in('venue_id', favouriteVenues);
+  }
 
   // Apply each filter in the filters array if any
 

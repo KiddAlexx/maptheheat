@@ -23,7 +23,7 @@ function UserProfile() {
   return (
     <div>
       <ReviewContainer mode="user" />
-      <VenueListContainer mode="user" />
+      <VenueListContainer mode="user" favouriteVenues={favouriteVenues} />
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import { Pagination } from '@nextui-org/react';
 import { useVenues } from '../hooks/useVenues';
 
-function VenuePagination({ useVenueContext }) {
+function VenuePagination({ useVenueContext, favouriteVenues }) {
   const { pagination, filters, updatePageNumber } = useVenueContext();
   const { pageNumber, maxResults } = pagination;
-  const { totalCount } = useVenues({ filters });
+  const { totalCount } = useVenues({ filters, favouriteVenues });
   const pageCount = totalCount ? Math.ceil(totalCount / maxResults) : 0;
 
   if (pageCount <= 1) {

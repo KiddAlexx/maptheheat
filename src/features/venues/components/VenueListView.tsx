@@ -11,10 +11,11 @@ import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 import ListItem from './VenueListItem';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 
-function ListView({ useVenueContext }) {
+function ListView({ useVenueContext, favouriteVenues }) {
   const { filters, sort, pagination } = useVenueContext();
   // Load venues from supabase
   const { venues, isLoading: isLoadingVenues } = useVenues({
+    favouriteVenues,
     filters,
     sort,
     pagination,

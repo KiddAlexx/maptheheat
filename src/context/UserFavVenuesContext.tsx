@@ -1,7 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
-import { FilterField, VenueFilter, VenuePagination, VenueSort } from '@/types/venueTypes';
+import {
+  FilterField,
+  VenueFilter,
+  VenuePagination,
+  VenueSort,
+} from '@/types/venueTypes';
 import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 // Data types
@@ -41,9 +46,9 @@ const UserFavVenuesContext = createContext<
 
 // Initial state for the filters
 const initialState: State = {
-  filters: [{ field: 'city', value: 'Barcelona', method: 'eq' }],
+  filters: [],
   sort: null,
-  pagination: { pageNumber: 1, maxResults: 10 },
+  pagination: { pageNumber: 1, maxResults: 5 },
 };
 
 // Reducer function to handle filter updates and removals

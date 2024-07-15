@@ -6,9 +6,13 @@ import { useUserFavVenuesContext } from '@/context/UserFavVenuesContext';
 
 interface VenueListContainerProps {
   mode: 'venue' | 'user';
+  favouriteVenues?: string[] | null;
 }
 
-function VenueListContainer({ mode }: VenueListContainerProps) {
+function VenueListContainer({
+  mode,
+  favouriteVenues,
+}: VenueListContainerProps) {
   // Assigns which context to use for pagination and sorting
   // based on mode prop
   const useVenueContext =
@@ -16,9 +20,18 @@ function VenueListContainer({ mode }: VenueListContainerProps) {
   return (
     <>
       <SearchAndFilterPanel useVenueContext={useVenueContext} />
-      <VenuePagination useVenueContext={useVenueContext} />
-      <ListView useVenueContext={useVenueContext} />
-      <VenuePagination useVenueContext={useVenueContext} />
+      <VenuePagination
+        useVenueContext={useVenueContext}
+        favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
+      />
+      <ListView
+        useVenueContext={useVenueContext}
+        favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
+      />
+      <VenuePagination
+        useVenueContext={useVenueContext}
+        favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
+      />
     </>
   );
 }
