@@ -8,7 +8,7 @@ import { useVenues } from '../hooks/useVenues';
 import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 
 // Component imports
-import ListItem from './ListItem';
+import ListItem from './VenueListItem';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
 
