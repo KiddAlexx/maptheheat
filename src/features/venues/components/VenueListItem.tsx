@@ -19,6 +19,7 @@ import VenueRating from './VenueRating';
 import { Venue } from '../../../types/venueTypes';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
 import LoaderSpinner from '@/ui/LoaderSpinner';
+import LikeButton from '@/ui/LikeButton';
 
 interface ListItemProps {
   venue: Venue;
@@ -72,6 +73,7 @@ function ListItem({ venue, handleClick }: ListItemProps) {
       <div>
         <h2>{venueName}</h2>
         <VenueRating initialRating={finalRating} readonly />
+        <LikeButton />
         <div className={styles.iconTextContainer}>
           <img src={clockIcon} alt="icon of a clock" />
           <p>Open</p>
