@@ -1,7 +1,7 @@
 import camelcaseKeys from 'camelcase-keys';
 import supabase from './supabase';
 
-export async function getUserProfile(userId) {
+export async function getUserProfile(userId: string) {
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
@@ -13,7 +13,15 @@ export async function getUserProfile(userId) {
   return camelcaseKeys(data[0]);
 }
 
-export async function addFavouriteVenue({ venueId, userId }) {
+export interface AddFavouriteVenueParams {
+  venueId: string;
+  userId: string;
+}
+
+export async function addFavouriteVenue({
+  venueId,
+  userId,
+}: AddFavouriteVenueParams) {
   const { data: currentFavs, error: fetchError } = await supabase
     .from('profiles')
     .select('favourite_venues');
