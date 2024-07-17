@@ -24,7 +24,7 @@ function UserProfile() {
       <Tabs
         aria-label="Options"
         selectedKey={selected}
-        onSelectionChange={setSelected}
+        onSelectionChange={() => setSelected}
       >
         <Tab key={'reviews'} title="My Reviews">
           <ReviewContainer mode="user" />
