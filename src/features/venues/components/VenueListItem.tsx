@@ -20,17 +20,33 @@ import { Venue } from '../../../types/venueTypes';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import LikeButton from '@/ui/LikeButton';
+import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
 
 interface ListItemProps {
   venue: Venue;
   handleClick: () => void;
+  userId: string;
+  favVenuesList?: string[] | null;
 }
 
-function ListItem({ venue, handleClick }: ListItemProps) {
+function ListItem({
+  venue,
+  handleClick,
+  userId,
+  favVenuesList,
+}: ListItemProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
 
   const { venueName, venueId, address, phoneNumber, images, averageRating } =
     venue;
+
+  const isFavourite = favVenuesList?.includes(venueId);
+
+  const { updateFavouriteVenue } = useUpdateFavouriteVenue();
+
+  function toggleFavourite() {
+    updateFavouriteVenue({ userId, venueId });
+  }
 
   const {
     isLoading: isLoadingReviews,
@@ -73,7 +89,7 @@ function ListItem({ venue, handleClick }: ListItemProps) {
       <div>
         <h2>{venueName}</h2>
         <VenueRating initialRating={finalRating} readonly />
-        <LikeButton />
+        <LikeButton isFavourite={isFavourite} handleClick={toggleFavourite} />
         <div className={styles.iconTextContainer}>
           <img src={clockIcon} alt="icon of a clock" />
           <p>Open</p>

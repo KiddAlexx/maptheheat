@@ -2,8 +2,14 @@ import { Button } from '@nextui-org/react';
 import { useState } from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
-function LikeButton() {
-  const [isFavourite, setIsFavourite] = useState(false);
+function LikeButton({ isFavourite, handleClick }) {
+  const [isFavouriteState, setIsFavouriteState] = useState(isFavourite);
+
+  function toggleFavourite() {
+    handleClick();
+    setIsFavouriteState(!isFavouriteState);
+  }
+
   return (
     <Button
       /*  className={`${
@@ -12,9 +18,9 @@ function LikeButton() {
       isIconOnly
       variant="ghost"
       radius="full"
-      onPress={() => setIsFavourite(!isFavourite)}
+      onPress={() => toggleFavourite()}
     >
-      {isFavourite ? <FaHeart color="red" /> : <FaRegHeart />}
+      {isFavouriteState ? <FaHeart color="red" /> : <FaRegHeart />}
     </Button>
   );
 }

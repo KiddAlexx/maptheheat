@@ -11,7 +11,7 @@ function UserProfile() {
   const { id: userId } = user;
   const { userProfile, isLoading: isLoadingProfile } =
     useGetUserProfile(userId);
-  const [selected, setSelected] = useState('reviews');
+  const [selected, setSelected] = useState('venues');
 
   if (fetchStatus == 'fetching' || isLoadingUser || isLoadingProfile) return;
   <LoaderSpinner />;
@@ -24,7 +24,7 @@ function UserProfile() {
       <Tabs
         aria-label="Options"
         selectedKey={selected}
-        onSelectionChange={() => setSelected}
+        onSelectionChange={setSelected}
       >
         <Tab key={'reviews'} title="My Reviews">
           <ReviewContainer mode="user" />
