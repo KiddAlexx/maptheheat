@@ -18,13 +18,16 @@ export interface AddFavouriteVenueParams {
   userId: string;
 }
 
-export async function addFavouriteVenue({
+export async function updateFavouriteVenue({
   venueId,
   userId,
 }: AddFavouriteVenueParams) {
+  // Fetch row based on userId + return favourite_venues
   const { data: currentFavs, error: fetchError } = await supabase
     .from('profiles')
-    .select('favourite_venues');
+    .select('favourite_venues')
+    .eq('user_id', userId)
+    .single();
 
   if (fetchError) {
     throw new Error(
@@ -32,12 +35,18 @@ export async function addFavouriteVenue({
     );
   }
 
-  const updatedFavs =
-    currentFavs.length > 0 ? [...currentFavs, venueId] : [venueId];
+  // Create an empty array when favourite_venues is null
+  const currentFavsArray: string[] = currentFavs.favourite_venues || [];
 
+  // Toggle presence of venueId in the favourites array
+  const updatedFavs = currentFavsArray.includes(venueId)
+    ? currentFavsArray.filter((id) => id !== venueId)
+    : [...currentFavsArray, venueId];
+
+  // Update profiles table with new favourite_venues list
   const { data, error } = await supabase
     .from('profiles')
-    .update('favourite_venues', updatedFavs)
+    .update({ favourite_venues: updatedFavs })
     .eq('user_id', userId);
 
   if (error) {
