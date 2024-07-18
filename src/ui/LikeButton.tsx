@@ -2,12 +2,22 @@ import { Button } from '@nextui-org/react';
 import { useState } from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
-function LikeButton({ isFavourite, handleClick }) {
+interface LikeButtonProps {
+  isFavourite: boolean;
+  handleClick: (isFavourite: boolean) => void;
+}
+
+// LikeButton displays a heart icon indicating if an item is a favourite.
+// isFavourite determines the initial state, and handleClick is triggered on click.
+function LikeButton({ isFavourite, handleClick }: LikeButtonProps) {
   const [isFavouriteState, setIsFavouriteState] = useState(isFavourite);
 
-  function toggleFavourite() {
-    handleClick();
-    setIsFavouriteState(!isFavouriteState);
+  // Toggles value of local state.
+  // Runs handleClick function, which receives current "stale" state
+  // which is inverted to allign with update.
+  function handleFavouriteClick() {
+    setIsFavouriteState(() => !isFavouriteState);
+    handleClick(!isFavouriteState);
   }
 
   return (
@@ -18,7 +28,7 @@ function LikeButton({ isFavourite, handleClick }) {
       isIconOnly
       variant="ghost"
       radius="full"
-      onPress={() => toggleFavourite()}
+      onPress={() => handleFavouriteClick()}
     >
       {isFavouriteState ? <FaHeart color="red" /> : <FaRegHeart />}
     </Button>

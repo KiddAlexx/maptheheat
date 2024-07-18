@@ -21,6 +21,7 @@ import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import LikeButton from '@/ui/LikeButton';
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
+import toast from 'react-hot-toast';
 
 interface ListItemProps {
   venue: Venue;
@@ -44,8 +45,17 @@ function ListItem({
 
   const { updateFavouriteVenue } = useUpdateFavouriteVenue();
 
-  function toggleFavourite() {
-    updateFavouriteVenue({ userId, venueId });
+  function toggleFavourite(isFavouriteState: boolean) {
+    updateFavouriteVenue(
+      { userId, venueId },
+      {
+        onSuccess: () => {
+          isFavouriteState
+            ? toast.success(`${venueName} added to favourites!`)
+            : toast.success(`${venueName} removed from favourites!`);
+        },
+      }
+    );
   }
 
   const {

@@ -12,8 +12,7 @@ export function useUpdateFavouriteVenue() {
     mutationFn: ({ venueId, userId }: AddFavouriteVenueParams) =>
       updateFavouriteVenueApi({ venueId, userId }),
     onSuccess: () => {
-      toast.success('Venue added to favourites!');
-      queryClient.invalidateQueries({ queryKey: ['venues'] });
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
     onError: (err) => {
       toast.error(err.message);
