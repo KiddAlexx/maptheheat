@@ -38,7 +38,7 @@ function ListView({ useVenueContext, favouriteVenues }) {
   )
     return <LoaderSpinner />;
 
-  const { favouriteVenues: favVenuesList } = userProfile;
+  const favVenuesList = userProfile?.favouriteVenues || null;
 
   return (
     <div className={styles.listView}>
