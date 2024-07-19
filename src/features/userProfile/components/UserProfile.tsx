@@ -5,6 +5,7 @@ import { useGetUserProfile } from '../hooks/useGetUserProfile';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import { Tab, Tabs } from '@nextui-org/react';
 import { useState } from 'react';
+import UserProfileBanner from './UserProfileBanner';
 
 function UserProfile() {
   const { user, isLoading: isLoadingUser, fetchStatus } = useUser();
@@ -21,6 +22,7 @@ function UserProfile() {
 
   return (
     <div>
+      <UserProfileBanner userProfile={userProfile} />
       <Tabs
         aria-label="Options"
         selectedKey={selected}
