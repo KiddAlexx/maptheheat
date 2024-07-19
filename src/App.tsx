@@ -19,7 +19,6 @@ import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
 import DetailedVenueView from './features/venues/components/DetailedVenueView';
 import MapView from './features/map/MapView';
-import UserProfile from './features/userProfile/components/UserProfile';
 import PageNav from './features/layout/PageNav';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ModalProvider } from './context/ModalContext';
@@ -32,6 +31,7 @@ import { VenueFilterProvider } from './context/VenueFilterContext';
 import { ReviewSortProvider } from './context/ReviewSortContext';
 import { UserReviewsProvider } from './context/UserReviewsContext';
 import { UserFavVenuesProvider } from './context/UserFavVenuesContext';
+import Profile from './pages/Profile';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,6 +65,14 @@ function App() {
                           </ProtectedRoute>
                         }
                       />
+                      <Route
+                        path="profile"
+                        element={
+                          <ProtectedRoute>
+                            <Profile />
+                          </ProtectedRoute>
+                        }
+                      />
                       <Route path="app" element={<AppLayout />}>
                         <Route index element={<Navigate replace to="map" />} />
                         <Route
@@ -88,14 +96,6 @@ function App() {
                           element={
                             <ProtectedRoute>
                               <ReviewForm mode="editing" />
-                            </ProtectedRoute>
-                          }
-                        />
-                        <Route
-                          path="profile"
-                          element={
-                            <ProtectedRoute>
-                              <UserProfile />
                             </ProtectedRoute>
                           }
                         />

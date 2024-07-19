@@ -10,6 +10,8 @@ import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 // Component imports
 import ListItem from './VenueListItem';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
+import { useUser } from '@/features/authentication/useUser';
+import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 
 function ListView({ useVenueContext, favouriteVenues }) {
   const { filters, sort, pagination } = useVenueContext();
@@ -21,11 +23,29 @@ function ListView({ useVenueContext, favouriteVenues }) {
     pagination,
   });
 
+  const {
+    user,
+    isLoading: isLoadingUser,
+    fetchStatus,
+    isAuthenticated,
+  } = useUser();
+  const userId = user ? user.id : null;
+  const { userProfile, isLoading: isLoadingProfile } =
+    useGetUserProfile(userId);
+
   const setParamsAndNavigate = useParamsAndNavigate();
 
-  return isLoadingVenues ? (
-    <LoaderSpinner />
-  ) : (
+  if (
+    fetchStatus == 'fetching' ||
+    isLoadingUser ||
+    isLoadingProfile ||
+    isLoadingVenues
+  )
+    return <LoaderSpinner />;
+
+  const favVenuesList = userProfile?.favouriteVenues || null;
+
+  return (
     <div className={styles.listView}>
       {/* Map through list of venues and render ListItem component for
         each venue. Onclick set clicked venue as active venue */}
@@ -33,6 +53,9 @@ function ListView({ useVenueContext, favouriteVenues }) {
         <ListItem
           handleClick={() => setParamsAndNavigate(venue)}
           venue={venue}
+          userId={userId}
+          isAuthenticated={isAuthenticated}
+          favVenuesList={favVenuesList}
           key={venue.venueId}
         />
       ))}

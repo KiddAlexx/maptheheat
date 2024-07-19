@@ -1,7 +1,7 @@
 import camelcaseKeys from 'camelcase-keys';
 import supabase from './supabase';
 
-export async function getUserProfile(userId) {
+export async function getUserProfile(userId: string) {
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
@@ -11,4 +11,49 @@ export async function getUserProfile(userId) {
     throw new Error(`Profile could not be loaded. Error:${error.message}`);
   }
   return camelcaseKeys(data[0]);
+}
+
+export interface AddFavouriteVenueParams {
+  venueId: string;
+  userId: string;
+}
+
+export async function updateFavouriteVenue({
+  venueId,
+  userId,
+}: AddFavouriteVenueParams) {
+  // Fetch row based on userId + return favourite_venues
+  const { data: currentFavs, error: fetchError } = await supabase
+    .from('profiles')
+    .select('favourite_venues')
+    .eq('user_id', userId)
+    .single();
+
+  if (fetchError) {
+    throw new Error(
+      `Error fetching current favourite venues: ${fetchError.message}`
+    );
+  }
+
+  // Create an empty array when favourite_venues is null
+  const currentFavsArray: string[] = currentFavs.favourite_venues || [];
+
+  // Toggle presence of venueId in the favourites array
+  const updatedFavs = currentFavsArray.includes(venueId)
+    ? currentFavsArray.filter((id) => id !== venueId)
+    : [...currentFavsArray, venueId];
+
+  // Update profiles table with new favourite_venues list
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ favourite_venues: updatedFavs })
+    .eq('user_id', userId);
+
+  if (error) {
+    throw new Error(
+      `Error adding favourite venue to database: ${error.message}`
+    );
+  }
+
+  return data;
 }

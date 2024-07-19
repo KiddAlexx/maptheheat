@@ -27,7 +27,7 @@ function UserMenu() {
         </button>
       </DropdownTrigger>
       <DropdownMenu>
-        <DropdownItem onPress={() => navigate('/app/profile')}>
+        <DropdownItem onPress={() => navigate('/profile')}>
           Profile
         </DropdownItem>
         <DropdownItem onPress={() => logout()} color="danger">
