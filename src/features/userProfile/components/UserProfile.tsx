@@ -11,7 +11,7 @@ function UserProfile() {
   const { id: userId } = user;
   const { userProfile, isLoading: isLoadingProfile } =
     useGetUserProfile(userId);
-  const [selected, setSelected] = useState('venues');
+  const [selected, setSelected] = useState('reviews');
 
   if (fetchStatus == 'fetching' || isLoadingUser || isLoadingProfile) return;
   <LoaderSpinner />;
