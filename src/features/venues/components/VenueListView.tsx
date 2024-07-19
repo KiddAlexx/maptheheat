@@ -23,7 +23,12 @@ function ListView({ useVenueContext, favouriteVenues }) {
     pagination,
   });
 
-  const { user, isLoading: isLoadingUser, fetchStatus } = useUser();
+  const {
+    user,
+    isLoading: isLoadingUser,
+    fetchStatus,
+    isAuthenticated,
+  } = useUser();
   const userId = user ? user.id : null;
   const { userProfile, isLoading: isLoadingProfile } =
     useGetUserProfile(userId);
@@ -49,6 +54,7 @@ function ListView({ useVenueContext, favouriteVenues }) {
           handleClick={() => setParamsAndNavigate(venue)}
           venue={venue}
           userId={userId}
+          isAuthenticated={isAuthenticated}
           favVenuesList={favVenuesList}
           key={venue.venueId}
         />

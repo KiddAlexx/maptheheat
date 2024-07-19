@@ -3,21 +3,31 @@ import { useState } from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 interface LikeButtonProps {
-  isFavourite: boolean;
+  isFavourite?: boolean;
+  isAuthenticated: boolean;
   handleClick: (isFavourite: boolean) => void;
 }
 
 // LikeButton displays a heart icon indicating if an item is a favourite.
 // isFavourite determines the initial state, and handleClick is triggered on click.
-function LikeButton({ isFavourite, handleClick }: LikeButtonProps) {
+function LikeButton({
+  isFavourite,
+  isAuthenticated,
+  handleClick,
+}: LikeButtonProps) {
   const [isFavouriteState, setIsFavouriteState] = useState(isFavourite);
 
   // Toggles value of local state.
   // Runs handleClick function, which receives current "stale" state
   // which is inverted to allign with update.
   function handleFavouriteClick() {
-    setIsFavouriteState(() => !isFavouriteState);
-    handleClick(!isFavouriteState);
+    if (!isAuthenticated) {
+      handleClick(!isFavouriteState);
+      return;
+    } else {
+      setIsFavouriteState(() => !isFavouriteState);
+      handleClick(!isFavouriteState);
+    }
   }
 
   return (

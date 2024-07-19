@@ -22,11 +22,13 @@ import LoaderSpinner from '@/ui/LoaderSpinner';
 import LikeButton from '@/ui/LikeButton';
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
 import toast from 'react-hot-toast';
+import { useModalContext } from '@/context/ModalContext';
 
 interface ListItemProps {
   venue: Venue;
   handleClick: () => void;
   userId: string;
+  isAuthenticated: boolean;
   favVenuesList?: string[] | null;
 }
 
@@ -34,6 +36,7 @@ function ListItem({
   venue,
   handleClick,
   userId,
+  isAuthenticated,
   favVenuesList,
 }: ListItemProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
@@ -45,17 +48,24 @@ function ListItem({
 
   const { updateFavouriteVenue } = useUpdateFavouriteVenue();
 
+  const { openModal } = useModalContext();
+
   function toggleFavourite(isFavouriteState: boolean) {
-    updateFavouriteVenue(
-      { userId, venueId },
-      {
-        onSuccess: () => {
-          isFavouriteState
-            ? toast.success(`${venueName} added to favourites!`)
-            : toast.success(`${venueName} removed from favourites!`);
-        },
-      }
-    );
+    if (!isAuthenticated) {
+      openModal('login');
+      return;
+    } else {
+      updateFavouriteVenue(
+        { userId, venueId },
+        {
+          onSuccess: () => {
+            isFavouriteState
+              ? toast.success(`${venueName} added to favourites!`)
+              : toast.success(`${venueName} removed from favourites!`);
+          },
+        }
+      );
+    }
   }
 
   const {
@@ -99,7 +109,11 @@ function ListItem({
       <div>
         <h2>{venueName}</h2>
         <VenueRating initialRating={finalRating} readonly />
-        <LikeButton isFavourite={isFavourite} handleClick={toggleFavourite} />
+        <LikeButton
+          isFavourite={isFavourite}
+          isAuthenticated={isAuthenticated}
+          handleClick={toggleFavourite}
+        />
         <div className={styles.iconTextContainer}>
           <img src={clockIcon} alt="icon of a clock" />
           <p>Open</p>
