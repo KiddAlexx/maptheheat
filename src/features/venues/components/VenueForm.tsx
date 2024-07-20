@@ -25,7 +25,7 @@ import styles from '../styles/VenueForm.module.css';
 // Hooks imports
 
 import { useCreateVenue } from '../hooks/useCreateVenue';
-import { useUser } from '../../authentication/useUser';
+import { useUser } from '../../authentication/hooks/useUser';
 
 // Component imports
 import LoaderSpinner from '../../../ui/LoaderSpinner';

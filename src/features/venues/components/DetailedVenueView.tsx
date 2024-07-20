@@ -8,7 +8,7 @@ import styles from '../styles/DetailedVenueView.module.css';
 // Hooks imports
 import { useVenue } from '../hooks/useVenue';
 import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
-import { useUser } from '../../authentication/useUser';
+import { useUser } from '../../authentication/hooks/useUser';
 import { useModalContext } from '../../../context/ModalContext';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
 

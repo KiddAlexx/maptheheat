@@ -4,7 +4,7 @@ import VenueRating from '../../venues/components/VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import Avatar from '@/features/userProfile/components/Avatar';
 
-import { useUser } from '../../authentication/useUser';
+import { useUser } from '../../authentication/hooks/useUser';
 import { useDeleteReview } from '../hooks/useDeleteReview';
 import { useModalContext } from '../../../context/ModalContext';
 

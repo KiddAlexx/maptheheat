@@ -1,17 +1,17 @@
 // Style imports
-import styles from './AuthForm.module.css';
+import styles from '../styles/AuthForm.module.css';
 
 // Third party imports
 import { useForm } from 'react-hook-form';
 
 // File imports
 
-import { useEmailSignup } from './useEmailSignup';
-import LoaderSpinner from '../../ui/LoaderSpinner';
+import { useEmailSignup } from '../hooks/useEmailSignup';
+import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/button';
 import { Link } from '@nextui-org/link';
-import { useModalContext } from '../../context/ModalContext';
+import { useModalContext } from '../../../context/ModalContext';
 import { Divider } from '@nextui-org/divider';
 
 function SignupForm() {

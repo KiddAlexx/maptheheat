@@ -9,7 +9,7 @@ import styles from './ImageUploader-old';
 
 // Hooks imports
 import { useUpdateVenueImage } from '../features/venues/hooks/useUpdateVenueImage';
-import { useUser } from '../features/authentication/useUser';
+import { useUser } from '../features/authentication/hooks/useUser';
 
 // File imports
 import cameraIcon from '../assets/icons/camera.svg';

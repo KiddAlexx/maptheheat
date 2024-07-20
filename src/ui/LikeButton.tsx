@@ -20,6 +20,8 @@ function LikeButton({
   // Toggles value of local state.
   // Runs handleClick function, which receives current "stale" state
   // which is inverted to allign with update.
+  // If user is not authenticated then handleClick function is ran
+  // and authenticion handled there
   function handleFavouriteClick() {
     if (!isAuthenticated) {
       handleClick(!isFavouriteState);

@@ -1,4 +1,4 @@
-import { useUser } from '@/features/authentication/useUser';
+import { useUser } from '@/features/authentication/hooks/useUser';
 import ReviewContainer from '@/features/reviews/components/ReviewContainer';
 import VenueListContainer from '@/features/venues/components/VenueListContainer';
 import { useGetUserProfile } from '../hooks/useGetUserProfile';
