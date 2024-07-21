@@ -35,6 +35,14 @@ export async function loginGoogleApi() {
   return data;
 }
 
+export async function updateEmail({ email }) {
+  const { data, error } = await supabase.auth.updateUser({
+    email,
+  });
+  if (error) throw new Error(`Email update failed: ${error.message}`);
+  return data;
+}
+
 export async function getCurrentUser() {
   const { data: session } = await supabase.auth.getSession();
   if (!session.session) return null;
