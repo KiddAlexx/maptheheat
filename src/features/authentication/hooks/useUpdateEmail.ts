@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 
 export function useUpdateEmail() {
   const queryClient = useQueryClient();
-  const { mutate: updateEMail, isPending } = useMutation({
+  const { mutate: updateEmail, isPending } = useMutation({
     mutationFn: ({ email }) => updateEmailApi({ email }),
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -21,5 +21,5 @@ export function useUpdateEmail() {
       toast.error(`Error updating email, please try again`);
     },
   });
-  return { updateEMail, isPending };
+  return { updateEmail, isPending };
 }
