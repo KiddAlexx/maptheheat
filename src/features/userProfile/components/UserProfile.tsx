@@ -6,6 +6,7 @@ import LoaderSpinner from '@/ui/LoaderSpinner';
 import { Tab, Tabs } from '@nextui-org/react';
 import { useState } from 'react';
 import UserProfileBanner from './UserProfileBanner';
+import EditProfilePanel from './EditProfilePanel';
 
 function UserProfile() {
   const { user, isLoading: isLoadingUser, fetchStatus } = useUser();
@@ -33,6 +34,9 @@ function UserProfile() {
         </Tab>
         <Tab key={'venues'} title="Favourite Venues">
           <VenueListContainer mode="user" favouriteVenues={favouriteVenues} />
+        </Tab>
+        <Tab key={'edit-profile'} title="Edit Profile">
+          <EditProfilePanel />
         </Tab>
       </Tabs>
     </div>
