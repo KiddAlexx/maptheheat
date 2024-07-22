@@ -35,7 +35,7 @@ export async function loginGoogleApi() {
   return data;
 }
 
-export async function updateEmail({ email }) {
+export async function updateEmailApi({ email }) {
   const { data, error } = await supabase.auth.updateUser({
     email,
   });
