@@ -27,7 +27,7 @@ function SignupForm() {
   const { errors } = formState;
 
   const { signupEmail, isPending: isPendingEmail } = useEmailSignup();
-  const { openModal } = useModalContext();
+  const { openModal, closeModal } = useModalContext();
 
   function formSubmit(formData: FormData) {
     console.log(formData);
@@ -35,7 +35,15 @@ function SignupForm() {
     const { email, password } = formData;
     console.log(email, password);
     if (!email || !password) return;
-    signupEmail({ email, password }, { onSettled: () => reset() });
+    signupEmail(
+      { email, password },
+      {
+        onSettled: () => {
+          reset();
+          closeModal();
+        },
+      }
+    );
   }
   return isPendingEmail ? (
     <LoaderSpinner />

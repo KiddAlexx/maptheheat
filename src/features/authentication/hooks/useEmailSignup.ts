@@ -11,7 +11,7 @@ export function useEmailSignup() {
       toast.success(
         'Account successfully created! Please check your emails and verify your account'
       );
-      navigate('/login', { replace: true });
+      navigate('/', { replace: true });
     },
     onError: (err) => {
       toast.error(err.message);
