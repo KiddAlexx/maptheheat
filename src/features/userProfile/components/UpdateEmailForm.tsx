@@ -56,7 +56,7 @@ function UpdateEmailForm() {
         })}
       />
       <Button radius="sm" size="lg" type="submit">
-        Update email address
+        Update Email
       </Button>
     </form>
   );
