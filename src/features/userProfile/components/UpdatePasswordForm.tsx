@@ -1,16 +1,28 @@
+import { useModalContext } from '@/context/ModalContext';
+import { useLogout } from '@/features/authentication/hooks/useLogout';
 import { useUpdatePassword } from '@/features/authentication/hooks/useUpdatePassword';
 import { Button, Input } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 
 function UpdatePasswordForm() {
   const { updatePassword } = useUpdatePassword();
+  const { logout } = useLogout();
+  const { openModal } = useModalContext();
   const { register, formState, handleSubmit, getValues } = useForm();
   const { errors } = formState;
 
   function formSubmit(formData) {
     const { password } = formData;
     if (!password) return;
-    updatePassword({ password });
+    updatePassword(
+      { password },
+      {
+        onSuccess: () => {
+          logout();
+          openModal('login');
+        },
+      }
+    );
   }
 
   return (
