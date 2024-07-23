@@ -42,6 +42,13 @@ export async function updateEmailApi({ email }) {
   if (error) throw new Error(`Email update failed: ${error.message}`);
   return data;
 }
+export async function updatePasswordApi({ password }) {
+  const { data, error } = await supabase.auth.updateUser({
+    password,
+  });
+  if (error) throw new Error(`Password update failed: ${error.message}`);
+  return data;
+}
 
 export async function getCurrentUser() {
   const { data: session } = await supabase.auth.getSession();
