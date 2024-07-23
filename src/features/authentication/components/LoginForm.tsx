@@ -103,6 +103,7 @@ function LoginForm() {
             underline="hover"
             size="sm"
             color="foreground"
+            onPress={() => openModal('forgot-password')}
           >
             Forgot Password
           </Link>
