@@ -8,7 +8,6 @@ function UpdateEmailForm() {
   const { errors } = formState;
 
   function formSubmit(formData) {
-    console.log(formData);
     const { email } = formData;
     if (!email) return;
     updateEmail({ email });

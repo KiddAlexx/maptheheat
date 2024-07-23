@@ -4,15 +4,20 @@ import styles from '../styles/AuthForm.module.css';
 
 import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
+import { useRecoverPassword } from '../hooks/useRecoverPassword';
 
 function ForgotPasswordForm() {
   const { register, handleSubmit, reset, getValues, formState } = useForm();
   const { openModal } = useModalContext();
+  const { recoverPassword } = useRecoverPassword();
 
   const { errors } = formState;
 
   function formSubmit(formData) {
-    console.log(formData);
+    console.log('form data', formData);
+    const { email } = formData;
+    if (!email) return;
+    recoverPassword({ email });
   }
 
   return (
