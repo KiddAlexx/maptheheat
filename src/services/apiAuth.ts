@@ -50,6 +50,12 @@ export async function updatePasswordApi({ password }) {
   return data;
 }
 
+export async function recoverPasswordApi({ email }) {
+  const { data, error } = await supabase.auth.resetPasswordForEmail({ email });
+  if (error) throw new Error(`Password recovery failed: ${error.message}`);
+  return data;
+}
+
 export async function getCurrentUser() {
   const { data: session } = await supabase.auth.getSession();
   if (!session.session) return null;
