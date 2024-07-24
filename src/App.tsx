@@ -32,6 +32,7 @@ import { ReviewSortProvider } from './context/ReviewSortContext';
 import { UserReviewsProvider } from './context/UserReviewsContext';
 import { UserFavVenuesProvider } from './context/UserFavVenuesContext';
 import Profile from './pages/Profile';
+import UpdatePassword from './pages/ResetPassword';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,6 +65,10 @@ function App() {
                             <AddNewVenue />
                           </ProtectedRoute>
                         }
+                      />
+                      <Route
+                        path="update-password"
+                        element={<UpdatePassword />}
                       />
                       <Route
                         path="profile"

@@ -51,7 +51,9 @@ export async function updatePasswordApi({ password }) {
 }
 
 export async function recoverPasswordApi({ email }) {
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email);
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: 'http://localhost:5173/update-password',
+  });
   if (error) throw new Error(`Password recovery failed: ${error.message}`);
 
   return data;
