@@ -10,7 +10,7 @@ import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 // Component imports
 import ListItem from './VenueListItem';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
-import { useUser } from '@/features/authentication/useUser';
+import { useUser } from '@/features/authentication/hooks/useUser';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 
 function ListView({ useVenueContext, favouriteVenues }) {

@@ -1,4 +1,4 @@
-import { useUser } from '@/features/authentication/useUser';
+import { useUser } from '@/features/authentication/hooks/useUser';
 import Avatar from '@/features/userProfile/components/Avatar';
 import styles from './UserMenu.module.css';
 import {
@@ -7,7 +7,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@nextui-org/react';
-import { useLogout } from '@/features/authentication/useLogout';
+import { useLogout } from '@/features/authentication/hooks/useLogout';
 import { useNavigate } from 'react-router';
 
 function UserMenu() {

@@ -35,6 +35,30 @@ export async function loginGoogleApi() {
   return data;
 }
 
+export async function updateEmailApi({ email }) {
+  const { data, error } = await supabase.auth.updateUser({
+    email,
+  });
+  if (error) throw new Error(`Email update failed: ${error.message}`);
+  return data;
+}
+export async function updatePasswordApi({ password }) {
+  const { data, error } = await supabase.auth.updateUser({
+    password,
+  });
+  if (error) throw new Error(`Password update failed: ${error.message}`);
+  return data;
+}
+
+export async function recoverPasswordApi({ email }) {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: 'http://localhost:5173/update-password',
+  });
+  if (error) throw new Error(`Password recovery failed: ${error.message}`);
+
+  return data;
+}
+
 export async function getCurrentUser() {
   const { data: session } = await supabase.auth.getSession();
   if (!session.session) return null;

@@ -7,7 +7,7 @@ import ReviewSort from './ReviewSort';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 
 import { useParams } from 'react-router';
-import { useUser } from '@/features/authentication/useUser';
+import { useUser } from '@/features/authentication/hooks/useUser';
 import { useGetReviews } from '../hooks/useGetReviews';
 
 interface ReviewContainerProps {
