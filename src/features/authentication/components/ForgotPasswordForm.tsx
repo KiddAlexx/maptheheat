@@ -5,10 +5,12 @@ import styles from '../styles/AuthForm.module.css';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import { useRecoverPassword } from '../hooks/useRecoverPassword';
+import { useGlobalError } from '@/context/ErrorContext';
 
 function ForgotPasswordForm() {
   const { register, handleSubmit, reset, getValues, formState } = useForm();
-  const { openModal } = useModalContext();
+  const { openModal, openDialog } = useModalContext();
+  const { setGlobalError } = useGlobalError();
   const { recoverPassword } = useRecoverPassword();
 
   const { errors } = formState;
@@ -17,7 +19,21 @@ function ForgotPasswordForm() {
     console.log('form data', formData);
     const { email } = formData;
     if (!email) return;
-    recoverPassword({ email });
+    recoverPassword(
+      { email },
+      {
+        onSuccess: () => {
+          openDialog(
+            'If that email address is in our system, we will send a link to reset your password'
+          );
+        },
+        onError: () => {
+          setGlobalError(
+            'There was an error resetting your password. Please confirm your email address and try again'
+          );
+        },
+      }
+    );
   }
 
   return (

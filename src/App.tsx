@@ -32,7 +32,7 @@ import { ReviewSortProvider } from './context/ReviewSortContext';
 import { UserReviewsProvider } from './context/UserReviewsContext';
 import { UserFavVenuesProvider } from './context/UserFavVenuesContext';
 import Profile from './pages/Profile';
-import UpdatePassword from './pages/ResetPassword';
+import UpdatePassword from './pages/UpdatePassword';
 
 const queryClient = new QueryClient({
   defaultOptions: {
