@@ -13,6 +13,25 @@ export async function getUserProfile(userId: string) {
   return camelcaseKeys(data[0]);
 }
 
+export interface UpdateUsernameParams {
+  username: string;
+}
+
+export async function updateUsername({ username }: UpdateUsernameParams) {
+  const { data: user, error: authError } = await supabase.auth.getUser();
+  if (authError)
+    throw new Error(`No authenticated user found: ${authError.message}`);
+  const userId = user?.user?.id;
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ username: username })
+    .match({ user_id: userId });
+  if (error) {
+    throw new Error(`Error updating username: ${error.message}`);
+  }
+  return data;
+}
+
 export interface AddFavouriteVenueParams {
   venueId: string;
   userId: string;
