@@ -26,9 +26,10 @@ export async function updateUsernameApi({ username }: UpdateUsernameParams) {
     .from('profiles')
     .update({ username: username })
     .match({ user_id: userId });
-  if (error) {
-    throw new Error(`Error updating username: ${error.message}`);
+  if (error?.message.includes('profiles_username_key')) {
+    throw new Error(`This username is already taken. Please choose another`);
   }
+  if (error) throw new Error(`Error updating username: ${error.message}`);
   return data;
 }
 
