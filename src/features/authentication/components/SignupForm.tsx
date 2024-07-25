@@ -98,8 +98,8 @@ function SignupForm() {
                 message: 'Username must be at least 6 characters',
               },
               maxLength: {
-                value: 16,
-                message: 'Username cannot be more than 16 characters',
+                value: 20,
+                message: 'Username cannot be more than 20 characters',
               },
               pattern: {
                 value: /^[a-zA-Z0-9]+$/,
