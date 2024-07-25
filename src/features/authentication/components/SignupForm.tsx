@@ -79,34 +79,7 @@ function SignupForm() {
               },
             })}
           />
-          <Input
-            className={styles.formInput}
-            type="text"
-            label="Username"
-            radius="sm"
-            variant="bordered"
-            isInvalid={!!errors.username}
-            errorMessage={
-              errors.username && typeof errors?.username?.message === 'string'
-                ? errors.username.message
-                : ''
-            }
-            {...register('username', {
-              required: 'This field is required',
-              minLength: {
-                value: 6,
-                message: 'Username must be at least 6 characters',
-              },
-              maxLength: {
-                value: 20,
-                message: 'Username cannot be more than 20 characters',
-              },
-              pattern: {
-                value: /^[a-zA-Z0-9]+$/,
-                message: 'Username can only consist of letter and numbers',
-              },
-            })}
-          />
+
           <Divider className={styles.signUpDivider} />
           <Input
             className={styles.formInput}
