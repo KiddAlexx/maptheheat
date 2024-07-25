@@ -17,7 +17,7 @@ export interface UpdateUsernameParams {
   username: string;
 }
 
-export async function updateUsername({ username }: UpdateUsernameParams) {
+export async function updateUsernameApi({ username }: UpdateUsernameParams) {
   const { data: user, error: authError } = await supabase.auth.getUser();
   if (authError)
     throw new Error(`No authenticated user found: ${authError.message}`);
