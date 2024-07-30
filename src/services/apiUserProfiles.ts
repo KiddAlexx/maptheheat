@@ -1,5 +1,7 @@
 import camelcaseKeys from 'camelcase-keys';
 import supabase from './supabase';
+import compressImage from '@/utils/compressImage';
+import uploadImages from './supabaseImageUploader';
 
 export async function getUserProfile(userId: string) {
   const { data, error } = await supabase
@@ -15,6 +17,32 @@ export async function getUserProfile(userId: string) {
 
 export interface UpdateUsernameParams {
   username: string;
+}
+
+export async function updateAvatarApi({ avatar }) {
+  const { data: user, error: authError } = await supabase.auth.getUser();
+  if (authError)
+    throw new Error(`No authenticated user found: ${authError.message}`);
+  const userId = user?.user?.id;
+  // Compress image. Type asserted as function will return File or throw an Error
+  const compressedAvatar = (await compressImage(avatar, {
+    maxWidthOrHeight: 150,
+  })) as File[];
+
+  // Upload image to supabase bucket
+  const imagePath = await uploadImages(compressedAvatar, 'avatars', userId);
+
+  // Add image path for avatar to profiles table
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ avatarUrl: imagePath })
+    .eq('user_id', userId);
+
+  if (error) {
+    throw new Error(`Error adding image to database: ${error.message}`);
+  }
+  console.log('this is the uploaded image data', data);
+  return data;
 }
 
 export async function updateUsernameApi({ username }: UpdateUsernameParams) {
