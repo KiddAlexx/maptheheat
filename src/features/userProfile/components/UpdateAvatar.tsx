@@ -10,6 +10,8 @@ import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orien
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import { Button } from '@nextui-org/react';
+import { useGlobalError } from '@/context/ErrorContext';
+import { useUpdateAvatar } from '../hooks/useUpdateAvatar';
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
@@ -17,9 +19,17 @@ registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 function UpdateAvatar() {
   //File Upload State
   const [newAvatar, setNewAvatar] = useState<File[]>([]);
+  const { setGlobalError } = useGlobalError();
+  const { updateAvatar, isUpdating } = useUpdateAvatar();
 
   function uploadFile() {
     console.log(newAvatar);
+    if (newAvatar.length === 0) {
+      setGlobalError('No images were selected!');
+      return;
+    }
+
+    updateAvatar({ newAvatar });
   }
 
   return (
