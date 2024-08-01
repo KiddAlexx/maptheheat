@@ -45,7 +45,7 @@ function UserProfile() {
         <Tab key={'venues'} title="Favourite Venues">
           <VenueListContainer mode="user" favouriteVenues={favouriteVenues} />
         </Tab>
-        <Tab key={'edit-profile'} title="Edit Profile">
+        <Tab key={'edit'} title="Edit Profile">
           <EditProfilePanel />
         </Tab>
       </Tabs>

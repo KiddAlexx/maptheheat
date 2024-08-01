@@ -99,7 +99,7 @@ function DetailedVenueView() {
     }
     if (!username) {
       openDialog('Please choose a username to proceed', () =>
-        navigate(`/profile/edit-profile`)
+        navigate(`/profile/edit`)
       );
       return;
     }
