@@ -71,7 +71,7 @@ function App() {
                         element={<UpdatePassword />}
                       />
                       <Route
-                        path="profile"
+                        path="/profile/:section?/:setting?"
                         element={
                           <ProtectedRoute>
                             <Profile />
