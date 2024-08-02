@@ -7,13 +7,18 @@ import { Tab, Tabs } from '@nextui-org/react';
 import { useState } from 'react';
 import UserProfileBanner from './UserProfileBanner';
 import EditProfilePanel from './EditProfilePanel';
+import { useNavigate, useParams } from 'react-router';
 
 function UserProfile() {
   const { user, isLoading: isLoadingUser, fetchStatus } = useUser();
   const { id: userId } = user;
   const { userProfile, isLoading: isLoadingProfile } =
     useGetUserProfile(userId);
-  const [selected, setSelected] = useState('reviews');
+
+  const { section } = useParams();
+  const navigate = useNavigate();
+
+  const [selected, setSelected] = useState(section || 'reviews');
 
   if (fetchStatus == 'fetching' || isLoadingUser || isLoadingProfile) return;
   <LoaderSpinner />;
@@ -21,13 +26,18 @@ function UserProfile() {
   const { updatedAt, username, avatarUrl, totalReviews, favouriteVenues } =
     userProfile;
 
+  function handleSelectionChange(key) {
+    setSelected(key);
+    navigate(`/profile/${key}`, { replace: true });
+  }
+
   return (
     <div>
       <UserProfileBanner userProfile={userProfile} />
       <Tabs
         aria-label="Options"
         selectedKey={selected}
-        onSelectionChange={setSelected}
+        onSelectionChange={handleSelectionChange}
       >
         <Tab key={'reviews'} title="My Reviews">
           <ReviewContainer mode="user" />
@@ -35,7 +45,7 @@ function UserProfile() {
         <Tab key={'venues'} title="Favourite Venues">
           <VenueListContainer mode="user" favouriteVenues={favouriteVenues} />
         </Tab>
-        <Tab key={'edit-profile'} title="Edit Profile">
+        <Tab key={'edit'} title="Edit Profile">
           <EditProfilePanel />
         </Tab>
       </Tabs>

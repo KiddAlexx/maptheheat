@@ -1,5 +1,7 @@
 import camelcaseKeys from 'camelcase-keys';
-import supabase from './supabase';
+import supabase, { supabaseUrl } from './supabase';
+import compressImage from '@/utils/compressImage';
+import uploadImages from './supabaseImageUploader';
 
 export async function getUserProfile(userId: string) {
   const { data, error } = await supabase
@@ -11,6 +13,54 @@ export async function getUserProfile(userId: string) {
     throw new Error(`Profile could not be loaded. Error:${error.message}`);
   }
   return camelcaseKeys(data[0]);
+}
+
+export interface UpdateUsernameParams {
+  username: string;
+}
+
+export async function updateAvatarApi({ newAvatar }) {
+  const { data: user, error: authError } = await supabase.auth.getUser();
+  if (authError)
+    throw new Error(`No authenticated user found: ${authError.message}`);
+  const userId = user?.user?.id;
+  // Compress image. Type asserted as function will return File or throw an Error
+  const compressedAvatar = (await compressImage(newAvatar, {
+    maxWidthOrHeight: 150,
+  })) as File[];
+
+  // Upload image to supabase bucket
+  const imagePath = await uploadImages(compressedAvatar, 'avatars', userId);
+
+  const avatarUrl = `${supabaseUrl}/storage/v1/object/public/avatars/${imagePath}`;
+
+  // Add image path for avatar to profiles table
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ avatar_url: avatarUrl })
+    .eq('user_id', userId);
+
+  if (error) {
+    throw new Error(`Error adding image to database: ${error.message}`);
+  }
+  console.log('this is the uploaded image data', data);
+  return data;
+}
+
+export async function updateUsernameApi({ username }: UpdateUsernameParams) {
+  const { data: user, error: authError } = await supabase.auth.getUser();
+  if (authError)
+    throw new Error(`No authenticated user found: ${authError.message}`);
+  const userId = user?.user?.id;
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ username: username })
+    .match({ user_id: userId });
+  if (error?.message.includes('profiles_username_key')) {
+    throw new Error(`This username is already taken. Please choose another`);
+  }
+  if (error) throw new Error(`Error updating username: ${error.message}`);
+  return data;
 }
 
 export interface AddFavouriteVenueParams {
