@@ -15,7 +15,7 @@ function PageNav() {
   return (
     <nav className={styles.nav}>
       <h3 className={styles.logoMain}>
-        <NavLink to="/">Map The Heat</NavLink>
+        <NavLink to="/">MapTheHeat</NavLink>
       </h3>
       <ul className={styles.authButtons}>
         {/* Checks user login state
