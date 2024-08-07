@@ -3,30 +3,14 @@
 // React imports
 
 import { ReactNode, createContext, useContext, useReducer } from 'react';
+import {
+  FilterField,
+  VenueFilter,
+  VenuePagination,
+  VenueSort,
+} from '@/types/venueTypes';
 
 // Data types
-
-type FilterField = 'city' | 'venueType';
-export type VenueSortField = 'averageRating' | 'totalReviews' | 'createdAt';
-
-type SupabaseQueryMethod = 'eq' | 'gt' | 'lt' | 'gte' | 'lte';
-export type Direction = 'asc' | 'desc';
-
-export interface VenueFilter {
-  field: FilterField;
-  value: string;
-  method: SupabaseQueryMethod;
-}
-
-export interface VenueSort {
-  field: VenueSortField;
-  direction: Direction;
-}
-
-export interface VenuePagination {
-  pageNumber: number;
-  maxResults: number;
-}
 
 interface State {
   filters: VenueFilter[];
@@ -188,6 +172,7 @@ function VenueFilterProvider({ children }: VenueFilterProviderProps) {
         filters,
         sort,
         pagination,
+
         updateVenueFilter,
         removeVenueFilter,
         updateSort,

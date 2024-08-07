@@ -1,13 +1,21 @@
-import { useReviewSortContext } from '@/context/ReviewSortContext';
+import { ReviewPaginationParams, UpdatePageNumber } from '@/types/reviewTypes';
 import { Pagination } from '@nextui-org/react';
-import { useParams } from 'react-router';
-import { useGetReviews } from '../hooks/useGetReviews';
 
-function ReviewPagination() {
-  const { pagination, updatePageNumber } = useReviewSortContext();
+interface ReviewPaginationProps {
+  pagination: ReviewPaginationParams;
+  updatePageNumber: UpdatePageNumber;
+  totalCount: number;
+}
+
+function ReviewPagination({
+  pagination,
+  updatePageNumber,
+  totalCount,
+}: ReviewPaginationProps) {
   const { pageNumber, maxResults } = pagination;
-  const { venueId } = useParams();
-  const { totalCount } = useGetReviews({ venueId });
+
+  // Calculates total number of pages required based on the total number
+  // of results divided by the maxResults per page.
   const pageCount = totalCount ? Math.ceil(totalCount / maxResults) : 0;
 
   if (pageCount <= 1) {

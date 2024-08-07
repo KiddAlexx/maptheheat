@@ -1,11 +1,9 @@
-import { useVenueFilterContext } from '@/context/VenueFilterContext';
 import { Button, ButtonGroup } from '@nextui-org/react';
 import { useState } from 'react';
 
-function VenueTypeFilter() {
+function VenueTypeFilter({ useVenueContext }) {
   const [activeType, setActiveType] = useState('all');
-  const { updateVenueFilter, removeVenueFilter, filters } =
-    useVenueFilterContext();
+  const { updateVenueFilter, removeVenueFilter, filters } = useVenueContext();
 
   function handleFilterClick(type) {
     setActiveType(type);

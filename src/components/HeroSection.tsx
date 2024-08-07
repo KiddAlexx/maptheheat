@@ -3,24 +3,21 @@ import { useNavigate } from 'react-router';
 
 // Style imports
 import styles from './HeroSection.module.css';
+import { Button } from '@nextui-org/react';
 
 function HeroSection() {
   const navigate = useNavigate();
   return (
     <section className={styles.heroSection}>
       <div className={styles.ctaSection}>
-        <h1>Feel the Burn: Unleash Explosive Flavors with Map the Heat!</h1>
+        <h1>Uncover the Hottest Spots with MapTheHeat!</h1>
         <p>
-          Navigate to the world's spiciest venues and shops. Our platform is
-          designed for heat-seekers like you. Start exploring now!
+          Track down the top places for seriously spicy food. Made for true
+          lovers of heat. Start exploring today!
         </p>
         <div className={styles.btnContainer}>
-          <button className="btn-default" onClick={() => navigate('app')}>
-            Search Venues
-          </button>
-          <button className="btn-default" onClick={() => navigate('app')}>
-            Search Shops
-          </button>
+          <Button onClick={() => navigate('app')}>Search Venues</Button>
+          <Button onClick={() => navigate('app')}>Search Shops</Button>
         </div>
       </div>
     </section>

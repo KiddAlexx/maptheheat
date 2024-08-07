@@ -8,7 +8,7 @@ import styles from '../styles/DetailedVenueView.module.css';
 // Hooks imports
 import { useVenue } from '../hooks/useVenue';
 import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
-import { useUser } from '../../authentication/useUser';
+import { useUser } from '../../authentication/hooks/useUser';
 import { useModalContext } from '../../../context/ModalContext';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
 
@@ -21,7 +21,7 @@ import ReviewContainer from '../../reviews/components/ReviewContainer';
 import { Button } from '@nextui-org/react';
 
 // Type imports
-import { Image } from '../../../models/venueTypes';
+import { Image } from '../../../types/venueTypes';
 
 // File imports
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
@@ -30,11 +30,13 @@ import globeIcon from '../../../assets/icons/globe.svg';
 import mapPinIcon from '../../../assets/icons/map-pin.svg';
 import phoneIcon from '../../../assets/icons/phone.svg';
 import infoIcon from '../../../assets/icons/info.svg';
+import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
   const { venueId } = useParams();
-  const { openModal, openModalImages, openModalUpload } = useModalContext();
+  const { openModal, openModalImages, openModalUpload, openDialog } =
+    useModalContext();
 
   const {
     isLoading: isLoadingUser,
@@ -43,6 +45,9 @@ function DetailedVenueView() {
     user,
   } = useUser();
   const userId = user?.id;
+
+  const { isLoading, userProfile } = useGetUserProfile(userId);
+  const username = userProfile?.username;
 
   const {
     isLoading: isLoadingReviewAuth,
@@ -90,6 +95,12 @@ function DetailedVenueView() {
   async function handleReview() {
     if (!isAuthenticated) {
       openModal('login');
+      return;
+    }
+    if (!username) {
+      openDialog('Please choose a username to proceed', () =>
+        navigate(`/profile/edit/username`)
+      );
       return;
     }
     const { data: canUserReview } = await refetchUserPermission();
@@ -184,7 +195,7 @@ function DetailedVenueView() {
       >
         Back to Map
       </Link>
-      <ReviewContainer />
+      <ReviewContainer mode="venue" />
     </div>
   );
 }

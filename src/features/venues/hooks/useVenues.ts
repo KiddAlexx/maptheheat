@@ -1,19 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
-import { VenuesResponse, getVenues } from '../../../services/apiVenues';
 import {
-  VenueFilter,
-  VenuePagination,
-  VenueSort,
-} from '@/context/VenueFilterContext';
+  VenuesRequestParams,
+  VenuesResponse,
+  getVenues,
+} from '../../../services/apiVenues';
 
-export function useVenues(
-  filters: VenueFilter[],
-  sort?: VenueSort | null,
-  pagination?: VenuePagination
-) {
+export function useVenues({
+  sort,
+  filters,
+  pagination,
+  favouriteVenues,
+}: VenuesRequestParams) {
   const { error, isLoading, data } = useQuery<VenuesResponse>({
-    queryKey: ['venues', filters, sort, pagination],
-    queryFn: () => getVenues(filters, sort, pagination),
+    queryKey: ['venues', filters, sort, pagination, favouriteVenues],
+    queryFn: () => getVenues({ filters, sort, pagination, favouriteVenues }),
   });
 
   const venues = data?.data;

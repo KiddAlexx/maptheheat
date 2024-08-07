@@ -1,17 +1,17 @@
 // Style imports
-import styles from './AuthForm.module.css';
+import styles from '../styles/AuthForm.module.css';
 
 // Third party imports
 import { useForm } from 'react-hook-form';
 
 // File imports
 
-import { useEmailSignup } from './useEmailSignup';
-import LoaderSpinner from '../../ui/LoaderSpinner';
+import { useEmailSignup } from '../hooks/useEmailSignup';
+import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/button';
 import { Link } from '@nextui-org/link';
-import { useModalContext } from '../../context/ModalContext';
+import { useModalContext } from '../../../context/ModalContext';
 import { Divider } from '@nextui-org/divider';
 
 function SignupForm() {
@@ -27,7 +27,7 @@ function SignupForm() {
   const { errors } = formState;
 
   const { signupEmail, isPending: isPendingEmail } = useEmailSignup();
-  const { openModal } = useModalContext();
+  const { openModal, closeModal } = useModalContext();
 
   function formSubmit(formData: FormData) {
     console.log(formData);
@@ -35,7 +35,15 @@ function SignupForm() {
     const { email, password } = formData;
     console.log(email, password);
     if (!email || !password) return;
-    signupEmail({ email, password }, { onSettled: () => reset() });
+    signupEmail(
+      { email, password },
+      {
+        onSettled: () => {
+          reset();
+          closeModal();
+        },
+      }
+    );
   }
   return isPendingEmail ? (
     <LoaderSpinner />
@@ -71,34 +79,7 @@ function SignupForm() {
               },
             })}
           />
-          <Input
-            className={styles.formInput}
-            type="text"
-            label="Username"
-            radius="sm"
-            variant="bordered"
-            isInvalid={!!errors.username}
-            errorMessage={
-              errors.username && typeof errors?.username?.message === 'string'
-                ? errors.username.message
-                : ''
-            }
-            {...register('username', {
-              required: 'This field is required',
-              minLength: {
-                value: 6,
-                message: 'Username must be at least 6 characters',
-              },
-              maxLength: {
-                value: 16,
-                message: 'Username cannot be more than 16 characters',
-              },
-              pattern: {
-                value: /^[a-zA-Z0-9]+$/,
-                message: 'Username can only consist of letter and numbers',
-              },
-            })}
-          />
+
           <Divider className={styles.signUpDivider} />
           <Input
             className={styles.formInput}

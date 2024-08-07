@@ -4,7 +4,7 @@ import Rating from 'react-rating';
 interface VenueRatingProps {
   initialRating?: number | null;
   readonly?: boolean;
-  handleRatingChange: (rating: number) => void;
+  handleRatingChange?: (rating: number) => void;
 }
 
 function VenueRating({

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 // Style imports
 import styles from './PageNav.module.css';
-import { useUser } from '../authentication/useUser';
+import { useUser } from '../authentication/hooks/useUser';
 import { useModalContext } from '../../context/ModalContext';
 import { Button } from '@nextui-org/button';
 import UserMenu from '@/ui/UserMenu';
@@ -15,7 +15,7 @@ function PageNav() {
   return (
     <nav className={styles.nav}>
       <h3 className={styles.logoMain}>
-        <NavLink to="/">Map The Heat</NavLink>
+        <NavLink to="/">MapTheHeat</NavLink>
       </h3>
       <ul className={styles.authButtons}>
         {/* Checks user login state

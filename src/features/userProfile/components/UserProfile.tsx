@@ -1,5 +1,56 @@
+import { useUser } from '@/features/authentication/hooks/useUser';
+import ReviewContainer from '@/features/reviews/components/ReviewContainer';
+import VenueListContainer from '@/features/venues/components/VenueListContainer';
+import { useGetUserProfile } from '../hooks/useGetUserProfile';
+import LoaderSpinner from '@/ui/LoaderSpinner';
+import { Tab, Tabs } from '@nextui-org/react';
+import { useState } from 'react';
+import UserProfileBanner from './UserProfileBanner';
+import EditProfilePanel from './EditProfilePanel';
+import { useNavigate, useParams } from 'react-router';
+
 function UserProfile() {
-  return <div>User Profile</div>;
+  const { user, isLoading: isLoadingUser, fetchStatus } = useUser();
+  const { id: userId } = user;
+  const { userProfile, isLoading: isLoadingProfile } =
+    useGetUserProfile(userId);
+
+  const { section } = useParams();
+  const navigate = useNavigate();
+
+  const [selected, setSelected] = useState(section || 'reviews');
+
+  if (fetchStatus == 'fetching' || isLoadingUser || isLoadingProfile) return;
+  <LoaderSpinner />;
+
+  const { updatedAt, username, avatarUrl, totalReviews, favouriteVenues } =
+    userProfile;
+
+  function handleSelectionChange(key) {
+    setSelected(key);
+    navigate(`/profile/${key}`, { replace: true });
+  }
+
+  return (
+    <div>
+      <UserProfileBanner userProfile={userProfile} />
+      <Tabs
+        aria-label="Options"
+        selectedKey={selected}
+        onSelectionChange={handleSelectionChange}
+      >
+        <Tab key={'reviews'} title="My Reviews">
+          <ReviewContainer mode="user" />
+        </Tab>
+        <Tab key={'venues'} title="Favourite Venues">
+          <VenueListContainer mode="user" favouriteVenues={favouriteVenues} />
+        </Tab>
+        <Tab key={'edit'} title="Edit Profile">
+          <EditProfilePanel />
+        </Tab>
+      </Tabs>
+    </div>
+  );
 }
 
 export default UserProfile;

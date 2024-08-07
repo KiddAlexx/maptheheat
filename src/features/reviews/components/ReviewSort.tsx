@@ -1,14 +1,16 @@
-import {
-  ReviewSortField,
-  useReviewSortContext,
-} from '@/context/ReviewSortContext';
-import { Direction } from '@/context/VenueFilterContext';
+import { Direction } from '@/types/commonTypes';
+import { ResetSort, ReviewSortField, UpdateSort } from '@/types/reviewTypes';
+
 import { Select, SelectItem } from '@nextui-org/react';
+
 import { FaSortAmountDownAlt, FaSortAmountUp } from 'react-icons/fa';
 
-function ReviewSort() {
-  const { updateSort, resetSort } = useReviewSortContext();
+interface ReviewSortParams {
+  updateSort: UpdateSort;
+  resetSort: ResetSort;
+}
 
+function ReviewSort({ updateSort, resetSort }: ReviewSortParams) {
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     if (e.target.value === 'default') {
       resetSort();

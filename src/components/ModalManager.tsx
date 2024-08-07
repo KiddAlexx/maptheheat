@@ -1,11 +1,12 @@
 import { useModalContext } from '../context/ModalContext';
-import LoginForm from '../features/authentication/LoginForm';
-import SignupForm from '../features/authentication/SignupForm';
+
+import SignupForm from '../features/authentication/components/SignupForm';
 import ConfirmationDialog from '../ui/ConfirmationDialog';
 import Modal from '../ui/Modal';
 import ImageCarousel from '@/ui/ImageCarousel';
 import ImageUploader from './ImageUploader';
-import ProtectedRoute from './ProtectedRoute';
+import LoginForm from '@/features/authentication/components/LoginForm';
+import ForgotPasswordForm from '@/features/authentication/components/ForgotPasswordForm';
 
 function ModalManager() {
   const { modalName, modalOpen } = useModalContext();
@@ -19,6 +20,9 @@ function ModalManager() {
 
     case 'sign-up':
       Component = <SignupForm />;
+      break;
+    case 'forgot-password':
+      Component = <ForgotPasswordForm />;
       break;
 
     case 'image-carousel':

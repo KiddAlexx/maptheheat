@@ -19,7 +19,6 @@ import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
 import DetailedVenueView from './features/venues/components/DetailedVenueView';
 import MapView from './features/map/MapView';
-import UserProfile from './features/userProfile/components/UserProfile';
 import PageNav from './features/layout/PageNav';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ModalProvider } from './context/ModalContext';
@@ -30,6 +29,10 @@ import AddNewVenue from './pages/AddNewVenue';
 import { NextUIProvider } from '@nextui-org/system';
 import { VenueFilterProvider } from './context/VenueFilterContext';
 import { ReviewSortProvider } from './context/ReviewSortContext';
+import { UserReviewsProvider } from './context/UserReviewsContext';
+import { UserFavVenuesProvider } from './context/UserFavVenuesContext';
+import Profile from './pages/Profile';
+import UpdatePassword from './pages/UpdatePassword';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,81 +48,89 @@ function App() {
     <NextUIProvider navigate={navigate}>
       <GlobalErrorProvider>
         <VenueFilterProvider>
-          <ReviewSortProvider>
-            <ModalProvider>
-              <QueryClientProvider client={queryClient}>
-                <ReactQueryDevtools initialIsOpen={false} />
+          <UserFavVenuesProvider>
+            <ReviewSortProvider>
+              <UserReviewsProvider>
+                <ModalProvider>
+                  <QueryClientProvider client={queryClient}>
+                    <ReactQueryDevtools initialIsOpen={false} />
 
-                <PageNav />
-                <Routes>
-                  <Route path="/" element={<Homepage />} />
-                  <Route
-                    path="/add-venue"
-                    element={
-                      <ProtectedRoute>
-                        <AddNewVenue />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route path="app" element={<AppLayout />}>
-                    <Route index element={<Navigate replace to="map" />} />
-                    <Route
-                      path="map/:city?/:venue?/:venueId?"
-                      element={<MapView />}
-                    />
-                    <Route
-                      path="venue/:city/:venue/:venueId"
-                      element={<DetailedVenueView />}
-                    />
-                    <Route
-                      path="venue/:city/:venue/reviews/new/:venueId"
-                      element={
-                        <ProtectedRoute>
-                          <ReviewForm mode="creating" />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="venue/:city/:venue/reviews/edit/:reviewId"
-                      element={
-                        <ProtectedRoute>
-                          <ReviewForm mode="editing" />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="profile"
-                      element={
-                        <ProtectedRoute>
-                          <UserProfile />
-                        </ProtectedRoute>
-                      }
-                    />
-                  </Route>
-                  <Route path="*" element={<PageNotFound />} />
-                </Routes>
-                <ErrorModal />
-                <ModalManager />
+                    <PageNav />
+                    <Routes>
+                      <Route path="/" element={<Homepage />} />
+                      <Route
+                        path="/add-venue"
+                        element={
+                          <ProtectedRoute>
+                            <AddNewVenue />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="update-password"
+                        element={<UpdatePassword />}
+                      />
+                      <Route
+                        path="/profile/:section?/:setting?"
+                        element={
+                          <ProtectedRoute>
+                            <Profile />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="app" element={<AppLayout />}>
+                        <Route index element={<Navigate replace to="map" />} />
+                        <Route
+                          path="map/:city?/:venue?/:venueId?"
+                          element={<MapView />}
+                        />
+                        <Route
+                          path="venue/:city/:venue/:venueId"
+                          element={<DetailedVenueView />}
+                        />
+                        <Route
+                          path="venue/:city/:venue/reviews/new/:venueId"
+                          element={
+                            <ProtectedRoute>
+                              <ReviewForm mode="creating" />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path="venue/:city/:venue/reviews/edit/:reviewId"
+                          element={
+                            <ProtectedRoute>
+                              <ReviewForm mode="editing" />
+                            </ProtectedRoute>
+                          }
+                        />
+                      </Route>
+                      <Route path="*" element={<PageNotFound />} />
+                    </Routes>
+                    <ErrorModal />
+                    <ModalManager />
 
-                <Toaster
-                  position="top-center"
-                  gutter={12}
-                  containerStyle={{ margin: '8px' }}
-                  toastOptions={{
-                    success: { duration: 3000 },
-                    error: { duration: 5000 },
-                    style: {
-                      fontSize: '16',
-                      maxWidth: '500px',
-                      padding: '16px 24px',
-                      backgroundColor: '#fff',
-                      color: '#374151',
-                    },
-                  }}
-                />
-              </QueryClientProvider>
-            </ModalProvider>
-          </ReviewSortProvider>
+                    <Toaster
+                      position="top-center"
+                      gutter={12}
+                      containerStyle={{ margin: '8px' }}
+                      toastOptions={{
+                        success: { duration: 3000 },
+                        error: { duration: 5000 },
+                        style: {
+                          fontSize: '16',
+                          maxWidth: '500px',
+                          padding: '16px 24px',
+                          backgroundColor: '#fff',
+                          color: '#374151',
+                        },
+                      }}
+                    />
+                  </QueryClientProvider>
+                </ModalProvider>
+              </UserReviewsProvider>
+            </ReviewSortProvider>
+          </UserFavVenuesProvider>
         </VenueFilterProvider>
       </GlobalErrorProvider>
     </NextUIProvider>

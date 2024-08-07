@@ -2,25 +2,13 @@
 
 // React imports
 import { createContext, ReactNode, useContext, useReducer } from 'react';
-import { Direction } from './VenueFilterContext';
+import { ReviewPaginationParams, ReviewSort } from '@/types/reviewTypes';
 
 // Data types
 
-export type ReviewSortField = 'averageRating' | 'createdAt';
-
-export interface ReviewSort {
-  field: ReviewSortField;
-  direction: Direction;
-}
-
-export interface ReviewPagination {
-  pageNumber: number;
-  maxResults: number;
-}
-
 interface State {
   sort: ReviewSort | null;
-  pagination: ReviewPagination;
+  pagination: ReviewPaginationParams;
 }
 
 interface ReviewFilterContextType extends State {
@@ -112,7 +100,7 @@ function ReviewSortProvider({ children }: ReviewFilterProviderProps) {
   );
 }
 
-// A custom hook to provide easy access to the VenueFilterContext
+// A custom hook to provide easy access to the ReviewSortContext
 function useReviewSortContext() {
   const context = useContext(ReviewSortContext);
   if (context === undefined)
