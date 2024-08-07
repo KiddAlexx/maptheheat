@@ -1,3 +1,4 @@
+import { useModalContext } from '@/context/ModalContext';
 import { Button } from '@nextui-org/react';
 import { useState } from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
@@ -15,20 +16,17 @@ function LikeButton({
   isAuthenticated,
   handleClick,
 }: LikeButtonProps) {
-  const [isFavouriteState, setIsFavouriteState] = useState(isFavourite);
+  const { openModal } = useModalContext();
 
-  // Toggles value of local state.
   // Runs handleClick function, which receives current "stale" state
   // which is inverted to allign with update.
-  // If user is not authenticated then handleClick function is ran
-  // and authenticion handled there
+  // If user is not authenticated then login modal is opened.
   function handleFavouriteClick() {
     if (!isAuthenticated) {
-      handleClick(!isFavouriteState);
+      openModal('login');
       return;
     } else {
-      setIsFavouriteState(() => !isFavouriteState);
-      handleClick(!isFavouriteState);
+      handleClick(!isFavourite);
     }
   }
 
@@ -42,7 +40,7 @@ function LikeButton({
       radius="full"
       onPress={() => handleFavouriteClick()}
     >
-      {isFavouriteState ? <FaHeart color="red" /> : <FaRegHeart />}
+      {isFavourite ? <FaHeart color="red" /> : <FaRegHeart />}
     </Button>
   );
 }

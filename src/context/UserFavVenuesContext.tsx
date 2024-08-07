@@ -15,7 +15,6 @@ interface State {
   filters: VenueFilter[];
   sort: VenueSort | null;
   pagination: VenuePagination;
-  mode: 'user';
 }
 
 interface UserFavVenuesContextType extends State {
@@ -50,7 +49,6 @@ const initialState: State = {
   filters: [],
   sort: null,
   pagination: { pageNumber: 1, maxResults: 5 },
-  mode: 'user',
 };
 
 // Reducer function to handle filter updates and removals
@@ -141,7 +139,7 @@ function reducer(state: State, action: Action) {
 
 // Context provider component
 function UserFavVenuesProvider({ children }: UserFavVenuesProviderProps) {
-  const [{ filters, sort, pagination, mode }, dispatch] = useReducer(
+  const [{ filters, sort, pagination }, dispatch] = useReducer(
     reducer,
     initialState
   );
@@ -173,7 +171,7 @@ function UserFavVenuesProvider({ children }: UserFavVenuesProviderProps) {
         filters,
         sort,
         pagination,
-        mode,
+
         updateVenueFilter,
         removeVenueFilter,
         updateSort,
