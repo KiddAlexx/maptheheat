@@ -6,13 +6,13 @@
 import styles from '../styles/SearchAndFilterPanel.module.css';
 import { Link } from 'react-router-dom';
 import VenueTypeFilter from './VenueTypeFilter';
-import VenueSearchBar from './VenueSearchBar';
+import CitySelect from './CitySelect';
 import VenueSort from './VenueSort';
 
 function SearchAndFilterPanel({ useVenueContext }) {
   return (
     <>
-      <VenueSearchBar useVenueContext={useVenueContext} />
+      <CitySelect useVenueContext={useVenueContext} />
       <div className={styles.filterSortWrapper}>
         <VenueTypeFilter useVenueContext={useVenueContext} />
         <VenueSort useVenueContext={useVenueContext} />
