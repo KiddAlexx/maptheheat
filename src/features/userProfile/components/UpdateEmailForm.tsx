@@ -4,13 +4,13 @@ import { useForm } from 'react-hook-form';
 
 function UpdateEmailForm() {
   const { updateEmail } = useUpdateEmail();
-  const { register, formState, handleSubmit, getValues } = useForm();
+  const { register, formState, handleSubmit, getValues, reset } = useForm();
   const { errors } = formState;
 
   function formSubmit(formData) {
     const { email } = formData;
     if (!email) return;
-    updateEmail({ email });
+    updateEmail({ email }, { onSuccess: () => reset() });
   }
 
   return (
