@@ -172,6 +172,7 @@ function VenueFilterProvider({ children }: VenueFilterProviderProps) {
         filters,
         sort,
         pagination,
+
         updateVenueFilter,
         removeVenueFilter,
         updateSort,

@@ -3,14 +3,14 @@ import { useForm } from 'react-hook-form';
 import { useUpdateUsername } from '../hooks/useUpdateUsername';
 
 function UpdateUsernameForm() {
-  const { register, formState, handleSubmit, getValues } = useForm();
+  const { register, formState, handleSubmit, getValues, reset } = useForm();
   const { errors } = formState;
   const { updateUsername } = useUpdateUsername();
 
   function formSubmit(formData) {
     const { username } = formData;
     if (!username) return;
-    updateUsername({ username });
+    updateUsername({ username }, { onSuccess: () => reset() });
   }
 
   return (

@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { withinTimeframe } from '../../../utils/withinTimeframe';
 
 import { ReviewWithRelations } from '@/types/reviewTypes';
+import { Button } from '@nextui-org/react';
 
 interface ReviewListItemProps {
   review: ReviewWithRelations;
@@ -104,9 +105,9 @@ function ReviewListItem({ review }: ReviewListItemProps) {
         )}
         {/* Displays option to delete review if current user is the author of review*/}
         {currentUser && (
-          <button onClick={handleDeleteReview} className="btn-default">
+          <Button onClick={handleDeleteReview} className="btn-default">
             Delete Review
-          </button>
+          </Button>
         )}
       </section>
     </article>

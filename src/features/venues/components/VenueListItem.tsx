@@ -23,6 +23,7 @@ import LikeButton from '@/ui/LikeButton';
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
 import toast from 'react-hot-toast';
 import { useModalContext } from '@/context/ModalContext';
+import { useLocation } from 'react-router';
 
 interface ListItemProps {
   venue: Venue;
@@ -41,6 +42,11 @@ function ListItem({
 }: ListItemProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
 
+  const location = useLocation();
+  const isUserMode = location.pathname === '/profile/venues';
+
+  const { openDialog } = useModalContext();
+
   const { venueName, venueId, address, phoneNumber, images, averageRating } =
     venue;
 
@@ -48,12 +54,23 @@ function ListItem({
 
   const { updateFavouriteVenue } = useUpdateFavouriteVenue();
 
-  const { openModal } = useModalContext();
-
   function toggleFavourite(isFavouriteState: boolean) {
-    if (!isAuthenticated) {
-      openModal('login');
-      return;
+    if (isUserMode) {
+      openDialog(
+        'Are you sure you want to remove this venue from your favourites?',
+        () => {
+          updateFavouriteVenue(
+            { userId, venueId },
+            {
+              onSuccess: () => {
+                isFavouriteState
+                  ? toast.success(`${venueName} added to favourites!`)
+                  : toast.success(`${venueName} removed from favourites!`);
+              },
+            }
+          );
+        }
+      );
     } else {
       updateFavouriteVenue(
         { userId, venueId },

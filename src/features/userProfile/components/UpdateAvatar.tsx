@@ -12,6 +12,7 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import { Button } from '@nextui-org/react';
 import { useGlobalError } from '@/context/ErrorContext';
 import { useUpdateAvatar } from '../hooks/useUpdateAvatar';
+import LoaderSpinner from '@/ui/LoaderSpinner';
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
@@ -29,7 +30,7 @@ function UpdateAvatar() {
       return;
     }
 
-    updateAvatar({ newAvatar });
+    updateAvatar({ newAvatar }, { onSuccess: () => setNewAvatar([]) });
   }
 
   return (
@@ -42,13 +43,16 @@ function UpdateAvatar() {
           setNewAvatar(newImages);
         }}
         allowMultiple={false}
+        disabled={isUpdating}
         maxFiles={1}
         name="files"
         labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
       />
       <h3>Select a suitable avatar to upload</h3>
       <div>
-        <Button onClick={uploadFile}>Upload</Button>
+        <Button onClick={uploadFile} isDisabled={isUpdating}>
+          {isUpdating ? <LoaderSpinner /> : 'Upload'}
+        </Button>
       </div>
     </div>
   );

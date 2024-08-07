@@ -171,6 +171,7 @@ function UserFavVenuesProvider({ children }: UserFavVenuesProviderProps) {
         filters,
         sort,
         pagination,
+
         updateVenueFilter,
         removeVenueFilter,
         updateSort,
