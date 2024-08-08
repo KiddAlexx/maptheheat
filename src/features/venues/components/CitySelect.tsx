@@ -23,7 +23,7 @@ function CitySelect({ useVenueContext }) {
         placeholder="Select City"
         aria-label="city"
         radius="sm"
-        value={selectedCity}
+        inputValue={selectedCity}
         onInputChange={handleSelectCity}
         /* onSelectionChange={handleSelectCity} */
       >

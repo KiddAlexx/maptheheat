@@ -25,6 +25,7 @@ function VenueSearchBar({ useVenueContext }) {
       <Input
         onValueChange={(value) => setSearchValue(value)}
         value={searchValue}
+        placeholder="Search by venue name"
       />
       <div className={`${styles.searchBarButton}`}>
         <Button onClick={clearSearch}>Clear</Button>
