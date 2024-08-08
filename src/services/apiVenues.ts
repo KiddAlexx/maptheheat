@@ -116,7 +116,7 @@ export async function createVenue(newVenue: NewVenue) {
   return camelcaseKeys(data);
 }
 
-export async function createUniqueCityApi({ cityObj }) {
+export async function createUniqueCityApi(cityObj) {
   const { city, country } = cityObj;
 
   // Check if city already exists in unique_cities table.
@@ -125,7 +125,7 @@ export async function createUniqueCityApi({ cityObj }) {
     .select('*')
     .eq('city', city)
     .eq('country', country)
-    .single();
+    .maybeSingle();
 
   if (fetchError) {
     throw new Error(`Error fetching unique cities:${fetchError.message}`);
