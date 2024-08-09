@@ -7,12 +7,13 @@ function CitySelect({ useVenueContext }) {
   const [selectedCity, setSelectedCity] = useState('');
 
   const { uniqueCities, error, isPending: isPendingCities } = useUniqueCities();
-  const { updateVenueFilter } = useVenueContext();
+  const { updateVenueFilter, removeVenueFilter } = useVenueContext();
 
   const handleSelectCity = (value) => {
     setSelectedCity(value);
     console.log(selectedCity);
     updateVenueFilter({ field: 'city', value: value, method: 'eq' });
+    removeVenueFilter('venueName');
   };
 
   return isPendingCities ? (
