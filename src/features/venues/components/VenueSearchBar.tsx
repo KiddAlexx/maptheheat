@@ -1,45 +1,36 @@
-import { useState } from 'react';
+import { Button, Input } from '@nextui-org/react';
 import styles from '../styles/SearchAndFilterPanel.module.css';
-import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
-import { useUniqueCities } from '../hooks/useUniqueCities';
-import LoaderSpinner from '@/ui/LoaderSpinner';
+import { useState } from 'react';
 
 function VenueSearchBar({ useVenueContext }) {
-  const [selectedCity, setSelectedCity] = useState('');
+  const { updateVenueFilter, removeVenueFilter } = useVenueContext();
+  const [searchValue, setSearchValue] = useState('');
 
-  const { uniqueCities, error, isPending: isPendingCities } = useUniqueCities();
-
-  const handleSelectCity = (value) => {
-    setSelectedCity(value);
-    console.log(selectedCity);
-  };
-  const { updateVenueFilter } = useVenueContext();
-
-  function handleSubmit(e) {
+  function handleSumbit(e) {
     e.preventDefault();
-    updateVenueFilter({ field: 'city', value: selectedCity, method: 'eq' });
+    const formattedSearchValue = `%${searchValue}%`;
+    console.log(searchValue);
+    updateVenueFilter({
+      field: 'venueName',
+      value: formattedSearchValue,
+      method: 'ilike',
+    });
   }
-
-  return isPendingCities ? (
-    <LoaderSpinner />
-  ) : (
-    <form onSubmit={handleSubmit}>
-      <Autocomplete
-        placeholder="Search by city"
-        aria-label="city"
-        radius="sm"
-        value={selectedCity}
-        onInputChange={handleSelectCity}
-        /* onSelectionChange={handleSelectCity} */
-      >
-        {uniqueCities!.map((city, index) => (
-          // Using city + index as key for uniqueness in case of duplicate city names
-          <AutocompleteItem key={index}>{city}</AutocompleteItem>
-        ))}
-      </Autocomplete>
-      <button type="submit" className={`${styles.searchBarButton} btn-default`}>
-        Search
-      </button>
+  function clearSearch() {
+    setSearchValue('');
+    removeVenueFilter('venueName');
+  }
+  return (
+    <form onSubmit={handleSumbit}>
+      <Input
+        onValueChange={(value) => setSearchValue(value)}
+        value={searchValue}
+        placeholder="Search by venue name"
+      />
+      <div className={`${styles.searchBarButton}`}>
+        <Button onClick={clearSearch}>Clear</Button>
+        <Button type="submit">Search</Button>
+      </div>
     </form>
   );
 }

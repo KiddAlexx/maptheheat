@@ -90,8 +90,22 @@ export async function getVenue(id: string): Promise<Venue> {
   return camelcaseKeys(data[0]);
 }
 
-export async function getUniqueCities(): Promise<string[]> {
+// Legacy function used to generate list of unique cities from venue_details table.
+export async function getUniqueCitiesSupabase(): Promise<string[]> {
   const { data, error } = await supabase.rpc('get_unique_cities');
+
+  if (error) {
+    throw new Error(`Cities could not be loaded. Error:${error.message}`);
+  }
+
+  return data;
+}
+
+export async function getUniqueCities() {
+  const { data, error } = await supabase
+    .from('unique_cities')
+    .select('coords, country, city, id')
+    .order('city', { ascending: true });
 
   if (error) {
     throw new Error(`Cities could not be loaded. Error:${error.message}`);
@@ -114,6 +128,40 @@ export async function createVenue(newVenue: NewVenue) {
     throw new Error(`Venue could not be created. Error:${error.message}`);
   }
   return camelcaseKeys(data);
+}
+
+export async function createUniqueCityApi(cityObj) {
+  const { city, country } = cityObj;
+
+  // Check if city already exists in unique_cities table.
+  const { data: existingCity, error: fetchError } = await supabase
+    .from('unique_cities')
+    .select('*')
+    .eq('city', city)
+    .eq('country', country)
+    .maybeSingle();
+
+  if (fetchError) {
+    throw new Error(`Error fetching unique cities:${fetchError.message}`);
+  }
+
+  // If city already exists return from function.
+  // No further action required.
+  if (existingCity) return;
+
+  // City not found, insert new city details.
+  const { data, error: insertError } = await supabase
+    .from('unique_cities')
+    .insert(cityObj)
+    .single();
+
+  if (insertError) {
+    throw new Error(
+      `Error adding city to unique_cities table:${insertError.message}`
+    );
+  }
+
+  return data;
 }
 
 export async function createVenueImage({
