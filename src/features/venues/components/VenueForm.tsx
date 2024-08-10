@@ -71,7 +71,7 @@ function VenueForm() {
 
       // Fetch central coordinates for city.
       const resCity = await fetch(
-        `https://nominatim.openstreetmap.org/search.php?city=&${city}&country=${country}&format=jsonv2`
+        `https://nominatim.openstreetmap.org/search.php?city=${city}&country=${country}&format=jsonv2`
       );
       const [cityData] = await resCity.json();
       return {

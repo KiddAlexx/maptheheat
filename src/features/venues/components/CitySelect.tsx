@@ -1,10 +1,12 @@
 import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
 import { useUniqueCities } from '../hooks/useUniqueCities';
 import LoaderSpinner from '@/ui/LoaderSpinner';
+import { useNavigate } from 'react-router';
 
 function CitySelect({ useVenueContext }) {
   const { uniqueCities, isPending: isPendingCities } = useUniqueCities();
   const { updateVenueFilter, removeVenueFilter } = useVenueContext();
+  const navigate = useNavigate();
 
   console.log('Heres the unique cities', uniqueCities);
 
@@ -18,6 +20,7 @@ function CitySelect({ useVenueContext }) {
     updateVenueFilter({ field: 'city', value: city, method: 'eq' });
     updateVenueFilter({ field: 'country', value: country, method: 'eq' });
     removeVenueFilter('venueName');
+    navigate(`/app/map/${city}?&lat=${coords.lat}&lon=${coords.lon}`);
   }
 
   return isPendingCities ? (
