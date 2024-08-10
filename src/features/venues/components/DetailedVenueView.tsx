@@ -86,10 +86,6 @@ function DetailedVenueView() {
 
   const { lat, lon } = coords;
 
-  const reviewImages = reviews?.flatMap((review) => review.images || []);
-  const allImages = [...(images || []), ...reviewImages];
-  console.log('final images', allImages);
-
   const finalRating = Math.round(averageRating * 2) / 2 || 5;
 
   async function handleReview() {
@@ -132,12 +128,12 @@ function DetailedVenueView() {
       </div>
       <div
         className={styles.multipleImageContainer}
-        onClick={() => openModalImages('image-carousel', allImages)}
+        onClick={() => openModalImages('image-carousel', images)}
       >
-        {allImages.length > 0 ? (
+        {images?.length > 0 ? (
           // Slice first 4 images and map over
           // To be replaced with more refined component
-          allImages.slice(0, 4).map((image: Image) => (
+          images.slice(0, 4).map((image: Image) => (
             <div className={styles.mainImageContainer}>
               <img
                 className={styles.imageMainSmall}
