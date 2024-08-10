@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { useUser } from '../features/authentication/useUser';
+import { useUser } from '../features/authentication/hooks/useUser';
 import { useEffect, ReactNode } from 'react';
 import LoaderSpinner from '../ui/LoaderSpinner';
 import { useModalContext } from '../context/ModalContext';

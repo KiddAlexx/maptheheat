@@ -3,7 +3,7 @@ import { createVenueImage } from '../../../services/apiVenues';
 import toast from 'react-hot-toast';
 
 // Type Imports
-import { ImageUploadParams } from '../../../models/venueTypes';
+import { ImageUploadParams } from '../../../types/venueTypes';
 
 export function useUpdateVenueImage() {
   const queryClient = useQueryClient();

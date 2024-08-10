@@ -5,10 +5,12 @@ export default async function compressImage(
   imageFiles: File[],
   compressionOptions?: object
 ) {
-  const finalCompressionOptions = compressionOptions || {
-    maxSizeMB: 0.2,
+  const finalCompressionOptions = {
+    maxSizeMB: 0.1,
     maxWidthOrHeight: 640,
     useWebWorker: true,
+    fileType: 'image/webp',
+    ...compressionOptions,
   };
 
   const compressedImages: File[] = [];

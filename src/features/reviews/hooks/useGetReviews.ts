@@ -1,16 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
-import { getReviews } from '../../../services/apiReviews';
-import { Review } from '../../../models/reviewTypes';
+import {
+  getReviews,
+  ReviewsRequestParams,
+  ReviewsResponse,
+} from '../../../services/apiReviews';
 
-export function useGetReviews(venueId: string) {
-  const {
-    isLoading,
-    data: reviews,
-    error,
-  } = useQuery<Review[]>({
-    queryKey: ['reviews', venueId],
-    queryFn: () => getReviews(venueId),
+export function useGetReviews({
+  venueId,
+  userId,
+  sort,
+  pagination,
+}: ReviewsRequestParams) {
+  const { isLoading, data, error } = useQuery<ReviewsResponse>({
+    queryKey: ['reviews', venueId, userId, sort, pagination],
+    queryFn: () => getReviews({ venueId, userId, sort, pagination }),
   });
 
-  return { isLoading, error, reviews };
+  const reviews = data?.data;
+  const totalCount = data?.count ?? 0;
+  return { error, isLoading, reviews, totalCount };
 }

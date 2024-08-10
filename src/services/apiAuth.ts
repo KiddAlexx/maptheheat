@@ -1,4 +1,4 @@
-import { AuthCredentials } from '../models/authenticationTypes';
+import { AuthCredentials } from '../types/authenticationTypes';
 import supabase from './supabase';
 
 export async function signupApi({ email, password }: AuthCredentials) {
@@ -32,6 +32,30 @@ export async function loginGoogleApi() {
     },
   });
   if (error) throw new Error(`Google sign in failed:  ${error.message}`);
+  return data;
+}
+
+export async function updateEmailApi({ email }) {
+  const { data, error } = await supabase.auth.updateUser({
+    email,
+  });
+  if (error) throw new Error(`Email update failed: ${error.message}`);
+  return data;
+}
+export async function updatePasswordApi({ password }) {
+  const { data, error } = await supabase.auth.updateUser({
+    password,
+  });
+  if (error) throw new Error(`Password update failed: ${error.message}`);
+  return data;
+}
+
+export async function recoverPasswordApi({ email }) {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: 'http://localhost:5173/update-password',
+  });
+  if (error) throw new Error(`Password recovery failed: ${error.message}`);
+
   return data;
 }
 

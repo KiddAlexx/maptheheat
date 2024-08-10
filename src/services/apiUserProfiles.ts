@@ -1,7 +1,9 @@
 import camelcaseKeys from 'camelcase-keys';
-import supabase from './supabase';
+import supabase, { supabaseUrl } from './supabase';
+import compressImage from '@/utils/compressImage';
+import uploadImages from './supabaseImageUploader';
 
-export async function getUserProfile(userId) {
+export async function getUserProfile(userId: string) {
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
@@ -11,4 +13,97 @@ export async function getUserProfile(userId) {
     throw new Error(`Profile could not be loaded. Error:${error.message}`);
   }
   return camelcaseKeys(data[0]);
+}
+
+export interface UpdateUsernameParams {
+  username: string;
+}
+
+export async function updateAvatarApi({ newAvatar }) {
+  const { data: user, error: authError } = await supabase.auth.getUser();
+  if (authError)
+    throw new Error(`No authenticated user found: ${authError.message}`);
+  const userId = user?.user?.id;
+  // Compress image. Type asserted as function will return File or throw an Error
+  const compressedAvatar = (await compressImage(newAvatar, {
+    maxWidthOrHeight: 150,
+  })) as File[];
+
+  // Upload image to supabase bucket
+  const imagePath = await uploadImages(compressedAvatar, 'avatars', userId);
+
+  const avatarUrl = `${supabaseUrl}/storage/v1/object/public/avatars/${imagePath}`;
+
+  // Add image path for avatar to profiles table
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ avatar_url: avatarUrl })
+    .eq('user_id', userId);
+
+  if (error) {
+    throw new Error(`Error adding image to database: ${error.message}`);
+  }
+  console.log('this is the uploaded image data', data);
+  return data;
+}
+
+export async function updateUsernameApi({ username }: UpdateUsernameParams) {
+  const { data: user, error: authError } = await supabase.auth.getUser();
+  if (authError)
+    throw new Error(`No authenticated user found: ${authError.message}`);
+  const userId = user?.user?.id;
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ username: username })
+    .match({ user_id: userId });
+  if (error?.message.includes('profiles_username_key')) {
+    throw new Error(`This username is already taken. Please choose another`);
+  }
+  if (error) throw new Error(`Error updating username: ${error.message}`);
+  return data;
+}
+
+export interface AddFavouriteVenueParams {
+  venueId: string;
+  userId: string;
+}
+
+export async function updateFavouriteVenue({
+  venueId,
+  userId,
+}: AddFavouriteVenueParams) {
+  // Fetch row based on userId + return favourite_venues
+  const { data: currentFavs, error: fetchError } = await supabase
+    .from('profiles')
+    .select('favourite_venues')
+    .eq('user_id', userId)
+    .single();
+
+  if (fetchError) {
+    throw new Error(
+      `Error fetching current favourite venues: ${fetchError.message}`
+    );
+  }
+
+  // Create an empty array when favourite_venues is null
+  const currentFavsArray: string[] = currentFavs.favourite_venues || [];
+
+  // Toggle presence of venueId in the favourites array
+  const updatedFavs = currentFavsArray.includes(venueId)
+    ? currentFavsArray.filter((id) => id !== venueId)
+    : [...currentFavsArray, venueId];
+
+  // Update profiles table with new favourite_venues list
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ favourite_venues: updatedFavs })
+    .eq('user_id', userId);
+
+  if (error) {
+    throw new Error(
+      `Error adding favourite venue to database: ${error.message}`
+    );
+  }
+
+  return data;
 }

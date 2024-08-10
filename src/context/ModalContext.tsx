@@ -30,7 +30,7 @@ interface ModalContextType extends State {
   ) => void;
   openModalUpload: (params: OpenModalUploadParams) => void;
   closeModal: () => void;
-  openDialog: (message: string, confirmAction: () => void) => void;
+  openDialog: (message: string, confirmAction?: () => void) => void;
 }
 
 type Action =
@@ -50,7 +50,7 @@ type Action =
     }
   | {
       type: 'open-dialog';
-      payload: { message: string; confirmActionAndClose: () => void };
+      payload: { message: string; confirmActionAndClose?: (() => void) | null };
     }
   | { type: 'close-modal' };
 
@@ -101,7 +101,7 @@ function reducer(state: State, action: Action) {
         modalName: 'confirm-action',
         modalOpen: true,
         message: action.payload.message,
-        confirmAction: action.payload.confirmActionAndClose,
+        confirmAction: action.payload.confirmActionAndClose ?? null,
       };
 
     case 'close-modal': {
@@ -157,11 +157,13 @@ function ModalProvider({ children }: ModalProviderProps) {
       payload: { modal, venueId, venueNameSlug, city },
     });
   }
-  function openDialog(message: string, confirmAction: () => void) {
-    const confirmActionAndClose = () => {
-      confirmAction();
-      closeModal();
-    };
+  function openDialog(message: string, confirmAction?: () => void) {
+    const confirmActionAndClose = confirmAction
+      ? () => {
+          confirmAction();
+          closeModal();
+        }
+      : null;
     dispatch({
       type: 'open-dialog',
       payload: { message, confirmActionAndClose },

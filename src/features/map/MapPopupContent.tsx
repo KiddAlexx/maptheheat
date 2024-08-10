@@ -4,7 +4,7 @@
 import styles from './MapPopupContent.module.css';
 
 // Type imports
-import { Venue } from '../../models/venueTypes';
+import { Venue } from '../../types/venueTypes';
 // Hooks imports
 import { useParamsAndNavigate } from '../../hooks/useParamsAndNavigate';
 
@@ -32,7 +32,7 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
     isLoading: isLoadingReviews,
     error: reviewError,
     reviews,
-  } = useGetReviews(venueId);
+  } = useGetReviews({ venueId });
 
   if (isLoadingReviews) {
     return <LoaderSpinner />;

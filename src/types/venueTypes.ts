@@ -1,3 +1,5 @@
+import { Direction, SupabaseQueryMethod } from './commonTypes';
+
 export interface Venue {
   venueName: string;
   address: string;
@@ -31,6 +33,27 @@ export interface Coords {
 export interface Image {
   url: string;
   alt: string;
+}
+
+// Review context types - used in VenueFilterContext and UserFavVenuesContext
+
+export type FilterField = 'city' | 'venueType';
+export type VenueSortField = 'averageRating' | 'totalReviews' | 'createdAt';
+
+export interface VenueFilter {
+  field: FilterField;
+  value: string;
+  method: SupabaseQueryMethod;
+}
+
+export interface VenueSort {
+  field: VenueSortField;
+  direction: Direction;
+}
+
+export interface VenuePagination {
+  pageNumber: number;
+  maxResults: number;
 }
 
 export interface ImageUploadParams {

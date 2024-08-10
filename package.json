@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@nextui-org/react": "^2.2.10",
+    "@nextui-org/react": "^2.4.2",
     "@nextui-org/system": "^2.0.15",
     "@nextui-org/theme": "^2.1.18",
     "@radix-ui/react-slot": "^1.0.2",
@@ -22,6 +22,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
+    "decamelize": "^6.0.0",
     "decamelize-keys": "^2.0.1",
     "embla-carousel-react": "^8.0.0",
     "filepond": "^4.30.6",
@@ -36,7 +37,7 @@
     "react-filepond": "^7.1.2",
     "react-hook-form": "^7.49.0",
     "react-hot-toast": "^2.4.1",
-    "react-icons": "^5.0.1",
+    "react-icons": "^5.2.1",
     "react-leaflet": "^4.2.1",
     "react-loader-spinner": "^5.3.4",
     "react-rating": "^2.0.5",

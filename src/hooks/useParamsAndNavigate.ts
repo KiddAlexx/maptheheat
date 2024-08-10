@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Venue } from '../models/venueTypes';
+import { Venue } from '../types/venueTypes';
 
 export function useParamsAndNavigate() {
   const navigate = useNavigate();

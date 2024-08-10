@@ -9,6 +9,7 @@ export function useGetUserProfile(userId) {
   } = useQuery({
     queryKey: ['profile', userId],
     queryFn: () => getUserProfile(userId),
+    enabled: !!userId,
   });
 
   return { isLoading, error, userProfile };

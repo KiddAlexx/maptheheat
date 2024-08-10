@@ -11,17 +11,18 @@ import MapPopupContent from './MapPopupContent';
 import styles from './MapView.module.css';
 
 // Type imports
-import { Coords } from '../../models/venueTypes';
+import { Coords } from '../../types/venueTypes';
 
 // Hooks imports
 import { useVenues } from '../venues/hooks/useVenues';
 import { useSearchParams } from 'react-router-dom';
+import { useVenueFilterContext } from '@/context/VenueFilterContext';
 
 function MapView() {
   const [searchParams] = useSearchParams();
-
+  const { filters } = useVenueFilterContext();
   // Load venues from supabase
-  const { venues } = useVenues();
+  const { venues, isLoading: isLoadingVenues } = useVenues({ filters });
 
   // Sets coordinates based on searchParams if available
   // Used to center map on selected venue

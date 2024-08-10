@@ -1,16 +1,16 @@
 // Style imports
-import styles from './AuthForm.module.css';
+import styles from '../styles/AuthForm.module.css';
 
 // NextUI Components
 import { Input, Link, Button, Divider } from '@nextui-org/react';
 
 // File imports
-import googleBtnLight from '../../assets/btn_google_light_normal_ios.svg';
+import googleBtnLight from '../../../assets/btn_google_light_normal_ios.svg';
 import { useForm } from 'react-hook-form';
-import { useEmailLogin } from './useEmailLogin';
-import { useGoogleLogin } from './useGoogleLogin';
-import LoaderSpinner from '../../ui/LoaderSpinner';
-import { useModalContext } from '../../context/ModalContext';
+import { useEmailLogin } from '../hooks/useEmailLogin';
+import { useGoogleLogin } from '../hooks/useGoogleLogin';
+import { useModalContext } from '@/context/ModalContext';
+import LoaderSpinner from '@/ui/LoaderSpinner';
 
 function LoginForm() {
   interface FormData {
@@ -103,6 +103,7 @@ function LoginForm() {
             underline="hover"
             size="sm"
             color="foreground"
+            onPress={() => openModal('forgot-password')}
           >
             Forgot Password
           </Link>

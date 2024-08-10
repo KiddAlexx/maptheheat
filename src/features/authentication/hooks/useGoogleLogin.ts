@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import toast from 'react-hot-toast';
-import { loginGoogleApi } from '../../services/apiAuth';
+import { loginGoogleApi } from '../../../services/apiAuth';
 
 export function useGoogleLogin() {
   const { mutate: loginGoogle, isPending } = useMutation({

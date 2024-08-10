@@ -13,12 +13,13 @@ form .searchBarButton {
   bottom: 0;
   right: 0;
   z-index: 20;
-  border-radius: 0 0.5rem 0.5rem 0;
-  background-color: #2b6027;
+  border-radius: 0 0.7rem 0.7rem 0;
+
   transition: background-color 0.2s ease-in-out;
 }
-form .searchBarButton:hover {
-  background-color: #53b84c;
+
+.filterSortWrapper {
+  display: flex;
 }
 
 .addNewContainer {

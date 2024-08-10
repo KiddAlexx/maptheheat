@@ -25,7 +25,7 @@ import styles from '../styles/VenueForm.module.css';
 // Hooks imports
 
 import { useCreateVenue } from '../hooks/useCreateVenue';
-import { useUser } from '../../authentication/useUser';
+import { useUser } from '../../authentication/hooks/useUser';
 
 // Component imports
 import LoaderSpinner from '../../../ui/LoaderSpinner';
@@ -34,6 +34,7 @@ import ErrorModal from '../../../ui/ErrorModal';
 // Data imports
 import countries from '../../../shared/data/countries.json';
 import ImageUploader from '@/components/ImageUploader';
+import { useCreateUniqueCity } from '../hooks/useCreateUniqueCity';
 
 function VenueForm() {
   interface FormData {
@@ -47,7 +48,8 @@ function VenueForm() {
     website: string;
     country: string;
   }
-  const { createVenue, isCreating } = useCreateVenue();
+  const { createVenue, isCreating: isCreatingVenue } = useCreateVenue();
+  const { createUniqueCity, isCreating } = useCreateUniqueCity();
 
   const { user } = useUser();
 
@@ -62,13 +64,26 @@ function VenueForm() {
   async function fetchAddressDetails(formData: FormData) {
     const { address, postcode, country, city } = formData;
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?street=${address}&city=${city}&country=${country}&postalcode=${postcode}&format=json`
+      const resVenue = await fetch(
+        `https://nominatim.openstreetmap.org/search?street=${address}&city=${city}&country=${country}&postalcode=${postcode}&format=jsonv2`
       );
-      const [data] = await res.json(); // Take first result from array in case of multiple
+      const [venueData] = await resVenue.json(); // Take first result from array in case of multiple
+
+      // Fetch central coordinates for city.
+      const resCity = await fetch(
+        `https://nominatim.openstreetmap.org/search.php?city=${city}&country=${country}&format=jsonv2`
+      );
+      const [cityData] = await resCity.json();
       return {
-        detailedAddress: data.display_name,
-        coords: { lat: data.lat, lon: data.lon },
+        venueAddress: {
+          detailedAddress: venueData.display_name,
+          coords: { lat: venueData.lat, lon: venueData.lon },
+        },
+        cityAddress: {
+          coords: { lat: cityData.lat, lon: cityData.lon },
+          city,
+          country,
+        },
       };
     } catch (err) {
       throw new Error(
@@ -92,7 +107,7 @@ function VenueForm() {
       const finalVenueData = {
         ...formData,
         phoneNumber,
-        ...additionalVenueData,
+        ...additionalVenueData.venueAddress,
         userId: user!.id, // Value will not be null, checks done prior, further validation to be added
         venueNameSlug: slugify(formData.venueName).toLowerCase(),
       };
@@ -101,6 +116,9 @@ function VenueForm() {
       const newVenue = await createVenue(finalVenueData);
       setCreatedVenue(newVenue);
       console.log(createdVenue);
+      // Adds city details to unique_cities table if entry does not already exist.
+      await createUniqueCity(additionalVenueData.cityAddress);
+
       setFormIndex(2);
     } catch (err) {
       if (err instanceof Error) {
@@ -128,7 +146,7 @@ function VenueForm() {
           onSubmit={handleSubmit(formSubmit, toastFormError)}
           className={styles.venueFormContainer}
         >
-          {isCreating ? (
+          {isCreatingVenue ? (
             <LoaderSpinner />
           ) : (
             <>

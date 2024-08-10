@@ -1,18 +1,13 @@
 // React imports
 
-// Component imports
-import ListView from '../venues/components/ListView';
-import SearchBar from '../venues/components/SearchBar';
-
 // Style imports
 import styles from './SideBar.module.css';
+import VenueListContainer from '../venues/components/VenueListContainer';
 
 function SideBar() {
   return (
     <div className={styles.sideBar}>
-      <SearchBar />
-
-      <ListView />
+      <VenueListContainer mode="venue" />
     </div>
   );
 }
