@@ -90,8 +90,22 @@ export async function getVenue(id: string): Promise<Venue> {
   return camelcaseKeys(data[0]);
 }
 
-export async function getUniqueCities(): Promise<string[]> {
+// Legacy function used to generate list of unique cities from venue_details table.
+export async function getUniqueCitiesSupabase(): Promise<string[]> {
   const { data, error } = await supabase.rpc('get_unique_cities');
+
+  if (error) {
+    throw new Error(`Cities could not be loaded. Error:${error.message}`);
+  }
+
+  return data;
+}
+
+export async function getUniqueCities() {
+  const { data, error } = await supabase
+    .from('unique_cities')
+    .select('coords, country, city, id')
+    .order('city', { ascending: true });
 
   if (error) {
     throw new Error(`Cities could not be loaded. Error:${error.message}`);
