@@ -91,8 +91,10 @@ export async function getVenue(id: string): Promise<Venue> {
 }
 
 // Legacy function used to generate list of unique cities from venue_details table.
-export async function getUniqueCitiesSupabase(): Promise<string[]> {
-  const { data, error } = await supabase.rpc('get_unique_cities');
+export async function getUserCitiesSupabase(favVenueList): Promise<string[]> {
+  const { data, error } = await supabase.rpc('get_unique_cities', {
+    venue_ids: favVenueList,
+  });
 
   if (error) {
     throw new Error(`Cities could not be loaded. Error:${error.message}`);
