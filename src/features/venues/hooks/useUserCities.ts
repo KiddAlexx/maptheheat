@@ -4,12 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 export function useUserCities(favVenueList) {
   const {
     error,
-    isPending,
+    isLoading,
     data: userCities,
   } = useQuery<string[]>({
     queryKey: ['userCities'],
     queryFn: () => getUserCitiesSupabase(favVenueList),
     enabled: !!favVenueList,
   });
-  return { error, isPending, userCities };
+  return { error, isLoading, userCities };
 }

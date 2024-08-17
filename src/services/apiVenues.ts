@@ -96,11 +96,16 @@ export async function getUserCitiesSupabase(favVenueList): Promise<string[]> {
     venue_ids: favVenueList,
   });
 
+  const citiesWithIds = data.map((cityObj, index) => ({
+    id: index + 1,
+    ...cityObj,
+  }));
+
   if (error) {
     throw new Error(`Cities could not be loaded. Error:${error.message}`);
   }
 
-  return data;
+  return citiesWithIds;
 }
 
 export async function getUniqueCities() {

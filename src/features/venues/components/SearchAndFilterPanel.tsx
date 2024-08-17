@@ -10,13 +10,17 @@ import CitySelect from './CitySelect';
 import VenueSort from './VenueSort';
 import VenueSearchBar from './VenueSearchBar';
 
-function SearchAndFilterPanel({ useVenueContext }) {
+function SearchAndFilterPanel({ useVenueContext, favouriteVenues }) {
   const location = useLocation();
   const isUserMode = location.pathname === '/profile/venues';
+
   return (
     <>
       {!isUserMode && <VenueSearchBar useVenueContext={useVenueContext} />}
-      <CitySelect useVenueContext={useVenueContext} />
+      <CitySelect
+        useVenueContext={useVenueContext}
+        favouriteVenues={favouriteVenues}
+      />
       <div className={styles.filterSortWrapper}>
         <VenueTypeFilter useVenueContext={useVenueContext} />
         <VenueSort useVenueContext={useVenueContext} />
