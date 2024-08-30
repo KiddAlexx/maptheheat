@@ -17,9 +17,13 @@ function VenueListContainer({
   // based on mode prop
   const useVenueContext =
     mode === 'venue' ? useVenueFilterContext : useUserFavVenuesContext;
+
   return (
     <>
-      <SearchAndFilterPanel useVenueContext={useVenueContext} />
+      <SearchAndFilterPanel
+        useVenueContext={useVenueContext}
+        favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
+      />
       <VenuePagination
         useVenueContext={useVenueContext}
         favouriteVenues={mode === 'user' ? favouriteVenues : undefined}

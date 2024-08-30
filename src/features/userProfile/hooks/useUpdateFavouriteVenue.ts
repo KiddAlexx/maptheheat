@@ -13,6 +13,7 @@ export function useUpdateFavouriteVenue() {
       updateFavouriteVenueApi({ venueId, userId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: ['userCities'] });
     },
     onError: (err) => {
       toast.error(err.message);

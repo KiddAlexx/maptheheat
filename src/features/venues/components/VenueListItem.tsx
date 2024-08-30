@@ -85,30 +85,16 @@ function ListItem({
     }
   }
 
-  const {
-    isLoading: isLoadingReviews,
-    error: reviewError,
-    reviews,
-  } = useGetReviews({ venueId });
-
-  if (isLoadingReviews) {
-    return <LoaderSpinner />;
-  }
-
-  const reviewImages = reviews?.flatMap((review) => review.images || []);
-  const allImages = [...(images || []), ...reviewImages];
-  /*  console.log('final images', venueName, allImages); */
-
   const finalRating = Math.round(averageRating * 2) / 2 || 5;
 
   return (
     <div className={styles.listItemContainer} onClick={handleClick}>
-      {allImages.length > 0 ? (
+      {images?.length > 0 ? (
         <div className={styles.mainImageContainer}>
           <img
             className={styles.imageMainSmall}
-            src={allImages[0].url}
-            alt={allImages[0].alt}
+            src={images[0].url}
+            alt={images[0].alt}
           />
           {/* Fix alt text - user input / somehow generated... */}
         </div>
