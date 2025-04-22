@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 
-const { nextui } = require('@nextui-org/theme');
+const { heroui } = require("@heroui/theme");
 module.exports = {
   content: [
     './pages/**/*.{ts,tsx}',
@@ -8,7 +8,7 @@ module.exports = {
     './app/**/*.{ts,tsx}',
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}',
-    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   prefix: '',
   theme: {
@@ -169,7 +169,7 @@ module.exports = {
   },
   plugins: [
     'tailwindcss-animate',
-    nextui({
+    heroui({
       layout: {
         spacingUnit: 6.4, // in px
         disabledOpacity: 0.5, // this value is applied as opacity-[value] when the component is disabled

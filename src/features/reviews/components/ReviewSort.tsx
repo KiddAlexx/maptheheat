@@ -1,7 +1,7 @@
 import { Direction } from '@/types/commonTypes';
 import { ResetSort, ReviewSortField, UpdateSort } from '@/types/reviewTypes';
 
-import { Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from "@heroui/react";
 
 import { FaSortAmountDownAlt, FaSortAmountUp } from 'react-icons/fa';
 

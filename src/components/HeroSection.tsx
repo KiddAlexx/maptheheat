@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 
 // Style imports
 import styles from './HeroSection.module.css';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 
 function HeroSection() {
   const navigate = useNavigate();

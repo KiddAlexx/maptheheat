@@ -9,7 +9,7 @@ import { FilePond, registerPlugin } from 'react-filepond';
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { useGlobalError } from '@/context/ErrorContext';
 import { useUpdateAvatar } from '../hooks/useUpdateAvatar';
 import LoaderSpinner from '@/ui/LoaderSpinner';

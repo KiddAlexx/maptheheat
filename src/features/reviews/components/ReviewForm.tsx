@@ -16,7 +16,7 @@ import toast from 'react-hot-toast';
 import VenueRating from '../../venues/components/VenueRating';
 import ImageUploader from '@/components/ImageUploader';
 import { Review } from '@/types/reviewTypes';
-import { Button, Input, Textarea } from '@nextui-org/react';
+import { Button, Input, Textarea } from "@heroui/react";
 
 // Types
 interface ReviewFormProps {

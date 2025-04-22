@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { useUniqueCities } from '../hooks/useUniqueCities';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import { useLocation, useNavigate } from 'react-router';
@@ -46,9 +46,9 @@ function CitySelect({ useVenueContext, favouriteVenues }) {
     >
       {finalCityList!.map((cityObj) => (
         // Using city + index as key for uniqueness in case of duplicate city names
-        <AutocompleteItem key={cityObj.id}>
+        (<AutocompleteItem key={cityObj.id}>
           {`${cityObj.city} - ${cityObj.country}`}
-        </AutocompleteItem>
+        </AutocompleteItem>)
       ))}
     </Autocomplete>
   );

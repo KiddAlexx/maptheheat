@@ -2,7 +2,7 @@
 import { useModalContext } from '@/context/ModalContext';
 import styles from '../styles/AuthForm.module.css';
 
-import { Button, Divider, Input, Link } from '@nextui-org/react';
+import { Button, Divider, Input, Link } from "@heroui/react";
 import { useForm } from 'react-hook-form';
 import { useRecoverPassword } from '../hooks/useRecoverPassword';
 import { useGlobalError } from '@/context/ErrorContext';

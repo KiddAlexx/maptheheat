@@ -1,7 +1,7 @@
 import { useModalContext } from '@/context/ModalContext';
 import { useLogout } from '@/features/authentication/hooks/useLogout';
 import { useUpdatePassword } from '@/features/authentication/hooks/useUpdatePassword';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from "@heroui/react";
 import { useForm } from 'react-hook-form';
 
 function UpdatePasswordForm() {

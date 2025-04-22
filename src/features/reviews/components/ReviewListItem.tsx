@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 import { withinTimeframe } from '../../../utils/withinTimeframe';
 
 import { ReviewWithRelations } from '@/types/reviewTypes';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 
 interface ReviewListItemProps {
   review: ReviewWithRelations;

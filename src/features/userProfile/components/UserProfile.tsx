@@ -3,7 +3,7 @@ import ReviewContainer from '@/features/reviews/components/ReviewContainer';
 import VenueListContainer from '@/features/venues/components/VenueListContainer';
 import { useGetUserProfile } from '../hooks/useGetUserProfile';
 import LoaderSpinner from '@/ui/LoaderSpinner';
-import { Tab, Tabs } from '@nextui-org/react';
+import { Tab, Tabs } from "@heroui/react";
 import { useState } from 'react';
 import UserProfileBanner from './UserProfileBanner';
 import EditProfilePanel from './EditProfilePanel';

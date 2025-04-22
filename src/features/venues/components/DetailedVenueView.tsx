@@ -18,7 +18,7 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ReviewContainer from '../../reviews/components/ReviewContainer';
 
 // NextUI Component imports
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 
 // Type imports
 import { Image } from '../../../types/venueTypes';
@@ -133,7 +133,7 @@ function DetailedVenueView() {
         {images?.length > 0 ? (
           // Slice first 4 images and map over
           // To be replaced with more refined component
-          images.slice(0, 4).map((image: Image) => (
+          (images.slice(0, 4).map((image: Image) => (
             <div className={styles.mainImageContainer}>
               <img
                 className={styles.imageMainSmall}
@@ -141,7 +141,7 @@ function DetailedVenueView() {
                 alt={image.alt}
               />
             </div>
-          ))
+          )))
         ) : (
           <div className={styles.mainImageContainer}>
             <img
@@ -153,14 +153,11 @@ function DetailedVenueView() {
           </div>
         )}
       </div>
-
       <Button onClick={handleAddImages}>Add Images</Button>
       {/*    <VenueImageCarousel venueImages={images} /> */}
-
       <button className="btn-default" onClick={handleReview}>
         Leave a review
       </button>
-
       <div className={styles.iconTextContainer}>
         <img src={clockIcon} alt="icon of a clock" />
         <p>Open</p>

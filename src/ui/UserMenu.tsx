@@ -6,7 +6,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useLogout } from '@/features/authentication/hooks/useLogout';
 import { useNavigate } from 'react-router';
 

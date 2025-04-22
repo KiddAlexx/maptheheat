@@ -15,7 +15,7 @@ import {
   Select,
   SelectItem,
   Textarea,
-} from '@nextui-org/react';
+} from "@heroui/react";
 
 // Style imports
 import styles from '../styles/VenueForm.module.css';

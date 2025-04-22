@@ -1,4 +1,4 @@
-import { Pagination } from '@nextui-org/react';
+import { Pagination } from "@heroui/react";
 import { useVenues } from '../hooks/useVenues';
 
 function VenuePagination({ useVenueContext, favouriteVenues }) {

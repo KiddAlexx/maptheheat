@@ -17,7 +17,7 @@ import { useState } from 'react';
 import { useModalContext } from '@/context/ModalContext';
 import { useUpdateVenueImage } from '@/features/venues/hooks/useUpdateVenueImage';
 import { useUser } from '@/features/authentication/hooks/useUser';
-import { Button } from '@nextui-org/button';
+import { Button } from "@heroui/button";
 import { useGlobalError } from '@/context/ErrorContext';
 import { useNavigate } from 'react-router';
 

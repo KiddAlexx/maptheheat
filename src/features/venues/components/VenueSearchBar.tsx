@@ -1,4 +1,4 @@
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from "@heroui/react";
 import styles from '../styles/SearchAndFilterPanel.module.css';
 import { useState } from 'react';
 

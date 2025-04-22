@@ -1,4 +1,4 @@
-import { Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from "@heroui/react";
 import { FaSortAmountDownAlt, FaSortAmountUp } from 'react-icons/fa';
 import { VenueSortField } from '@/types/venueTypes';
 import { Direction } from '@/types/commonTypes';

@@ -8,11 +8,11 @@ import { useForm } from 'react-hook-form';
 
 import { useEmailSignup } from '../hooks/useEmailSignup';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
-import { Input } from '@nextui-org/input';
-import { Button } from '@nextui-org/button';
-import { Link } from '@nextui-org/link';
+import { Input } from "@heroui/input";
+import { Button } from "@heroui/button";
+import { Link } from "@heroui/link";
 import { useModalContext } from '../../../context/ModalContext';
-import { Divider } from '@nextui-org/divider';
+import { Divider } from "@heroui/divider";
 
 function SignupForm() {
   interface FormData {

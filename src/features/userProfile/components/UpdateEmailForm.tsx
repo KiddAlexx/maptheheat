@@ -1,5 +1,5 @@
 import { useUpdateEmail } from '@/features/authentication/hooks/useUpdateEmail';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from "@heroui/react";
 import { useForm } from 'react-hook-form';
 
 function UpdateEmailForm() {
