@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 
 // Style imports
 import styles from './HeroSection.module.css';
-import { Button } from "@heroui/react";
+import { Button } from '@heroui/react';
 
 function HeroSection() {
   const navigate = useNavigate();
@@ -16,8 +16,8 @@ function HeroSection() {
           lovers of heat. Start exploring today!
         </p>
         <div className={styles.btnContainer}>
-          <Button onClick={() => navigate('app')}>Search Venues</Button>
-          <Button onClick={() => navigate('app')}>Search Shops</Button>
+          <Button onPress={() => navigate('app')}>Search Venues</Button>
+          <Button onPress={() => navigate('app')}>Search Shops</Button>
         </div>
       </div>
     </section>
