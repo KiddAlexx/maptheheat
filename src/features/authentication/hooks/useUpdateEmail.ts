@@ -1,11 +1,12 @@
 import { updateEmailApi } from '@/services/apiAuth';
+import { Email } from '@/types/authenticationTypes';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 export function useUpdateEmail() {
   const queryClient = useQueryClient();
   const { mutate: updateEmail, isPending } = useMutation({
-    mutationFn: ({ email }) => updateEmailApi({ email }),
+    mutationFn: ({ email }: Email) => updateEmailApi({ email }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['user'],

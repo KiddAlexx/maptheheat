@@ -1,11 +1,12 @@
 import { updatePasswordApi } from '@/services/apiAuth';
+import { Password } from '@/types/authenticationTypes';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 export function useUpdatePassword() {
   const queryClient = useQueryClient();
   const { mutate: updatePassword, isPending } = useMutation({
-    mutationFn: ({ password }) => updatePasswordApi({ password }),
+    mutationFn: ({ password }: Password) => updatePasswordApi({ password }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['user'],
