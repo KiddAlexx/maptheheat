@@ -23,14 +23,13 @@ interface MapPopupContentProps {
 function MapPopupContent({ venue }: MapPopupContentProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
 
-  const { venueName, venueId, averageRating, address, phoneNumber, images } =
-    venue;
+  const { venueName, averageRating, address, phoneNumber, images } = venue;
 
   return (
     <>
       {/* Duplication of code from ListItem - Move to own component */}
       {/* Render venue image if available, otherwise show default greyed out image */}
-      {images?.length > 0 ? (
+      {images && images.length > 0 ? (
         <div className={styles.mainImageContainer}>
           <img
             className={styles.imageMainSmall}
