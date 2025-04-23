@@ -2,20 +2,24 @@
 import { useModalContext } from '@/context/ModalContext';
 import styles from '../styles/AuthForm.module.css';
 
-import { Button, Divider, Input, Link } from "@heroui/react";
+import { Button, Input, Link } from '@heroui/react';
 import { useForm } from 'react-hook-form';
 import { useRecoverPassword } from '../hooks/useRecoverPassword';
 import { useGlobalError } from '@/context/ErrorContext';
 
 function ForgotPasswordForm() {
-  const { register, handleSubmit, reset, getValues, formState } = useForm();
+  interface FormData {
+    email: string;
+  }
+
+  const { register, handleSubmit, formState } = useForm<FormData>();
   const { openModal, openDialog } = useModalContext();
   const { setGlobalError } = useGlobalError();
   const { recoverPassword } = useRecoverPassword();
 
   const { errors } = formState;
 
-  function formSubmit(formData) {
+  function formSubmit(formData: FormData) {
     console.log('form data', formData);
     const { email } = formData;
     if (!email) return;

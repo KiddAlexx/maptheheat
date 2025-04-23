@@ -35,6 +35,13 @@ export interface Image {
   alt: string;
 }
 
+export interface UniqueCity {
+  coords: Coords;
+  id: string;
+  city: string;
+  country: string;
+}
+
 // Review context types - used in VenueFilterContext and UserFavVenuesContext
 
 export type FilterField = 'city' | 'venueType';

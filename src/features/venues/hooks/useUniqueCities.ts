@@ -6,7 +6,7 @@ export function useUniqueCities() {
     error,
     isPending,
     data: uniqueCities,
-  } = useQuery<string[]>({
+  } = useQuery({
     queryKey: ['uniqueCities'],
     queryFn: getUniqueCities,
   });

@@ -8,6 +8,7 @@ import supabase, { supabaseUrl } from './supabase';
 import {
   ImageUploadParams,
   NewVenue,
+  UniqueCity,
   Venue,
   VenueFilter,
   VenuePagination,
@@ -28,6 +29,11 @@ export interface VenuesRequestParams {
 export interface VenuesResponse {
   data: Venue[];
   count: number | null;
+}
+
+export interface UniqueCityProps {
+  city: string;
+  country: string;
 }
 
 export async function getVenues({
@@ -91,7 +97,7 @@ export async function getVenue(id: string): Promise<Venue> {
 }
 
 // Legacy function used to generate list of unique cities from venue_details table.
-export async function getUserCitiesSupabase(favVenueList): Promise<string[]> {
+/* export async function getUserCitiesSupabase(favVenueList): Promise<string[]> {
   const { data, error } = await supabase.rpc('get_unique_cities', {
     venue_ids: favVenueList,
   });
@@ -106,9 +112,9 @@ export async function getUserCitiesSupabase(favVenueList): Promise<string[]> {
   }
 
   return citiesWithIds;
-}
+} */
 
-export async function getUniqueCities() {
+export async function getUniqueCities(): Promise<UniqueCity[]> {
   const { data, error } = await supabase
     .from('unique_cities')
     .select('coords, country, city, id')
@@ -137,7 +143,7 @@ export async function createVenue(newVenue: NewVenue) {
   return camelcaseKeys(data);
 }
 
-export async function createUniqueCityApi(cityObj) {
+export async function createUniqueCityApi(cityObj: UniqueCityProps) {
   const { city, country } = cityObj;
 
   // Check if city already exists in unique_cities table.

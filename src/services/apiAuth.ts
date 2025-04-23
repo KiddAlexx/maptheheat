@@ -1,4 +1,4 @@
-import { AuthCredentials } from '../types/authenticationTypes';
+import { AuthCredentials, Email, Password } from '../types/authenticationTypes';
 import supabase from './supabase';
 
 export async function signupApi({ email, password }: AuthCredentials) {
@@ -35,14 +35,14 @@ export async function loginGoogleApi() {
   return data;
 }
 
-export async function updateEmailApi({ email }) {
+export async function updateEmailApi({ email }: Email) {
   const { data, error } = await supabase.auth.updateUser({
     email,
   });
   if (error) throw new Error(`Email update failed: ${error.message}`);
   return data;
 }
-export async function updatePasswordApi({ password }) {
+export async function updatePasswordApi({ password }: Password) {
   const { data, error } = await supabase.auth.updateUser({
     password,
   });
@@ -50,7 +50,7 @@ export async function updatePasswordApi({ password }) {
   return data;
 }
 
-export async function recoverPasswordApi({ email }) {
+export async function recoverPasswordApi({ email }: Email) {
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: 'http://localhost:5173/update-password',
   });
