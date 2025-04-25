@@ -1,9 +1,14 @@
-import { Select, SelectItem } from "@heroui/react";
+import { Select, SelectItem } from '@heroui/react';
 import { FaSortAmountDownAlt, FaSortAmountUp } from 'react-icons/fa';
 import { VenueSortField } from '@/types/venueTypes';
 import { Direction } from '@/types/commonTypes';
+import { VenueFilterContextType } from '@/context/VenueFilterContext';
 
-function VenueSort({ useVenueContext }) {
+interface VenueSortProps {
+  useVenueContext: () => VenueFilterContextType;
+}
+
+function VenueSort({ useVenueContext }: VenueSortProps) {
   const { updateSort, resetSort } = useVenueContext();
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     if (e.target.value === 'default') {
@@ -19,35 +24,20 @@ function VenueSort({ useVenueContext }) {
   }
   return (
     <Select onChange={handleChange} label={'Sort by'}>
-      <SelectItem value={'default'} key={'default'}>
-        Default
-      </SelectItem>
-      <SelectItem
-        endContent={<FaSortAmountUp />}
-        value={'averageRating-desc'}
-        key={'averageRating-desc'}
-      >
+      <SelectItem key={'default'}>Default</SelectItem>
+      <SelectItem endContent={<FaSortAmountUp />} key={'averageRating-desc'}>
         Heat Rating
       </SelectItem>
       <SelectItem
         endContent={<FaSortAmountDownAlt />}
-        value={'averageRating-asc'}
         key={'averageRating-asc'}
       >
         Heat Rating
       </SelectItem>
-      <SelectItem
-        endContent={<FaSortAmountUp />}
-        value={'totalReviews-desc'}
-        key={'totalReviews-desc'}
-      >
+      <SelectItem endContent={<FaSortAmountUp />} key={'totalReviews-desc'}>
         Review Count
       </SelectItem>
-      <SelectItem
-        endContent={<FaSortAmountDownAlt />}
-        value={'totalReviews-asc'}
-        key={'totalReviews-asc'}
-      >
+      <SelectItem endContent={<FaSortAmountDownAlt />} key={'totalReviews-asc'}>
         Review Count
       </SelectItem>
     </Select>

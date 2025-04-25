@@ -9,6 +9,7 @@ import {
   ImageUploadParams,
   NewVenue,
   UniqueCity,
+  UniqueUserCity,
   Venue,
   VenueFilter,
   VenuePagination,
@@ -96,13 +97,16 @@ export async function getVenue(id: string): Promise<Venue> {
   return camelcaseKeys(data[0]);
 }
 
-// Legacy function used to generate list of unique cities from venue_details table.
-/* export async function getUserCitiesSupabase(favVenueList): Promise<string[]> {
+// Uses supabase sql function to fetch unique city list
+// for venues in users favourite list
+export async function getUserCitiesSupabase(
+  favVenueList: string[]
+): Promise<UniqueCity[]> {
   const { data, error } = await supabase.rpc('get_unique_cities', {
     venue_ids: favVenueList,
   });
 
-  const citiesWithIds = data.map((cityObj, index) => ({
+  const citiesWithIds = data.map((cityObj: UniqueUserCity, index: number) => ({
     id: index + 1,
     ...cityObj,
   }));
@@ -112,7 +116,7 @@ export async function getVenue(id: string): Promise<Venue> {
   }
 
   return citiesWithIds;
-} */
+}
 
 export async function getUniqueCities(): Promise<UniqueCity[]> {
   const { data, error } = await supabase

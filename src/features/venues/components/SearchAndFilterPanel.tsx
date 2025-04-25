@@ -9,8 +9,17 @@ import VenueTypeFilter from './VenueTypeFilter';
 import CitySelect from './CitySelect';
 import VenueSort from './VenueSort';
 import VenueSearchBar from './VenueSearchBar';
+import { VenueFilterContextType } from '@/context/VenueFilterContext';
 
-function SearchAndFilterPanel({ useVenueContext, favouriteVenues }) {
+interface SearchAndFilerPanelProps {
+  useVenueContext: () => VenueFilterContextType;
+  favouriteVenues?: string[];
+}
+
+function SearchAndFilterPanel({
+  useVenueContext,
+  favouriteVenues,
+}: SearchAndFilerPanelProps) {
   const location = useLocation();
   const isUserMode = location.pathname === '/profile/venues';
 

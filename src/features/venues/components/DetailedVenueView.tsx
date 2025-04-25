@@ -18,7 +18,7 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ReviewContainer from '../../reviews/components/ReviewContainer';
 
 // NextUI Component imports
-import { Button } from "@heroui/react";
+import { Button } from '@heroui/react';
 
 // Type imports
 import { Image } from '../../../types/venueTypes';
@@ -86,7 +86,8 @@ function DetailedVenueView() {
 
   const { lat, lon } = coords;
 
-  const finalRating = Math.round(averageRating * 2) / 2 || 5;
+  const finalRating =
+    averageRating != null ? Math.round(averageRating * 2) / 2 : 5;
 
   async function handleReview() {
     if (!isAuthenticated) {
@@ -133,7 +134,7 @@ function DetailedVenueView() {
         {images?.length > 0 ? (
           // Slice first 4 images and map over
           // To be replaced with more refined component
-          (images.slice(0, 4).map((image: Image) => (
+          images.slice(0, 4).map((image: Image) => (
             <div className={styles.mainImageContainer}>
               <img
                 className={styles.imageMainSmall}
@@ -141,7 +142,7 @@ function DetailedVenueView() {
                 alt={image.alt}
               />
             </div>
-          )))
+          ))
         ) : (
           <div className={styles.mainImageContainer}>
             <img

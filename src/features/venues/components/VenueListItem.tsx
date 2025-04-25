@@ -17,8 +17,7 @@ import VenueRating from './VenueRating';
 
 // Type imports
 import { Venue } from '../../../types/venueTypes';
-import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
-import LoaderSpinner from '@/ui/LoaderSpinner';
+
 import LikeButton from '@/ui/LikeButton';
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
 import toast from 'react-hot-toast';
@@ -28,7 +27,7 @@ import { useLocation } from 'react-router';
 interface ListItemProps {
   venue: Venue;
   handleClick: () => void;
-  userId: string;
+  userId: string | null;
   isAuthenticated: boolean;
   favVenuesList?: string[] | null;
 }
@@ -55,6 +54,7 @@ function ListItem({
   const { updateFavouriteVenue } = useUpdateFavouriteVenue();
 
   function toggleFavourite(isFavouriteState: boolean) {
+    if (!isAuthenticated || !userId) return;
     if (isUserMode) {
       openDialog(
         'Are you sure you want to remove this venue from your favourites?',
@@ -85,16 +85,19 @@ function ListItem({
     }
   }
 
-  const finalRating = Math.round(averageRating * 2) / 2 || 5;
+  const finalRating =
+    averageRating != null ? Math.round(averageRating * 2) / 2 : 5;
+
+  const mainImage = images?.[0];
 
   return (
     <div className={styles.listItemContainer} onClick={handleClick}>
-      {images?.length > 0 ? (
+      {mainImage ? (
         <div className={styles.mainImageContainer}>
           <img
             className={styles.imageMainSmall}
-            src={images[0].url}
-            alt={images[0].alt}
+            src={mainImage.url}
+            alt={mainImage.alt}
           />
           {/* Fix alt text - user input / somehow generated... */}
         </div>
