@@ -15,7 +15,7 @@ import {
   Select,
   SelectItem,
   Textarea,
-} from "@heroui/react";
+} from '@heroui/react';
 
 // Style imports
 import styles from '../styles/VenueForm.module.css';
@@ -35,6 +35,7 @@ import ErrorModal from '../../../ui/ErrorModal';
 import countries from '../../../shared/data/countries.json';
 import ImageUploader from '@/components/ImageUploader';
 import { useCreateUniqueCity } from '../hooks/useCreateUniqueCity';
+import { Venue } from '@/types/venueTypes';
 
 function VenueForm() {
   interface FormData {
@@ -49,13 +50,13 @@ function VenueForm() {
     country: string;
   }
   const { createVenue, isCreating: isCreatingVenue } = useCreateVenue();
-  const { createUniqueCity, isCreating } = useCreateUniqueCity();
+  const { createUniqueCity } = useCreateUniqueCity();
 
   const { user } = useUser();
 
   const [localFormError, setLocalFormError] = useState('');
   const [formIndex, setFormIndex] = useState(1);
-  const [createdVenue, setCreatedVenue] = useState(null);
+  const [createdVenue, setCreatedVenue] = useState<Venue | null>(null);
 
   const { register, handleSubmit, formState } = useForm<FormData>();
   const { errors } = formState;
@@ -378,7 +379,7 @@ function VenueForm() {
       {formIndex === 2 && (
         <div>
           <h2>Add photos for {createdVenue?.venueName ?? ''}</h2>
-          <ImageUploader venue={createdVenue} mode="integrated" />
+          <ImageUploader venue={createdVenue ?? undefined} mode="integrated" />
         </div>
       )}
     </>
