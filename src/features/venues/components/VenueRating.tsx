@@ -45,7 +45,7 @@ function VenueRating({
   return (
     <Rating
       initialRating={initialRating || 5}
-      onChange={(value) => handleRatingChange(value)}
+      onChange={(value: number) => handleRatingChange?.(value)}
       readonly={readonly}
       emptySymbol={emptyFlame}
       fullSymbol={fullFlame}
