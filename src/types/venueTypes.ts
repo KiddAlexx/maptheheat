@@ -47,9 +47,11 @@ export interface UniqueUserCity {
   country: string;
 }
 
+export type Key = string | number;
+
 // Review context types - used in VenueFilterContext and UserFavVenuesContext
 
-export type FilterField = 'city' | 'venueType' | 'venueName';
+export type FilterField = 'city' | 'country' | 'venueType' | 'venueName';
 export type VenueSortField = 'averageRating' | 'totalReviews' | 'createdAt';
 
 export interface VenueFilter {

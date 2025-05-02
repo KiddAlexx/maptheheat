@@ -11,6 +11,7 @@ import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
 import { useUser } from '../../authentication/hooks/useUser';
 import { useModalContext } from '../../../context/ModalContext';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
+import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 
 // Component imports
 import VenueRating from './VenueRating';
@@ -30,7 +31,6 @@ import globeIcon from '../../../assets/icons/globe.svg';
 import mapPinIcon from '../../../assets/icons/map-pin.svg';
 import phoneIcon from '../../../assets/icons/phone.svg';
 import infoIcon from '../../../assets/icons/info.svg';
-import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 
 function DetailedVenueView() {
   const navigate = useNavigate();

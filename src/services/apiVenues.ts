@@ -57,6 +57,7 @@ export async function getVenues({
   if (filters.length > 0) {
     filters.forEach((filter) => {
       const convertedField = decamelize(filter.field);
+      // @ts-expect-error: Dynamic method call on Supabase query builder is safe due to controlled filter.method values
       query = query[filter.method](convertedField, filter.value);
     });
   }

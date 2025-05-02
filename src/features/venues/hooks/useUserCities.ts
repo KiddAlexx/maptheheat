@@ -1,5 +1,6 @@
 import { getUserCitiesSupabase } from '@/services/apiVenues';
-import { UniqueUserCity } from '@/types/venueTypes';
+import { UniqueCity } from '@/types/venueTypes';
+
 import { useQuery } from '@tanstack/react-query';
 
 export function useUserCities(favVenueList: string[]) {
@@ -7,7 +8,7 @@ export function useUserCities(favVenueList: string[]) {
     error,
     isLoading,
     data: userCities,
-  } = useQuery<UniqueUserCity[]>({
+  } = useQuery<UniqueCity[]>({
     queryKey: ['userCities'],
     queryFn: () => getUserCitiesSupabase(favVenueList),
     enabled: !!favVenueList,
