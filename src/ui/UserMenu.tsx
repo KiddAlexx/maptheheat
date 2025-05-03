@@ -1,12 +1,12 @@
 import { useUser } from '@/features/authentication/hooks/useUser';
 import Avatar from '@/features/userProfile/components/Avatar';
-import styles from './UserMenu.module.css';
+
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from "@heroui/react";
+} from '@heroui/react';
 import { useLogout } from '@/features/authentication/hooks/useLogout';
 import { useNavigate } from 'react-router';
 
@@ -16,21 +16,22 @@ function UserMenu() {
   const navigate = useNavigate();
 
   if (isLoadingUser) return;
+  if (!user) return;
 
   const { id } = user;
 
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
-        <button className={styles.buttonAvatar}>
+        <button className="overflow-hidden rounded-full">
           <Avatar userId={id} />
         </button>
       </DropdownTrigger>
       <DropdownMenu>
-        <DropdownItem onPress={() => navigate('/profile')}>
+        <DropdownItem key="profile" onPress={() => navigate('/profile')}>
           Profile
         </DropdownItem>
-        <DropdownItem onPress={() => logout()} color="danger">
+        <DropdownItem key="logout" onPress={() => logout()} color="danger">
           Logout
         </DropdownItem>
       </DropdownMenu>
