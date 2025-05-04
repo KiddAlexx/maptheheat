@@ -18,6 +18,7 @@ import ImageUploader from '@/components/ImageUploader';
 import { Review } from '@/types/reviewTypes';
 import { Button, Input, Textarea } from '@heroui/react';
 import LoaderSpinner from '@/ui/LoaderSpinner';
+import { useQueryClient } from '@tanstack/react-query';
 
 // Types
 interface ReviewFormProps {
@@ -44,16 +45,11 @@ function ReviewForm({ mode }: ReviewFormProps) {
   const { isUpdating, updateReview } = useUpdateReview();
 
   // Form and data state
-  const { register, handleSubmit, formState, reset } = useForm<FormData>({
-    defaultValues: {
-      hottestSauce: '',
-      hottestDish: '',
-      reviewTitle: '',
-      reviewContent: '',
-    },
-  });
+  const { register, handleSubmit, formState, reset } = useForm<FormData>({});
   const { errors } = formState;
   const [heatRating, setHeatRating] = useState(5);
+
+  const queryClient = useQueryClient();
 
   // Fetch venue details in "creating" mode.
   // All destructured variables assigned default values,
@@ -83,15 +79,15 @@ function ReviewForm({ mode }: ReviewFormProps) {
 
   // Effect to set default input values to current review values in editing mode.
   useEffect(() => {
-    if (mode === 'editing' && review) {
+    if (mode === 'editing' && review && !isLoadingReview) {
       reset({
-        hottestSauce: review.hottestSauce || '',
-        hottestDish: review.hottestDish || '',
-        reviewTitle: review.reviewTitle || '',
-        reviewContent: review.reviewContent || '',
+        hottestSauce: review.hottestSauce,
+        hottestDish: review.hottestDish,
+        reviewTitle: review.reviewTitle,
+        reviewContent: review.reviewContent,
       });
     }
-  }, [mode, review, reset]);
+  }, [mode, review, reset, isLoadingReview]);
 
   function toastFormError() {
     toast.error('Please fix the errors in the form');
@@ -109,6 +105,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
       };
       const newReview = await createReview(finalFormData, {
         onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['review', reviewId] });
           reset();
           setFormIndex(2);
         },
@@ -124,6 +121,10 @@ function ReviewForm({ mode }: ReviewFormProps) {
         { finalFormData, reviewId: reviewId! },
         {
           onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: ['review', reviewId],
+            });
+            reset();
             setFormIndex(2);
           },
         }
