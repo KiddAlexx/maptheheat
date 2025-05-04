@@ -80,11 +80,12 @@ function ReviewForm({ mode }: ReviewFormProps) {
   // Effect to set default input values to current review values in editing mode.
   useEffect(() => {
     if (mode === 'editing' && review && !isLoadingReview) {
+      console.log('review effect', review);
       reset({
-        hottestSauce: review.hottestSauce,
-        hottestDish: review.hottestDish,
-        reviewTitle: review.reviewTitle,
-        reviewContent: review.reviewContent,
+        hottestSauce: review.hottestSauce || '',
+        hottestDish: review.hottestDish || '',
+        reviewTitle: review.reviewTitle || '',
+        reviewContent: review.reviewContent || '',
       });
     }
   }, [mode, review, reset, isLoadingReview]);
@@ -105,8 +106,10 @@ function ReviewForm({ mode }: ReviewFormProps) {
       };
       const newReview = await createReview(finalFormData, {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['review', reviewId] });
-          reset();
+          queryClient.invalidateQueries({
+            queryKey: ['review', createdReviewId],
+          });
+
           setFormIndex(2);
         },
       });
@@ -124,7 +127,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
             queryClient.invalidateQueries({
               queryKey: ['review', reviewId],
             });
-            reset();
+
             setFormIndex(2);
           },
         }
@@ -133,7 +136,8 @@ function ReviewForm({ mode }: ReviewFormProps) {
   }
   return (
     <>
-      {isLoadingReview || isLoadingVenue ? (
+      {(mode === 'editing' && isLoadingReview) ||
+      (mode === 'creating' && isLoadingVenue) ? (
         <LoaderSpinner />
       ) : (
         <>
