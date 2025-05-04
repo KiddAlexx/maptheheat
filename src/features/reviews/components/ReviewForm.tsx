@@ -16,7 +16,8 @@ import toast from 'react-hot-toast';
 import VenueRating from '../../venues/components/VenueRating';
 import ImageUploader from '@/components/ImageUploader';
 import { Review } from '@/types/reviewTypes';
-import { Button, Input, Textarea } from "@heroui/react";
+import { Button, Input, Textarea } from '@heroui/react';
+import LoaderSpinner from '@/ui/LoaderSpinner';
 
 // Types
 interface ReviewFormProps {
@@ -43,7 +44,14 @@ function ReviewForm({ mode }: ReviewFormProps) {
   const { isUpdating, updateReview } = useUpdateReview();
 
   // Form and data state
-  const { register, handleSubmit, formState, reset } = useForm<FormData>();
+  const { register, handleSubmit, formState, reset } = useForm<FormData>({
+    defaultValues: {
+      hottestSauce: '',
+      hottestDish: '',
+      reviewTitle: '',
+      reviewContent: '',
+    },
+  });
   const { errors } = formState;
   const [heatRating, setHeatRating] = useState(5);
 
@@ -51,6 +59,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
   // All destructured variables assigned default values,
   // For instances where venue does not exist.
   const { venueId: venueIdParam } = useParams();
+
   const { isLoading: isLoadingVenue, venue } = useVenue(
     venueIdParam,
     mode === 'creating'
@@ -61,16 +70,16 @@ function ReviewForm({ mode }: ReviewFormProps) {
   // All destructured variables assigned default values,
   // For instances where review does not exist.
   const { reviewId: reviewIdParam } = useParams();
+
   const { isLoading: isLoadingReview, review } = useGetReview(
     reviewIdParam,
     mode === 'editing'
   );
-  const {
-    reviewId,
-    reviewType,
-    venueDetails,
-    venueDetails: { venueName: venueNameReview = '' } = {},
-  } = review ?? {};
+
+  const reviewId = review?.reviewId;
+  const reviewType = review?.reviewType;
+  const venueDetails = review?.venueDetails;
+  const venueNameReview = review?.venueDetails?.venueName;
 
   // Effect to set default input values to current review values in editing mode.
   useEffect(() => {
@@ -100,6 +109,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
       };
       const newReview = await createReview(finalFormData, {
         onSuccess: () => {
+          reset();
           setFormIndex(2);
         },
       });
@@ -122,148 +132,158 @@ function ReviewForm({ mode }: ReviewFormProps) {
   }
   return (
     <>
-      {formIndex === 1 && (
+      {isLoadingReview || isLoadingVenue ? (
+        <LoaderSpinner />
+      ) : (
         <>
-          <h2>
-            {mode === 'creating' ? 'Leave a ' : 'Edit your'} review for{' '}
-            {venueName || venueNameReview}
-          </h2>
+          {formIndex === 1 && (
+            <>
+              <h2>
+                {mode === 'creating' ? 'Leave a ' : 'Edit your'} review for{' '}
+                {venueName || venueNameReview}
+              </h2>
 
-          <span>
-            <h3>Heat Rating</h3>
-            <VenueRating
-              initialRating={heatRating}
-              handleRatingChange={setHeatRating}
-            />
-          </span>
-          {/* Form dynamically renders fields based on venue type */}
-          <form onSubmit={handleSubmit(formSubmit, toastFormError)}>
-            {(venueType || reviewType) === 'shop' && (
-              <div>
-                <Input
-                  id="hottestSauce"
-                  type="text"
-                  label="Hottest Sauce"
-                  labelPlacement="outside"
-                  placeholder="Hottest Sauce"
-                  radius="sm"
-                  isInvalid={!!errors.hottestSauce}
-                  errorMessage={
-                    errors.hottestSauce &&
-                    typeof errors?.hottestSauce?.message === 'string'
-                      ? errors.hottestSauce.message
-                      : ''
-                  }
-                  {...register('hottestSauce', {
-                    required: 'This field is required',
-                    maxLength: {
-                      value: 100,
-                      message:
-                        'Hottest Sauce cannot be more than 100 characters',
-                    },
-                  })}
+              <span>
+                <h3>Heat Rating</h3>
+                <VenueRating
+                  initialRating={heatRating}
+                  handleRatingChange={setHeatRating}
                 />
-              </div>
-            )}
+              </span>
+              {/* Form dynamically renders fields based on venue type */}
+              <form
+                key={reviewId}
+                onSubmit={handleSubmit(formSubmit, toastFormError)}
+              >
+                {(venueType || reviewType) === 'shop' && (
+                  <div>
+                    <Input
+                      id="hottestSauce"
+                      type="text"
+                      label="Hottest Sauce"
+                      labelPlacement="outside"
+                      placeholder="Hottest Sauce"
+                      radius="sm"
+                      isInvalid={!!errors.hottestSauce}
+                      errorMessage={
+                        errors.hottestSauce &&
+                        typeof errors?.hottestSauce?.message === 'string'
+                          ? errors.hottestSauce.message
+                          : ''
+                      }
+                      {...register('hottestSauce', {
+                        required: 'This field is required',
+                        maxLength: {
+                          value: 100,
+                          message:
+                            'Hottest Sauce cannot be more than 100 characters',
+                        },
+                      })}
+                    />
+                  </div>
+                )}
 
-            {(venueType || reviewType) === 'restaurant' && (
-              <div>
-                <Input
-                  id="hottestDish"
-                  type="text"
-                  label="Hottest Dish"
-                  labelPlacement="outside"
-                  placeholder="Hottest Dish"
+                {(venueType || reviewType) === 'restaurant' && (
+                  <div>
+                    <Input
+                      id="hottestDish"
+                      type="text"
+                      label="Hottest Dish"
+                      labelPlacement="outside"
+                      placeholder="Hottest Dish"
+                      radius="sm"
+                      isInvalid={!!errors.hottestDish}
+                      errorMessage={
+                        errors.hottestDish &&
+                        typeof errors?.hottestDish.message === 'string'
+                          ? errors.hottestDish.message
+                          : ''
+                      }
+                      {...register('hottestDish', {
+                        required: 'This field is required',
+                        maxLength: {
+                          value: 100,
+                          message:
+                            'Hottest Dish cannot be more than 100 characters',
+                        },
+                      })}
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <Input
+                    id="reviewTitle"
+                    type="text"
+                    label="Review Title"
+                    labelPlacement="outside"
+                    radius="sm"
+                    placeholder="Review Title"
+                    isInvalid={!!errors.reviewTitle}
+                    errorMessage={
+                      errors.reviewTitle &&
+                      typeof errors?.reviewTitle?.message === 'string'
+                        ? errors.reviewTitle.message
+                        : ''
+                    }
+                    {...register('reviewTitle', {
+                      required: 'This field is required',
+                      maxLength: {
+                        value: 100,
+                        message:
+                          'Review Title cannot be more than 100 characters',
+                      },
+                    })}
+                  />
+                </div>
+
+                <div>
+                  <Textarea
+                    id="reviewContent"
+                    label="Review Content"
+                    rows={3}
+                    placeholder="Please enter a detailed review of the venue..."
+                    labelPlacement="outside"
+                    radius="sm"
+                    isInvalid={!!errors.reviewContent}
+                    errorMessage={
+                      errors.reviewContent &&
+                      typeof errors?.reviewContent?.message === 'string'
+                        ? errors.reviewContent.message
+                        : ''
+                    }
+                    {...register('reviewContent', {
+                      required: 'This field is required',
+                      minLength: {
+                        value: 40,
+                        message: 'Review must be at least 40 characters long',
+                      },
+                    })}
+                  />
+                </div>
+
+                <Button
+                  disabled={isUpdating || isCreating}
                   radius="sm"
-                  isInvalid={!!errors.hottestDish}
-                  errorMessage={
-                    errors.hottestDish &&
-                    typeof errors?.hottestDish.message === 'string'
-                      ? errors.hottestDish.message
-                      : ''
-                  }
-                  {...register('hottestDish', {
-                    required: 'This field is required',
-                    maxLength: {
-                      value: 100,
-                      message:
-                        'Hottest Dish cannot be more than 100 characters',
-                    },
-                  })}
-                />
-              </div>
-            )}
-
+                  size="md"
+                  type="submit"
+                >
+                  {mode === 'creating' ? 'Submit' : 'Edit'}
+                </Button>
+              </form>
+            </>
+          )}
+          {formIndex === 2 && (
             <div>
-              <Input
-                id="reviewTitle"
-                type="text"
-                label="Review Title"
-                labelPlacement="outside"
-                radius="sm"
-                placeholder="Review Title"
-                isInvalid={!!errors.reviewTitle}
-                errorMessage={
-                  errors.reviewTitle &&
-                  typeof errors?.reviewTitle?.message === 'string'
-                    ? errors.reviewTitle.message
-                    : ''
-                }
-                {...register('reviewTitle', {
-                  required: 'This field is required',
-                  maxLength: {
-                    value: 100,
-                    message: 'Review Title cannot be more than 100 characters',
-                  },
-                })}
+              <h2>Add photos to your review</h2>
+              <ImageUploader
+                venue={venue || venueDetails}
+                reviewId={createdReviewId || reviewId}
+                mode="integrated"
               />
             </div>
-
-            <div>
-              <Textarea
-                id="reviewContent"
-                label="Review Content"
-                rows={3}
-                placeholder="Please enter a detailed review of the venue..."
-                labelPlacement="outside"
-                radius="sm"
-                isInvalid={!!errors.reviewContent}
-                errorMessage={
-                  errors.reviewContent &&
-                  typeof errors?.reviewContent?.message === 'string'
-                    ? errors.reviewContent.message
-                    : ''
-                }
-                {...register('reviewContent', {
-                  required: 'This field is required',
-                  minLength: {
-                    value: 40,
-                    message: 'Review must be at least 40 characters long',
-                  },
-                })}
-              />
-            </div>
-
-            <Button
-              disabled={isUpdating || isCreating}
-              radius="sm"
-              size="md"
-              type="submit"
-            >
-              {mode === 'creating' ? 'Submit' : 'Edit'}
-            </Button>
-          </form>
+          )}
         </>
-      )}
-      {formIndex === 2 && (
-        <div>
-          <h2>Add photos to your review</h2>
-          <ImageUploader
-            venue={venue || venueDetails}
-            reviewId={createdReviewId || reviewId}
-            mode="integrated"
-          />
-        </div>
       )}
     </>
   );
