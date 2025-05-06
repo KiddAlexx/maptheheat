@@ -84,12 +84,8 @@ function ReviewForm({ mode }: ReviewFormProps) {
     mode === 'editing'
   );
 
-  const {
-    reviewId,
-    reviewType,
-    venueDetails,
-    venueDetails: { venueName: venueNameReview } = {},
-  } = review ?? {};
+  const { reviewId, reviewType, venueDetails } = review ?? {};
+  const venueNameReview = venueDetails?.venueName;
 
   // Effect to set default input values to current review values in editing mode.
   useEffect(() => {

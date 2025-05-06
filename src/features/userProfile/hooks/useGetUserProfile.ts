@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getUserProfile } from '../../../services/apiUserProfiles';
 
-export function useGetUserProfile(userId: string | undefined) {
+export function useGetUserProfile(userId?: string | null) {
   const {
     isLoading,
     data: userProfile,

@@ -17,6 +17,7 @@ import { Coords } from '../../types/venueTypes';
 import { useVenues } from '../venues/hooks/useVenues';
 import { useSearchParams } from 'react-router-dom';
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
+import LoaderSpinner from '@/ui/LoaderSpinner';
 
 function MapView() {
   const [searchParams] = useSearchParams();
@@ -61,17 +62,21 @@ function MapView() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
         />
-        {venues?.map((venue) => (
-          <Marker
-            key={venue.id}
-            position={[venue.coords.lat, venue.coords.lon]}
-            icon={createCustomIcon()}
-          >
-            <Popup>
-              <MapPopupContent venue={venue} />
-            </Popup>
-          </Marker>
-        ))}
+        {venues?.map((venue) =>
+          isLoadingVenues ? (
+            <LoaderSpinner />
+          ) : (
+            <Marker
+              key={venue.venueId}
+              position={[Number(venue.coords.lat), Number(venue.coords.lon)]}
+              icon={createCustomIcon()}
+            >
+              <Popup>
+                <MapPopupContent venue={venue} />
+              </Popup>
+            </Marker>
+          )
+        )}
         <ChangeCenter lat={lat} lon={lon} />
       </MapContainer>
     </div>
