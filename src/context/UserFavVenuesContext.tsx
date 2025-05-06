@@ -17,7 +17,7 @@ interface State {
   pagination: VenuePagination;
 }
 
-interface UserFavVenuesContextType extends State {
+export interface UserFavVenuesContextType extends State {
   updateVenueFilter: (filter: VenueFilter) => void;
   removeVenueFilter: (field: FilterField) => void;
   updateSort: (sortBy: VenueSort) => void;

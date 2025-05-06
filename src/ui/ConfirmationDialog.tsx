@@ -1,9 +1,9 @@
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { useModalContext } from '../context/ModalContext';
 
 function ConfirmationDialog() {
   const { closeModal, message, confirmAction } = useModalContext();
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     confirmAction ? confirmAction() : closeModal();
   }
@@ -12,7 +12,7 @@ function ConfirmationDialog() {
       <p>{message}</p>
 
       {confirmAction && (
-        <Button type="button" onClick={closeModal}>
+        <Button type="button" onPress={closeModal}>
           Cancel
         </Button>
       )}

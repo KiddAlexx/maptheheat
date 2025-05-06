@@ -1,7 +1,16 @@
-import { Pagination } from '@nextui-org/react';
+import { Pagination } from '@heroui/react';
 import { useVenues } from '../hooks/useVenues';
+import { VenueFilterContextType } from '@/context/VenueFilterContext';
 
-function VenuePagination({ useVenueContext, favouriteVenues }) {
+interface VenuePaginationProps {
+  useVenueContext: () => VenueFilterContextType;
+  favouriteVenues?: string[];
+}
+
+function VenuePagination({
+  useVenueContext,
+  favouriteVenues,
+}: VenuePaginationProps) {
   const { pagination, filters, updatePageNumber } = useVenueContext();
   const { pageNumber, maxResults } = pagination;
   const { totalCount } = useVenues({ filters, favouriteVenues });

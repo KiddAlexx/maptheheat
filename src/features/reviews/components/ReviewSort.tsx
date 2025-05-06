@@ -1,7 +1,7 @@
 import { Direction } from '@/types/commonTypes';
 import { ResetSort, ReviewSortField, UpdateSort } from '@/types/reviewTypes';
 
-import { Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from '@heroui/react';
 
 import { FaSortAmountDownAlt, FaSortAmountUp } from 'react-icons/fa';
 
@@ -25,35 +25,17 @@ function ReviewSort({ updateSort, resetSort }: ReviewSortParams) {
   }
   return (
     <Select onChange={handleChange} label={'Sort by'}>
-      <SelectItem value={'default'} key={'default'}>
-        Default
-      </SelectItem>
-      <SelectItem
-        endContent={<FaSortAmountUp />}
-        value={'heatRating-desc'}
-        key={'heatRating-desc'}
-      >
+      <SelectItem key={'default'}>Default</SelectItem>
+      <SelectItem endContent={<FaSortAmountUp />} key={'heatRating-desc'}>
         Heat Rating
       </SelectItem>
-      <SelectItem
-        endContent={<FaSortAmountDownAlt />}
-        value={'heatRating-asc'}
-        key={'heatRating-asc'}
-      >
+      <SelectItem endContent={<FaSortAmountDownAlt />} key={'heatRating-asc'}>
         Heat Rating
       </SelectItem>
-      <SelectItem
-        endContent={<FaSortAmountUp />}
-        value={'createdAt-desc'}
-        key={'createdAt-desc'}
-      >
+      <SelectItem endContent={<FaSortAmountUp />} key={'createdAt-desc'}>
         Date Added
       </SelectItem>
-      <SelectItem
-        endContent={<FaSortAmountDownAlt />}
-        value={'createdAt-asc'}
-        key={'createdAt-asc'}
-      >
+      <SelectItem endContent={<FaSortAmountDownAlt />} key={'createdAt-asc'}>
         Date Added
       </SelectItem>
     </Select>

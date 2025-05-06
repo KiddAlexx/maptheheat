@@ -1,6 +1,5 @@
 import { useModalContext } from '@/context/ModalContext';
-import { Button } from '@nextui-org/react';
-import { useState } from 'react';
+import { Button } from '@heroui/react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 interface LikeButtonProps {

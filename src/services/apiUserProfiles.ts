@@ -19,7 +19,11 @@ export interface UpdateUsernameParams {
   username: string;
 }
 
-export async function updateAvatarApi({ newAvatar }) {
+export interface UpdateAvatarApiParams {
+  newAvatar: File[];
+}
+
+export async function updateAvatarApi({ newAvatar }: UpdateAvatarApiParams) {
   const { data: user, error: authError } = await supabase.auth.getUser();
   if (authError)
     throw new Error(`No authenticated user found: ${authError.message}`);

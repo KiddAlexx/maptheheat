@@ -22,19 +22,27 @@ function VenueListContainer({
     <>
       <SearchAndFilterPanel
         useVenueContext={useVenueContext}
-        favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
+        favouriteVenues={
+          mode === 'user' ? favouriteVenues ?? undefined : undefined
+        }
       />
       <VenuePagination
         useVenueContext={useVenueContext}
-        favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
+        favouriteVenues={
+          mode === 'user' ? favouriteVenues ?? undefined : undefined
+        }
       />
       <ListView
         useVenueContext={useVenueContext}
-        favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
+        favouriteVenues={
+          mode === 'user' ? favouriteVenues ?? undefined : undefined
+        }
       />
       <VenuePagination
         useVenueContext={useVenueContext}
-        favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
+        favouriteVenues={
+          mode === 'user' ? favouriteVenues ?? undefined : undefined
+        }
       />
     </>
   );

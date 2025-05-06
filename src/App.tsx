@@ -26,7 +26,7 @@ import ErrorModal from './ui/ErrorModal';
 import ModalManager from './components/ModalManager';
 import ReviewForm from './features/reviews/components/ReviewForm';
 import AddNewVenue from './pages/AddNewVenue';
-import { NextUIProvider } from '@nextui-org/system';
+import { HeroUIProvider } from '@heroui/system';
 import { VenueFilterProvider } from './context/VenueFilterContext';
 import { ReviewSortProvider } from './context/ReviewSortContext';
 import { UserReviewsProvider } from './context/UserReviewsContext';
@@ -45,7 +45,7 @@ const queryClient = new QueryClient({
 function App() {
   const navigate = useNavigate();
   return (
-    <NextUIProvider navigate={navigate}>
+    <HeroUIProvider navigate={navigate}>
       <GlobalErrorProvider>
         <VenueFilterProvider>
           <UserFavVenuesProvider>
@@ -118,7 +118,7 @@ function App() {
                         success: { duration: 3000 },
                         error: { duration: 5000 },
                         style: {
-                          fontSize: '16',
+                          fontSize: '16px',
                           maxWidth: '500px',
                           padding: '16px 24px',
                           backgroundColor: '#fff',
@@ -133,7 +133,7 @@ function App() {
           </UserFavVenuesProvider>
         </VenueFilterProvider>
       </GlobalErrorProvider>
-    </NextUIProvider>
+    </HeroUIProvider>
   );
 }
 

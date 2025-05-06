@@ -35,9 +35,23 @@ export interface Image {
   alt: string;
 }
 
+export interface UniqueCity {
+  coords: Coords;
+  id: string;
+  city: string;
+  country: string;
+}
+
+export interface UniqueUserCity {
+  city: string;
+  country: string;
+}
+
+export type Key = string | number;
+
 // Review context types - used in VenueFilterContext and UserFavVenuesContext
 
-export type FilterField = 'city' | 'venueType';
+export type FilterField = 'city' | 'country' | 'venueType' | 'venueName';
 export type VenueSortField = 'averageRating' | 'totalReviews' | 'createdAt';
 
 export interface VenueFilter {

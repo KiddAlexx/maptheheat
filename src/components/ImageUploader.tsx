@@ -17,20 +17,36 @@ import { useState } from 'react';
 import { useModalContext } from '@/context/ModalContext';
 import { useUpdateVenueImage } from '@/features/venues/hooks/useUpdateVenueImage';
 import { useUser } from '@/features/authentication/hooks/useUser';
-import { Button } from '@nextui-org/button';
+import { Button } from '@heroui/button';
 import { useGlobalError } from '@/context/ErrorContext';
 import { useNavigate } from 'react-router';
+import { Venue } from '@/types/venueTypes';
+import LoaderSpinner from '@/ui/LoaderSpinner';
+
+// Types
+interface ImageUploaderProps {
+  venue?: Venue;
+  maxPhotos?: number;
+  mode?: 'modal' | 'integrated';
+  reviewId?: string;
+}
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
-function ImageUploader({ venue, maxPhotos = 6, mode, reviewId }) {
+function ImageUploader({
+  venue,
+  maxPhotos = 6,
+  mode,
+  reviewId,
+}: ImageUploaderProps) {
   // Fetch image upload functionality and states from React Query hook
-  const { uploadImageRef, isUploading, fileUploaded } = useUpdateVenueImage();
+  const { uploadImageRef, isUploading } = useUpdateVenueImage();
 
   // Load remaining hooks
   const { isAuthenticated } = useUser();
 
+  // Fetch venue details from ModalContext
   const {
     venueNameSlug: modalVenueNameSlug,
     city: modalCity,
@@ -39,12 +55,14 @@ function ImageUploader({ venue, maxPhotos = 6, mode, reviewId }) {
     closeModal,
   } = useModalContext();
 
+  // Fetch venue details from props if provided
   const {
     venueNameSlug: propVenueNameSlug,
     city: propCity,
     venueId: propVenueId,
   } = venue ?? {};
 
+  // Assign values based on whether venue provided as props or via ModalContext
   const venueNameSlug = propVenueNameSlug ?? modalVenueNameSlug;
   const city = propCity ?? modalCity;
   const venueId = propVenueId ?? modalVenueId;
@@ -69,14 +87,14 @@ function ImageUploader({ venue, maxPhotos = 6, mode, reviewId }) {
     // **** Add error message here too ****
     if (!isAuthenticated) return openModal('login');
 
-    console.log(
+    /*     console.log(
       'log from image uploader ',
       venueId,
       reviewId,
       imageFiles,
       city,
       venueNameSlug
-    );
+    ); */
 
     uploadImageRef(
       { venueId, reviewId, imageFiles, city, venueNameSlug },
@@ -100,13 +118,15 @@ function ImageUploader({ venue, maxPhotos = 6, mode, reviewId }) {
   }
 
   return (
-    <>
-      <div className={styles.uploadContainer}>
+    <div className={styles.uploadContainer}>
+      {isUploading ? (
+        <LoaderSpinner />
+      ) : (
         <FilePond
           files={imageFiles}
           onupdatefiles={(images) => {
             // Update state with new files array
-            const newImages = images.map((image) => image.file);
+            const newImages = images.map((image) => image.file as File);
             setImageFiles(newImages);
           }}
           allowMultiple={true}
@@ -114,15 +134,21 @@ function ImageUploader({ venue, maxPhotos = 6, mode, reviewId }) {
           name="files"
           labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
         />
-        <h3>Add up to a maximum on {maxPhotos} photos</h3>
-        <div className={styles.buttonContainer}>
-          <Button onClick={handleClose}>Not right now</Button>
-          <Button id="firstElementToFocus" onClick={uploadFile}>
-            Upload
-          </Button>
-        </div>
+      )}
+      <h3>Add up to a maximum of {maxPhotos} photos</h3>
+      <div className={styles.buttonContainer}>
+        <Button onPress={handleClose} isDisabled={isUploading}>
+          Not right now
+        </Button>
+        <Button
+          id="firstElementToFocus"
+          onPress={uploadFile}
+          isDisabled={isUploading}
+        >
+          Upload
+        </Button>
       </div>
-    </>
+    </div>
   );
 }
 

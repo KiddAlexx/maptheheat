@@ -12,8 +12,14 @@ import ListItem from './VenueListItem';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
+import { VenueFilterContextType } from '@/context/VenueFilterContext';
 
-function ListView({ useVenueContext, favouriteVenues }) {
+interface ListViewProps {
+  useVenueContext: () => VenueFilterContextType;
+  favouriteVenues?: string[];
+}
+
+function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
   const { filters, sort, pagination } = useVenueContext();
   // Load venues from supabase
   const { venues, isLoading: isLoadingVenues } = useVenues({

@@ -11,6 +11,7 @@ import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
 import { useUser } from '../../authentication/hooks/useUser';
 import { useModalContext } from '../../../context/ModalContext';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
+import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 
 // Component imports
 import VenueRating from './VenueRating';
@@ -18,7 +19,7 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ReviewContainer from '../../reviews/components/ReviewContainer';
 
 // NextUI Component imports
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 
 // Type imports
 import { Image } from '../../../types/venueTypes';
@@ -30,42 +31,33 @@ import globeIcon from '../../../assets/icons/globe.svg';
 import mapPinIcon from '../../../assets/icons/map-pin.svg';
 import phoneIcon from '../../../assets/icons/phone.svg';
 import infoIcon from '../../../assets/icons/info.svg';
-import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
   const { venueId } = useParams();
+
   const { openModal, openModalImages, openModalUpload, openDialog } =
     useModalContext();
 
-  const {
-    isLoading: isLoadingUser,
-    isAuthenticated,
-    fetchStatus,
-    user,
-  } = useUser();
+  const { isAuthenticated, user } = useUser();
   const userId = user?.id;
 
-  const { isLoading, userProfile } = useGetUserProfile(userId);
+  const { userProfile } = useGetUserProfile(userId);
   const username = userProfile?.username;
 
-  const {
-    isLoading: isLoadingReviewAuth,
-    error,
-    refetch: refetchUserPermission,
-  } = useCanUserReview(userId, venueId, 30, false);
+  // Passing empty strings to satisfy the query hook's required params
+  // The query won't run unless `enabled` is true (ie user is authenticated)
+  const { refetch: refetchUserPermission } = useCanUserReview(
+    userId || '',
+    venueId || '',
+    30,
+    false
+  );
 
-  const {
-    isLoading: isLoadingReviews,
-    error: reviewError,
-    reviews,
-  } = useGetReviews({ venueId });
-
+  const { isLoading: isLoadingReviews } = useGetReviews({ venueId });
   const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
 
-  if (!venueId) {
-    return;
-  }
+  if (!venueId || !venue) return null;
 
   if (isLoadingVenue || isLoadingReviews) {
     return <LoaderSpinner />;
@@ -86,19 +78,23 @@ function DetailedVenueView() {
 
   const { lat, lon } = coords;
 
-  const finalRating = Math.round(averageRating * 2) / 2 || 5;
+  const finalRating =
+    averageRating != null ? Math.round(averageRating * 2) / 2 : 5;
 
   async function handleReview() {
+    // Open login modal if not authenticated
     if (!isAuthenticated) {
       openModal('login');
       return;
     }
+    // Ask for for username if not set
     if (!username) {
       openDialog('Please choose a username to proceed', () =>
         navigate(`/profile/edit/username`)
       );
       return;
     }
+    // Check if user has left a review in the last 30 days for this venue
     const { data: canUserReview } = await refetchUserPermission();
     console.log('here is permission', canUserReview);
     if (canUserReview) {
@@ -107,6 +103,8 @@ function DetailedVenueView() {
   }
 
   function handleAddImages() {
+    if (!venueId || !venue) return null;
+    // Open login modal if not authenticated
     if (!isAuthenticated) {
       openModal('login');
       return;
@@ -128,9 +126,9 @@ function DetailedVenueView() {
       </div>
       <div
         className={styles.multipleImageContainer}
-        onClick={() => openModalImages('image-carousel', images)}
+        onClick={() => images && openModalImages('image-carousel', images)}
       >
-        {images?.length > 0 ? (
+        {images && images.length > 0 ? (
           // Slice first 4 images and map over
           // To be replaced with more refined component
           images.slice(0, 4).map((image: Image) => (
@@ -153,14 +151,11 @@ function DetailedVenueView() {
           </div>
         )}
       </div>
-
-      <Button onClick={handleAddImages}>Add Images</Button>
+      <Button onPress={handleAddImages}>Add Images</Button>
       {/*    <VenueImageCarousel venueImages={images} /> */}
-
       <button className="btn-default" onClick={handleReview}>
         Leave a review
       </button>
-
       <div className={styles.iconTextContainer}>
         <img src={clockIcon} alt="icon of a clock" />
         <p>Open</p>

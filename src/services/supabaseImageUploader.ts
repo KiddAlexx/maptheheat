@@ -32,10 +32,10 @@ async function uploadImages(
       if (error) throw error;
       return imagePath;
     } catch (error) {
-      if (error) {
-        console.log(error);
-        throw new Error(`Error uploading image: ${error.message}`);
+      if (error instanceof Error) {
+        throw new Error(`Error: ${error.message}`);
       }
+      throw new Error('Unknown error occurred');
     }
   });
 

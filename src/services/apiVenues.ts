@@ -8,6 +8,8 @@ import supabase, { supabaseUrl } from './supabase';
 import {
   ImageUploadParams,
   NewVenue,
+  UniqueCity,
+  UniqueUserCity,
   Venue,
   VenueFilter,
   VenuePagination,
@@ -30,6 +32,11 @@ export interface VenuesResponse {
   count: number | null;
 }
 
+export interface UniqueCityProps {
+  city: string;
+  country: string;
+}
+
 export async function getVenues({
   filters,
   sort,
@@ -50,6 +57,7 @@ export async function getVenues({
   if (filters.length > 0) {
     filters.forEach((filter) => {
       const convertedField = decamelize(filter.field);
+      // @ts-expect-error: Dynamic method call on Supabase query builder is safe due to controlled filter.method values
       query = query[filter.method](convertedField, filter.value);
     });
   }
@@ -90,13 +98,16 @@ export async function getVenue(id: string): Promise<Venue> {
   return camelcaseKeys(data[0]);
 }
 
-// Legacy function used to generate list of unique cities from venue_details table.
-export async function getUserCitiesSupabase(favVenueList): Promise<string[]> {
+// Uses supabase sql function to fetch unique city list
+// for venues in users favourite list
+export async function getUserCitiesSupabase(
+  favVenueList: string[]
+): Promise<UniqueCity[]> {
   const { data, error } = await supabase.rpc('get_unique_cities', {
     venue_ids: favVenueList,
   });
 
-  const citiesWithIds = data.map((cityObj, index) => ({
+  const citiesWithIds = data.map((cityObj: UniqueUserCity, index: number) => ({
     id: index + 1,
     ...cityObj,
   }));
@@ -108,7 +119,7 @@ export async function getUserCitiesSupabase(favVenueList): Promise<string[]> {
   return citiesWithIds;
 }
 
-export async function getUniqueCities() {
+export async function getUniqueCities(): Promise<UniqueCity[]> {
   const { data, error } = await supabase
     .from('unique_cities')
     .select('coords, country, city, id')
@@ -137,7 +148,7 @@ export async function createVenue(newVenue: NewVenue) {
   return camelcaseKeys(data);
 }
 
-export async function createUniqueCityApi(cityObj) {
+export async function createUniqueCityApi(cityObj: UniqueCityProps) {
   const { city, country } = cityObj;
 
   // Check if city already exists in unique_cities table.

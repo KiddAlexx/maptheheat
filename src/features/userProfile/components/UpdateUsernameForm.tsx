@@ -1,13 +1,17 @@
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from '@heroui/react';
 import { useForm } from 'react-hook-form';
 import { useUpdateUsername } from '../hooks/useUpdateUsername';
 
 function UpdateUsernameForm() {
-  const { register, formState, handleSubmit, getValues, reset } = useForm();
+  interface FormData {
+    username: string;
+  }
+
+  const { register, formState, handleSubmit, reset } = useForm<FormData>();
   const { errors } = formState;
   const { updateUsername } = useUpdateUsername();
 
-  function formSubmit(formData) {
+  function formSubmit(formData: FormData) {
     const { username } = formData;
     if (!username) return;
     updateUsername({ username }, { onSuccess: () => reset() });

@@ -1,16 +1,27 @@
-import { Button, ButtonGroup } from '@nextui-org/react';
+import { VenueFilterContextType } from '@/context/VenueFilterContext';
+import { Button, ButtonGroup } from '@heroui/react';
 import { useState } from 'react';
 
-function VenueTypeFilter({ useVenueContext }) {
+interface VenueTypeFilterProps {
+  useVenueContext: () => VenueFilterContextType;
+}
+
+type FilterValue = 'all' | 'restaurant' | 'shop';
+
+function VenueTypeFilter({ useVenueContext }: VenueTypeFilterProps) {
   const [activeType, setActiveType] = useState('all');
   const { updateVenueFilter, removeVenueFilter, filters } = useVenueContext();
 
-  function handleFilterClick(type) {
-    setActiveType(type);
-    if (type === 'all') {
+  function handleFilterClick(filterValue: FilterValue) {
+    setActiveType(filterValue);
+    if (filterValue === 'all') {
       removeVenueFilter('venueType');
     } else {
-      updateVenueFilter({ field: 'venueType', value: type, method: 'eq' });
+      updateVenueFilter({
+        field: 'venueType',
+        value: filterValue,
+        method: 'eq',
+      });
     }
     console.log(filters);
   }

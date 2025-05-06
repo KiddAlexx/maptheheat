@@ -1,13 +1,19 @@
 import { useUpdateEmail } from '@/features/authentication/hooks/useUpdateEmail';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from '@heroui/react';
 import { useForm } from 'react-hook-form';
 
 function UpdateEmailForm() {
+  interface FormData {
+    email: string;
+    confirmEmail: string;
+  }
+
   const { updateEmail } = useUpdateEmail();
-  const { register, formState, handleSubmit, getValues, reset } = useForm();
+  const { register, formState, handleSubmit, getValues, reset } =
+    useForm<FormData>();
   const { errors } = formState;
 
-  function formSubmit(formData) {
+  function formSubmit(formData: FormData) {
     const { email } = formData;
     if (!email) return;
     updateEmail({ email }, { onSuccess: () => reset() });

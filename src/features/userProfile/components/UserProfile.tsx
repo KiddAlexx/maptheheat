@@ -3,30 +3,34 @@ import ReviewContainer from '@/features/reviews/components/ReviewContainer';
 import VenueListContainer from '@/features/venues/components/VenueListContainer';
 import { useGetUserProfile } from '../hooks/useGetUserProfile';
 import LoaderSpinner from '@/ui/LoaderSpinner';
-import { Tab, Tabs } from '@nextui-org/react';
+import { Tab, Tabs } from '@heroui/react';
 import { useState } from 'react';
 import UserProfileBanner from './UserProfileBanner';
 import EditProfilePanel from './EditProfilePanel';
 import { useNavigate, useParams } from 'react-router';
+import { Key } from '@/types/venueTypes';
 
 function UserProfile() {
   const { user, isLoading: isLoadingUser, fetchStatus } = useUser();
-  const { id: userId } = user;
+
+  // Extract user id if present and use to fetch userProfile
+  const userId = user?.id;
   const { userProfile, isLoading: isLoadingProfile } =
     useGetUserProfile(userId);
 
+  // Get dynamic 'section' route param
   const { section } = useParams();
   const navigate = useNavigate();
 
-  const [selected, setSelected] = useState(section || 'reviews');
+  // State for currently active Tab
+  const [selected, setSelected] = useState<Key>(section || 'reviews');
 
   if (fetchStatus == 'fetching' || isLoadingUser || isLoadingProfile) return;
   <LoaderSpinner />;
 
-  const { updatedAt, username, avatarUrl, totalReviews, favouriteVenues } =
-    userProfile;
+  const { favouriteVenues } = userProfile;
 
-  function handleSelectionChange(key) {
+  function handleSelectionChange(key: Key) {
     setSelected(key);
     navigate(`/profile/${key}`, { replace: true });
   }

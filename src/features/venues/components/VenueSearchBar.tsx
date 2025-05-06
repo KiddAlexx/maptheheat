@@ -1,12 +1,17 @@
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from '@heroui/react';
 import styles from '../styles/SearchAndFilterPanel.module.css';
 import { useState } from 'react';
+import { VenueFilterContextType } from '@/context/VenueFilterContext';
 
-function VenueSearchBar({ useVenueContext }) {
+interface VenueSearchBarProps {
+  useVenueContext: () => VenueFilterContextType;
+}
+
+function VenueSearchBar({ useVenueContext }: VenueSearchBarProps) {
   const { updateVenueFilter, removeVenueFilter } = useVenueContext();
   const [searchValue, setSearchValue] = useState('');
 
-  function handleSumbit(e) {
+  function handleSumbit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formattedSearchValue = `%${searchValue}%`;
     console.log(searchValue);
@@ -28,7 +33,7 @@ function VenueSearchBar({ useVenueContext }) {
         placeholder="Search by venue name"
       />
       <div className={`${styles.searchBarButton}`}>
-        <Button onClick={clearSearch}>Clear</Button>
+        <Button onPress={clearSearch}>Clear</Button>
         <Button type="submit">Search</Button>
       </div>
     </form>

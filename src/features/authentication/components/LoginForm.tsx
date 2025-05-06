@@ -2,7 +2,7 @@
 import styles from '../styles/AuthForm.module.css';
 
 // NextUI Components
-import { Input, Link, Button, Divider } from '@nextui-org/react';
+import { Input, Link, Button, Divider } from "@heroui/react";
 
 // File imports
 import googleBtnLight from '../../../assets/btn_google_light_normal_ios.svg';

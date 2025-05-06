@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 import styles from './PageNav.module.css';
 import { useUser } from '../authentication/hooks/useUser';
 import { useModalContext } from '../../context/ModalContext';
-import { Button } from '@nextui-org/button';
+import { Button } from "@heroui/button";
 import UserMenu from '@/ui/UserMenu';
 
 function PageNav() {

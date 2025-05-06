@@ -1,14 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { getUserProfile } from '../../../services/apiUserProfiles';
 
-export function useGetUserProfile(userId) {
+export function useGetUserProfile(userId?: string | null) {
   const {
     isLoading,
     data: userProfile,
     error,
   } = useQuery({
     queryKey: ['profile', userId],
-    queryFn: () => getUserProfile(userId),
+    // userId will always be defined, as enabled is false otherwise
+    queryFn: () => getUserProfile(userId!),
     enabled: !!userId,
   });
 

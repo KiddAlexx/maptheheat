@@ -1,4 +1,4 @@
-import { Accordion, AccordionItem, Selection } from '@nextui-org/react';
+import { Accordion, AccordionItem, Selection } from "@heroui/react";
 import UpdateAvatar from './UpdateAvatar';
 import UpdateEmailForm from './UpdateEmailForm';
 import UpdatePasswordForm from './UpdatePasswordForm';

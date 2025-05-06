@@ -9,7 +9,7 @@ import { FilePond, registerPlugin } from 'react-filepond';
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { useGlobalError } from '@/context/ErrorContext';
 import { useUpdateAvatar } from '../hooks/useUpdateAvatar';
 import LoaderSpinner from '@/ui/LoaderSpinner';
@@ -39,7 +39,10 @@ function UpdateAvatar() {
         files={newAvatar}
         onupdatefiles={(images) => {
           // Update state with new files array
-          const newImages = images.map((image) => image.file);
+          const newImages = images
+            .map((image) => image.file)
+            // Filter out non-File entries and ensure TypeScript treats all items as File objects
+            .filter((file): file is File => file instanceof File);
           setNewAvatar(newImages);
         }}
         allowMultiple={false}
@@ -50,7 +53,7 @@ function UpdateAvatar() {
       />
       <h3>Select a suitable avatar to upload</h3>
       <div>
-        <Button onClick={uploadFile} isDisabled={isUpdating}>
+        <Button onPress={uploadFile} isDisabled={isUpdating}>
           {isUpdating ? <LoaderSpinner /> : 'Upload'}
         </Button>
       </div>

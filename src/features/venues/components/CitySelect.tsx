@@ -1,29 +1,47 @@
-import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem } from '@heroui/react';
 import { useUniqueCities } from '../hooks/useUniqueCities';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import { useLocation, useNavigate } from 'react-router';
 import { useUserCities } from '../hooks/useUserCities';
+import { VenueFilterContextType } from '@/context/VenueFilterContext';
+import { Key, UniqueCity } from '@/types/venueTypes';
 
-function CitySelect({ useVenueContext, favouriteVenues }) {
+interface VenueFilterProps {
+  useVenueContext: () => VenueFilterContextType;
+  favouriteVenues?: string[];
+}
+
+function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
+  // Fetch unique city list from unique_cities table
   const { uniqueCities, isPending: isPendingCities } = useUniqueCities();
-  const { isLoading: isLoadingUserCities, userCities } =
-    useUserCities(favouriteVenues);
+  // Fetch unique cities for venues in users favourite venues list
+  // if favouriteVenues is present
+  const { isLoading: isLoadingUserCities, userCities } = useUserCities(
+    favouriteVenues ?? []
+  );
+
   const { updateVenueFilter, removeVenueFilter } = useVenueContext();
   const navigate = useNavigate();
 
+  // Determine "mode" based on url - used to differentiate between use
+  // within profile view or map/venue view
   const location = useLocation();
   const isUserMode = location.pathname === '/profile/venues';
 
-  let finalCityList;
-  isUserMode ? (finalCityList = userCities) : (finalCityList = uniqueCities);
+  // Ensure uniqueCity arrays have loaded
+  if (isPendingCities || isLoadingUserCities) return;
 
-  console.log('here is the final city list', finalCityList);
+  // Select which city list to use based on "mode"
+  let finalCityList: UniqueCity[];
+  isUserMode ? (finalCityList = userCities!) : (finalCityList = uniqueCities!);
 
-  async function handleSelectCity(value) {
+  // Update venue filters based upon city selection
+  async function handleSelectCity(value: Key | null) {
     if (!finalCityList) return;
     const selectedCityObj = await finalCityList.find(
       (cityObj) => cityObj.id == value
     );
+    if (!selectedCityObj) return;
     const { city, coords, country } = selectedCityObj;
 
     updateVenueFilter({ field: 'city', value: city, method: 'eq' });
