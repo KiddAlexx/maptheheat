@@ -1,4 +1,3 @@
-import styles from '../styles/Avatar.module.css';
 import defaultAvatar from '../../../assets/default-avatar.png';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 
@@ -17,7 +16,7 @@ function Avatar({ userId }: AvatarProps) {
           : defaultAvatar
       }
       alt="users avatar"
-      className={styles.avatar}
+      className="h-16 w-16 rounded-full object-cover"
     />
   );
 }
