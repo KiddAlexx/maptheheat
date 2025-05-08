@@ -3,6 +3,7 @@ import SearchAndFilterPanel from './SearchAndFilterPanel';
 import ListView from './VenueListView';
 import VenuePagination from './VenuePagination';
 import { useUserFavVenuesContext } from '@/context/UserFavVenuesContext';
+import { Link } from 'react-router-dom';
 
 interface VenueListContainerProps {
   mode: 'venue' | 'user';
@@ -32,6 +33,11 @@ function VenueListContainer({
           mode === 'user' ? favouriteVenues ?? undefined : undefined
         }
       />
+      <div>
+        <p>Can't find what you are looking for?</p>
+
+        <Link to="/add-venue">Add new venue!</Link>
+      </div>
       <ListView
         useVenueContext={useVenueContext}
         favouriteVenues={

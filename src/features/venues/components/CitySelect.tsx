@@ -56,6 +56,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
     <LoaderSpinner />
   ) : (
     <Autocomplete
+      className="mb-3"
       placeholder="Select City"
       aria-label="city"
       radius="sm"

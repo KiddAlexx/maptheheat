@@ -1,5 +1,4 @@
 import { Button, Input } from '@heroui/react';
-import styles from '../styles/SearchAndFilterPanel.module.css';
 import { useState } from 'react';
 import { VenueFilterContextType } from '@/context/VenueFilterContext';
 
@@ -26,15 +25,20 @@ function VenueSearchBar({ useVenueContext }: VenueSearchBarProps) {
     removeVenueFilter('venueName');
   }
   return (
-    <form onSubmit={handleSumbit}>
+    <form className="relative mb-3" onSubmit={handleSumbit}>
       <Input
+        radius="sm"
         onValueChange={(value) => setSearchValue(value)}
         value={searchValue}
         placeholder="Search by venue name"
       />
-      <div className={`${styles.searchBarButton}`}>
-        <Button onPress={clearSearch}>Clear</Button>
-        <Button type="submit">Search</Button>
+      <div className="absolute bottom-0 right-0 z-20">
+        <Button radius="none" onPress={clearSearch}>
+          Clear
+        </Button>
+        <Button className="rounded-r-md" radius="none" type="submit">
+          Search
+        </Button>
       </div>
     </form>
   );
