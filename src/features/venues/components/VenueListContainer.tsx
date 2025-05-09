@@ -4,6 +4,7 @@ import ListView from './VenueListView';
 import VenuePagination from './VenuePagination';
 import { useUserFavVenuesContext } from '@/context/UserFavVenuesContext';
 import { Link } from 'react-router-dom';
+import { Button } from '@heroui/react';
 
 interface VenueListContainerProps {
   mode: 'venue' | 'user';
@@ -33,10 +34,11 @@ function VenueListContainer({
           mode === 'user' ? favouriteVenues ?? undefined : undefined
         }
       />
-      <div>
+      <div className="my-3 flex h-20 items-center justify-between border-y border-gray-300 p-1">
         <p>Can't find what you are looking for?</p>
-
-        <Link to="/add-venue">Add new venue!</Link>
+        <Button as={Link} to="/add-venue" radius="sm">
+          Add new venue!
+        </Button>
       </div>
       <ListView
         useVenueContext={useVenueContext}
@@ -44,6 +46,7 @@ function VenueListContainer({
           mode === 'user' ? favouriteVenues ?? undefined : undefined
         }
       />
+
       <VenuePagination
         useVenueContext={useVenueContext}
         favouriteVenues={
