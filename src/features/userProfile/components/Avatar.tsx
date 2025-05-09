@@ -9,15 +9,17 @@ function Avatar({ userId }: AvatarProps) {
   const { userProfile, isLoading } = useGetUserProfile(userId);
 
   return (
-    <img
-      src={
-        !isLoading && userProfile?.avatarUrl
-          ? userProfile.avatarUrl
-          : defaultAvatar
-      }
-      alt="users avatar"
-      className="h-16 w-16 rounded-full object-cover"
-    />
+    <div className="h-14 w-14 overflow-hidden rounded-full border-2 border-green-500 p-[2px]">
+      <img
+        src={
+          !isLoading && userProfile?.avatarUrl
+            ? userProfile.avatarUrl
+            : defaultAvatar
+        }
+        alt="users avatar"
+        className="rounded-full object-cover"
+      />
+    </div>
   );
 }
 

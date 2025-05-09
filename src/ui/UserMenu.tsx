@@ -23,7 +23,7 @@ function UserMenu() {
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
-        <button className="overflow-hidden rounded-full">
+        <button className="transform overflow-hidden transition hover:brightness-90">
           <Avatar userId={id} />
         </button>
       </DropdownTrigger>

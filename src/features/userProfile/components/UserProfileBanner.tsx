@@ -1,6 +1,5 @@
 import { Profile } from '@/types/userTypes';
 import Avatar from './Avatar';
-import styles from '../styles/UserProfileBanner.module.css';
 
 interface UserProfileBannerProps {
   userProfile: Profile;
@@ -9,20 +8,20 @@ interface UserProfileBannerProps {
 function UserProfileBanner({ userProfile }: UserProfileBannerProps) {
   const { userId, username, totalReviews, totalVenuesAdded } = userProfile;
   return (
-    <header className={styles.profileBanner}>
-      <div className={styles.profileInfo}>
+    <header className="flex justify-around">
+      <div className="flex flex-col items-center">
         <Avatar userId={userId} />
         <h2>{username}</h2>
       </div>
-      <div className={styles.stats}>
-        <div className={styles.statsItem}>
-          <div className={styles.statNumber}>{totalReviews ?? 0}</div>
+      <div className="flex items-center gap-20">
+        <div>
+          <div className="text-center">{totalReviews ?? 0}</div>
           <div>
             {totalReviews && totalReviews == 1 ? 'Review ' : 'Reviews '}Created
           </div>
         </div>
-        <div className={styles.statsItem}>
-          <div className={styles.statNumber}>{totalVenuesAdded ?? 0}</div>
+        <div>
+          <div className="text-center">{totalVenuesAdded ?? 0}</div>
           <div>
             {totalVenuesAdded && totalVenuesAdded == 1 ? 'Venue ' : 'Venues '}
             Added
