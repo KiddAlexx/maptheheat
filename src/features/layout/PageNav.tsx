@@ -29,7 +29,7 @@ function PageNav() {
             </li>
           </>
         ) : (
-          <li>
+          <li className="flex items-center">
             <UserMenu />
           </li>
         )}

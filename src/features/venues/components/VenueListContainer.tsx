@@ -34,12 +34,14 @@ function VenueListContainer({
           mode === 'user' ? favouriteVenues ?? undefined : undefined
         }
       />
-      <div className="my-3 flex h-20 items-center justify-between border-y border-gray-300 p-1">
-        <p>Can't find what you are looking for?</p>
-        <Button as={Link} to="/add-venue" radius="sm">
-          Add new venue!
-        </Button>
-      </div>
+      {mode === 'venue' && (
+        <div className="my-3 flex h-20 items-center justify-between border-y border-gray-300 p-1">
+          <p>Can't find what you are looking for?</p>
+          <Button as={Link} to="/add-venue" radius="sm">
+            Add new venue!
+          </Button>
+        </div>
+      )}
       <ListView
         useVenueContext={useVenueContext}
         favouriteVenues={

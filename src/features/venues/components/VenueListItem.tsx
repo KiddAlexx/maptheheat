@@ -1,8 +1,3 @@
-// React imports
-
-// Style imports
-import styles from '../styles/ListItem.module.css';
-
 // Hooks imports
 import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 
@@ -10,7 +5,6 @@ import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
 import clockIcon from '../../../assets/icons/clock.svg';
 import mapPinIcon from '../../../assets/icons/map-pin.svg';
-import phoneIcon from '../../../assets/icons/phone.svg';
 
 // Component imports
 import VenueRating from './VenueRating';
@@ -23,6 +17,7 @@ import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateF
 import toast from 'react-hot-toast';
 import { useModalContext } from '@/context/ModalContext';
 import { useLocation } from 'react-router';
+import { Card, CardBody, CardFooter, Image, Link } from '@heroui/react';
 
 interface ListItemProps {
   venue: Venue;
@@ -46,8 +41,7 @@ function ListItem({
 
   const { openDialog } = useModalContext();
 
-  const { venueName, venueId, address, phoneNumber, images, averageRating } =
-    venue;
+  const { venueName, venueId, address, images, averageRating } = venue;
 
   const isFavourite = favVenuesList?.includes(venueId);
 
@@ -91,63 +85,50 @@ function ListItem({
   const mainImage = images?.[0];
 
   return (
-    <div className={styles.listItemContainer} onClick={handleClick}>
-      {mainImage ? (
-        <div className={styles.mainImageContainer}>
-          <img
-            className={styles.imageMainSmall}
-            src={mainImage.url}
-            alt={mainImage.alt}
+    <Card className="mb-2 w-full" isPressable onPress={handleClick}>
+      <div className="flex">
+        <div className="relative w-1/3">
+          <Image
+            className="h-full w-full object-cover"
+            src={mainImage?.url || greyChilli}
+            alt={mainImage?.alt || 'a greyed out image of a chilli pepper'}
+            removeWrapper
           />
-          {/* Fix alt text - user input / somehow generated... */}
         </div>
-      ) : (
-        <div className={styles.mainImageContainer}>
-          <img
-            className={styles.imageMainSmall}
-            src={greyChilli}
-            alt="an greyed out image of a chilli pepper"
-          />
-          <p className={styles.addPhotosText}>Add Photos</p>
-        </div>
-      )}
+        <CardBody className="relative w-2/3">
+          <h3 className="text-large font-semibold">{venueName}</h3>
+          <VenueRating initialRating={finalRating} readonly />
+          <div className="absolute right-2 top-2 z-10">
+            <LikeButton
+              isFavourite={isFavourite}
+              isAuthenticated={isAuthenticated}
+              handleClick={toggleFavourite}
+            />
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <img className="w-6" src={clockIcon} alt="icon of a clock" />
+            <span>Open</span>
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <img className="w-6" src={mapPinIcon} alt="icon of a map pin" />
+            <span>{address}</span>
+          </div>
 
-      <div>
-        <h2>{venueName}</h2>
-        <VenueRating initialRating={finalRating} readonly />
-        <LikeButton
-          isFavourite={isFavourite}
-          isAuthenticated={isAuthenticated}
-          handleClick={toggleFavourite}
-        />
-        <div className={styles.iconTextContainer}>
-          <img src={clockIcon} alt="icon of a clock" />
-          <p>Open</p>
-        </div>
-        <div className={styles.iconTextContainer}>
-          <img src={mapPinIcon} alt="icon of a map pin" />
-          <p>{address}</p>
-        </div>
-
-        {/* Temp , calculate open state based on hours */}
-        <div className={styles.iconTextContainer}>
-          <img src={phoneIcon} alt="icon of a phone" />
-          <p>{phoneNumber}</p>
-        </div>
-        {/* Link to the detailed page of the venue. 
+          {/* Link to the detailed page of the venue. 
             On click, set clicked venue as active venue. */}
-        <button
-          className={styles.moreInfoLink}
-          onClick={(e) => {
-            // Stop the click event from propagating to the list item
-            e.stopPropagation();
-            setParamsAndNavigate(venue, 'venue');
-          }}
-        >
-          <p>More information!</p>
-        </button>
+          <CardFooter className="flex justify-end">
+            <Link
+              color="primary"
+              onPress={() => {
+                setParamsAndNavigate(venue, 'venue');
+              }}
+            >
+              More information!
+            </Link>
+          </CardFooter>
+        </CardBody>
       </div>
-    </div>
+    </Card>
   );
 }
 
