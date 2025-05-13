@@ -35,13 +35,16 @@ function ListItem({
   favVenuesList,
 }: ListItemProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
-
   const location = useLocation();
+
   const isUserMode = location.pathname === '/profile/venues';
 
   const { openDialog } = useModalContext();
 
-  const { venueName, venueId, address, images, averageRating } = venue;
+  const { venueName, venueId, address, images, averageRating, totalReviews } =
+    venue;
+
+  const totalReviewCount = totalReviews ?? 0;
 
   const isFavourite = favVenuesList?.includes(venueId);
 
@@ -104,7 +107,13 @@ function ListItem({
         </div>
         <CardBody className="relative w-2/3">
           <h3 className="mb-2 text-large font-medium">{venueName}</h3>
-          <VenueRating initialRating={finalRating} readonly />
+          <div className="flex items-center gap-1">
+            <VenueRating initialRating={finalRating} readonly />
+            <span className="pb-1 text-sm">
+              ({totalReviewCount}{' '}
+              {totalReviewCount === 1 ? 'Review' : 'Reviews'})
+            </span>
+          </div>
           <div className="absolute right-2 top-2 z-10">
             <LikeButton
               isFavourite={isFavourite}
