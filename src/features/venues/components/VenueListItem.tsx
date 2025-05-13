@@ -3,8 +3,8 @@ import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 
 // File imports
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
-import clockIcon from '../../../assets/icons/clock.svg';
-import mapPinIcon from '../../../assets/icons/map-pin.svg';
+
+import { Icon } from '@iconify/react';
 
 // Component imports
 import VenueRating from './VenueRating';
@@ -87,7 +87,7 @@ function ListItem({
   return (
     <Card className="mb-2 w-full" isPressable onPress={handleClick}>
       <div className="flex">
-        <div className="relative w-1/3">
+        <div className="relative h-48 w-1/3">
           <Image
             className="h-full w-full object-cover"
             src={mainImage?.url || greyChilli}
@@ -96,7 +96,7 @@ function ListItem({
           />
         </div>
         <CardBody className="relative w-2/3">
-          <h3 className="text-large font-semibold">{venueName}</h3>
+          <h3 className="mb-2 text-large font-medium">{venueName}</h3>
           <VenueRating initialRating={finalRating} readonly />
           <div className="absolute right-2 top-2 z-10">
             <LikeButton
@@ -105,23 +105,25 @@ function ListItem({
               handleClick={toggleFavourite}
             />
           </div>
-          <div className="mt-2 flex items-center gap-2">
-            <img className="w-6" src={clockIcon} alt="icon of a clock" />
+          <div className="mt-1 flex items-center gap-2 text-sm">
+            <Icon icon="lucide:clock" width={15} />
             <span>Open</span>
           </div>
-          <div className="mt-2 flex items-center gap-2">
-            <img className="w-6" src={mapPinIcon} alt="icon of a map pin" />
+          <div className="mt-2 flex items-center gap-2 text-sm">
+            <Icon icon="lucide:map-pin" width={16} />
             <span>{address}</span>
           </div>
 
           {/* Link to the detailed page of the venue. 
             On click, set clicked venue as active venue. */}
-          <CardFooter className="flex justify-end">
+          <CardFooter>
             <Link
+              className="absolute bottom-3 right-4 z-10 text-sm"
               color="primary"
               onPress={() => {
                 setParamsAndNavigate(venue, 'venue');
               }}
+              showAnchorIcon
             >
               More information!
             </Link>
