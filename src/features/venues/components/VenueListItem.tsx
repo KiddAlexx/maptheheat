@@ -85,7 +85,13 @@ function ListItem({
   const mainImage = images?.[0];
 
   return (
-    <Card className="mb-2 w-full" isPressable onPress={handleClick}>
+    <Card
+      className="mb-2 w-full border-r border-t border-s-violet-500 shadow-md"
+      isHoverable
+      isPressable
+      onPress={handleClick}
+      radius="sm"
+    >
       <div className="flex">
         <div className="relative h-48 w-1/3">
           <Image
@@ -93,6 +99,7 @@ function ListItem({
             src={mainImage?.url || greyChilli}
             alt={mainImage?.alt || 'a greyed out image of a chilli pepper'}
             removeWrapper
+            radius="sm"
           />
         </div>
         <CardBody className="relative w-2/3">
