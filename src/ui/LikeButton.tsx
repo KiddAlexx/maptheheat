@@ -1,19 +1,29 @@
 import { useModalContext } from '@/context/ModalContext';
 import { Button } from '@heroui/react';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface LikeButtonProps {
   isFavourite?: boolean;
   isAuthenticated: boolean;
   handleClick: (isFavourite: boolean) => void;
+  size?: string;
+  iconFull?: string;
+  iconEmpty?: string;
+  iconFullColor?: string;
+  iconEmptyColor?: string;
 }
 
-// LikeButton displays a heart icon indicating if an item is a favourite.
+// LikeButton displays an icon indicating if an item is a favourite.
 // isFavourite determines the initial state, and handleClick is triggered on click.
 function LikeButton({
   isFavourite,
   isAuthenticated,
   handleClick,
+  size = '20',
+  iconFull = 'bi:heart-fill',
+  iconEmpty = 'bi:heart',
+  iconEmptyColor = 'text-gray-500',
+  iconFullColor = 'text-rose-500',
 }: LikeButtonProps) {
   const { openModal } = useModalContext();
 
@@ -31,15 +41,27 @@ function LikeButton({
 
   return (
     <Button
-      /*  className={`${
-        isFavourite ? 'bg-red-100 text-red-500' : 'bg-gray-100 text-gray-500'
-      } `} */
+      radius="none"
+      className="h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
       isIconOnly
-      variant="ghost"
-      radius="full"
+      disableAnimation
       onPress={() => handleFavouriteClick()}
     >
-      {isFavourite ? <FaHeart color="red" /> : <FaRegHeart />}
+      {isFavourite ? (
+        <Icon
+          icon={iconFull}
+          className={`${iconFullColor}`}
+          width={size}
+          height={size}
+        />
+      ) : (
+        <Icon
+          className={`${iconEmptyColor}`}
+          icon={iconEmpty}
+          width={size}
+          height={size}
+        />
+      )}
     </Button>
   );
 }

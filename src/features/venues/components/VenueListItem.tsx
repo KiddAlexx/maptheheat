@@ -92,6 +92,7 @@ function ListItem({
       className="mb-2 w-full border-r border-t border-s-violet-500 shadow-md"
       isHoverable
       isPressable
+      disableAnimation
       onPress={handleClick}
       radius="sm"
     >
@@ -114,7 +115,7 @@ function ListItem({
               {totalReviewCount === 1 ? 'review' : 'reviews'})
             </span>
           </div>
-          <div className="absolute right-2 top-2 z-10">
+          <div className="absolute right-4 top-4 z-10">
             <LikeButton
               isFavourite={isFavourite}
               isAuthenticated={isAuthenticated}
