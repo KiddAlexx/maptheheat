@@ -67,5 +67,10 @@ export default {
     },
   },
   darkMode: ['class'],
-  plugins: [heroui(), tailwindcssAnimate],
+  plugins: [
+    heroui({
+      addCommonColors: true,
+    }),
+    tailwindcssAnimate,
+  ],
 };

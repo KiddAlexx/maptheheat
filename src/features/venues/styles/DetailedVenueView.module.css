@@ -29,39 +29,3 @@
   font-weight: 500;
   color: #414141;
 }
-
-.detailedViewContainer {
-  padding: 2.5rem;
-}
-
-.ratingUploadContainer {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.iconTextContainer {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-/* Ensure icon for multiple line content is aligned to the top */
-.topAlignIcon {
-  align-items: flex-start;
-}
-
-/* Ensure first line of text is centered with icon */
-.topAlignIcon p {
-  padding-top: 0.4rem;
-}
-
-.btnBackToMap {
-  transition: background-color 0.2s ease-in-out;
-}
-
-.btnBackToMap:hover {
-  background-color: #d46326;
-  color: #fff;
-}

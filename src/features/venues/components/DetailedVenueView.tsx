@@ -1,6 +1,5 @@
 // React imports
 import { useNavigate, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
 
 // Style imports
 import styles from '../styles/DetailedVenueView.module.css';
@@ -19,18 +18,15 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ReviewContainer from '../../reviews/components/ReviewContainer';
 
 // NextUI Component imports
-import { Button } from '@heroui/react';
+import { Button, Divider, Link } from '@heroui/react';
 
 // Type imports
 import { Image } from '../../../types/venueTypes';
 
 // File imports
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
-import clockIcon from '../../../assets/icons/clock.svg';
-import globeIcon from '../../../assets/icons/globe.svg';
-import mapPinIcon from '../../../assets/icons/map-pin.svg';
-import phoneIcon from '../../../assets/icons/phone.svg';
-import infoIcon from '../../../assets/icons/info.svg';
+
+import { Icon } from '@iconify/react/dist/iconify.js';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
@@ -74,12 +70,15 @@ function DetailedVenueView() {
     averageRating,
     images,
     coords,
+    totalReviews,
   } = venue;
 
   const { lat, lon } = coords;
 
   const finalRating =
     averageRating != null ? Math.round(averageRating * 2) / 2 : 5;
+
+  const totalReviewCount = totalReviews ?? 0;
 
   async function handleReview() {
     // Open login modal if not authenticated
@@ -119,10 +118,13 @@ function DetailedVenueView() {
   }
 
   return (
-    <div className={styles.detailedViewContainer}>
-      <h2>{venueName}</h2>
-      <div className={styles.ratingUploadContainer}>
+    <div className="p-3 text-gray-800">
+      <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>
+      <div className="flex items-center gap-1">
         <VenueRating initialRating={finalRating} readonly />
+        <span className="pb-1 text-sm">
+          ({totalReviewCount} {totalReviewCount === 1 ? 'review' : 'reviews'})
+        </span>
       </div>
       <div
         className={styles.multipleImageContainer}
@@ -151,41 +153,69 @@ function DetailedVenueView() {
           </div>
         )}
       </div>
-      <Button onPress={handleAddImages}>Add Images</Button>
-      {/*    <VenueImageCarousel venueImages={images} /> */}
-      <button className="btn-default" onClick={handleReview}>
-        Leave a review
-      </button>
-      <div className={styles.iconTextContainer}>
-        <img src={clockIcon} alt="icon of a clock" />
-        <p>Open</p>
+
+      <div className="mt-2 flex items-center gap-2  ">
+        <Icon icon="lucide:clock" width={24} />
+        <span>Open</span>
       </div>
       {/* Calculate based on opening hours */}
-      <div className={styles.iconTextContainer}>
-        <img src={mapPinIcon} alt="icon of a map pin" />
-        <p>{detailedAddress}</p>
+      <div className="mt-3 flex items-center gap-2">
+        <Icon icon="lucide:map-pin" width={24} />
+        <span>{detailedAddress}</span>
       </div>
-      <div className={`${styles.iconTextContainer} ${styles.topAlignIcon}`}>
-        <img src={infoIcon} alt="icon of an information symbol" />
-        <p>{description}</p>
+
+      <div className="mt-3 flex items-center gap-2">
+        <Icon icon="lucide:phone" width={24} />
+        <span>{phoneNumber}</span>
       </div>
-      <div className={styles.iconTextContainer}>
-        <img src={phoneIcon} alt="icon of a phone" />
-        <p>{phoneNumber}</p>
-      </div>
-      <div className={styles.iconTextContainer}>
-        <img src={globeIcon} alt="icon of a globe" />
-        <a href={website} target="_blank" rel="noopener noreferrer">
+      <div className="mb-7 mt-3 flex items-center gap-2">
+        <Icon icon="material-symbols:globe" width={24} />
+        <a
+          className="text-blue-500  hover:text-blue-400"
+          href={website}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {website}
         </a>
       </div>
-      {/* Button to navigate back to map view. */}
-      <Link
-        to={`/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`}
-        className={`btn-default ${styles.btnBackToMap}`}
-      >
-        Back to Map
-      </Link>
+
+      <Divider className="mb-7" />
+
+      <div className="mb-4">
+        <h2 className="mb-2 text-lg font-medium">About</h2>
+        <p className="text-gray-700">{description}</p>
+      </div>
+      <div className="mb-7 flex gap-2">
+        <Button
+          color="primary"
+          variant="flat"
+          startContent={<Icon icon="lucide:navigation" />}
+        >
+          Get Directions
+        </Button>
+        <Button
+          variant="flat"
+          startContent={<Icon icon="lucide:message-circle" />}
+          onPress={handleReview}
+        >
+          Leave a review
+        </Button>
+        <Button
+          variant="flat"
+          startContent={<Icon icon="lucide:image-plus" />}
+          onPress={handleAddImages}
+        >
+          Add Images
+        </Button>
+
+        <Link
+          href={`/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`}
+        >
+          Back to Map
+        </Link>
+      </div>
+      <Divider className="mb-7" />
       <ReviewContainer mode="venue" />
     </div>
   );

@@ -3,7 +3,7 @@ import { Outlet } from 'react-router';
 
 function RightPanel() {
   return (
-    <main className="flex-1 overflow-y-scroll bg-orange-200">
+    <main className="flex-1 overflow-y-scroll bg-orange-50">
       <Outlet />
     </main>
   );

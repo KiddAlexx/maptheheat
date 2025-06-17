@@ -107,7 +107,7 @@ function ListItem({
           />
         </div>
         <CardBody className="relative w-2/3">
-          <h3 className="mb-2 text-large font-medium">{venueName}</h3>
+          <h3 className="mb-2 text-lg font-medium">{venueName}</h3>
           <div className="flex items-center gap-1">
             <VenueRating initialRating={finalRating} readonly size="20" />
             <span className="pb-1 text-sm">
