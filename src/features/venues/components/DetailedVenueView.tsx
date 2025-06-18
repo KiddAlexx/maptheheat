@@ -2,9 +2,6 @@
 import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
-// Style imports
-import styles from '../styles/DetailedVenueView.module.css';
-
 // Hooks imports
 import { useVenue } from '../hooks/useVenue';
 import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
@@ -19,10 +16,10 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ReviewContainer from '../../reviews/components/ReviewContainer';
 
 // NextUI Component imports
-import { Button, Divider } from '@heroui/react';
+import { Button, Divider, Image } from '@heroui/react';
 
 // Type imports
-import { Image } from '../../../types/venueTypes';
+import { Image as ImageType } from '../../../types/venueTypes';
 
 // File imports
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
@@ -142,27 +139,30 @@ function DetailedVenueView() {
         </Button>
       </div>
       <div
-        className={styles.multipleImageContainer}
+        className="flex cursor-pointer gap-1"
         onClick={() => images && openModalImages('image-carousel', images)}
       >
         {images && images.length > 0 ? (
           // Slice first 4 images and map over
-          // To be replaced with more refined component
-          images.slice(0, 4).map((image: Image) => (
-            <div className={styles.mainImageContainer}>
-              <img
-                className={styles.imageMainSmall}
+          images.slice(0, 4).map((image: ImageType) => (
+            <div className=" h-48 w-1/4 gap-4">
+              <Image
+                className="h-full w-full object-cover"
                 src={image.url}
                 alt={image.alt}
+                radius="sm"
+                isZoomed
               />
             </div>
           ))
         ) : (
-          <div className={styles.mainImageContainer}>
-            <img
-              className={styles.imageMainSmall}
+          <div className="h-48 w-1/4">
+            <Image
+              className="h-full w-full object-cover"
               src={greyChilli}
               alt="an greyed out image of a chilli pepper"
+              removeWrapper
+              radius="sm"
             />
           </div>
         )}
