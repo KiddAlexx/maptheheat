@@ -1,5 +1,6 @@
 // React imports
 import { useNavigate, useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 
 // Style imports
 import styles from '../styles/DetailedVenueView.module.css';
@@ -18,7 +19,7 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ReviewContainer from '../../reviews/components/ReviewContainer';
 
 // NextUI Component imports
-import { Button, Divider, Link } from '@heroui/react';
+import { Button, Divider } from '@heroui/react';
 
 // Type imports
 import { Image } from '../../../types/venueTypes';
@@ -119,12 +120,26 @@ function DetailedVenueView() {
 
   return (
     <div className="p-3 text-gray-800">
-      <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>
-      <div className="flex items-center gap-1">
-        <VenueRating initialRating={finalRating} readonly />
-        <span className="pb-1 text-sm">
-          ({totalReviewCount} {totalReviewCount === 1 ? 'review' : 'reviews'})
-        </span>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>
+          <div className="flex items-center gap-1">
+            <VenueRating initialRating={finalRating} readonly />
+            <span className="pb-1 text-sm">
+              ({totalReviewCount}{' '}
+              {totalReviewCount === 1 ? 'review' : 'reviews'})
+            </span>
+          </div>
+        </div>
+        <Button
+          as={Link}
+          color="primary"
+          variant="flat"
+          startContent={<Icon icon="lucide:map-pinned" />}
+          to={`/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`}
+        >
+          Back to Map
+        </Button>
       </div>
       <div
         className={styles.multipleImageContainer}
@@ -149,7 +164,6 @@ function DetailedVenueView() {
               src={greyChilli}
               alt="an greyed out image of a chilli pepper"
             />
-            <p className={styles.addPhotosText}>Add Photos</p>
           </div>
         )}
       </div>
@@ -208,12 +222,6 @@ function DetailedVenueView() {
         >
           Add Images
         </Button>
-
-        <Link
-          href={`/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`}
-        >
-          Back to Map
-        </Link>
       </div>
       <Divider className="mb-7" />
       <ReviewContainer mode="venue" />

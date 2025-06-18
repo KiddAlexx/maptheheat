@@ -18,14 +18,3 @@
   object-fit: cover;
   z-index: 10;
 }
-.addPhotosText {
-  position: absolute;
-  z-index: 20;
-  bottom: 2%;
-  left: 50%;
-  transform: translate(-50%);
-
-  font-size: 2rem;
-  font-weight: 500;
-  color: #414141;
-}
