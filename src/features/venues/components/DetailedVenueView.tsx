@@ -140,25 +140,27 @@ function DetailedVenueView() {
       </div>
       <div
         className="flex cursor-pointer gap-1"
-        onClick={() => images && openModalImages('image-carousel', images)}
+        onClick={() =>
+          images ? openModalImages('image-carousel', images) : handleAddImages()
+        }
       >
         {images && images.length > 0 ? (
           // Slice first 4 images and map over
           images.slice(0, 4).map((image: ImageType) => (
-            <div className=" h-48 w-1/4 gap-4">
+            <div className=" h-48 w-1/4 overflow-hidden rounded-xl ">
               <Image
-                className="h-full w-full object-cover"
+                className="h-full w-full  object-cover hover:scale-110"
                 src={image.url}
                 alt={image.alt}
                 radius="sm"
-                isZoomed
+                removeWrapper
               />
             </div>
           ))
         ) : (
-          <div className="h-48 w-1/4">
+          <div className=" h-48 w-1/4  overflow-hidden rounded-xl ">
             <Image
-              className="h-full w-full object-cover"
+              className="h-full w-full  object-cover hover:scale-110"
               src={greyChilli}
               alt="an greyed out image of a chilli pepper"
               removeWrapper
