@@ -78,6 +78,8 @@ function DetailedVenueView() {
 
   const totalReviewCount = totalReviews ?? 0;
 
+  const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
+
   async function handleReview() {
     // Open login modal if not authenticated
     if (!isAuthenticated) {
@@ -117,7 +119,7 @@ function DetailedVenueView() {
 
   return (
     <div className="p-3 text-gray-800">
-      <div className="flex items-center justify-between">
+      <div className="mb-3 flex items-center justify-between">
         <div>
           <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>
           <div className="flex items-center gap-1">
@@ -139,7 +141,7 @@ function DetailedVenueView() {
         </Button>
       </div>
       <div
-        className="flex cursor-pointer gap-1"
+        className="mb-3 flex cursor-pointer gap-1"
         onClick={() =>
           images ? openModalImages('image-carousel', images) : handleAddImages()
         }
@@ -170,7 +172,7 @@ function DetailedVenueView() {
         )}
       </div>
 
-      <div className="mt-2 flex items-center gap-2  ">
+      <div className="mt-6 flex items-center gap-2  ">
         <Icon icon="lucide:clock" width={24} />
         <span>Open</span>
       </div>
@@ -184,7 +186,7 @@ function DetailedVenueView() {
         <Icon icon="lucide:phone" width={24} />
         <span>{phoneNumber}</span>
       </div>
-      <div className="mb-7 mt-3 flex items-center gap-2">
+      <div className="mb-6 mt-3 flex items-center gap-2">
         <Icon icon="material-symbols:globe" width={24} />
         <a
           className="text-blue-500  hover:text-blue-400"
@@ -204,6 +206,10 @@ function DetailedVenueView() {
       </div>
       <div className="mb-7 flex gap-2">
         <Button
+          as="a"
+          href={mapsDirectionsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           color="primary"
           variant="flat"
           startContent={<Icon icon="lucide:navigation" />}
