@@ -21,7 +21,7 @@ function VenuePagination({
   }
 
   return (
-    <div className="p-3">
+    <div className="p-2">
       <Pagination
         showControls
         total={pageCount}

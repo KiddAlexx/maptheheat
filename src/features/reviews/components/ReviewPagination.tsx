@@ -1,5 +1,5 @@
 import { ReviewPaginationParams, UpdatePageNumber } from '@/types/reviewTypes';
-import { Pagination } from "@heroui/react";
+import { Pagination } from '@heroui/react';
 
 interface ReviewPaginationProps {
   pagination: ReviewPaginationParams;

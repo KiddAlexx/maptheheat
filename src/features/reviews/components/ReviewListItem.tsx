@@ -1,5 +1,3 @@
-import styles from '../styles/ReviewListItem.module.css';
-
 import VenueRating from '../../venues/components/VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import Avatar from '@/features/userProfile/components/Avatar';
@@ -17,6 +15,7 @@ import { withinTimeframe } from '../../../utils/withinTimeframe';
 import { ReviewWithRelations } from '@/types/reviewTypes';
 import {
   Button,
+  Divider,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -74,15 +73,25 @@ function ReviewListItem({ review }: ReviewListItemProps) {
   return isDeleting ? (
     <LoaderSpinner />
   ) : (
-    <article className={styles.reviewCardContainer}>
-      <header className={styles.userInfo}>
-        <Avatar userId={userId} />
-        <div>
-          <h3>{username}</h3>
-          <time dateTime={createdAt}> {formattedDate}</time>
+    <article className="mt-2 rounded-xl border border-gray-200 bg-white p-3 shadow-md">
+      <header className="flex justify-between">
+        <div className="flex items-center gap-2">
+          <Avatar userId={userId} />
+          <div>
+            <div className="mb-1 flex gap-1">
+              <h3 className="font-semibold">{username}</h3>
+              <p>
+                ({totalReviews} {totalReviews === 1 ? 'review' : 'reviews'})
+              </p>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="pt-[3px]">
+                <VenueRating initialRating={heatRating} readonly size="20" />
+              </div>
+              <time dateTime={createdAt}> {formattedDate}</time>
+            </div>
+          </div>
         </div>
-      </header>
-      <section>
         <Dropdown>
           <DropdownTrigger>
             <Button isIconOnly variant="light" className="ml-2">
@@ -92,7 +101,7 @@ function ReviewListItem({ review }: ReviewListItemProps) {
           <DropdownMenu aria-label="Review actions ">
             {within48hours && currentUser ? (
               <DropdownItem
-                key={reviewId}
+                key="editReview"
                 startContent={<Icon icon="lucide:edit" />}
               >
                 <Link
@@ -104,7 +113,7 @@ function ReviewListItem({ review }: ReviewListItemProps) {
             ) : null}
             {currentUser ? (
               <DropdownItem
-                key={reviewId}
+                key="deleteReview"
                 onPress={handleDeleteReview}
                 className=" text-danger"
                 startContent={<Icon icon="lucide:trash-2" />}
@@ -114,22 +123,38 @@ function ReviewListItem({ review }: ReviewListItemProps) {
             ) : null}
           </DropdownMenu>
         </Dropdown>
-        <VenueRating initialRating={heatRating} readonly />
-        <p>({totalReviews} Reviews)</p>
-        <h3>{reviewTitle}</h3>
-        <p>{reviewContent}</p>
-        {reviewType === 'shop' && (
-          <p>
-            <strong>Hottest Sauce: </strong>
-            {hottestSauce}
-          </p>
-        )}
-        {reviewType === 'restaurant' && (
-          <p>
-            <strong>Hottest Dish: </strong>
-            {hottestDish}
-          </p>
-        )}
+      </header>
+      <Divider className="my-2" />
+      <section>
+        <h4 className="font mb-1 font-medium">{reviewTitle}</h4>
+        <div className="flex gap-1">
+          {/*       <Icon
+            icon="lucide:message-square-text"
+            width={20}
+            height={20}
+            className="mt-[2px] text-gray-500"
+          /> */}
+          <p className="mb-1">{reviewContent}</p>{' '}
+        </div>
+        <Divider className="my-2" />
+        <div className="flex gap-1">
+          {/*     <Icon
+            icon="flowbite:pepper-hot-outline"
+            width={20}
+            height={20}
+            className="text-orange-500"
+          /> */}
+          {reviewType === 'shop' && (
+            <p>
+              Hottest Sauce: <span>{hottestSauce}</span>
+            </p>
+          )}
+          {reviewType === 'restaurant' && (
+            <p>
+              Hottest Dish: <span>{hottestDish}</span>
+            </p>
+          )}
+        </div>
       </section>
     </article>
   );

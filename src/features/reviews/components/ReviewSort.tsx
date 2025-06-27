@@ -24,7 +24,12 @@ function ReviewSort({ updateSort, resetSort }: ReviewSortParams) {
     }
   }
   return (
-    <Select onChange={handleChange} label={'Sort by'}>
+    <Select
+      className="max-w-60"
+      onChange={handleChange}
+      label={'Sort by'}
+      size="sm"
+    >
       <SelectItem key={'default'}>Default</SelectItem>
       <SelectItem endContent={<FaSortAmountUp />} key={'heatRating-desc'}>
         Heat Rating

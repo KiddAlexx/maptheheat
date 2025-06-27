@@ -140,7 +140,7 @@ function DetailedVenueView() {
           Back to Map
         </Button>
       </div>
-      <article className="mb-7 rounded-xl border border-gray-200 bg-white p-3 shadow-md">
+      <article className="mb-5 rounded-xl border border-gray-200 bg-white p-3 shadow-md">
         <div
           className="mb-3 flex cursor-pointer gap-1"
           onClick={() =>
@@ -236,7 +236,7 @@ function DetailedVenueView() {
         </div>
       </article>
 
-      <ReviewContainer mode="venue" />
+      {totalReviewCount > 0 && <ReviewContainer mode="venue" />}
     </div>
   );
 }

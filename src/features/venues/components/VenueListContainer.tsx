@@ -28,20 +28,21 @@ function VenueListContainer({
           mode === 'user' ? favouriteVenues ?? undefined : undefined
         }
       />
-      <VenuePagination
-        useVenueContext={useVenueContext}
-        favouriteVenues={
-          mode === 'user' ? favouriteVenues ?? undefined : undefined
-        }
-      />
       {mode === 'venue' && (
-        <div className=" flex h-20 items-center justify-between border-y border-gray-300 p-1">
+        <div className=" flex items-center justify-between p-1">
           <p>Can't find what you are looking for?</p>
           <Button as={Link} to="/add-venue" radius="sm">
             Add new venue!
           </Button>
         </div>
       )}
+      <VenuePagination
+        useVenueContext={useVenueContext}
+        favouriteVenues={
+          mode === 'user' ? favouriteVenues ?? undefined : undefined
+        }
+      />
+
       <ListView
         useVenueContext={useVenueContext}
         favouriteVenues={
