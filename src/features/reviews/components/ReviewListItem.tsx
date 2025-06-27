@@ -15,7 +15,14 @@ import { Link } from 'react-router-dom';
 import { withinTimeframe } from '../../../utils/withinTimeframe';
 
 import { ReviewWithRelations } from '@/types/reviewTypes';
-import { Button } from '@heroui/react';
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from '@heroui/react';
+import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface ReviewListItemProps {
   review: ReviewWithRelations;
@@ -72,12 +79,43 @@ function ReviewListItem({ review }: ReviewListItemProps) {
         <Avatar userId={userId} />
         <div>
           <h3>{username}</h3>
-          <p>({totalReviews} Reviews)</p>
+          <time dateTime={createdAt}> {formattedDate}</time>
         </div>
       </header>
       <section>
+        <Dropdown>
+          <DropdownTrigger>
+            <Button isIconOnly variant="light" className="ml-2">
+              <Icon icon="lucide:more-vertical" className="h-5 w-5" />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="Review actions ">
+            {within48hours && currentUser ? (
+              <DropdownItem
+                key={reviewId}
+                startContent={<Icon icon="lucide:edit" />}
+              >
+                <Link
+                  to={`/app/venue/${city}/${venueNameSlug}/reviews/edit/${reviewId}`}
+                >
+                  Edit Review
+                </Link>
+              </DropdownItem>
+            ) : null}
+            {currentUser ? (
+              <DropdownItem
+                key={reviewId}
+                onPress={handleDeleteReview}
+                className=" text-danger"
+                startContent={<Icon icon="lucide:trash-2" />}
+              >
+                Delete Review
+              </DropdownItem>
+            ) : null}
+          </DropdownMenu>
+        </Dropdown>
         <VenueRating initialRating={heatRating} readonly />
-        <time dateTime={createdAt}> {formattedDate}</time>
+        <p>({totalReviews} Reviews)</p>
         <h3>{reviewTitle}</h3>
         <p>{reviewContent}</p>
         {reviewType === 'shop' && (
@@ -91,22 +129,6 @@ function ReviewListItem({ review }: ReviewListItemProps) {
             <strong>Hottest Dish: </strong>
             {hottestDish}
           </p>
-        )}
-        {/* Displays option to edit review if current user is the 
-        author of the review and it is within the 48 hour timeframe */}
-        {within48hours && currentUser && (
-          <Link
-            className="btn-default"
-            to={`/app/venue/${city}/${venueNameSlug}/reviews/edit/${reviewId}`}
-          >
-            Edit Review
-          </Link>
-        )}
-        {/* Displays option to delete review if current user is the author of review*/}
-        {currentUser && (
-          <Button onPress={handleDeleteReview} className="btn-default">
-            Delete Review
-          </Button>
         )}
       </section>
     </article>
