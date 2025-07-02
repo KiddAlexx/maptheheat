@@ -24,11 +24,14 @@ export interface ReviewWithRelations extends Review {
   venueDetails: Venue;
 }
 
-// id not present at creation time, generate by Supbase
+// id not present at creation time, generate by Supabase
 export type NewReview = Omit<Review, 'reviewId' | 'createdAt' | 'userId'>;
 
 // Review context types - used in UserReviewsContext & ReviewSortContext
-export type ReviewSortField = 'averageHeatRating' | 'createdAt';
+export type ReviewSortField =
+  | 'averageHeatRating'
+  | 'averageQualityRating'
+  | 'createdAt';
 
 export interface ReviewSort {
   field: ReviewSortField;

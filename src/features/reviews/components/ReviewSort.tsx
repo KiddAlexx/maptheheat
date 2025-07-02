@@ -37,6 +37,15 @@ function ReviewSort({ updateSort, resetSort }: ReviewSortParams) {
       <SelectItem endContent={<FaSortAmountDownAlt />} key={'heatRating-asc'}>
         Heat Rating
       </SelectItem>
+      <SelectItem endContent={<FaSortAmountUp />} key={'qualityRating-desc'}>
+        Quality Rating
+      </SelectItem>
+      <SelectItem
+        endContent={<FaSortAmountDownAlt />}
+        key={'qualityRating-asc'}
+      >
+        Quality Rating
+      </SelectItem>
       <SelectItem endContent={<FaSortAmountUp />} key={'createdAt-desc'}>
         Date Added
       </SelectItem>
