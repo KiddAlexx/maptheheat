@@ -25,18 +25,23 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
 
   const {
     venueName,
-    averageRating,
+    averageHeatRating,
+    averageQualityRating,
     address,
     phoneNumber,
     images,
-    totalReviews,
   } = venue;
 
-  const totalReviewCount = totalReviews ?? 0;
+  /*   const totalReviewCount = totalReviews ?? 0; */
 
   const mainImage = images?.[0];
-  const finalRating =
-    averageRating != null ? Math.round(averageRating * 2) / 2 : 5;
+  const finalHeatRating =
+    averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 5;
+
+  const finalQualityRating =
+    averageQualityRating != null
+      ? Math.round(averageQualityRating * 10) / 10
+      : 5;
 
   return (
     <div className={styles.global}>
@@ -64,10 +69,20 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
         </h3>
 
         <div className="flex items-center gap-1">
-          <VenueRating initialRating={finalRating} readonly size="20" />
-          <span className="pb-1 text-sm">
-            ({totalReviewCount} {totalReviewCount === 1 ? 'review' : 'reviews'})
-          </span>
+          <div className="flex items-center gap-1">
+            <Icon className="text-yellow-600" icon="lucide:star" width={18} />
+            <span className="text-small">({finalQualityRating})</span>
+          </div>
+          {/* display flex is forced to override default display inline block
+                  of react rating - ensures icons allign correctly */}
+          <div className="flex items-center gap-1 [&>span]:!flex">
+            <VenueRating initialRating={finalHeatRating} readonly size="20" />
+
+            {/*     <span className="text-sm">
+              ({totalReviewCount}{' '}
+              {totalReviewCount === 1 ? 'review' : 'reviews'})
+            </span> */}
+          </div>
         </div>
         <div className="mt-1 flex items-center gap-2 text-sm">
           <Icon icon="lucide:map-pin" width={16} />

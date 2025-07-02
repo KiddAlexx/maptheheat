@@ -41,8 +41,15 @@ function ListItem({
 
   const { openDialog } = useModalContext();
 
-  const { venueName, venueId, address, images, averageRating, totalReviews } =
-    venue;
+  const {
+    venueName,
+    venueId,
+    address,
+    images,
+    averageHeatRating,
+    averageQualityRating,
+    totalReviews,
+  } = venue;
 
   const totalReviewCount = totalReviews ?? 0;
 
@@ -82,8 +89,13 @@ function ListItem({
     }
   }
 
-  const finalRating =
-    averageRating != null ? Math.round(averageRating * 2) / 2 : 5;
+  const finalHeatRating =
+    averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 5;
+
+  const finalQualityRating =
+    averageQualityRating != null
+      ? Math.round(averageQualityRating * 10) / 10
+      : 5;
 
   const mainImage = images?.[0];
 
@@ -109,11 +121,20 @@ function ListItem({
         <CardBody className="relative w-2/3">
           <h3 className="mb-2 text-lg font-medium">{venueName}</h3>
           <div className="flex items-center gap-1">
-            <VenueRating initialRating={finalRating} readonly size="20" />
-            <span className="pb-1 text-sm">
-              ({totalReviewCount}{' '}
-              {totalReviewCount === 1 ? 'review' : 'reviews'})
-            </span>
+            <div className="flex items-center gap-1">
+              <Icon className="text-yellow-600" icon="lucide:star" width={18} />
+              <span className="text-small">({finalQualityRating})</span>
+            </div>
+            {/* display flex is forced to override default display inline block
+            of react rating - ensures icons allign correctly */}
+            <div className="flex items-center gap-1 [&>span]:!flex">
+              <VenueRating initialRating={finalHeatRating} readonly size="20" />
+
+              <span className="text-sm">
+                ({totalReviewCount}{' '}
+                {totalReviewCount === 1 ? 'review' : 'reviews'})
+              </span>
+            </div>
           </div>
           <div className="absolute right-4 top-4 z-10">
             <LikeButton

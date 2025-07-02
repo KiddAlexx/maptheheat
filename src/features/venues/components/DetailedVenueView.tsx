@@ -65,7 +65,8 @@ function DetailedVenueView() {
     detailedAddress,
     website,
     description,
-    averageRating,
+    averageHeatRating,
+    averageQualityRating,
     images,
     coords,
     totalReviews,
@@ -73,8 +74,13 @@ function DetailedVenueView() {
 
   const { lat, lon } = coords;
 
-  const finalRating =
-    averageRating != null ? Math.round(averageRating * 2) / 2 : 5;
+  const finalHeatRating =
+    averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 5;
+
+  const finalQualityRating =
+    averageQualityRating != null
+      ? Math.round(averageQualityRating * 10) / 10
+      : 5;
 
   const totalReviewCount = totalReviews ?? 0;
 
@@ -119,15 +125,24 @@ function DetailedVenueView() {
 
   return (
     <div className="p-3 text-gray-800">
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3 ml-1 flex items-center justify-between">
         <div>
           <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>
           <div className="flex items-center gap-1">
-            <VenueRating initialRating={finalRating} readonly />
-            <span className="pb-1 text-sm">
-              ({totalReviewCount}{' '}
-              {totalReviewCount === 1 ? 'review' : 'reviews'})
-            </span>
+            <div className="flex items-center gap-1">
+              <Icon className="text-yellow-600" icon="lucide:star" width={22} />
+              <span className="text-small">({finalQualityRating})</span>
+            </div>
+            {/* display flex is forced to override default display inline block
+            of react rating - ensures icons allign correctly */}
+            <div className="flex items-center gap-1 [&>span]:!flex">
+              <VenueRating initialRating={finalHeatRating} readonly />
+
+              <span className="text-sm">
+                ({totalReviewCount}{' '}
+                {totalReviewCount === 1 ? 'review' : 'reviews'})
+              </span>
+            </div>
           </div>
         </div>
         <Button
