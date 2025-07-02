@@ -53,7 +53,11 @@ export type Key = string | number;
 // Review context types - used in VenueFilterContext and UserFavVenuesContext
 
 export type FilterField = 'city' | 'country' | 'venueType' | 'venueName';
-export type VenueSortField = 'averageHeatRating' | 'totalReviews' | 'createdAt';
+export type VenueSortField =
+  | 'averageHeatRating'
+  | 'averageQualityRating'
+  | 'totalReviews'
+  | 'createdAt';
 
 export interface VenueFilter {
   field: FilterField;

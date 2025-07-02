@@ -37,6 +37,18 @@ function VenueSort({ useVenueContext }: VenueSortProps) {
       >
         Heat Rating
       </SelectItem>
+      <SelectItem
+        endContent={<FaSortAmountUp />}
+        key={'averageQualityRating-desc'}
+      >
+        Quality Rating
+      </SelectItem>
+      <SelectItem
+        endContent={<FaSortAmountDownAlt />}
+        key={'averageQualityRating-asc'}
+      >
+        Quality Rating
+      </SelectItem>
       <SelectItem endContent={<FaSortAmountUp />} key={'totalReviews-desc'}>
         Review Count
       </SelectItem>
