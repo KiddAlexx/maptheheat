@@ -5,6 +5,7 @@ import { Image, Venue } from './venueTypes';
 export interface Review {
   createdAt: string;
   heatRating: number;
+  qualityRating: number;
   hottestDish?: string;
   hottestSauce?: string;
   images?: Image[];

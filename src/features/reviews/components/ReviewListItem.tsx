@@ -34,6 +34,7 @@ function ReviewListItem({ review }: ReviewListItemProps) {
     venueDetails,
     createdAt,
     heatRating,
+    qualityRating,
     hottestDish,
     hottestSauce,
     reviewContent,
@@ -85,7 +86,15 @@ function ReviewListItem({ review }: ReviewListItemProps) {
               </p>
             </div>
             <div className="flex items-center gap-1">
-              <div className="pt-[3px]">
+              <div className="flex items-center gap-1">
+                <Icon
+                  className="text-yellow-600"
+                  icon="lucide:star"
+                  width={18}
+                />
+                <span>({qualityRating})</span>
+              </div>
+              <div className=" [&>span]:!flex">
                 <VenueRating initialRating={heatRating} readonly size="20" />
               </div>
               <time dateTime={createdAt}> {formattedDate}</time>
