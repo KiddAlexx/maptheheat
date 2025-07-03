@@ -34,6 +34,7 @@ interface FormData {
 
 export interface EditformData extends FormData {
   heatRating: number;
+  qualityRating: number;
 }
 
 function ReviewForm({ mode }: ReviewFormProps) {
@@ -100,6 +101,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
       });
     }
     setHeatRating(review?.heatRating || 5);
+    setQualityRating(review?.qualityRating || 5);
   }, [mode, review, reset, isLoadingReview]);
 
   // Toast for form errors
@@ -132,6 +134,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
       const finalFormData = {
         ...formData,
         heatRating,
+        qualityRating,
       };
       // Non null assertion on reviewId as check for review prior
       updateReview(
