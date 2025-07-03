@@ -104,7 +104,7 @@ function DetailedVenueView() {
     console.log('here is permission', canUserReview);
     if (canUserReview) {
       navigate(`/app/venue/${city}/${venueNameSlug}/reviews/new/${venueId}`);
-    } else alert('You cannot review the same venue within 30 days');
+    } else openDialog('You cannot review the same venue within 30 days');
   }
 
   function handleAddImages() {
