@@ -41,6 +41,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
   const [createdReview, setCreatedReview] = useState<Review | null>(null);
   const createdReviewId = createdReview ? createdReview.reviewId : null;
   const [heatRating, setHeatRating] = useState(5);
+  const [qualityRating, setQualityRating] = useState(5);
 
   const { isCreating, createReview } = useCreateReview();
   const { isUpdating, updateReview } = useUpdateReview();
@@ -113,6 +114,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
       const finalFormData = {
         ...formData,
         heatRating,
+        qualityRating,
         venueId: venueId!,
         reviewType: venueType!,
       };
@@ -161,10 +163,22 @@ function ReviewForm({ mode }: ReviewFormProps) {
 
               <span>
                 <h3>Heat Rating</h3>
-                <VenueRating
-                  initialRating={heatRating}
-                  handleRatingChange={setHeatRating}
-                />
+                <div>
+                  <VenueRating
+                    initialRating={heatRating}
+                    handleRatingChange={setHeatRating}
+                  />
+                </div>
+              </span>
+              <span>
+                <h3>Quality Rating</h3>
+                <div>
+                  <VenueRating
+                    initialRating={qualityRating}
+                    handleRatingChange={setQualityRating}
+                    variant="star"
+                  />
+                </div>
               </span>
               {/* Form dynamically renders fields based on venue type */}
               <form

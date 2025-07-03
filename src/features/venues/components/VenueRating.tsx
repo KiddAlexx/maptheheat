@@ -7,6 +7,7 @@ interface VenueRatingProps {
   readonly?: boolean;
   handleRatingChange?: (rating: number) => void;
   size?: string;
+  variant?: 'star' | 'flame';
 }
 
 function VenueRating({
@@ -14,32 +15,56 @@ function VenueRating({
   readonly,
   handleRatingChange,
   size = '24',
+  variant = 'flame',
 }: VenueRatingProps) {
-  const fullFlame = (
-    <Icon
-      icon="f7:flame-fill"
-      width={size}
-      height={size}
-      className="text-orange-600"
-    />
-  );
+  const ICON_VARIANTS = {
+    flame: {
+      full: (
+        <Icon
+          icon="f7:flame-fill"
+          width={size}
+          height={size}
+          className="text-orange-600"
+        />
+      ),
+      empty: (
+        <Icon
+          icon="f7:flame-fill"
+          width={size}
+          height={size}
+          className="text-gray-500"
+        />
+      ),
+    },
+    star: {
+      full: (
+        <Icon
+          icon="tabler:star-filled"
+          width={size}
+          height={size}
+          className="text-yellow-300"
+        />
+      ),
+      empty: (
+        <Icon
+          icon="tabler:star-filled"
+          width={size}
+          height={size}
+          className="text-gray-500"
+        />
+      ),
+    },
+  };
 
-  const emptyFlame = (
-    <Icon
-      icon="f7:flame-fill"
-      width={size}
-      height={size}
-      className="text-gray-500"
-    />
-  );
+  const { full, empty } = ICON_VARIANTS[variant];
 
   return (
     <Rating
       initialRating={initialRating || 5}
       onChange={(value: number) => handleRatingChange?.(value)}
       readonly={readonly}
-      emptySymbol={emptyFlame}
-      fullSymbol={fullFlame}
+      emptySymbol={empty}
+      fullSymbol={full}
       fractions={2}
     />
   );
