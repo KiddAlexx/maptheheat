@@ -6,9 +6,10 @@ import { useCreateReview } from '../hooks/useCreateReview';
 import { useGetReview } from '../hooks/useGetReview';
 import { useUpdateReview } from '../hooks/useUpdateReview';
 import { useVenue } from '../../venues/hooks/useVenue';
+import { Link } from 'react-router-dom';
 
 // Third Party Imports
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
@@ -19,6 +20,8 @@ import { Review } from '@/types/reviewTypes';
 import { Button, Input, Textarea } from '@heroui/react';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import { useQueryClient } from '@tanstack/react-query';
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { useModalContext } from '@/context/ModalContext';
 
 // Types
 interface ReviewFormProps {
@@ -47,6 +50,9 @@ function ReviewForm({ mode }: ReviewFormProps) {
   const { isCreating, createReview } = useCreateReview();
   const { isUpdating, updateReview } = useUpdateReview();
 
+  const { openDialog } = useModalContext();
+  const navigate = useNavigate();
+
   // Form and data state
   const defaultFormValues: FormData = {
     hottestSauce: '',
@@ -74,7 +80,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
     venueIdParam,
     mode === 'creating'
   );
-  const { venueName, venueType, venueId } = venue ?? {};
+  const { venueName, venueType, venueId, venueNameSlug, city } = venue ?? {};
 
   // Fetch review details in "editing" mode.
   // All destructured variables assigned default values,
@@ -88,6 +94,9 @@ function ReviewForm({ mode }: ReviewFormProps) {
 
   const { reviewId, reviewType, venueDetails } = review ?? {};
   const venueNameReview = venueDetails?.venueName;
+  const venueSlugReview = venueDetails?.venueNameSlug;
+  const venueCityReview = venueDetails?.city;
+  const venueIdReview = venueDetails?.venueId;
 
   // Effect to set default input values to current review values in editing mode.
   useEffect(() => {
@@ -151,186 +160,228 @@ function ReviewForm({ mode }: ReviewFormProps) {
       );
     }
   }
+
+  const naviagateToVenue = function () {
+    mode === 'creating'
+      ? navigate(`/app/venue/${city}/${venueNameSlug}/${venueId}`)
+      : navigate(
+          `/app/venue/${venueCityReview}/${venueSlugReview}/${venueIdReview}`
+        );
+  };
+
   return (
     <>
       {isLoadingReview || isLoadingVenue ? (
         <LoaderSpinner />
       ) : (
-        <>
+        <div className="m-3">
           {formIndex === 1 && (
             <>
-              <h2>
-                {mode === 'creating' ? 'Leave a ' : 'Edit your'} review for{' '}
-                {venueName || venueNameReview}
-              </h2>
-
-              <span>
-                <h3>Heat Rating</h3>
-                <div>
-                  <VenueRating
-                    initialRating={heatRating}
-                    handleRatingChange={setHeatRating}
-                  />
-                </div>
-              </span>
-              <span>
-                <h3>Quality Rating</h3>
-                <div>
-                  <VenueRating
-                    initialRating={qualityRating}
-                    handleRatingChange={setQualityRating}
-                    variant="star"
-                  />
-                </div>
-              </span>
-              {/* Form dynamically renders fields based on venue type */}
-              <form
-                key={mode === 'editing' ? reviewId : 'new'}
-                onSubmit={handleSubmit(formSubmit, toastFormError)}
-              >
-                {(venueType || reviewType) === 'shop' && (
-                  <div>
-                    <Controller
-                      name="hottestSauce"
-                      control={control}
-                      rules={{
-                        required: 'This field is required',
-                        maxLength: {
-                          value: 100,
-                          message:
-                            'Hottest Sauce cannot be more than 100 characters',
-                        },
-                        minLength: {
-                          value: 3,
-                          message:
-                            'Hottest sauce must be at least 3 characters long',
-                        },
-                      }}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          id="hottestSauce"
-                          type="text"
-                          label="Hottest Sauce"
-                          labelPlacement="outside"
-                          placeholder="Hottest Sauce"
-                          radius="sm"
-                          isInvalid={!!errors.hottestSauce}
-                          errorMessage={errors.hottestSauce?.message}
-                        />
-                      )}
-                    />
-                  </div>
-                )}
-
-                {(venueType || reviewType) === 'restaurant' && (
-                  <div>
-                    <Controller
-                      name="hottestDish"
-                      control={control}
-                      rules={{
-                        required: 'This field is required',
-                        maxLength: {
-                          value: 100,
-                          message:
-                            'Hottest Dish cannot be more than 100 characters',
-                        },
-                        minLength: {
-                          value: 3,
-                          message:
-                            'Hottest dish must be at least 3 characters long',
-                        },
-                      }}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          id="hottestDish"
-                          type="text"
-                          label="Hottest Dish"
-                          labelPlacement="outside"
-                          placeholder="Hottest Dish"
-                          radius="sm"
-                          isInvalid={!!errors.hottestDish}
-                          errorMessage={errors.hottestDish?.message}
-                        />
-                      )}
-                    />
-                  </div>
-                )}
-
-                <div>
-                  <Controller
-                    name="reviewTitle"
-                    control={control}
-                    rules={{
-                      required: 'This field is required',
-                      maxLength: {
-                        value: 100,
-                        message:
-                          'Review Title cannot be more than 100 characters',
-                      },
-                      minLength: {
-                        value: 3,
-                        message:
-                          'Review title must be at least 3 characters long',
-                      },
-                    }}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        id="reviewTitle"
-                        type="text"
-                        label="Review Title"
-                        labelPlacement="outside"
-                        radius="sm"
-                        placeholder="Review Title"
-                        isInvalid={!!errors.reviewTitle}
-                        errorMessage={errors.reviewTitle?.message}
-                      />
-                    )}
-                  />
-                </div>
-
-                <div>
-                  <Controller
-                    name="reviewContent"
-                    control={control}
-                    rules={{
-                      required: 'This field is required',
-                      minLength: {
-                        value: 40,
-                        message: 'Review must be at least 40 characters long',
-                      },
-                      maxLength: {
-                        value: 750,
-                        message: 'Review cannot be more than 750 characters',
-                      },
-                    }}
-                    render={({ field }) => (
-                      <Textarea
-                        {...field}
-                        id="reviewContent"
-                        label="Review Content"
-                        rows={3}
-                        placeholder="Please enter a detailed review of the venue..."
-                        labelPlacement="outside"
-                        radius="sm"
-                        isInvalid={!!errors.reviewContent}
-                        errorMessage={errors.reviewContent?.message}
-                      />
-                    )}
-                  />
-                </div>
+              <div className="mb-3 ml-1 flex items-center justify-between">
+                <h2 className=" text-2xl font-semibold">
+                  {mode === 'creating' ? 'Leave a ' : 'Edit your'} review for{' '}
+                  {venueName || venueNameReview}
+                </h2>
 
                 <Button
-                  disabled={isUpdating || isCreating}
-                  radius="sm"
-                  size="md"
-                  type="submit"
+                  color="primary"
+                  variant="flat"
+                  startContent={<Icon icon="lucide:map-pinned" />}
+                  onPress={() =>
+                    openDialog(
+                      'Do you want to discard this review?',
+                      naviagateToVenue
+                    )
+                  }
                 >
-                  {mode === 'creating' ? 'Submit' : 'Edit'}
+                  Back to venue page
                 </Button>
-              </form>
+              </div>
+              <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-md">
+                <div>
+                  <h3 className="text-lg font-medium">Heat Rating</h3>
+                  <div>
+                    <VenueRating
+                      initialRating={heatRating}
+                      handleRatingChange={setHeatRating}
+                    />
+                  </div>
+                </div>
+                <div className="mb-10">
+                  <h3 className="text-lg font-medium">Quality Rating</h3>
+                  <div>
+                    <VenueRating
+                      initialRating={qualityRating}
+                      handleRatingChange={setQualityRating}
+                      variant="star"
+                    />
+                  </div>
+                </div>
+                {/* Form dynamically renders fields based on venue type */}
+                <form
+                  key={mode === 'editing' ? reviewId : 'new'}
+                  onSubmit={handleSubmit(formSubmit, toastFormError)}
+                >
+                  <div>
+                    <Controller
+                      name="reviewTitle"
+                      control={control}
+                      rules={{
+                        required: 'This field is required',
+                        maxLength: {
+                          value: 100,
+                          message:
+                            'Review Title cannot be more than 100 characters',
+                        },
+                        minLength: {
+                          value: 3,
+                          message:
+                            'Review title must be at least 3 characters long',
+                        },
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          classNames={{
+                            label: 'text-lg font-medium ',
+                            base: 'mb-14',
+                          }}
+                          id="reviewTitle"
+                          type="text"
+                          label="Review Title"
+                          labelPlacement="outside"
+                          radius="sm"
+                          placeholder="Give your review a descriptive name!"
+                          isInvalid={!!errors.reviewTitle}
+                          errorMessage={errors.reviewTitle?.message}
+                        />
+                      )}
+                    />
+                  </div>
+
+                  {(venueType || reviewType) === 'shop' && (
+                    <div>
+                      <Controller
+                        name="hottestSauce"
+                        control={control}
+                        rules={{
+                          required: 'This field is required',
+                          maxLength: {
+                            value: 100,
+                            message:
+                              'Hottest Sauce cannot be more than 100 characters',
+                          },
+                          minLength: {
+                            value: 3,
+                            message:
+                              'Hottest sauce must be at least 3 characters long',
+                          },
+                        }}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            classNames={{
+                              label: 'text-lg font-medium',
+                              base: 'mb-6',
+                            }}
+                            id="hottestSauce"
+                            type="text"
+                            label="Hottest Sauce"
+                            labelPlacement="outside"
+                            placeholder="Whats the hottest sauce available?"
+                            radius="sm"
+                            isInvalid={!!errors.hottestSauce}
+                            errorMessage={errors.hottestSauce?.message}
+                          />
+                        )}
+                      />
+                    </div>
+                  )}
+
+                  {(venueType || reviewType) === 'restaurant' && (
+                    <div>
+                      <Controller
+                        name="hottestDish"
+                        control={control}
+                        rules={{
+                          required: 'This field is required',
+                          maxLength: {
+                            value: 100,
+                            message:
+                              'Hottest Dish cannot be more than 100 characters',
+                          },
+                          minLength: {
+                            value: 3,
+                            message:
+                              'Hottest dish must be at least 3 characters long',
+                          },
+                        }}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            classNames={{
+                              label: 'text-lg font-medium',
+                              base: 'mb-6',
+                            }}
+                            id="hottestDish"
+                            type="text"
+                            label="Hottest Dish"
+                            labelPlacement="outside"
+                            placeholder="Whats the hottest dish they serve?"
+                            radius="sm"
+                            isInvalid={!!errors.hottestDish}
+                            errorMessage={errors.hottestDish?.message}
+                          />
+                        )}
+                      />
+                    </div>
+                  )}
+
+                  <div>
+                    <Controller
+                      name="reviewContent"
+                      control={control}
+                      rules={{
+                        required: 'This field is required',
+                        minLength: {
+                          value: 40,
+                          message: 'Review must be at least 40 characters long',
+                        },
+                        maxLength: {
+                          value: 750,
+                          message: 'Review cannot be more than 750 characters',
+                        },
+                      }}
+                      render={({ field }) => (
+                        <Textarea
+                          {...field}
+                          classNames={{
+                            label: 'text-lg font-medium ',
+                            base: 'mb-2',
+                          }}
+                          id="reviewContent"
+                          label="Review Content"
+                          rows={3}
+                          placeholder="What would you like to let others know about the venue..."
+                          labelPlacement="outside"
+                          radius="sm"
+                          isInvalid={!!errors.reviewContent}
+                          errorMessage={errors.reviewContent?.message}
+                        />
+                      )}
+                    />
+                  </div>
+
+                  <Button
+                    disabled={isUpdating || isCreating}
+                    radius="sm"
+                    size="md"
+                    type="submit"
+                  >
+                    {mode === 'creating' ? 'Submit' : 'Edit'}
+                  </Button>
+                </form>
+              </div>
             </>
           )}
           {formIndex === 2 && (
@@ -343,7 +394,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
               />
             </div>
           )}
-        </>
+        </div>
       )}
     </>
   );
