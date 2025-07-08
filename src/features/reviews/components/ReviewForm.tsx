@@ -6,7 +6,6 @@ import { useCreateReview } from '../hooks/useCreateReview';
 import { useGetReview } from '../hooks/useGetReview';
 import { useUpdateReview } from '../hooks/useUpdateReview';
 import { useVenue } from '../../venues/hooks/useVenue';
-import { Link } from 'react-router-dom';
 
 // Third Party Imports
 import { useNavigate, useParams } from 'react-router';

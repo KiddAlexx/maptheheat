@@ -143,7 +143,7 @@ function ListItem({
               handleClick={toggleFavourite}
             />
           </div>
-          <div className="mt-1 flex items-center gap-2 text-sm">
+          <div className="mt-2 flex items-center gap-2 text-sm">
             <Icon icon="lucide:clock" width={15} />
             <span>Open</span>
           </div>

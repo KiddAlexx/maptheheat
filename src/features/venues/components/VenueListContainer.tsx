@@ -29,7 +29,7 @@ function VenueListContainer({
         }
       />
       {mode === 'venue' && (
-        <div className=" flex items-center justify-between p-1">
+        <div className=" my-2 flex items-center justify-between p-1">
           <p>Can't find what you are looking for?</p>
           <Button as={Link} to="/add-venue" radius="sm">
             Add new venue!

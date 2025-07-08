@@ -24,7 +24,7 @@ function SearchAndFilterPanel({
   const isUserMode = location.pathname === '/profile/venues';
 
   return (
-    <div className="rounded-md bg-zinc-400 p-3">
+    <div className="rounded-xl bg-zinc-400 p-3">
       {!isUserMode && <VenueSearchBar useVenueContext={useVenueContext} />}
       <CitySelect
         useVenueContext={useVenueContext}
