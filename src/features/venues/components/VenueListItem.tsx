@@ -57,7 +57,7 @@ function ListItem({
 
   const { updateFavouriteVenue } = useUpdateFavouriteVenue();
 
-  function toggleFavourite(isFavouriteState: boolean) {
+  function toggleFavourite() {
     if (!isAuthenticated || !userId) return;
     if (isUserMode) {
       openDialog(
@@ -67,7 +67,8 @@ function ListItem({
             { userId, venueId },
             {
               onSuccess: () => {
-                isFavouriteState
+                const newFavouriteState = !isFavourite;
+                newFavouriteState
                   ? toast.success(`${venueName} added to favourites!`)
                   : toast.success(`${venueName} removed from favourites!`);
               },
@@ -80,7 +81,8 @@ function ListItem({
         { userId, venueId },
         {
           onSuccess: () => {
-            isFavouriteState
+            const newFavouriteState = !isFavourite;
+            newFavouriteState
               ? toast.success(`${venueName} added to favourites!`)
               : toast.success(`${venueName} removed from favourites!`);
           },

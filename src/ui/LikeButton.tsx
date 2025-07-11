@@ -5,7 +5,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 interface LikeButtonProps {
   isFavourite?: boolean;
   isAuthenticated: boolean;
-  handleClick: (isFavourite: boolean) => void;
+  handleClick: () => void;
   size?: string;
   iconFull?: string;
   iconEmpty?: string;
@@ -27,15 +27,13 @@ function LikeButton({
 }: LikeButtonProps) {
   const { openModal } = useModalContext();
 
-  // Runs handleClick function, which receives current "stale" state
-  // which is inverted to allign with update.
-  // If user is not authenticated then login modal is opened.
+  // Runs handleClick function
   function handleFavouriteClick() {
     if (!isAuthenticated) {
       openModal('login');
       return;
     } else {
-      handleClick(!isFavourite);
+      handleClick();
     }
   }
 

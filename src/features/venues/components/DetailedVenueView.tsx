@@ -25,6 +25,9 @@ import { Image as ImageType } from '../../../types/venueTypes';
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
 
 import { Icon } from '@iconify/react/dist/iconify.js';
+import LikeButton from '@/ui/LikeButton';
+import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
+import toast from 'react-hot-toast';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
@@ -38,6 +41,8 @@ function DetailedVenueView() {
 
   const { userProfile } = useGetUserProfile(userId);
   const username = userProfile?.username;
+  const favVenuesList = userProfile?.favouriteVenues || null;
+  const isFavourite = favVenuesList?.includes(venueId);
 
   // Passing empty strings to satisfy the query hook's required params
   // The query won't run unless `enabled` is true (ie user is authenticated)
@@ -50,6 +55,7 @@ function DetailedVenueView() {
 
   const { isLoading: isLoadingReviews } = useGetReviews({ venueId });
   const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
+  const { updateFavouriteVenue } = useUpdateFavouriteVenue();
 
   if (!venueId || !venue) return null;
 
@@ -123,6 +129,22 @@ function DetailedVenueView() {
     }
   }
 
+  function toggleFavourite() {
+    if (!isAuthenticated || !userId || !venueId) return;
+
+    updateFavouriteVenue(
+      { userId, venueId },
+      {
+        onSuccess: () => {
+          const newFavouriteState = !isFavourite;
+          newFavouriteState
+            ? toast.success(`${venueName} added to favourites!`)
+            : toast.success(`${venueName} removed from favourites!`);
+        },
+      }
+    );
+  }
+
   return (
     <div className="p-3 text-gray-800">
       <div className="mb-3 ml-1 flex items-center justify-between">
@@ -167,7 +189,10 @@ function DetailedVenueView() {
           {images && images.length > 0 ? (
             // Slice first 4 images and map over
             images.slice(0, 4).map((image: ImageType) => (
-              <div className=" h-48 w-1/4 overflow-hidden rounded-xl ">
+              <div
+                key={image.url}
+                className=" h-48 w-1/4 overflow-hidden rounded-xl "
+              >
                 <Image
                   className="h-full w-full  object-cover hover:scale-110"
                   src={image.url}
@@ -189,8 +214,28 @@ function DetailedVenueView() {
             </div>
           )}
         </div>
+        {/* Temp data to test layout + styles !!!!!!!!!!!TO BE REPLACED!!!!!*/}
+        <div className=" mt-4 flex justify-between">
+          <div className="flex gap-2">
+            {['Restaurant', 'Spanish', 'Mediterranean'].map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+          <div className="mr-1">
+            <LikeButton
+              isFavourite={isFavourite}
+              isAuthenticated={isAuthenticated}
+              handleClick={toggleFavourite}
+            />
+          </div>
+        </div>
 
-        <div className="mt-6 flex items-center gap-2  ">
+        <div className="mt-5 flex items-center gap-2  ">
           <Icon icon="lucide:clock" width={24} />
           <span>Open</span>
         </div>
