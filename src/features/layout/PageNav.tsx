@@ -13,7 +13,7 @@ function PageNav() {
   const { openModal } = useModalContext();
 
   return (
-    <nav className="flex h-20 items-center justify-between bg-zinc-800 px-40">
+    <nav className="flex h-20 items-center justify-between bg-zinc-800 px-10">
       <h3 className={styles.logoMain}>
         <NavLink to="/">MapTheHeat</NavLink>
       </h3>

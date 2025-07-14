@@ -74,7 +74,7 @@ function ReviewListItem({ review }: ReviewListItemProps) {
   return isDeleting ? (
     <LoaderSpinner />
   ) : (
-    <article className="mt-2 rounded-xl border border-gray-200 bg-white p-3 shadow-md">
+    <article className="mt-2 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
       <header className="flex justify-between">
         <div className="flex items-center gap-2">
           <Avatar userId={userId} />

@@ -122,22 +122,22 @@ function ListItem({
         </div>
         <CardBody className="relative w-2/3">
           <h3 className="mb-2 text-lg font-medium">{venueName}</h3>
-          <div className="flex items-center gap-1">
-            <div className="flex items-center gap-1">
-              <Icon className="text-yellow-600" icon="lucide:star" width={18} />
-              <span className="text-small">({finalQualityRating})</span>
-            </div>
-            {/* display flex is forced to override default display inline block
-            of react rating - ensures icons allign correctly */}
-            <div className="flex items-center gap-1 [&>span]:!flex">
-              <VenueRating initialRating={finalHeatRating} readonly size="20" />
 
-              <span className="text-sm">
-                ({totalReviewCount}{' '}
-                {totalReviewCount === 1 ? 'review' : 'reviews'})
-              </span>
-            </div>
+          {/* display flex is forced to override default display inline block
+            of react rating - ensures icons allign correctly */}
+          <div className="flex items-center gap-1 [&>span]:!flex">
+            <VenueRating initialRating={finalHeatRating} readonly size="20" />
+
+            <span className="text-sm">
+              ({totalReviewCount}{' '}
+              {totalReviewCount === 1 ? 'review' : 'reviews'})
+            </span>
           </div>
+          <div className="mt-2 flex items-center gap-1">
+            <Icon className="text-yellow-600" icon="lucide:star" width={18} />
+            <span className="text-small">({finalQualityRating})</span>
+          </div>
+
           <div className="absolute right-4 top-4 z-10">
             <LikeButton
               isFavourite={isFavourite}

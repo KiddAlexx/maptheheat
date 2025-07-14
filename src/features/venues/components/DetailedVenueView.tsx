@@ -177,7 +177,7 @@ function DetailedVenueView() {
           Back to Map
         </Button>
       </div>
-      <article className="mb-5 rounded-xl border border-gray-200 bg-white p-3 shadow-md">
+      <article className="mb-5 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
         <div
           className="mb-3 flex cursor-pointer gap-1"
           onClick={() =>
@@ -236,21 +236,21 @@ function DetailedVenueView() {
         </div>
 
         <div className="mt-5 flex items-center gap-2  ">
-          <Icon icon="lucide:clock" width={24} />
+          <Icon icon="lucide:clock" width={18} />
           <span>Open</span>
         </div>
         {/* Calculate based on opening hours */}
         <div className="mt-3 flex items-center gap-2">
-          <Icon icon="lucide:map-pin" width={24} />
+          <Icon icon="lucide:map-pin" width={18} />
           <span>{detailedAddress}</span>
         </div>
 
         <div className="mt-3 flex items-center gap-2">
-          <Icon icon="lucide:phone" width={24} />
+          <Icon icon="lucide:phone" width={18} />
           <span>{phoneNumber}</span>
         </div>
         <div className="mb-6 mt-3 flex items-center gap-2">
-          <Icon icon="material-symbols:globe" width={24} />
+          <Icon icon="material-symbols:globe" width={18} />
           <a
             className="text-blue-500  hover:text-blue-400"
             href={website}
