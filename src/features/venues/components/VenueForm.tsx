@@ -17,9 +17,6 @@ import {
   Textarea,
 } from '@heroui/react';
 
-// Style imports
-import styles from '../styles/VenueForm.module.css';
-
 // Type imports
 
 // Hooks imports
@@ -160,257 +157,299 @@ function VenueForm() {
         />
       )}
       {formIndex === 1 && (
-        <form
-          onSubmit={handleSubmit(formSubmit, toastFormError)}
-          className={styles.venueFormContainer}
-        >
-          {isCreatingVenue ? (
-            <LoaderSpinner />
-          ) : (
-            <>
-              <div className={styles.inputContainer}>
-                <Controller
-                  name="venueType"
-                  control={control}
-                  rules={{
-                    required: ' This field is required',
-                  }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      id="venueType"
-                      label="Venue Type"
-                      labelPlacement="outside"
-                      placeholder="Choose Venue Type"
-                      isInvalid={!!errors.venueType}
-                      errorMessage={errors.venueType?.message}
-                    >
-                      <SelectItem key="restaurant">Restaurant</SelectItem>
-                      <SelectItem key="shop">Shop</SelectItem>
-                    </Select>
-                  )}
-                />
-              </div>
-              <div className={styles.inputContainer}>
-                <Controller
-                  name="venueName"
-                  control={control}
-                  rules={{
-                    required: 'This field is required',
-                    maxLength: {
-                      value: 100,
-                      message: 'Venue name cannot be more than 100 characters',
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="venueName"
-                      type="text"
-                      label="Venue Name"
-                      labelPlacement="outside"
-                      placeholder="Venue Name..."
-                      radius="sm"
-                      isInvalid={!!errors.venueName}
-                      errorMessage={errors.venueName?.message}
-                    />
-                  )}
-                />
-              </div>
-              <div className={styles.inputContainer}>
-                <Controller
-                  name="address"
-                  control={control}
-                  rules={{ required: 'This field is required' }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="address"
-                      type="text"
-                      label="Address"
-                      labelPlacement="outside"
-                      placeholder="Number followed by street name..."
-                      radius="sm"
-                      isInvalid={!!errors.address}
-                      errorMessage={errors.address?.message}
-                    />
-                  )}
-                />
-              </div>
+        <div className="w-full max-w-4xl">
+          <h2 className=" text-2xl font-semibold">Add a New Venue</h2>
 
-              <div className={styles.inputContainer}>
-                <Controller
-                  name="postcode"
-                  control={control}
-                  rules={{ required: 'This field is required' }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="postcode"
-                      type="text"
-                      label="Postcode"
-                      labelPlacement="outside"
-                      placeholder="Postcode..."
-                      radius="sm"
-                      isInvalid={!!errors.postcode}
-                      errorMessage={errors.postcode?.message}
+          <div className="mt-3 rounded-xl border border-gray-200 bg-white p-3 shadow-md">
+            <form onSubmit={handleSubmit(formSubmit, toastFormError)}>
+              {isCreatingVenue ? (
+                <LoaderSpinner />
+              ) : (
+                <>
+                  <div>
+                    <Controller
+                      name="venueType"
+                      control={control}
+                      rules={{
+                        required: ' This field is required',
+                      }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          classNames={{
+                            label: 'text-md font-normal ',
+                            base: 'mb-10',
+                          }}
+                          id="venueType"
+                          label="Venue Type"
+                          labelPlacement="outside"
+                          placeholder="Choose Venue Type"
+                          isInvalid={!!errors.venueType}
+                          errorMessage={errors.venueType?.message}
+                        >
+                          <SelectItem key="restaurant">Restaurant</SelectItem>
+                          <SelectItem key="shop">Shop</SelectItem>
+                        </Select>
+                      )}
                     />
-                  )}
-                />
-              </div>
-              <div className={styles.inputContainer}>
-                <Controller
-                  name="city"
-                  control={control}
-                  rules={{ required: 'This field is required' }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="city"
-                      type="text"
-                      label="City"
-                      labelPlacement="outside"
-                      placeholder="City..."
-                      radius="sm"
-                      isInvalid={!!errors.city}
-                      errorMessage={errors.city?.message}
+                  </div>
+                  <div>
+                    <Controller
+                      name="venueName"
+                      control={control}
+                      rules={{
+                        required: 'This field is required',
+                        maxLength: {
+                          value: 100,
+                          message:
+                            'Venue name cannot be more than 100 characters',
+                        },
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          classNames={{
+                            label: 'text-md font-normal ',
+                            base: 'mb-10',
+                          }}
+                          id="venueName"
+                          type="text"
+                          label="Venue Name"
+                          labelPlacement="outside"
+                          placeholder="Venue Name..."
+                          radius="sm"
+                          isInvalid={!!errors.venueName}
+                          errorMessage={errors.venueName?.message}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </div>
+                  </div>
+                  <div>
+                    <Controller
+                      name="address"
+                      control={control}
+                      rules={{ required: 'This field is required' }}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          classNames={{
+                            label: 'text-md font-normal ',
+                            base: 'mb-10',
+                          }}
+                          id="address"
+                          type="text"
+                          label="Address"
+                          labelPlacement="outside"
+                          placeholder="Number followed by street name..."
+                          radius="sm"
+                          isInvalid={!!errors.address}
+                          errorMessage={errors.address?.message}
+                        />
+                      )}
+                    />
+                  </div>
 
-              <Controller
-                name="country"
-                control={control}
-                rules={{ required: 'This field is required' }}
-                render={({ field }) => (
-                  <Autocomplete
-                    {...field}
-                    id="country"
-                    label="Country"
-                    labelPlacement="outside"
-                    radius="sm"
-                    defaultItems={countries}
-                    isInvalid={!!errors.country}
-                    errorMessage={errors.country?.message}
-                    onSelectionChange={(key) => field.onChange(key)}
-                  >
-                    {(country) => (
-                      <AutocompleteItem key={country.code}>
-                        {country.name}
-                      </AutocompleteItem>
+                  <div>
+                    <Controller
+                      name="postcode"
+                      control={control}
+                      rules={{ required: 'This field is required' }}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          classNames={{
+                            label: 'text-md font-normal ',
+                            base: 'mb-10',
+                          }}
+                          id="postcode"
+                          type="text"
+                          label="Postcode"
+                          labelPlacement="outside"
+                          placeholder="Postcode..."
+                          radius="sm"
+                          isInvalid={!!errors.postcode}
+                          errorMessage={errors.postcode?.message}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <Controller
+                      name="city"
+                      control={control}
+                      rules={{ required: 'This field is required' }}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          classNames={{
+                            label: 'text-md font-normal ',
+                            base: 'mb-4',
+                          }}
+                          id="city"
+                          type="text"
+                          label="City"
+                          labelPlacement="outside"
+                          placeholder="City..."
+                          radius="sm"
+                          isInvalid={!!errors.city}
+                          errorMessage={errors.city?.message}
+                        />
+                      )}
+                    />
+                  </div>
+
+                  <Controller
+                    name="country"
+                    control={control}
+                    rules={{ required: 'This field is required' }}
+                    render={({ field }) => (
+                      <div className="mb-3">
+                        <label htmlFor="country" className="text-md mb-1 block">
+                          Country
+                        </label>
+                        <Autocomplete
+                          {...field}
+                          id="country"
+                          placeholder="Select Country"
+                          radius="sm"
+                          defaultItems={countries}
+                          isInvalid={!!errors.country}
+                          errorMessage={errors.country?.message}
+                          onSelectionChange={(key) => field.onChange(key)}
+                        >
+                          {(country) => (
+                            <AutocompleteItem key={country.code}>
+                              {country.name}
+                            </AutocompleteItem>
+                          )}
+                        </Autocomplete>
+                      </div>
                     )}
-                  </Autocomplete>
-                )}
-              />
+                  />
 
-              <div className={styles.inputContainer}>
-                <Controller
-                  name="description"
-                  control={control}
-                  rules={{
-                    required: 'This field is required',
-                    minLength: {
-                      value: 40,
-                      message:
-                        'Description must be at least 40 characters long',
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Textarea
-                      {...field}
-                      id="description"
-                      label="Description"
-                      labelPlacement="outside"
-                      placeholder="Please enter a detailed description of the venue..."
-                      radius="sm"
-                      isInvalid={!!errors.description}
-                      errorMessage={errors.description?.message}
+                  <div>
+                    <Controller
+                      name="description"
+                      control={control}
+                      rules={{
+                        required: 'This field is required',
+                        minLength: {
+                          value: 40,
+                          message:
+                            'Description must be at least 40 characters long',
+                        },
+                      }}
+                      render={({ field }) => (
+                        <Textarea
+                          {...field}
+                          classNames={{
+                            label: 'text-md font-normal ',
+                            base: 'mb-10',
+                          }}
+                          id="description"
+                          label="Description"
+                          labelPlacement="outside"
+                          placeholder="Please enter a detailed description of the venue..."
+                          radius="sm"
+                          isInvalid={!!errors.description}
+                          errorMessage={errors.description?.message}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </div>
+                  </div>
 
-              <div className={styles.inputContainer}>
-                <Controller
-                  name="phoneNumber"
-                  control={control}
-                  rules={{
-                    required: 'This field is required',
-                    pattern: {
-                      value: /^\+?[0-9\s-]+$/,
-                      message: 'Invalid phone number',
-                    },
-                    minLength: {
-                      value: 9,
-                      message: 'Phone Number must be at least 9 digits long',
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="phoneNumber"
-                      type="text"
-                      label="Phone Number"
-                      labelPlacement="outside"
-                      placeholder="Phone Number..."
-                      radius="sm"
-                      isInvalid={!!errors.phoneNumber}
-                      errorMessage={errors.phoneNumber?.message}
+                  <div>
+                    <Controller
+                      name="phoneNumber"
+                      control={control}
+                      rules={{
+                        required: 'This field is required',
+                        pattern: {
+                          value: /^\+?[0-9\s-]+$/,
+                          message: 'Invalid phone number',
+                        },
+                        minLength: {
+                          value: 9,
+                          message:
+                            'Phone Number must be at least 9 digits long',
+                        },
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          classNames={{
+                            label: 'text-md font-normal ',
+                            base: 'mb-10',
+                          }}
+                          id="phoneNumber"
+                          type="text"
+                          label="Phone Number"
+                          labelPlacement="outside"
+                          placeholder="Phone Number..."
+                          radius="sm"
+                          isInvalid={!!errors.phoneNumber}
+                          errorMessage={errors.phoneNumber?.message}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </div>
+                  </div>
 
-              <div className={styles.inputContainer}>
-                <Controller
-                  name="website"
-                  control={control}
-                  rules={{
-                    pattern: {
-                      value:
-                        /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
-                      message: 'Invalid web address',
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="website"
-                      type="text"
-                      label="Website"
-                      labelPlacement="outside"
-                      placeholder="http://www.example.com..."
-                      radius="sm"
-                      isInvalid={!!errors.website}
-                      errorMessage={errors.website?.message}
+                  <div>
+                    <Controller
+                      name="website"
+                      control={control}
+                      rules={{
+                        pattern: {
+                          value:
+                            /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+                          message: 'Invalid web address',
+                        },
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          classNames={{
+                            label: 'text-md font-normal ',
+                            base: 'mb-4',
+                          }}
+                          id="website"
+                          type="text"
+                          label="Website"
+                          labelPlacement="outside"
+                          placeholder="http://www.example.com..."
+                          radius="sm"
+                          isInvalid={!!errors.website}
+                          errorMessage={errors.website?.message}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </div>
-              <div className={styles.venueButtonContainer}>
-                <Button
-                  // ***************** Add functionality to reset form and navigate back
-                  type="button"
-                  className={`btn-default ${styles.btnCancel}`}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className={`btn-default ${styles.btnSubmit}`}
-                >
-                  Submit
-                </Button>
-              </div>
-            </>
-          )}
-        </form>
+                  </div>
+                  <div>
+                    <Button
+                      // ***************** Add functionality to reset form and navigate back
+                      type="button"
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit">Submit</Button>
+                  </div>
+                </>
+              )}
+            </form>
+          </div>
+        </div>
       )}
       {formIndex === 2 && (
         <div>
-          <h2>Add photos for {createdVenue?.venueName ?? ''}</h2>
-          <ImageUploader venue={createdVenue ?? undefined} mode="integrated" />
+          <h2 className=" text-2xl font-semibold">
+            Add photos for {createdVenue?.venueName ?? ''}
+          </h2>
+          <div className="mt-3 w-full max-w-4xl rounded-xl border border-gray-200 bg-white p-3 shadow-md">
+            <ImageUploader
+              venue={createdVenue ?? undefined}
+              mode="integrated"
+            />
+          </div>
         </div>
       )}
     </>
