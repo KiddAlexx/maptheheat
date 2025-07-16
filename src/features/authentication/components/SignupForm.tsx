@@ -1,6 +1,3 @@
-// Style imports
-import styles from '../styles/AuthForm.module.css';
-
 // Third party imports
 import { useForm } from 'react-hook-form';
 
@@ -8,11 +5,11 @@ import { useForm } from 'react-hook-form';
 
 import { useEmailSignup } from '../hooks/useEmailSignup';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
-import { Input } from "@heroui/input";
-import { Button } from "@heroui/button";
-import { Link } from "@heroui/link";
+import { Input } from '@heroui/input';
+import { Button } from '@heroui/button';
+import { Link } from '@heroui/link';
 import { useModalContext } from '../../../context/ModalContext';
-import { Divider } from "@heroui/divider";
+import { Divider } from '@heroui/divider';
 
 function SignupForm() {
   interface FormData {
@@ -48,19 +45,15 @@ function SignupForm() {
   return isPendingEmail ? (
     <LoaderSpinner />
   ) : (
-    <div className={styles.authFormContainer}>
+    <div className="flex min-w-80 flex-col items-center justify-between gap-10">
       <header>
-        <h2 className={styles.formHeading}>Sign up</h2>
+        <h2 className="mt-5 text-3xl font-medium">Sign up</h2>
       </header>
-      <form
-        className={styles.authForm}
-        noValidate
-        onSubmit={handleSubmit(formSubmit)}
-      >
-        <div className={styles.authInputContainer}>
+      <form className="w-full" noValidate onSubmit={handleSubmit(formSubmit)}>
+        <div className="flex flex-col items-end">
           <Input
             id="firstElementToFocus"
-            className={styles.formInput}
+            className="mb-5"
             type="email"
             label="Email"
             radius="sm"
@@ -80,9 +73,9 @@ function SignupForm() {
             })}
           />
 
-          <Divider className={styles.signUpDivider} />
+          <Divider className="mb-5" />
           <Input
-            className={styles.formInput}
+            className="mb-5"
             type="password"
             radius="sm"
             variant="bordered"
@@ -109,7 +102,7 @@ function SignupForm() {
           />
 
           <Input
-            className={styles.formInput}
+            className="mb-5"
             type="password"
             radius="sm"
             variant="bordered"
@@ -130,18 +123,13 @@ function SignupForm() {
           />
         </div>
 
-        <div className={styles.authButtonContainer}>
-          <Button
-            className={styles.authButton}
-            radius="sm"
-            size="lg"
-            type="submit"
-          >
+        <div className="mt-5 flex w-full flex-col items-center gap-2">
+          <Button className="w-full" radius="sm" size="lg" type="submit">
             Confirm Account
           </Button>
         </div>
       </form>
-      <footer className={styles.footerContainer}>
+      <footer className="mb-5 flex w-full justify-center gap-2">
         <p>Already have an account?</p>
         <Link underline="hover" size="md" onPress={() => openModal('login')}>
           Login

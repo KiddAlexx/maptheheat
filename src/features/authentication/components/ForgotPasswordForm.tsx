@@ -1,6 +1,5 @@
 // Style imports
 import { useModalContext } from '@/context/ModalContext';
-import styles from '../styles/AuthForm.module.css';
 
 import { Button, Input, Link } from '@heroui/react';
 import { useForm } from 'react-hook-form';
@@ -41,19 +40,14 @@ function ForgotPasswordForm() {
   }
 
   return (
-    <div className={styles.authFormContainer}>
+    <div className="flex min-w-80 flex-col items-center justify-between gap-10">
       <header>
-        <h2 className={styles.formHeading}>Reset Password</h2>
+        <h2 className="mt-5 text-3xl font-medium">Reset Password</h2>
       </header>
-      <form
-        className={styles.authForm}
-        noValidate
-        onSubmit={handleSubmit(formSubmit)}
-      >
-        <div className={styles.authInputContainer}>
+      <form className="w-full" noValidate onSubmit={handleSubmit(formSubmit)}>
+        <div className="flex flex-col items-end">
           <Input
             id="firstElementToFocus"
-            className={styles.formInput}
             type="email"
             label="Email"
             radius="sm"
@@ -73,18 +67,13 @@ function ForgotPasswordForm() {
             })}
           />
         </div>
-        <div className={styles.authButtonContainer}>
-          <Button
-            className={styles.authButton}
-            radius="sm"
-            size="lg"
-            type="submit"
-          >
+        <div className="mt-6">
+          <Button className="w-full" radius="sm" size="lg" type="submit">
             Reset Password
           </Button>
         </div>
       </form>
-      <footer className={styles.footerContainer}>
+      <footer className="mb-2 flex gap-2">
         <p>Oh! I remembered it! Back to - </p>
         <Link underline="hover" size="md" onPress={() => openModal('login')}>
           Login

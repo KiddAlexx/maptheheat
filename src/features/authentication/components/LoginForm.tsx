@@ -1,8 +1,5 @@
-// Style imports
-import styles from '../styles/AuthForm.module.css';
-
 // NextUI Components
-import { Input, Link, Button, Divider } from "@heroui/react";
+import { Input, Link, Button, Divider } from '@heroui/react';
 
 // File imports
 import googleBtnLight from '../../../assets/btn_google_light_normal_ios.svg';
@@ -51,19 +48,15 @@ function LoginForm() {
   return isPendingEmail || isPendingGoogle ? (
     <LoaderSpinner />
   ) : (
-    <div className={styles.authFormContainer}>
+    <div className="flex min-w-80 flex-col items-center justify-between gap-10">
       <header>
-        <h2 className={styles.formHeading}>Login</h2>
+        <h2 className="mt-5 text-3xl font-medium">Login</h2>
       </header>
-      <form
-        className={styles.authForm}
-        noValidate
-        onSubmit={handleSubmit(formSubmit)}
-      >
-        <div className={styles.authInputContainer}>
+      <form className="w-full" noValidate onSubmit={handleSubmit(formSubmit)}>
+        <div className="flex flex-col items-end">
           <Input
             id="firstElementToFocus"
-            className={styles.formInput}
+            className="mb-5"
             type="email"
             label="Email"
             radius="sm"
@@ -84,7 +77,6 @@ function LoginForm() {
           />
 
           <Input
-            className={styles.formInput}
             type="password"
             radius="sm"
             variant="bordered"
@@ -99,7 +91,7 @@ function LoginForm() {
           />
 
           <Link
-            className={styles.forgotPasswordLink}
+            className="mr-2 mt-2"
             underline="hover"
             size="sm"
             color="foreground"
@@ -109,34 +101,29 @@ function LoginForm() {
           </Link>
         </div>
 
-        <div className={styles.authButtonContainer}>
-          <Button
-            className={styles.authButton}
-            radius="sm"
-            size="lg"
-            type="submit"
-          >
+        <div className="mt-5 flex w-full flex-col items-center gap-2">
+          <Button className="w-full" radius="sm" size="lg" type="submit">
             Login
           </Button>
-          <div className={styles.dividerContainer}>
+          <div className="flex w-full items-center justify-center  gap-2 overflow-hidden">
             <Divider />
             <p>OR</p>
             <Divider />
           </div>
 
           <Button
-            className={styles.authButton}
+            className="w-full"
             radius="sm"
             size="lg"
             type="button"
-            onClick={() => loginGoogle()}
+            onPress={() => loginGoogle()}
           >
             <img src={googleBtnLight} alt="Google logo" />
             Sign In With Google
           </Button>
         </div>
       </form>
-      <footer className={styles.footerContainer}>
+      <footer className="mb-5 flex w-full justify-center gap-2">
         <p>Not a member?</p>
         <Link underline="hover" size="md" onPress={() => openModal('sign-up')}>
           Sign up now
