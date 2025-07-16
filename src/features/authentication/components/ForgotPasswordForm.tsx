@@ -1,8 +1,6 @@
-// Style imports
 import { useModalContext } from '@/context/ModalContext';
-
 import { Button, Input, Link } from '@heroui/react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useRecoverPassword } from '../hooks/useRecoverPassword';
 import { useGlobalError } from '@/context/ErrorContext';
 
@@ -11,7 +9,7 @@ function ForgotPasswordForm() {
     email: string;
   }
 
-  const { register, handleSubmit, formState } = useForm<FormData>();
+  const { control, handleSubmit, formState } = useForm<FormData>();
   const { openModal, openDialog } = useModalContext();
   const { setGlobalError } = useGlobalError();
   const { recoverPassword } = useRecoverPassword();
@@ -19,7 +17,6 @@ function ForgotPasswordForm() {
   const { errors } = formState;
 
   function formSubmit(formData: FormData) {
-    console.log('form data', formData);
     const { email } = formData;
     if (!email) return;
     recoverPassword(
@@ -44,35 +41,41 @@ function ForgotPasswordForm() {
       <header>
         <h2 className="mt-5 text-3xl font-medium">Reset Password</h2>
       </header>
+
       <form className="w-full" noValidate onSubmit={handleSubmit(formSubmit)}>
         <div className="flex flex-col items-end">
-          <Input
-            id="firstElementToFocus"
-            type="email"
-            label="Email"
-            radius="sm"
-            variant="bordered"
-            isInvalid={!!errors.email}
-            errorMessage={
-              errors.email && typeof errors?.email?.message === 'string'
-                ? errors.email.message
-                : ''
-            }
-            {...register('email', {
+          <Controller
+            name="email"
+            control={control}
+            rules={{
               required: 'This field is required',
               pattern: {
                 value: /\S+@\S+\.\S+/,
                 message: 'Please provide a valid email address',
               },
-            })}
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                id="firstElementToFocus"
+                type="email"
+                label="Email"
+                radius="sm"
+                variant="bordered"
+                isInvalid={!!errors.email}
+                errorMessage={errors?.email?.message}
+              />
+            )}
           />
         </div>
+
         <div className="mt-6">
           <Button className="w-full" radius="sm" size="lg" type="submit">
             Reset Password
           </Button>
         </div>
       </form>
+
       <footer className="mb-2 flex gap-2">
         <p>Oh! I remembered it! Back to - </p>
         <Link underline="hover" size="md" onPress={() => openModal('login')}>
