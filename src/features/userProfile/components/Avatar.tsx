@@ -3,13 +3,17 @@ import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfil
 
 interface AvatarProps {
   userId: string;
+  size?: string;
 }
 
-function Avatar({ userId }: AvatarProps) {
+function Avatar({ userId, size = '3.5' }: AvatarProps) {
   const { userProfile, isLoading } = useGetUserProfile(userId);
 
   return (
-    <div className="h-14 w-14 overflow-hidden rounded-full border-2 border-green-500 p-[2px]">
+    <div
+      className="overflow-hidden rounded-full border-2 border-green-500 p-[2px]"
+      style={{ width: `${size}rem`, height: `${size}rem` }}
+    >
       <img
         src={
           !isLoading && userProfile?.avatarUrl
@@ -17,7 +21,7 @@ function Avatar({ userId }: AvatarProps) {
             : defaultAvatar
         }
         alt="users avatar"
-        className="rounded-full object-cover"
+        className="h-full  w-full rounded-full object-cover"
       />
     </div>
   );

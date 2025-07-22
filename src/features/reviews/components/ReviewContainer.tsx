@@ -41,7 +41,7 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
   });
 
   return reviews ? (
-    <>
+    <div>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Reviews</h2>
         <ReviewPagination
@@ -64,7 +64,7 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
           totalCount={totalCount}
         />
       </div>
-    </>
+    </div>
   ) : null;
 }
 
