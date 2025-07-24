@@ -102,75 +102,73 @@ function ListItem({
   const mainImage = images?.[0];
 
   return (
-    <Card
-      className="mb-2 w-full border-r border-t border-s-violet-500 shadow-md"
-      isHoverable
-      isPressable
-      disableAnimation
-      onPress={handleClick}
-      radius="sm"
-    >
-      <div className="flex">
-        <div className="relative h-48 w-1/3">
-          <Image
-            className="h-full w-full object-cover"
-            src={mainImage?.url || greyChilli}
-            alt={mainImage?.alt || 'a greyed out image of a chilli pepper'}
-            removeWrapper
-            radius="sm"
-          />
-        </div>
-        <CardBody className="relative w-2/3">
-          <h3 className="mb-2 text-lg font-medium">{venueName}</h3>
-
-          {/* display flex is forced to override default display inline block
-            of react rating - ensures icons allign correctly */}
-          <div className="flex items-center gap-1 [&>span]:!flex">
-            <VenueRating initialRating={finalHeatRating} readonly size="20" />
-
-            <span className="text-sm">
-              ({totalReviewCount}{' '}
-              {totalReviewCount === 1 ? 'review' : 'reviews'})
-            </span>
-          </div>
-          <div className="mt-2 flex items-center gap-1">
-            <Icon className="text-yellow-600" icon="lucide:star" width={18} />
-            <span className="text-small">({finalQualityRating})</span>
-          </div>
-
-          <div className="absolute right-4 top-4 z-10">
-            <LikeButton
-              isFavourite={isFavourite}
-              isAuthenticated={isAuthenticated}
-              handleClick={toggleFavourite}
+    <button className="w-full" onClick={handleClick}>
+      <Card
+        className="mb-2 w-full cursor-pointer border-r border-t border-s-violet-500 shadow-md outline-none transition hover:bg-slate-100"
+        radius="sm"
+      >
+        <div className="flex">
+          <div className="relative h-48 w-1/3">
+            <Image
+              className="h-full w-full object-cover"
+              src={mainImage?.url || greyChilli}
+              alt={mainImage?.alt || 'a greyed out image of a chilli pepper'}
+              removeWrapper
+              radius="sm"
             />
           </div>
-          <div className="mt-2 flex items-center gap-2 text-sm">
-            <Icon icon="lucide:clock" width={15} />
-            <span>Open</span>
-          </div>
-          <div className="mt-2 flex items-center gap-2 text-sm">
-            <Icon icon="lucide:map-pin" width={16} />
-            <span>{address}</span>
-          </div>
+          <CardBody className="relative w-2/3">
+            <h3 className="mb-2 text-lg font-medium">{venueName}</h3>
 
-          {/* Link to the detailed page of the venue. 
+            {/* display flex is forced to override default display inline block
+            of react rating - ensures icons allign correctly */}
+            <div className="flex items-center gap-1 [&>span]:!flex">
+              <VenueRating initialRating={finalHeatRating} readonly size="20" />
+
+              <span className="text-sm">
+                ({totalReviewCount}{' '}
+                {totalReviewCount === 1 ? 'review' : 'reviews'})
+              </span>
+            </div>
+            <div className="mt-2 flex items-center gap-1">
+              <Icon className="text-yellow-600" icon="lucide:star" width={18} />
+              <span className="text-small">({finalQualityRating})</span>
+            </div>
+
+            <div className="absolute right-4 top-4 z-10">
+              <LikeButton
+                isFavourite={isFavourite}
+                isAuthenticated={isAuthenticated}
+                handleClick={toggleFavourite}
+              />
+            </div>
+            <div className="mt-2 flex items-center gap-2 text-sm">
+              <Icon icon="lucide:clock" width={15} />
+              <span>Open</span>
+            </div>
+            <div className="mt-2 flex items-center gap-2 text-sm">
+              <Icon icon="lucide:map-pin" width={16} />
+              <span>{address}</span>
+            </div>
+
+            {/* Link to the detailed page of the venue. 
             On click, set clicked venue as active venue. */}
-          <CardFooter>
-            <Link
-              className="absolute bottom-3 right-4 z-10 text-sm"
-              color="primary"
-              onPress={() => {
-                setParamsAndNavigate(venue, 'venue');
-              }}
-              showAnchorIcon
-            >
-              More information!
-            </Link>
-          </CardFooter>
-        </CardBody>
-      </div>
-    </Card>
+            <CardFooter>
+              <Link
+                className="absolute bottom-3 right-4 z-10 text-sm"
+                color="primary"
+                onPress={() => {
+                  setParamsAndNavigate(venue, 'venue');
+                }}
+                showAnchorIcon
+              >
+                More information!
+              </Link>
+            </CardFooter>
+          </CardBody>
+        </div>
+      </Card>
+    </button>
   );
 }
 
