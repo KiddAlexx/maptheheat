@@ -11,7 +11,7 @@ function ImageCarousel() {
   const { images } = useModalContext();
   return (
     <Carousel>
-      <CarouselContent className="max-w-[66rem]">
+      <CarouselContent className="max-w-2xl">
         {images.map((image) => (
           <CarouselItem className="flex items-center justify-center">
             <img src={image.url} alt={image.alt} />
