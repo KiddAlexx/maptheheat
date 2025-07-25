@@ -63,7 +63,7 @@ function Modal({ children }: ModalProps) {
             onClick={() => closeModal()}
             className="absolute right-2 top-2 z-[2100]"
           >
-            <Icon icon="material-symbols:cancel-rounded" width="30" />
+            <Icon icon="material-symbols:cancel-rounded" width="26" />
           </button>
           {children}
         </div>

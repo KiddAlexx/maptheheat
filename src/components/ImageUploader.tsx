@@ -115,7 +115,7 @@ function ImageUploader({
   }
 
   return (
-    <div className="min-w-[37.5rem]">
+    <div className={`${isModal && 'min-w-[36rem]'} w-full`}>
       {isUploading ? (
         <LoaderSpinner />
       ) : (
@@ -133,7 +133,7 @@ function ImageUploader({
         />
       )}
       <h3>Add up to a maximum of {maxPhotos} photos</h3>
-      <div>
+      <div className="flex justify-end gap-1">
         <Button onPress={handleClose} isDisabled={isUploading}>
           Not right now
         </Button>

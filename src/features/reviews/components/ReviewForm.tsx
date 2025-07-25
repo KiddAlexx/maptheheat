@@ -385,12 +385,16 @@ function ReviewForm({ mode }: ReviewFormProps) {
           )}
           {formIndex === 2 && (
             <div>
-              <h2>Add photos to your review</h2>
-              <ImageUploader
-                venue={venue || venueDetails}
-                reviewId={createdReviewId || reviewId}
-                mode="integrated"
-              />
+              <h2 className=" mb-3 ml-1 text-2xl font-semibold">
+                Add photos to your review
+              </h2>
+              <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-md">
+                <ImageUploader
+                  venue={venue || venueDetails}
+                  reviewId={createdReviewId || reviewId}
+                  mode="integrated"
+                />
+              </div>
             </div>
           )}
         </div>
