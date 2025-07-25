@@ -1,6 +1,8 @@
 import { Profile } from '@/types/userTypes';
 import Avatar from './Avatar';
 import { Icon } from '@iconify/react/dist/iconify.js';
+import { Button } from '@heroui/react';
+import { Link } from 'react-router-dom';
 
 interface UserProfileBannerProps {
   userProfile: Profile;
@@ -34,6 +36,17 @@ function UserProfileBanner({ userProfile }: UserProfileBannerProps) {
           </div>
         </div>
       </div>
+
+      <Button
+        className="ml-auto"
+        as={Link}
+        color="primary"
+        variant="flat"
+        startContent={<Icon icon="lucide:map-pinned" />}
+        to={`/app/map/`}
+      >
+        Back to Map
+      </Button>
     </header>
   );
 }
