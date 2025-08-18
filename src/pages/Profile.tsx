@@ -2,7 +2,7 @@ import UserProfile from '@/features/userProfile/components/UserProfile';
 
 function Profile() {
   return (
-    <main>
+    <main className="p-10">
       <UserProfile />
     </main>
   );

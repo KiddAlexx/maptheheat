@@ -1,11 +1,12 @@
 // Style imports
-import styles from './ErrorModal.module.css';
 
 // Hooks imports
 import { useGlobalError } from '../context/ErrorContext';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import FocusTrap from 'focus-trap-react';
+import { Button } from '@heroui/react';
+import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface ErrorModalProps {
   errorMessage?: string | null;
@@ -62,11 +63,15 @@ function ErrorModal({
   if (!finalErrorMessage || !modalRoot) return null;
 
   return createPortal(
-    <div className={styles.errorModalBackdrop}>
+    <div className="fixed left-0 top-0 z-[9000] flex h-full w-full items-center justify-center bg-black/60">
       <FocusTrap focusTrapOptions={{}}>
-        <div className={styles.errorModalContent} ref={modalRef}>
-          <p>{finalErrorMessage}</p>
-          <button onClick={handleClearError}>Close</button>
+        <div
+          className="relative flex  items-center justify-center gap-3 rounded-xl bg-white p-5 shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)]"
+          ref={modalRef}
+        >
+          <Icon className="text-red-600" icon="ic:baseline-error" width="40" />
+          <p className="max-w-md">{finalErrorMessage}</p>
+          <Button onPress={handleClearError}>Close</Button>
         </div>
       </FocusTrap>
     </div>,

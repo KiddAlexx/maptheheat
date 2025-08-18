@@ -2,9 +2,6 @@
 import { useNavigate, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
-// Style imports
-import styles from '../styles/DetailedVenueView.module.css';
-
 // Hooks imports
 import { useVenue } from '../hooks/useVenue';
 import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
@@ -19,18 +16,18 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ReviewContainer from '../../reviews/components/ReviewContainer';
 
 // NextUI Component imports
-import { Button } from '@heroui/react';
+import { Button, Divider, Image } from '@heroui/react';
 
 // Type imports
-import { Image } from '../../../types/venueTypes';
+import { Image as ImageType } from '../../../types/venueTypes';
 
 // File imports
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
-import clockIcon from '../../../assets/icons/clock.svg';
-import globeIcon from '../../../assets/icons/globe.svg';
-import mapPinIcon from '../../../assets/icons/map-pin.svg';
-import phoneIcon from '../../../assets/icons/phone.svg';
-import infoIcon from '../../../assets/icons/info.svg';
+
+import { Icon } from '@iconify/react/dist/iconify.js';
+import LikeButton from '@/ui/LikeButton';
+import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
+import toast from 'react-hot-toast';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
@@ -44,6 +41,8 @@ function DetailedVenueView() {
 
   const { userProfile } = useGetUserProfile(userId);
   const username = userProfile?.username;
+  const favVenuesList = userProfile?.favouriteVenues || null;
+  const isFavourite = favVenuesList?.includes(venueId);
 
   // Passing empty strings to satisfy the query hook's required params
   // The query won't run unless `enabled` is true (ie user is authenticated)
@@ -56,6 +55,7 @@ function DetailedVenueView() {
 
   const { isLoading: isLoadingReviews } = useGetReviews({ venueId });
   const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
+  const { updateFavouriteVenue } = useUpdateFavouriteVenue();
 
   if (!venueId || !venue) return null;
 
@@ -71,15 +71,26 @@ function DetailedVenueView() {
     detailedAddress,
     website,
     description,
-    averageRating,
+    averageHeatRating,
+    averageQualityRating,
     images,
     coords,
+    totalReviews,
   } = venue;
 
   const { lat, lon } = coords;
 
-  const finalRating =
-    averageRating != null ? Math.round(averageRating * 2) / 2 : 5;
+  const finalHeatRating =
+    averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 5;
+
+  const finalQualityRating =
+    averageQualityRating != null
+      ? Math.round(averageQualityRating * 10) / 10
+      : 5;
+
+  const totalReviewCount = totalReviews ?? 0;
+
+  const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
 
   async function handleReview() {
     // Open login modal if not authenticated
@@ -99,7 +110,7 @@ function DetailedVenueView() {
     console.log('here is permission', canUserReview);
     if (canUserReview) {
       navigate(`/app/venue/${city}/${venueNameSlug}/reviews/new/${venueId}`);
-    } else alert('You cannot review the same venue within 30 days');
+    } else openDialog('You cannot review the same venue within 30 days');
   }
 
   function handleAddImages() {
@@ -118,75 +129,174 @@ function DetailedVenueView() {
     }
   }
 
+  function toggleFavourite() {
+    if (!isAuthenticated || !userId || !venueId) return;
+
+    updateFavouriteVenue(
+      { userId, venueId },
+      {
+        onSuccess: () => {
+          const newFavouriteState = !isFavourite;
+          newFavouriteState
+            ? toast.success(`${venueName} added to favourites!`)
+            : toast.success(`${venueName} removed from favourites!`);
+        },
+      }
+    );
+  }
+
   return (
-    <div className={styles.detailedViewContainer}>
-      <h2>{venueName}</h2>
-      <div className={styles.ratingUploadContainer}>
-        <VenueRating initialRating={finalRating} readonly />
+    <div className="p-3 text-gray-800">
+      <div className="mb-3 ml-1 flex items-center justify-between">
+        <div>
+          <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>
+          <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1">
+              <Icon className="text-yellow-600" icon="lucide:star" width={22} />
+              <span className="text-small">({finalQualityRating})</span>
+            </div>
+            {/* display flex is forced to override default display inline block
+            of react rating - ensures icons allign correctly */}
+            <div className="flex items-center gap-1 [&>span]:!flex">
+              <VenueRating initialRating={finalHeatRating} readonly />
+
+              <span className="text-sm">
+                ({totalReviewCount}{' '}
+                {totalReviewCount === 1 ? 'review' : 'reviews'})
+              </span>
+            </div>
+          </div>
+        </div>
+        <Button
+          as={Link}
+          color="primary"
+          variant="flat"
+          startContent={<Icon icon="lucide:map-pinned" />}
+          to={`/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`}
+        >
+          Back to Map
+        </Button>
       </div>
-      <div
-        className={styles.multipleImageContainer}
-        onClick={() => images && openModalImages('image-carousel', images)}
-      >
-        {images && images.length > 0 ? (
-          // Slice first 4 images and map over
-          // To be replaced with more refined component
-          images.slice(0, 4).map((image: Image) => (
-            <div className={styles.mainImageContainer}>
-              <img
-                className={styles.imageMainSmall}
-                src={image.url}
-                alt={image.alt}
+      <article className="mb-5 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
+        <div
+          className="mb-3 flex cursor-pointer gap-1"
+          onClick={() =>
+            images
+              ? openModalImages('image-carousel', images)
+              : handleAddImages()
+          }
+        >
+          {images && images.length > 0 ? (
+            // Slice first 4 images and map over
+            images.slice(0, 4).map((image: ImageType) => (
+              <div
+                key={image.url}
+                className=" h-48 w-1/4 overflow-hidden rounded-xl "
+              >
+                <Image
+                  className="h-full w-full  object-cover hover:scale-110"
+                  src={image.url}
+                  alt={image.alt}
+                  radius="sm"
+                  removeWrapper
+                />
+              </div>
+            ))
+          ) : (
+            <div className=" h-48 w-1/4  overflow-hidden rounded-xl ">
+              <Image
+                className="h-full w-full  object-cover hover:scale-110"
+                src={greyChilli}
+                alt="an greyed out image of a chilli pepper"
+                removeWrapper
+                radius="sm"
               />
             </div>
-          ))
-        ) : (
-          <div className={styles.mainImageContainer}>
-            <img
-              className={styles.imageMainSmall}
-              src={greyChilli}
-              alt="an greyed out image of a chilli pepper"
-            />
-            <p className={styles.addPhotosText}>Add Photos</p>
+          )}
+        </div>
+        {/* Temp data to test layout + styles !!!!!!!!!!!TO BE REPLACED!!!!!*/}
+        <div className=" mt-4 flex justify-between">
+          <div className="flex gap-2">
+            {['Restaurant', 'Spanish', 'Mediterranean'].map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
-        )}
-      </div>
-      <Button onPress={handleAddImages}>Add Images</Button>
-      {/*    <VenueImageCarousel venueImages={images} /> */}
-      <button className="btn-default" onClick={handleReview}>
-        Leave a review
-      </button>
-      <div className={styles.iconTextContainer}>
-        <img src={clockIcon} alt="icon of a clock" />
-        <p>Open</p>
-      </div>
-      {/* Calculate based on opening hours */}
-      <div className={styles.iconTextContainer}>
-        <img src={mapPinIcon} alt="icon of a map pin" />
-        <p>{detailedAddress}</p>
-      </div>
-      <div className={`${styles.iconTextContainer} ${styles.topAlignIcon}`}>
-        <img src={infoIcon} alt="icon of an information symbol" />
-        <p>{description}</p>
-      </div>
-      <div className={styles.iconTextContainer}>
-        <img src={phoneIcon} alt="icon of a phone" />
-        <p>{phoneNumber}</p>
-      </div>
-      <div className={styles.iconTextContainer}>
-        <img src={globeIcon} alt="icon of a globe" />
-        <a href={website} target="_blank" rel="noopener noreferrer">
-          {website}
-        </a>
-      </div>
-      {/* Button to navigate back to map view. */}
-      <Link
-        to={`/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`}
-        className={`btn-default ${styles.btnBackToMap}`}
-      >
-        Back to Map
-      </Link>
-      <ReviewContainer mode="venue" />
+          <div className="mr-1">
+            <LikeButton
+              isFavourite={isFavourite}
+              isAuthenticated={isAuthenticated}
+              handleClick={toggleFavourite}
+            />
+          </div>
+        </div>
+
+        <div className="mt-5 flex items-center gap-2  ">
+          <Icon icon="lucide:clock" width={18} />
+          <span>Open</span>
+        </div>
+        {/* Calculate based on opening hours */}
+        <div className="mt-3 flex items-center gap-2">
+          <Icon icon="lucide:map-pin" width={18} />
+          <span>{detailedAddress}</span>
+        </div>
+
+        <div className="mt-3 flex items-center gap-2">
+          <Icon icon="lucide:phone" width={18} />
+          <span>{phoneNumber}</span>
+        </div>
+        <div className="mb-6 mt-3 flex items-center gap-2">
+          <Icon icon="material-symbols:globe" width={18} />
+          <a
+            className="text-blue-500  hover:text-blue-400"
+            href={website}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {website}
+          </a>
+        </div>
+
+        <Divider className="mb-7" />
+
+        <div className="mb-4">
+          <h2 className="mb-2 text-lg font-medium">About</h2>
+          <p className="text-gray-700">{description}</p>
+        </div>
+        <div className="mb-7 flex gap-2">
+          <Button
+            as="a"
+            href={mapsDirectionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            color="primary"
+            variant="flat"
+            startContent={<Icon icon="lucide:navigation" />}
+          >
+            Get Directions
+          </Button>
+          <Button
+            variant="flat"
+            startContent={<Icon icon="lucide:message-circle" />}
+            onPress={handleReview}
+          >
+            Leave a review
+          </Button>
+          <Button
+            variant="flat"
+            startContent={<Icon icon="lucide:image-plus" />}
+            onPress={handleAddImages}
+          >
+            Add Images
+          </Button>
+        </div>
+      </article>
+
+      {totalReviewCount > 0 && <ReviewContainer mode="venue" />}
     </div>
   );
 }

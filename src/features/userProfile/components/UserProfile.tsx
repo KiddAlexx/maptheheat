@@ -38,6 +38,7 @@ function UserProfile() {
   return (
     <div>
       <UserProfileBanner userProfile={userProfile} />
+
       <Tabs
         aria-label="Options"
         selectedKey={selected}

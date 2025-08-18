@@ -18,7 +18,8 @@ export interface Venue {
   images?: Image[];
   hottestSauces?: string[];
   hottestDishes?: string[];
-  averageRating?: number | null;
+  averageHeatRating?: number | null;
+  averageQualityRating?: number | null;
   totalReviews?: number;
 }
 
@@ -52,7 +53,11 @@ export type Key = string | number;
 // Review context types - used in VenueFilterContext and UserFavVenuesContext
 
 export type FilterField = 'city' | 'country' | 'venueType' | 'venueName';
-export type VenueSortField = 'averageRating' | 'totalReviews' | 'createdAt';
+export type VenueSortField =
+  | 'averageHeatRating'
+  | 'averageQualityRating'
+  | 'totalReviews'
+  | 'createdAt';
 
 export interface VenueFilter {
   field: FilterField;

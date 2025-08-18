@@ -1,5 +1,3 @@
-import styles from '../styles/ReviewListItem.module.css';
-
 import VenueRating from '../../venues/components/VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import Avatar from '@/features/userProfile/components/Avatar';
@@ -15,7 +13,15 @@ import { Link } from 'react-router-dom';
 import { withinTimeframe } from '../../../utils/withinTimeframe';
 
 import { ReviewWithRelations } from '@/types/reviewTypes';
-import { Button } from '@heroui/react';
+import {
+  Button,
+  Divider,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from '@heroui/react';
+import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface ReviewListItemProps {
   review: ReviewWithRelations;
@@ -28,6 +34,7 @@ function ReviewListItem({ review }: ReviewListItemProps) {
     venueDetails,
     createdAt,
     heatRating,
+    qualityRating,
     hottestDish,
     hottestSauce,
     reviewContent,
@@ -67,47 +74,96 @@ function ReviewListItem({ review }: ReviewListItemProps) {
   return isDeleting ? (
     <LoaderSpinner />
   ) : (
-    <article className={styles.reviewCardContainer}>
-      <header className={styles.userInfo}>
-        <Avatar userId={userId} />
-        <div>
-          <h3>{username}</h3>
-          <p>({totalReviews} Reviews)</p>
+    <article className="mt-2 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
+      <header className="flex justify-between">
+        <div className="flex items-center gap-2">
+          <Avatar userId={userId} />
+          <div>
+            <div className="mb-1 flex gap-1">
+              <h3 className="font-semibold">{username}</h3>
+              <p>
+                ({totalReviews} {totalReviews === 1 ? 'review' : 'reviews'})
+              </p>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1">
+                <Icon
+                  className="text-yellow-600"
+                  icon="lucide:star"
+                  width={18}
+                />
+                <span>({qualityRating})</span>
+              </div>
+              <div className=" [&>span]:!flex">
+                <VenueRating initialRating={heatRating} readonly size="20" />
+              </div>
+              <time dateTime={createdAt}> {formattedDate}</time>
+            </div>
+          </div>
         </div>
+        <Dropdown>
+          <DropdownTrigger>
+            <Button isIconOnly variant="light" className="ml-2">
+              <Icon icon="lucide:more-vertical" className="h-5 w-5" />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="Review actions ">
+            {within48hours && currentUser ? (
+              <DropdownItem
+                key="editReview"
+                startContent={<Icon icon="lucide:edit" />}
+              >
+                <Link
+                  to={`/app/venue/${city}/${venueNameSlug}/reviews/edit/${reviewId}`}
+                >
+                  Edit Review
+                </Link>
+              </DropdownItem>
+            ) : null}
+            {currentUser ? (
+              <DropdownItem
+                key="deleteReview"
+                onPress={handleDeleteReview}
+                className=" text-danger"
+                startContent={<Icon icon="lucide:trash-2" />}
+              >
+                Delete Review
+              </DropdownItem>
+            ) : null}
+          </DropdownMenu>
+        </Dropdown>
       </header>
+      <Divider className="my-2" />
       <section>
-        <VenueRating initialRating={heatRating} readonly />
-        <time dateTime={createdAt}> {formattedDate}</time>
-        <h3>{reviewTitle}</h3>
-        <p>{reviewContent}</p>
-        {reviewType === 'shop' && (
-          <p>
-            <strong>Hottest Sauce: </strong>
-            {hottestSauce}
-          </p>
-        )}
-        {reviewType === 'restaurant' && (
-          <p>
-            <strong>Hottest Dish: </strong>
-            {hottestDish}
-          </p>
-        )}
-        {/* Displays option to edit review if current user is the 
-        author of the review and it is within the 48 hour timeframe */}
-        {within48hours && currentUser && (
-          <Link
-            className="btn-default"
-            to={`/app/venue/${city}/${venueNameSlug}/reviews/edit/${reviewId}`}
-          >
-            Edit Review
-          </Link>
-        )}
-        {/* Displays option to delete review if current user is the author of review*/}
-        {currentUser && (
-          <Button onPress={handleDeleteReview} className="btn-default">
-            Delete Review
-          </Button>
-        )}
+        <h4 className="font mb-1 font-medium">{reviewTitle}</h4>
+        <div className="flex gap-1">
+          {/*       <Icon
+            icon="lucide:message-square-text"
+            width={20}
+            height={20}
+            className="mt-[2px] text-gray-500"
+          /> */}
+          <p className="mb-1">{reviewContent}</p>{' '}
+        </div>
+        <Divider className="my-2" />
+        <div className="flex gap-1">
+          {/*     <Icon
+            icon="flowbite:pepper-hot-outline"
+            width={20}
+            height={20}
+            className="text-orange-500"
+          /> */}
+          {reviewType === 'shop' && (
+            <p>
+              Hottest Sauce: <span>{hottestSauce}</span>
+            </p>
+          )}
+          {reviewType === 'restaurant' && (
+            <p>
+              Hottest Dish: <span>{hottestDish}</span>
+            </p>
+          )}
+        </div>
       </section>
     </article>
   );

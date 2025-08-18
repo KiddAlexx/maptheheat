@@ -1,12 +1,9 @@
 // Third party imports
 import { ColorRing } from 'react-loader-spinner';
 
-// Style imports
-import styles from './LoaderSpinner.module.css';
-
 function LoaderSpinner() {
   return (
-    <div className={styles.loaderSpinnerContainer}>
+    <div className="flex h-full w-full items-center justify-center ">
       <ColorRing
         visible={true}
         height="80"

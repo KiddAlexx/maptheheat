@@ -21,13 +21,15 @@ function VenuePagination({
   }
 
   return (
-    <Pagination
-      showControls
-      total={pageCount}
-      initialPage={1}
-      page={pageNumber}
-      onChange={updatePageNumber}
-    />
+    <div className="p-2">
+      <Pagination
+        showControls
+        total={pageCount}
+        initialPage={1}
+        page={pageNumber}
+        onChange={updatePageNumber}
+      />
+    </div>
   );
 }
 

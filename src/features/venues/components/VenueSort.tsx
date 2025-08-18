@@ -23,16 +23,31 @@ function VenueSort({ useVenueContext }: VenueSortProps) {
     }
   }
   return (
-    <Select onChange={handleChange} label={'Sort by'}>
+    <Select onChange={handleChange} label={'Sort by'} size="sm">
       <SelectItem key={'default'}>Default</SelectItem>
-      <SelectItem endContent={<FaSortAmountUp />} key={'averageRating-desc'}>
+      <SelectItem
+        endContent={<FaSortAmountUp />}
+        key={'averageHeatRating-desc'}
+      >
         Heat Rating
       </SelectItem>
       <SelectItem
         endContent={<FaSortAmountDownAlt />}
-        key={'averageRating-asc'}
+        key={'averageHeatRating-asc'}
       >
         Heat Rating
+      </SelectItem>
+      <SelectItem
+        endContent={<FaSortAmountUp />}
+        key={'averageQualityRating-desc'}
+      >
+        Quality Rating
+      </SelectItem>
+      <SelectItem
+        endContent={<FaSortAmountDownAlt />}
+        key={'averageQualityRating-asc'}
+      >
+        Quality Rating
       </SelectItem>
       <SelectItem endContent={<FaSortAmountUp />} key={'totalReviews-desc'}>
         Review Count

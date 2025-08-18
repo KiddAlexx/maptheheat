@@ -3,8 +3,8 @@
 // Type imports
 
 // Style imports
-import styles from '../styles/SearchAndFilterPanel.module.css';
-import { Link, useLocation } from 'react-router-dom';
+
+import { useLocation } from 'react-router-dom';
 import VenueTypeFilter from './VenueTypeFilter';
 import CitySelect from './CitySelect';
 import VenueSort from './VenueSort';
@@ -24,25 +24,17 @@ function SearchAndFilterPanel({
   const isUserMode = location.pathname === '/profile/venues';
 
   return (
-    <>
+    <div className="rounded-xl bg-zinc-400 p-3">
       {!isUserMode && <VenueSearchBar useVenueContext={useVenueContext} />}
       <CitySelect
         useVenueContext={useVenueContext}
         favouriteVenues={favouriteVenues}
       />
-      <div className={styles.filterSortWrapper}>
+      <div className="flex gap-3">
         <VenueTypeFilter useVenueContext={useVenueContext} />
         <VenueSort useVenueContext={useVenueContext} />
       </div>
-
-      <div className={styles.addNewContainer}>
-        <p>Can't find what you are looking for?</p>
-
-        <Link to="/add-venue" className={` ${styles.btnAddNewVenue}`}>
-          Add new venue!
-        </Link>
-      </div>
-    </>
+    </div>
   );
 }
 

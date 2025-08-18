@@ -1,12 +1,8 @@
-// React imports
-
-// Style imports
-import styles from './SideBar.module.css';
 import VenueListContainer from '../venues/components/VenueListContainer';
 
 function SideBar() {
   return (
-    <div className={styles.sideBar}>
+    <div className="flex w-[40rem] shrink-0 flex-col p-3">
       <VenueListContainer mode="venue" />
     </div>
   );

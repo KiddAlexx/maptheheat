@@ -26,8 +26,9 @@ function VenueTypeFilter({ useVenueContext }: VenueTypeFilterProps) {
     console.log(filters);
   }
   return (
-    <ButtonGroup radius="sm">
+    <ButtonGroup radius="sm" className="">
       <Button
+        className="h-12"
         color={activeType === 'all' ? 'primary' : 'default'}
         isDisabled={activeType === 'all'}
         onPress={() => handleFilterClick('all')}
@@ -35,6 +36,7 @@ function VenueTypeFilter({ useVenueContext }: VenueTypeFilterProps) {
         All
       </Button>
       <Button
+        className="h-12"
         color={activeType === 'restaurant' ? 'primary' : 'default'}
         isDisabled={activeType === 'restaurant'}
         onPress={() => handleFilterClick('restaurant')}
@@ -42,6 +44,7 @@ function VenueTypeFilter({ useVenueContext }: VenueTypeFilterProps) {
         Restaurants
       </Button>
       <Button
+        className="h-12"
         color={activeType === 'shop' ? 'primary' : 'default'}
         isDisabled={activeType === 'shop'}
         onPress={() => handleFilterClick('shop')}

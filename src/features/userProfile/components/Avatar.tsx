@@ -1,24 +1,29 @@
-import styles from '../styles/Avatar.module.css';
 import defaultAvatar from '../../../assets/default-avatar.png';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 
 interface AvatarProps {
   userId: string;
+  size?: string;
 }
 
-function Avatar({ userId }: AvatarProps) {
+function Avatar({ userId, size = '3.5' }: AvatarProps) {
   const { userProfile, isLoading } = useGetUserProfile(userId);
 
   return (
-    <img
-      src={
-        !isLoading && userProfile?.avatarUrl
-          ? userProfile.avatarUrl
-          : defaultAvatar
-      }
-      alt="users avatar"
-      className={styles.avatar}
-    />
+    <div
+      className="overflow-hidden rounded-full border-2 border-green-500 p-[2px]"
+      style={{ width: `${size}rem`, height: `${size}rem` }}
+    >
+      <img
+        src={
+          !isLoading && userProfile?.avatarUrl
+            ? userProfile.avatarUrl
+            : defaultAvatar
+        }
+        alt="users avatar"
+        className="h-full  w-full rounded-full object-cover"
+      />
+    </div>
   );
 }
 

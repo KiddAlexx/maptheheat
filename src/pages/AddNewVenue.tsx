@@ -2,7 +2,7 @@ import VenueForm from '../features/venues/components/VenueForm';
 
 function AddNewVenue() {
   return (
-    <main>
+    <main className="flex min-h-screen justify-center p-6">
       <VenueForm />
     </main>
   );

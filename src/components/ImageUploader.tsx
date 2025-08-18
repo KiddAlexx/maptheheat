@@ -4,9 +4,6 @@ import { FilePond, registerPlugin } from 'react-filepond';
 // Import FilePond styles
 import 'filepond/dist/filepond.min.css';
 
-// Style imports
-import styles from './ImageUploader.module.css';
-
 // Import the Image EXIF Orientation and Image Preview plugins
 // Note: These need to be installed separately
 // `npm i filepond-plugin-image-preview filepond-plugin-image-exif-orientation --save`
@@ -118,7 +115,7 @@ function ImageUploader({
   }
 
   return (
-    <div className={styles.uploadContainer}>
+    <div className={`${isModal && 'min-w-[36rem]'} w-full`}>
       {isUploading ? (
         <LoaderSpinner />
       ) : (
@@ -136,7 +133,7 @@ function ImageUploader({
         />
       )}
       <h3>Add up to a maximum of {maxPhotos} photos</h3>
-      <div className={styles.buttonContainer}>
+      <div className="flex justify-end gap-1">
         <Button onPress={handleClose} isDisabled={isUploading}>
           Not right now
         </Button>

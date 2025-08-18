@@ -5,10 +5,3 @@
 .map {
   height: 100%;
 }
-
-.tempImageContainer {
-  width: 100%;
-  height: 10rem;
-  background-color: blueviolet;
-  flex-shrink: 0;
-}

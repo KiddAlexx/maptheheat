@@ -24,13 +24,27 @@ function ReviewSort({ updateSort, resetSort }: ReviewSortParams) {
     }
   }
   return (
-    <Select onChange={handleChange} label={'Sort by'}>
+    <Select
+      className="max-w-60"
+      onChange={handleChange}
+      label={'Sort by'}
+      size="sm"
+    >
       <SelectItem key={'default'}>Default</SelectItem>
       <SelectItem endContent={<FaSortAmountUp />} key={'heatRating-desc'}>
         Heat Rating
       </SelectItem>
       <SelectItem endContent={<FaSortAmountDownAlt />} key={'heatRating-asc'}>
         Heat Rating
+      </SelectItem>
+      <SelectItem endContent={<FaSortAmountUp />} key={'qualityRating-desc'}>
+        Quality Rating
+      </SelectItem>
+      <SelectItem
+        endContent={<FaSortAmountDownAlt />}
+        key={'qualityRating-asc'}
+      >
+        Quality Rating
       </SelectItem>
       <SelectItem endContent={<FaSortAmountUp />} key={'createdAt-desc'}>
         Date Added

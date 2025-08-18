@@ -1,16 +1,10 @@
-// React imports
-
-// Style imports
-import styles from '../styles/ListItem.module.css';
-
 // Hooks imports
 import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 
 // File imports
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
-import clockIcon from '../../../assets/icons/clock.svg';
-import mapPinIcon from '../../../assets/icons/map-pin.svg';
-import phoneIcon from '../../../assets/icons/phone.svg';
+
+import { Icon } from '@iconify/react';
 
 // Component imports
 import VenueRating from './VenueRating';
@@ -23,6 +17,7 @@ import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateF
 import toast from 'react-hot-toast';
 import { useModalContext } from '@/context/ModalContext';
 import { useLocation } from 'react-router';
+import { Card, CardBody, CardFooter, Image, Link } from '@heroui/react';
 
 interface ListItemProps {
   venue: Venue;
@@ -40,20 +35,29 @@ function ListItem({
   favVenuesList,
 }: ListItemProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
-
   const location = useLocation();
+
   const isUserMode = location.pathname === '/profile/venues';
 
   const { openDialog } = useModalContext();
 
-  const { venueName, venueId, address, phoneNumber, images, averageRating } =
-    venue;
+  const {
+    venueName,
+    venueId,
+    address,
+    images,
+    averageHeatRating,
+    averageQualityRating,
+    totalReviews,
+  } = venue;
+
+  const totalReviewCount = totalReviews ?? 0;
 
   const isFavourite = favVenuesList?.includes(venueId);
 
   const { updateFavouriteVenue } = useUpdateFavouriteVenue();
 
-  function toggleFavourite(isFavouriteState: boolean) {
+  function toggleFavourite() {
     if (!isAuthenticated || !userId) return;
     if (isUserMode) {
       openDialog(
@@ -63,7 +67,8 @@ function ListItem({
             { userId, venueId },
             {
               onSuccess: () => {
-                isFavouriteState
+                const newFavouriteState = !isFavourite;
+                newFavouriteState
                   ? toast.success(`${venueName} added to favourites!`)
                   : toast.success(`${venueName} removed from favourites!`);
               },
@@ -76,7 +81,8 @@ function ListItem({
         { userId, venueId },
         {
           onSuccess: () => {
-            isFavouriteState
+            const newFavouriteState = !isFavourite;
+            newFavouriteState
               ? toast.success(`${venueName} added to favourites!`)
               : toast.success(`${venueName} removed from favourites!`);
           },
@@ -85,69 +91,94 @@ function ListItem({
     }
   }
 
-  const finalRating =
-    averageRating != null ? Math.round(averageRating * 2) / 2 : 5;
+  const finalHeatRating =
+    averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 5;
+
+  const finalQualityRating =
+    averageQualityRating != null
+      ? Math.round(averageQualityRating * 10) / 10
+      : 5;
 
   const mainImage = images?.[0];
 
   return (
-    <div className={styles.listItemContainer} onClick={handleClick}>
-      {mainImage ? (
-        <div className={styles.mainImageContainer}>
-          <img
-            className={styles.imageMainSmall}
-            src={mainImage.url}
-            alt={mainImage.alt}
-          />
-          {/* Fix alt text - user input / somehow generated... */}
-        </div>
-      ) : (
-        <div className={styles.mainImageContainer}>
-          <img
-            className={styles.imageMainSmall}
-            src={greyChilli}
-            alt="an greyed out image of a chilli pepper"
-          />
-          <p className={styles.addPhotosText}>Add Photos</p>
-        </div>
-      )}
-
-      <div>
-        <h2>{venueName}</h2>
-        <VenueRating initialRating={finalRating} readonly />
-        <LikeButton
-          isFavourite={isFavourite}
-          isAuthenticated={isAuthenticated}
-          handleClick={toggleFavourite}
-        />
-        <div className={styles.iconTextContainer}>
-          <img src={clockIcon} alt="icon of a clock" />
-          <p>Open</p>
-        </div>
-        <div className={styles.iconTextContainer}>
-          <img src={mapPinIcon} alt="icon of a map pin" />
-          <p>{address}</p>
-        </div>
-
-        {/* Temp , calculate open state based on hours */}
-        <div className={styles.iconTextContainer}>
-          <img src={phoneIcon} alt="icon of a phone" />
-          <p>{phoneNumber}</p>
-        </div>
-        {/* Link to the detailed page of the venue. 
-            On click, set clicked venue as active venue. */}
-        <button
-          className={styles.moreInfoLink}
-          onClick={(e) => {
-            // Stop the click event from propagating to the list item
-            e.stopPropagation();
-            setParamsAndNavigate(venue, 'venue');
-          }}
+    <li>
+      <button className="w-full" onClick={handleClick}>
+        <Card
+          className="mb-2 w-full cursor-pointer border-r border-t border-s-violet-500 shadow-md outline-none transition hover:bg-slate-100"
+          radius="sm"
         >
-          <p>More information!</p>
-        </button>
-      </div>
-    </div>
+          <div className="flex">
+            <div className="relative h-48 w-1/3">
+              <Image
+                className="h-full w-full object-cover"
+                src={mainImage?.url || greyChilli}
+                alt={mainImage?.alt || 'a greyed out image of a chilli pepper'}
+                removeWrapper
+                radius="sm"
+              />
+            </div>
+            <CardBody className="relative w-2/3">
+              <h3 className="mb-2 text-lg font-medium">{venueName}</h3>
+
+              {/* display flex is forced to override default display inline block
+            of react rating - ensures icons allign correctly */}
+              <div className="flex items-center gap-1 [&>span]:!flex">
+                <VenueRating
+                  initialRating={finalHeatRating}
+                  readonly
+                  size="20"
+                />
+
+                <span className="text-sm">
+                  ({totalReviewCount}{' '}
+                  {totalReviewCount === 1 ? 'review' : 'reviews'})
+                </span>
+              </div>
+              <div className="mt-2 flex items-center gap-1">
+                <Icon
+                  className="text-yellow-600"
+                  icon="lucide:star"
+                  width={18}
+                />
+                <span className="text-small">({finalQualityRating})</span>
+              </div>
+
+              <div className="absolute right-4 top-4 z-10">
+                <LikeButton
+                  isFavourite={isFavourite}
+                  isAuthenticated={isAuthenticated}
+                  handleClick={toggleFavourite}
+                />
+              </div>
+              <div className="mt-2 flex items-center gap-2 text-sm">
+                <Icon icon="lucide:clock" width={15} />
+                <span>Open</span>
+              </div>
+              <div className="mt-2 flex items-center gap-2 text-sm">
+                <Icon icon="lucide:map-pin" width={16} />
+                <span>{address}</span>
+              </div>
+
+              {/* Link to the detailed page of the venue. 
+            On click, set clicked venue as active venue. */}
+              <CardFooter>
+                <Link
+                  className="absolute bottom-3 right-4 z-10 text-sm"
+                  color="primary"
+                  onPress={() => {
+                    setParamsAndNavigate(venue, 'venue');
+                  }}
+                  showAnchorIcon
+                >
+                  More information!
+                </Link>
+              </CardFooter>
+            </CardBody>
+          </div>
+        </Card>
+      </button>
+    </li>
   );
 }
 

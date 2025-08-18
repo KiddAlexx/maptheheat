@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 import styles from './PageNav.module.css';
 import { useUser } from '../authentication/hooks/useUser';
 import { useModalContext } from '../../context/ModalContext';
-import { Button } from "@heroui/button";
+import { Button } from '@heroui/button';
 import UserMenu from '@/ui/UserMenu';
 
 function PageNav() {
@@ -13,30 +13,24 @@ function PageNav() {
   const { openModal } = useModalContext();
 
   return (
-    <nav className={styles.nav}>
+    <nav className="flex h-20 items-center justify-between bg-zinc-800 px-10">
       <h3 className={styles.logoMain}>
         <NavLink to="/">MapTheHeat</NavLink>
       </h3>
-      <ul className={styles.authButtons}>
+      <ul>
         {/* Checks user login state
             Displays Login & Signup or Logout button */}
         {!isAuthenticated ? (
           <>
             <li>
-              <Button size="lg" radius="sm" onClick={() => openModal('login')}>
+              <Button size="lg" radius="sm" onPress={() => openModal('login')}>
                 Login / Sign Up
               </Button>
             </li>
           </>
         ) : (
-          <li>
+          <li className="flex items-center">
             <UserMenu />
-            {/*   <button
-              onClick={() => logout()}
-              className={`btn-default ${styles.btnLogout}`}
-            >
-              Log Out
-            </button> */}
           </li>
         )}
       </ul>

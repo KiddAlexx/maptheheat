@@ -41,24 +41,30 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
   });
 
   return reviews ? (
-    <>
-      <ReviewSort updateSort={updateSort} resetSort={resetSort} />
-      <ReviewPagination
-        pagination={pagination}
-        updatePageNumber={updatePageNumber}
-        totalCount={totalCount}
-      />
+    <div>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold">Reviews</h2>
+        <ReviewPagination
+          pagination={pagination}
+          updatePageNumber={updatePageNumber}
+          totalCount={totalCount}
+        />
+        <ReviewSort updateSort={updateSort} resetSort={resetSort} />
+      </div>
+
       {isLoadingReviews || fetchStatus == 'fetching' || isLoadingUser ? (
         <LoaderSpinner />
       ) : (
         <ReviewListView reviews={reviews} />
       )}
-      <ReviewPagination
-        pagination={pagination}
-        updatePageNumber={updatePageNumber}
-        totalCount={totalCount}
-      />
-    </>
+      <div className="mt-2 flex justify-center">
+        <ReviewPagination
+          pagination={pagination}
+          updatePageNumber={updatePageNumber}
+          totalCount={totalCount}
+        />
+      </div>
+    </div>
   ) : null;
 }
 

@@ -1,8 +1,3 @@
-// React imports
-
-// Style imports
-import styles from '../styles/ListView.module.css';
-
 // Hooks imports
 import { useVenues } from '../hooks/useVenues';
 import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
@@ -52,7 +47,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
   const favVenuesList = userProfile?.favouriteVenues || null;
 
   return (
-    <div className={styles.listView}>
+    <ul className="h-full overflow-y-scroll [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {/* Map through list of venues and render ListItem component for
         each venue. Onclick set clicked venue as active venue */}
       {venues?.map((venue) => (
@@ -65,7 +60,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
           key={venue.venueId}
         />
       ))}
-    </div>
+    </ul>
   );
 }
 
