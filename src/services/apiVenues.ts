@@ -2,7 +2,7 @@
 import camelcaseKeys from 'camelcase-keys';
 import decamelizeKeys from 'decamelize-keys';
 import decamelize from 'decamelize';
-import supabase, { supabaseUrl } from './supabase';
+import supabase from './supabase';
 
 // Type Imports
 import {
@@ -199,70 +199,18 @@ export async function createVenueImage({
     city,
     venueNameSlug
   );
-  // Generate alt text for image + full URL
+  // Generate image entry + alt text
   const newImages = imagePaths.map((imagePath) => ({
-    url: `${supabaseUrl}/storage/v1/object/public/venue-images/${imagePath}`,
-    alt: `An image of ${venueNameSlug} in ${city}`,
+    image_path_large: imagePath,
+    alt_text: `An image of ${venueNameSlug} in ${city}`,
+    venue_id: venueId,
+    review_id: reviewId,
   }));
 
-  // Fetch current images array
-  const { data: currentVenueImages, error: venueFetchError } = await supabase
-    .from('venue_details')
-    .select('images')
-    .eq('venue_id', venueId)
-    .single();
-
-  if (venueFetchError) {
-    throw new Error(
-      `Error fetching current images: ${venueFetchError.message}`
-    );
-  }
-
-  // Append new image objects to existing array
-  // Or create new image array if one does not exist
-  const updatedVenueImages = currentVenueImages.images
-    ? [...currentVenueImages.images, ...newImages]
-    : [...newImages];
-
-  const { data, error } = await supabase
-    .from('venue_details')
-    .update({ images: updatedVenueImages })
-    .eq('venue_id', venueId);
+  const { data, error } = await supabase.from('venue_images').insert(newImages);
 
   if (error) {
     throw new Error(`Error adding image to database: ${error.message}`);
   }
-
-  if (reviewId) {
-    // Fetch current images array
-    const { data: currentReviewImages, error: venueFetchError } = await supabase
-      .from('venue_reviews')
-      .select('images')
-      .eq('review_id', reviewId)
-      .single();
-
-    if (venueFetchError) {
-      throw new Error(
-        `Error fetching current images: ${venueFetchError.message}`
-      );
-    }
-
-    // Append new image objects to existing array
-    // Or create new image array if one does not exist
-    const updatedReviewImages = currentReviewImages.images
-      ? [...currentReviewImages.images, ...newImages]
-      : [...newImages];
-
-    const { data, error } = await supabase
-      .from('venue_reviews')
-      .update({ images: updatedReviewImages })
-      .eq('review_id', reviewId);
-
-    if (error) {
-      throw new Error(`Error adding image to database: ${error.message}`);
-    }
-    return data;
-  }
-  console.log('this is the uploaded image data', data);
   return data;
 }
