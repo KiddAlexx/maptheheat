@@ -73,7 +73,7 @@ function DetailedVenueView() {
     description,
     averageHeatRating,
     averageQualityRating,
-    images,
+    venueImages,
     coords,
     totalReviews,
   } = venue;
@@ -181,14 +181,14 @@ function DetailedVenueView() {
         <div
           className="mb-3 flex cursor-pointer gap-1"
           onClick={() =>
-            images
-              ? openModalImages('image-carousel', images)
+            venueImages
+              ? openModalImages('image-carousel', venueImages)
               : handleAddImages()
           }
         >
-          {images && images.length > 0 ? (
+          {venueImages && venueImages.length > 0 ? (
             // Slice first 4 images and map over
-            images.slice(0, 4).map((image: ImageType) => (
+            venueImages.slice(0, 4).map((image: ImageType) => (
               <div
                 key={image.url}
                 className=" h-48 w-1/4 overflow-hidden rounded-xl "

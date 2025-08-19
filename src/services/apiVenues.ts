@@ -6,6 +6,7 @@ import supabase, { supabaseUrl } from './supabase';
 
 // Type Imports
 import {
+  DetailedImage,
   ImageUploadParams,
   NewVenue,
   UniqueCity,
@@ -89,13 +90,22 @@ export async function getVenues({
 export async function getVenue(id: string): Promise<Venue> {
   const { data, error } = await supabase
     .from('venue_details')
-    .select('*')
-    .eq('venue_id', id);
+    .select('*,  venue_images(image_path_large, alt_text)')
+    .eq('venue_id', id)
+    .filter('venue_images.status', 'eq', 'approved');
 
   if (error) {
     throw new Error(`Venue could not be loaded. Error:${error.message}`);
   }
-  return camelcaseKeys(data[0]);
+
+  const venue = camelcaseKeys(data[0], { deep: true });
+  venue.venueImages = venue.venueImages.map((img: DetailedImage) => ({
+    ...img,
+    url: `${supabaseUrl}/storage/v1/object/public/venue-images/${img.imagePathLarge}`,
+    alt: img.altText,
+  }));
+  console.log('heres the venue', venue);
+  return venue;
 }
 
 // Uses supabase sql function to fetch unique city list
