@@ -15,7 +15,7 @@ export interface Venue {
   coords: Coords;
   venueId: string;
   venueType: 'restaurant' | 'shop';
-  images?: Image[];
+  thumbnailImage?: Image;
   hottestSauces?: string[];
   hottestDishes?: string[];
   averageHeatRating?: number | null;

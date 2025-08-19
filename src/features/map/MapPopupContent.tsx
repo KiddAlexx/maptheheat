@@ -29,12 +29,11 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
     averageQualityRating,
     address,
     phoneNumber,
-    images,
+    thumbnailImage,
   } = venue;
 
   /*   const totalReviewCount = totalReviews ?? 0; */
 
-  const mainImage = images?.[0];
   const finalHeatRating =
     averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 5;
 
@@ -50,8 +49,8 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
       <div className="h-40 w-full overflow-hidden">
         <Image
           className="h-full w-full object-cover"
-          src={mainImage?.url || greyChilli}
-          alt={mainImage?.alt || 'a greyed out image of a chilli pepper'}
+          src={thumbnailImage?.url || greyChilli}
+          alt={thumbnailImage?.alt || 'a greyed out image of a chilli pepper'}
           radius="sm"
         />
       </div>

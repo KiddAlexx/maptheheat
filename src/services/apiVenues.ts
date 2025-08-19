@@ -2,7 +2,7 @@
 import camelcaseKeys from 'camelcase-keys';
 import decamelizeKeys from 'decamelize-keys';
 import decamelize from 'decamelize';
-import supabase from './supabase';
+import supabase, { supabaseUrl } from './supabase';
 
 // Type Imports
 import {
@@ -208,6 +208,31 @@ export async function createVenueImage({
   }));
 
   const { data, error } = await supabase.from('venue_images').insert(newImages);
+
+  // Check if venue already has a thumbnail & add ** Temp while building
+  const { data: venueData } = await supabase
+    .from('venue_details')
+    .select('thumbnail_image')
+    .eq('venue_id', venueId)
+    .single();
+
+  if (!venueData?.thumbnail_image) {
+    const { error: thumbnailError } = await supabase
+      .from('venue_details')
+      .update({
+        thumbnail_image: {
+          url: `${supabaseUrl}/storage/v1/object/public/venue-images/${newImages[0].image_path_large}`,
+          alt: newImages[0].alt_text,
+        },
+      })
+      .eq('venue_id', venueId);
+
+    if (thumbnailError) {
+      throw new Error(
+        `Failed to set thumbnail image: ${thumbnailError.message}`
+      );
+    }
+  }
 
   if (error) {
     throw new Error(`Error adding image to database: ${error.message}`);
