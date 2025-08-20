@@ -198,6 +198,7 @@ export async function createVenueImage({
   imageFiles,
   city,
   venueNameSlug,
+  imageType,
 }: ImageUploadParams) {
   // Compress image. Type asserted as function will return File or throw an Error
   const compressedImages = (await compressImage(imageFiles)) as File[];
@@ -215,6 +216,7 @@ export async function createVenueImage({
     alt_text: `An image of ${venueNameSlug} in ${city}`,
     venue_id: venueId,
     review_id: reviewId,
+    image_type: imageType,
   }));
 
   const { data, error } = await supabase.from('venue_images').insert(newImages);

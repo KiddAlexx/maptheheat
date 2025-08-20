@@ -393,6 +393,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                   venue={venue || venueDetails}
                   reviewId={createdReviewId || reviewId}
                   mode="integrated"
+                  imageType="review"
                 />
               </div>
             </div>

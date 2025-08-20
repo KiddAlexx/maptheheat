@@ -26,6 +26,7 @@ interface ImageUploaderProps {
   maxPhotos?: number;
   mode?: 'modal' | 'integrated';
   reviewId?: string;
+  imageType: 'venue' | 'review' | 'standalone';
 }
 
 // Register the plugins
@@ -36,6 +37,7 @@ function ImageUploader({
   maxPhotos = 6,
   mode,
   reviewId,
+  imageType,
 }: ImageUploaderProps) {
   // Fetch image upload functionality and states from React Query hook
   const { uploadImageRef, isUploading } = useUpdateVenueImage();
@@ -94,7 +96,7 @@ function ImageUploader({
     ); */
 
     uploadImageRef(
-      { venueId, reviewId, imageFiles, city, venueNameSlug },
+      { venueId, reviewId, imageFiles, city, venueNameSlug, imageType },
       {
         onSuccess: () => {
           handleClose();

@@ -448,6 +448,7 @@ function VenueForm() {
             <ImageUploader
               venue={createdVenue ?? undefined}
               mode="integrated"
+              imageType="venue"
             />
           </div>
         </div>

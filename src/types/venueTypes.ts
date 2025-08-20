@@ -87,4 +87,5 @@ export interface ImageUploadParams {
   imageFiles: File[];
   city: string;
   venueNameSlug: string;
+  imageType: 'venue' | 'review' | 'standalone';
 }
