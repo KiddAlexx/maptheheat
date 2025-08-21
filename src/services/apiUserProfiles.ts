@@ -18,8 +18,9 @@ export async function getUserProfile(userId: string) {
 export async function getUnreadNotificationsCount({
   userId,
 }: {
-  userId?: string;
+  userId?: string | null;
 }) {
+  if (!userId) throw new Error('No userId provided');
   const { count, error } = await supabase
     .from('user_notifications')
     .select('*', { count: 'exact', head: true })
