@@ -44,7 +44,10 @@ export async function getVenues({
   pagination,
   favouriteVenues,
 }: VenuesRequestParams): Promise<VenuesResponse> {
-  let query = supabase.from('venue_details').select('*', { count: 'exact' });
+  let query = supabase
+    .from('venue_details')
+    .select('*', { count: 'exact' })
+    .eq('status', 'approved');
 
   // Apply favouriteVenue filter when in user mode
   // Used to display favourtite venues on profile page
@@ -92,6 +95,7 @@ export async function getVenue(id: string): Promise<Venue> {
     .from('venue_details')
     .select('*,  venue_images(image_path_large, alt_text)')
     .eq('venue_id', id)
+    .eq('status', 'approved')
     .filter('venue_images.status', 'eq', 'approved');
 
   if (error) {

@@ -37,7 +37,8 @@ export async function getReviews({
 }: ReviewsRequestParams): Promise<ReviewsResponse> {
   let query = supabase
     .from('venue_reviews')
-    .select('*, profiles(*), venue_details(*)', { count: 'exact' });
+    .select('*, profiles(*), venue_details(*)', { count: 'exact' })
+    .eq('status', 'approved');
 
   // Apply venueId or userId filter
   if (venueId) {
@@ -79,7 +80,8 @@ export async function getReview(
   const { data, error } = await supabase
     .from('venue_reviews')
     .select('*, profiles(*), venue_details(*)')
-    .eq('review_id', reviewId);
+    .eq('review_id', reviewId)
+    .eq('status', 'approved');
 
   if (error) {
     throw new Error(`Review could not be loaded. Error:${error.message}`);
