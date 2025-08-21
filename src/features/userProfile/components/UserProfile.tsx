@@ -47,8 +47,12 @@ function UserProfile() {
         <Tab key={'reviews'} title="My Reviews">
           <ReviewContainer mode="user" />
         </Tab>
+
         <Tab key={'venues'} title="Favourite Venues">
           <VenueListContainer mode="user" favouriteVenues={favouriteVenues} />
+        </Tab>
+        <Tab key={'notifications'} title="Notifications">
+          <div>Temp</div>
         </Tab>
         <Tab key={'edit'} title="Edit Profile">
           <EditProfilePanel />
