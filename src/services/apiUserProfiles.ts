@@ -15,6 +15,24 @@ export async function getUserProfile(userId: string) {
   return camelcaseKeys(data[0]);
 }
 
+export async function getUnreadNotificationsCount({
+  userId,
+}: {
+  userId?: string;
+}) {
+  const { count, error } = await supabase
+    .from('user_notifications')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .eq('status', 'unread');
+
+  if (error) {
+    throw new Error(`Error fetching notification count: ${error.message}`);
+  }
+
+  return count;
+}
+
 export interface UpdateUsernameParams {
   username: string;
 }
