@@ -34,6 +34,18 @@ export async function getUnreadNotificationsCount({
   return count;
 }
 
+export async function getUserNotifications({ userId }: { userId: string }) {
+  const { data, error } = await supabase
+    .from('user_notifications')
+    .select('*')
+    .eq('user_id', userId);
+
+  if (error) {
+    throw new Error(`Error fetching notifications: ${error.message}`);
+  }
+  return { data: camelcaseKeys(data, { deep: true }) };
+}
+
 export interface UpdateUsernameParams {
   username: string;
 }
