@@ -7,3 +7,16 @@ export interface Profile {
   totalVenuesAdded: number | null;
   favouriteVenues: string[] | null;
 }
+
+export interface UserNotification {
+  notificationId: string;
+  createdAt: string;
+  relatedType: 'review' | 'venue' | 'image';
+  title: string;
+  message: string;
+  linkUrl: string;
+  venueId: string;
+  userId: string;
+  notificationStatus: 'read' | 'unread' | 'deleted';
+  requestStatus: 'pending' | 'confirmed' | ' declined';
+}

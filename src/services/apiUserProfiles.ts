@@ -2,6 +2,7 @@ import camelcaseKeys from 'camelcase-keys';
 import supabase, { supabaseUrl } from './supabase';
 import compressImage from '@/utils/compressImage';
 import uploadImages from './supabaseImageUploader';
+import { UserNotification } from '@/types/userTypes';
 
 export async function getUserProfile(userId: string) {
   const { data, error } = await supabase
@@ -25,7 +26,7 @@ export async function getUnreadNotificationsCount({
     .from('user_notifications')
     .select('*', { count: 'exact', head: true })
     .eq('user_id', userId)
-    .eq('status', 'unread');
+    .eq('notification_status', 'unread');
 
   if (error) {
     throw new Error(`Error fetching notification count: ${error.message}`);
@@ -34,11 +35,22 @@ export async function getUnreadNotificationsCount({
   return count;
 }
 
-export async function getUserNotifications({ userId }: { userId: string }) {
+export interface NotificationsResponse {
+  data: UserNotification[];
+  /*  count: number | null; */
+}
+
+export async function getUserNotifications({
+  userId,
+}: {
+  userId: string;
+}): Promise<NotificationsResponse> {
   const { data, error } = await supabase
     .from('user_notifications')
     .select('*')
     .eq('user_id', userId);
+
+  console.log('heres the notifications', data);
 
   if (error) {
     throw new Error(`Error fetching notifications: ${error.message}`);
