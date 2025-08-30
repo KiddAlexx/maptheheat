@@ -49,7 +49,8 @@ export async function getUserNotifications({
     .from('user_notifications')
     .select('*')
     .eq('user_id', userId)
-    .neq('notification_status', 'deleted');
+    .neq('notification_status', 'deleted')
+    .order('created_at', { ascending: false });
 
   console.log('heres the notifications', data);
 
