@@ -35,23 +35,30 @@ export async function getUnreadNotificationsCount({
   return count;
 }
 
-export interface NotificationsResponse {
-  data: UserNotification[];
-  /*  count: number | null; */
+export interface NotificationPaginationParams {
+  pageNumber: number;
+  maxResults: number;
 }
 
 export interface NotificationsRequestParams {
   userId: string;
   isUnread?: boolean;
+  pagination?: NotificationPaginationParams;
+}
+
+export interface NotificationsResponse {
+  data: UserNotification[];
+  count: number | null;
 }
 
 export async function getUserNotifications({
   userId,
   isUnread,
+  pagination,
 }: NotificationsRequestParams): Promise<NotificationsResponse> {
   let query = supabase
     .from('user_notifications')
-    .select('*')
+    .select('*', { count: 'exact' })
     .eq('user_id', userId)
     .neq('notification_status', 'deleted')
     .order('created_at', { ascending: false });
@@ -59,12 +66,23 @@ export async function getUserNotifications({
   if (isUnread) {
     query = query.eq('notification_status', 'unread');
   }
-  const { data, error } = await query;
+
+  // Apply pagination
+  if (pagination) {
+    const { pageNumber, maxResults } = pagination;
+    const from = (pageNumber - 1) * maxResults;
+    const to = from + maxResults - 1;
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query;
+
+  console.log('heres the notifications', data, count);
 
   if (error) {
     throw new Error(`Error fetching notifications: ${error.message}`);
   }
-  return { data: camelcaseKeys(data, { deep: true }) };
+  return { data: camelcaseKeys(data, { deep: true }), count };
 }
 
 export async function deleteUserNotificationApi({

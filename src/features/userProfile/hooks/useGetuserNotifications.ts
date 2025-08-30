@@ -8,12 +8,14 @@ import { useQuery } from '@tanstack/react-query';
 export function useGetUserNotifications({
   userId,
   isUnread,
+  pagination,
 }: NotificationsRequestParams) {
   const { isLoading, data, error } = useQuery<NotificationsResponse>({
-    queryKey: ['notifications', userId, isUnread],
-    queryFn: () => getUserNotifications({ userId, isUnread }),
+    queryKey: ['notifications', userId, isUnread, pagination],
+    queryFn: () => getUserNotifications({ userId, isUnread, pagination }),
   });
 
   const userNotifications = data?.data;
-  return { isLoading, error, userNotifications };
+  const totalCount = data?.count ?? 0;
+  return { isLoading, error, userNotifications, totalCount };
 }

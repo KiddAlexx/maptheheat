@@ -20,7 +20,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
   const { isDeleting, deleteUserNotification } = useDeleteUserNotification();
 
   return (
-    <article className="mt-2 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
+    <article className="my-2 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
       <header className="flex justify-between">
         <h3 className="font-semibold">{title}</h3>
         <div>
