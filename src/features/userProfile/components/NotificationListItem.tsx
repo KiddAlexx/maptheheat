@@ -24,7 +24,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
       <header className="flex justify-between">
         <h3 className="font-semibold">{title}</h3>
         <div>
-          <Tooltip content="Delet notification">
+          <Tooltip content="Delete notification">
             <Button
               radius="none"
               className="h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
