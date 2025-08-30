@@ -1,17 +1,21 @@
 import { UserNotification } from '@/types/userTypes';
-import { Button } from '@heroui/react';
+import { Button, Tooltip } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { parseISO, format } from 'date-fns';
+import { useUpdateUserNotification } from '../hooks/useUpdateUserNotification';
 
 interface NotificationListItemProps {
   notification: UserNotification;
 }
 
 function NotificationListItem({ notification }: NotificationListItemProps) {
-  const { title, message, createdAt } = notification;
+  const { title, message, createdAt, notificationId, notificationStatus } =
+    notification;
 
   const date = parseISO(createdAt);
   const formattedDate = format(date, 'dd MMM yyyy, HH:mm');
+
+  const { isUpdating, updateUserNotification } = useUpdateUserNotification();
 
   return (
     <article className="mt-2 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
@@ -30,18 +34,23 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
               height="20"
             />
           </Button>
-          <Button
-            radius="none"
-            className="ml-2 h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
-            isIconOnly
-          >
-            <Icon
-              className="text-green-600"
-              icon="mingcute:check-fill"
-              width="20"
-              height="20"
-            />
-          </Button>
+          {notificationStatus === 'unread' && (
+            <Tooltip content="Mark as read">
+              <Button
+                radius="none"
+                className="ml-2 h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
+                isIconOnly
+                onPress={() => updateUserNotification({ notificationId })}
+              >
+                <Icon
+                  className="text-green-600"
+                  icon="mingcute:check-fill"
+                  width="20"
+                  height="20"
+                />
+              </Button>
+            </Tooltip>
+          )}
         </div>
       </header>
       <p className="mt-1">{message}</p>

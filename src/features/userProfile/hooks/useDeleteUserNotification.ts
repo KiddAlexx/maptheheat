@@ -15,6 +15,7 @@ export function useDeleteUserNotification() {
         deleteUserNotificationApi({ notificationId }),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['notifications'] });
+        queryClient.invalidateQueries({ queryKey: ['notificationCount'] });
       },
       onError: (err) => {
         toast.error(err.message);
