@@ -40,19 +40,26 @@ export interface NotificationsResponse {
   /*  count: number | null; */
 }
 
+export interface NotificationsRequestParams {
+  userId: string;
+  isUnread?: boolean;
+}
+
 export async function getUserNotifications({
   userId,
-}: {
-  userId: string;
-}): Promise<NotificationsResponse> {
-  const { data, error } = await supabase
+  isUnread,
+}: NotificationsRequestParams): Promise<NotificationsResponse> {
+  let query = supabase
     .from('user_notifications')
     .select('*')
     .eq('user_id', userId)
     .neq('notification_status', 'deleted')
     .order('created_at', { ascending: false });
 
-  console.log('heres the notifications', data);
+  if (isUnread) {
+    query = query.eq('notification_status', 'unread');
+  }
+  const { data, error } = await query;
 
   if (error) {
     throw new Error(`Error fetching notifications: ${error.message}`);
