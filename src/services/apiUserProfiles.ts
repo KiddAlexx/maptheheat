@@ -58,8 +58,39 @@ export async function getUserNotifications({
   return { data: camelcaseKeys(data, { deep: true }) };
 }
 
-export interface UpdateUsernameParams {
-  username: string;
+export async function deleteUserNotificationApi({
+  notificationId,
+}: {
+  notificationId: string;
+}) {
+  const { data, error } = await supabase
+    .from('user_notifications')
+    .update({ notification_status: 'deleted' })
+    .eq('notification_id', notificationId)
+    .select();
+
+  if (error) {
+    throw new Error(`Error deleting notification ${error.message}`);
+  }
+
+  return data;
+}
+export async function updateUserNotificationApi({
+  notificationId,
+}: {
+  notificationId: string;
+}) {
+  const { data, error } = await supabase
+    .from('user_notifications')
+    .update({ notification_status: 'read' })
+    .eq('notification_id', notificationId)
+    .select();
+
+  if (error) {
+    throw new Error(`Error updating notification ${error.message}`);
+  }
+
+  return data;
 }
 
 export interface UpdateAvatarApiParams {
@@ -92,6 +123,10 @@ export async function updateAvatarApi({ newAvatar }: UpdateAvatarApiParams) {
   }
   console.log('this is the uploaded image data', data);
   return data;
+}
+
+export interface UpdateUsernameParams {
+  username: string;
 }
 
 export async function updateUsernameApi({ username }: UpdateUsernameParams) {
