@@ -3,6 +3,7 @@ import { Button, Tooltip } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { parseISO, format } from 'date-fns';
 import { useUpdateUserNotification } from '../hooks/useUpdateUserNotification';
+import { useDeleteUserNotification } from '../hooks/useDeleteUserNotification';
 
 interface NotificationListItemProps {
   notification: UserNotification;
@@ -16,24 +17,29 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
   const formattedDate = format(date, 'dd MMM yyyy, HH:mm');
 
   const { isUpdating, updateUserNotification } = useUpdateUserNotification();
+  const { isDeleting, deleteUserNotification } = useDeleteUserNotification();
 
   return (
     <article className="mt-2 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
       <header className="flex justify-between">
         <h3 className="font-semibold">{title}</h3>
         <div>
-          <Button
-            radius="none"
-            className="h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
-            isIconOnly
-          >
-            <Icon
-              className="text-red-600"
-              icon="mingcute:delete-2-line"
-              width="20"
-              height="20"
-            />
-          </Button>
+          <Tooltip content="Delet notification">
+            <Button
+              radius="none"
+              className="h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
+              isIconOnly
+              onPress={() => deleteUserNotification({ notificationId })}
+              isDisabled={isUpdating || isDeleting}
+            >
+              <Icon
+                className="text-red-600"
+                icon="mingcute:delete-2-line"
+                width="20"
+                height="20"
+              />
+            </Button>
+          </Tooltip>
           {notificationStatus === 'unread' && (
             <Tooltip content="Mark as read">
               <Button
@@ -41,6 +47,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
                 className="ml-2 h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
                 isIconOnly
                 onPress={() => updateUserNotification({ notificationId })}
+                isDisabled={isUpdating || isDeleting}
               >
                 <Icon
                   className="text-green-600"

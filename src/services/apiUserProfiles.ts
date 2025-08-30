@@ -48,7 +48,8 @@ export async function getUserNotifications({
   const { data, error } = await supabase
     .from('user_notifications')
     .select('*')
-    .eq('user_id', userId);
+    .eq('user_id', userId)
+    .neq('notification_status', 'deleted');
 
   console.log('heres the notifications', data);
 
