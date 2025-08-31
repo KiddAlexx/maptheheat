@@ -31,13 +31,33 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
   if (isPendingCities || isLoadingUserCities) return;
 
   // Select which city list to use based on "mode"
+  // Select which city list to use based on "mode"
   let finalCityList: UniqueCity[];
-  isUserMode ? (finalCityList = userCities!) : (finalCityList = uniqueCities!);
+  isUserMode
+    ? (finalCityList = [
+        {
+          id: 'ALL_KEY',
+          city: 'All',
+          country: 'favourites',
+          coords: { lat: 0, lon: 0 },
+        },
+        ...userCities!,
+      ])
+    : (finalCityList = uniqueCities!);
+
+  console.log('heres the city list', finalCityList);
 
   // Update venue filters based upon city selection
   async function handleSelectCity(value: Key | null) {
+    // Displays all user favourites
+    if (isUserMode && value === 'ALL_KEY') {
+      removeVenueFilter('city');
+      removeVenueFilter('country');
+      return;
+    }
+
     if (!finalCityList) return;
-    const selectedCityObj = await finalCityList.find(
+    const selectedCityObj = finalCityList.find(
       (cityObj) => cityObj.id == value
     );
     if (!selectedCityObj) return;
@@ -61,8 +81,9 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
       radius="sm"
       /* onInputChange={handleSelectCity} */
       onSelectionChange={handleSelectCity}
+      /* defaultSelectedKey={isUserMode && 'ALL_KEY'} */
     >
-      {finalCityList!.map((cityObj) => (
+      {finalCityList.map((cityObj) => (
         // Using city + index as key for uniqueness in case of duplicate city names
         <AutocompleteItem key={cityObj.id}>
           {`${cityObj.city} - ${cityObj.country}`}

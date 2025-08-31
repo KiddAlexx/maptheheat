@@ -37,7 +37,7 @@ function UserProfile() {
   }
 
   return (
-    <div className="w-full max-w-[80rem]">
+    <div className="w-full max-w-[70rem]">
       <UserProfileBanner userProfile={userProfile} />
 
       <Tabs
