@@ -32,7 +32,11 @@ function UpdatePasswordForm() {
   }
 
   return (
-    <form noValidate onSubmit={handleSubmit(formSubmit)}>
+    <form
+      className="w-full max-w-3xl"
+      noValidate
+      onSubmit={handleSubmit(formSubmit)}
+    >
       <Input
         type="password"
         radius="sm"
@@ -60,6 +64,7 @@ function UpdatePasswordForm() {
         })}
       />
       <Input
+        className="mt-2"
         type="password"
         radius="sm"
         variant="bordered"
@@ -78,9 +83,11 @@ function UpdatePasswordForm() {
             value === getValues().password || 'Passwords need to match',
         })}
       />
-      <Button radius="sm" size="lg" type="submit">
-        Update Password
-      </Button>
+      <div className="mt-2 flex justify-end">
+        <Button radius="sm" size="md" type="submit">
+          Update Password
+        </Button>
+      </div>
     </form>
   );
 }

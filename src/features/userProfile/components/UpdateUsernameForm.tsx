@@ -18,7 +18,11 @@ function UpdateUsernameForm() {
   }
 
   return (
-    <form noValidate onSubmit={handleSubmit(formSubmit)}>
+    <form
+      className="w-full max-w-3xl"
+      noValidate
+      onSubmit={handleSubmit(formSubmit)}
+    >
       <Input
         id="username"
         type="text"
@@ -47,9 +51,11 @@ function UpdateUsernameForm() {
           },
         })}
       />
-      <Button radius="sm" size="lg" type="submit">
-        Update Username
-      </Button>
+      <div className="mt-2 flex justify-end">
+        <Button radius="sm" size="md" type="submit">
+          Update Username
+        </Button>
+      </div>
     </form>
   );
 }

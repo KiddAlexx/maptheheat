@@ -20,7 +20,11 @@ function UpdateEmailForm() {
   }
 
   return (
-    <form noValidate onSubmit={handleSubmit(formSubmit)}>
+    <form
+      noValidate
+      onSubmit={handleSubmit(formSubmit)}
+      className="w-full max-w-3xl"
+    >
       <Input
         id="email"
         type="email"
@@ -42,6 +46,7 @@ function UpdateEmailForm() {
         })}
       />
       <Input
+        className="mt-2"
         id="confirmEmail"
         type="email"
         label="Confirm Email"
@@ -60,9 +65,11 @@ function UpdateEmailForm() {
             value === getValues().email || 'Email address does not match',
         })}
       />
-      <Button radius="sm" size="lg" type="submit">
-        Update Email
-      </Button>
+      <div className="mt-2 flex justify-end">
+        <Button radius="sm" size="md" type="submit">
+          Update Email
+        </Button>
+      </div>
     </form>
   );
 }
