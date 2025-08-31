@@ -1,4 +1,4 @@
-import { Pagination } from '@heroui/react';
+/* import { Pagination } from '@heroui/react';
 import { useVenues } from '../hooks/useVenues';
 import { VenueFilterContextType } from '@/context/VenueFilterContext';
 
@@ -34,3 +34,4 @@ function VenuePagination({
 }
 
 export default VenuePagination;
+ */

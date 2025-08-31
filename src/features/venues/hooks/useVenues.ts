@@ -17,6 +17,6 @@ export function useVenues({
   });
 
   const venues = data?.data;
-  const totalCount = data?.count;
+  const totalCount = data?.count || 0;
   return { error, isLoading, venues, totalCount };
 }
