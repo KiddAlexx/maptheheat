@@ -38,11 +38,6 @@ export interface ReviewSort {
   direction: Direction;
 }
 
-export interface ReviewPaginationParams {
-  pageNumber: number;
-  maxResults: number;
-}
-
 // Define individual function types
 export type UpdateSort = (sortBy: ReviewSort) => void;
 export type ResetSort = () => void;

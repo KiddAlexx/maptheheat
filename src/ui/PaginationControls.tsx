@@ -1,17 +1,22 @@
-import { ReviewPaginationParams, UpdatePageNumber } from '@/types/reviewTypes';
+import { UpdatePageNumber } from '@/types/reviewTypes';
 import { Pagination } from '@heroui/react';
 
-interface ReviewPaginationProps {
-  pagination: ReviewPaginationParams;
+interface PaginationControlsProps {
+  pagination: PaginationControlsParams;
   updatePageNumber: UpdatePageNumber;
   totalCount: number;
 }
 
-function ReviewPagination({
+export interface PaginationControlsParams {
+  pageNumber: number;
+  maxResults: number;
+}
+
+function PaginationControls({
   pagination,
   updatePageNumber,
   totalCount,
-}: ReviewPaginationProps) {
+}: PaginationControlsProps) {
   const { pageNumber, maxResults } = pagination;
 
   // Calculates total number of pages required based on the total number
@@ -33,4 +38,4 @@ function ReviewPagination({
   );
 }
 
-export default ReviewPagination;
+export default PaginationControls;

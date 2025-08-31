@@ -3,7 +3,7 @@ import { useGetUserNotifications } from '../hooks/useGetuserNotifications';
 import NotificationListView from './NotificationListView';
 import { Switch } from '@heroui/react';
 import { useState } from 'react';
-import ReviewPagination from '@/features/reviews/components/ReviewPagination';
+import PaginationControls from '@/ui/PaginationControls';
 
 interface NotificationContainerProps {
   userId: string;
@@ -12,7 +12,7 @@ interface NotificationContainerProps {
 function NotificationContainer({ userId }: NotificationContainerProps) {
   const [isUnread, setIsUnread] = useState(false);
   const [pagination, setPagination] = useState({
-    maxResults: 5,
+    maxResults: 1,
     pageNumber: 1,
   });
 
@@ -32,7 +32,7 @@ function NotificationContainer({ userId }: NotificationContainerProps) {
     <div>
       <div className="flex justify-between">
         <h2 className="text-2xl font-semibold">Notifications</h2>
-        <ReviewPagination
+        <PaginationControls
           pagination={pagination}
           totalCount={totalCount}
           updatePageNumber={handlePageChange}
@@ -44,7 +44,7 @@ function NotificationContainer({ userId }: NotificationContainerProps) {
 
       <NotificationListView userNotifications={userNotifications} />
       <div className="mt-2 flex justify-center">
-        <ReviewPagination
+        <PaginationControls
           pagination={pagination}
           totalCount={totalCount}
           updatePageNumber={handlePageChange}

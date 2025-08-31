@@ -2,13 +2,14 @@
 
 // React imports
 import { createContext, ReactNode, useContext, useReducer } from 'react';
-import { ReviewPaginationParams, ReviewSort } from '@/types/reviewTypes';
+import { ReviewSort } from '@/types/reviewTypes';
+import { PaginationControlsParams } from '@/ui/PaginationControls';
 
 // Data types
 
 interface State {
   sort: ReviewSort | null;
-  pagination: ReviewPaginationParams;
+  pagination: PaginationControlsParams;
 }
 
 interface ReviewFilterContextType extends State {

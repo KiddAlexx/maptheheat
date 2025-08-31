@@ -10,16 +10,16 @@ import { EditformData } from '../features/reviews/components/ReviewForm';
 //Type Imports
 import {
   NewReview,
-  ReviewPaginationParams,
   ReviewSort,
   ReviewWithRelations,
 } from '@/types/reviewTypes';
+import { PaginationControlsParams } from '@/ui/PaginationControls';
 
 export interface ReviewsRequestParams {
   venueId?: string;
   userId?: string;
   sort?: ReviewSort | null;
-  pagination?: ReviewPaginationParams;
+  pagination?: PaginationControlsParams;
 }
 
 export interface ReviewsResponse {

@@ -4,17 +4,17 @@
 import { createContext, ReactNode, useContext, useReducer } from 'react';
 import {
   ResetSort,
-  ReviewPaginationParams,
   ReviewSort,
   UpdatePageNumber,
   UpdateSort,
 } from '@/types/reviewTypes';
+import { PaginationControlsParams } from '@/ui/PaginationControls';
 
 // Data types
 
 interface State {
   sort: ReviewSort | null;
-  pagination: ReviewPaginationParams;
+  pagination: PaginationControlsParams;
 }
 
 interface UserReviewsContextType extends State {
