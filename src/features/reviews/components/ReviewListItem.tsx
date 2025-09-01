@@ -74,7 +74,7 @@ function ReviewListItem({ review }: ReviewListItemProps) {
   return isDeleting ? (
     <LoaderSpinner />
   ) : (
-    <article className="mt-2 flex gap-4 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
+    <article className="mt-2 flex  rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
       <header className="flex justify-between gap-2">
         <div className="flex items-center gap-2">
           <Avatar userId={userId} />
@@ -85,8 +85,11 @@ function ReviewListItem({ review }: ReviewListItemProps) {
                 ({totalReviews} {totalReviews === 1 ? 'review' : 'reviews'})
               </p>
             </div>
-            <div className="flex items-center gap-1">
-              <div className="flex items-center gap-1">
+            <div /* className="flex items-center gap-1" */>
+              <div className=" mt-2 [&>span]:!flex">
+                <VenueRating initialRating={heatRating} readonly size="20" />
+              </div>
+              <div className="mt-2 flex items-center gap-1">
                 <Icon
                   className="text-yellow-600"
                   icon="lucide:star"
@@ -94,19 +97,13 @@ function ReviewListItem({ review }: ReviewListItemProps) {
                 />
                 <span>({qualityRating})</span>
               </div>
-              <div className=" [&>span]:!flex">
-                <VenueRating initialRating={heatRating} readonly size="20" />
-              </div>
-            </div>
-            <div className="mt-2 text-xs">
-              <time dateTime={createdAt}>{formattedDate}</time>
             </div>
           </div>
         </div>
         <Divider orientation="vertical" />
       </header>
 
-      <section className="flex w-full justify-between">
+      <section className="ml-5 flex w-full justify-between">
         <div>
           <h4 className=" mb-1 font-medium">{reviewTitle}</h4>
 
@@ -115,15 +112,18 @@ function ReviewListItem({ review }: ReviewListItemProps) {
           {/* <Divider className="my-2" /> */}
 
           {reviewType === 'shop' && (
-            <p>
+            <p className="mt-2">
               Hottest Sauce: <span>{hottestSauce}</span>
             </p>
           )}
           {reviewType === 'restaurant' && (
-            <p>
+            <p className="mt-2">
               Hottest Dish: <span>{hottestDish}</span>
             </p>
           )}
+          <div className="mt-2 text-xs">
+            <time dateTime={createdAt}>{formattedDate}</time>
+          </div>
         </div>
         <Dropdown>
           <DropdownTrigger>
