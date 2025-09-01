@@ -1,6 +1,7 @@
 import VenueRating from '../../venues/components/VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import Avatar from '@/features/userProfile/components/Avatar';
+import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
 
 import { useUser } from '../../authentication/hooks/useUser';
 import { useDeleteReview } from '../hooks/useDeleteReview';
@@ -20,15 +21,17 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Image,
 } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface ReviewListItemProps {
   review: ReviewWithRelations;
+  mode: 'venue' | 'user';
 }
 
 // Component to render a single review item
-function ReviewListItem({ review }: ReviewListItemProps) {
+function ReviewListItem({ review, mode }: ReviewListItemProps) {
   const {
     profiles,
     venueDetails,
@@ -44,7 +47,14 @@ function ReviewListItem({ review }: ReviewListItemProps) {
   } = review;
 
   const { username, totalReviews, userId } = profiles;
-  const { city, venueNameSlug } = venueDetails;
+  const {
+    city,
+    venueNameSlug,
+    thumbnailImage,
+    venueName,
+    totalReviews: totalVenueReviews,
+  } = venueDetails;
+  const isUserMode = mode === 'user';
 
   // Fetch data from hooks
   const { isDeleting, deleteReview } = useDeleteReview();
@@ -74,19 +84,39 @@ function ReviewListItem({ review }: ReviewListItemProps) {
   return isDeleting ? (
     <LoaderSpinner />
   ) : (
-    <article className="mt-2 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
-      <header className="flex justify-between">
-        <div className="flex items-center gap-2">
-          <Avatar userId={userId} />
+    <article className="mt-2 flex  rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
+      <header className="flex justify-between gap-2">
+        <div className="flex w-44 items-center gap-2">
+          {isUserMode ? (
+            <div className="h-24">
+              <Image
+                className="h-full w-full object-cover"
+                src={thumbnailImage?.url || greyChilli}
+                alt={
+                  thumbnailImage?.alt || 'a greyed out image of a chilli pepper'
+                }
+                removeWrapper
+                radius="sm"
+              />
+            </div>
+          ) : (
+            <Avatar userId={userId} />
+          )}
           <div>
-            <div className="mb-1 flex gap-1">
-              <h3 className="font-semibold">{username}</h3>
-              <p>
-                ({totalReviews} {totalReviews === 1 ? 'review' : 'reviews'})
+            <div className="mb-1">
+              <h3 className="font-semibold">
+                {isUserMode ? venueName : username}
+              </h3>
+              <p className="text-xs">
+                ({isUserMode ? totalVenueReviews : totalReviews}{' '}
+                {totalReviews === 1 ? 'review' : 'reviews'})
               </p>
             </div>
-            <div className="flex items-center gap-1">
-              <div className="flex items-center gap-1">
+            <div /* className="flex items-center gap-1" */>
+              <div className=" mt-2 [&>span]:!flex">
+                <VenueRating initialRating={heatRating} readonly size="20" />
+              </div>
+              <div className="mt-2 flex items-center gap-1">
                 <Icon
                   className="text-yellow-600"
                   icon="lucide:star"
@@ -94,11 +124,32 @@ function ReviewListItem({ review }: ReviewListItemProps) {
                 />
                 <span>({qualityRating})</span>
               </div>
-              <div className=" [&>span]:!flex">
-                <VenueRating initialRating={heatRating} readonly size="20" />
-              </div>
-              <time dateTime={createdAt}> {formattedDate}</time>
             </div>
+          </div>
+        </div>
+        <Divider orientation="vertical" />
+      </header>
+
+      <section className="ml-5 flex w-full justify-between p-2">
+        <div>
+          <h4 className=" mb-1 font-medium">{reviewTitle}</h4>
+
+          <p className="mb-2">{reviewContent}</p>
+
+          {/* <Divider className="my-2" /> */}
+
+          {reviewType === 'shop' && (
+            <p>
+              Hottest Sauce: <span>{hottestSauce}</span>
+            </p>
+          )}
+          {reviewType === 'restaurant' && (
+            <p>
+              Hottest Dish: <span>{hottestDish}</span>
+            </p>
+          )}
+          <div className="mt-1 text-xs">
+            <time dateTime={createdAt}>{formattedDate}</time>
           </div>
         </div>
         <Dropdown>
@@ -132,38 +183,6 @@ function ReviewListItem({ review }: ReviewListItemProps) {
             ) : null}
           </DropdownMenu>
         </Dropdown>
-      </header>
-      <Divider className="my-2" />
-      <section>
-        <h4 className="font mb-1 font-medium">{reviewTitle}</h4>
-        <div className="flex gap-1">
-          {/*       <Icon
-            icon="lucide:message-square-text"
-            width={20}
-            height={20}
-            className="mt-[2px] text-gray-500"
-          /> */}
-          <p className="mb-1">{reviewContent}</p>{' '}
-        </div>
-        <Divider className="my-2" />
-        <div className="flex gap-1">
-          {/*     <Icon
-            icon="flowbite:pepper-hot-outline"
-            width={20}
-            height={20}
-            className="text-orange-500"
-          /> */}
-          {reviewType === 'shop' && (
-            <p>
-              Hottest Sauce: <span>{hottestSauce}</span>
-            </p>
-          )}
-          {reviewType === 'restaurant' && (
-            <p>
-              Hottest Dish: <span>{hottestDish}</span>
-            </p>
-          )}
-        </div>
       </section>
     </article>
   );

@@ -2,13 +2,14 @@ import { useReviewSortContext } from '@/context/ReviewSortContext';
 import { useUserReviewsContext } from '@/context/UserReviewsContext';
 
 import ReviewListView from './ReviewListView';
-import ReviewPagination from './ReviewPagination';
+
 import ReviewSort from './ReviewSort';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 
 import { useParams } from 'react-router';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useGetReviews } from '../hooks/useGetReviews';
+import PaginationControls from '../../../ui/PaginationControls';
 
 interface ReviewContainerProps {
   mode: 'venue' | 'user';
@@ -44,7 +45,7 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
     <div>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Reviews</h2>
-        <ReviewPagination
+        <PaginationControls
           pagination={pagination}
           updatePageNumber={updatePageNumber}
           totalCount={totalCount}
@@ -55,10 +56,10 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
       {isLoadingReviews || fetchStatus == 'fetching' || isLoadingUser ? (
         <LoaderSpinner />
       ) : (
-        <ReviewListView reviews={reviews} />
+        <ReviewListView reviews={reviews} mode={mode} />
       )}
       <div className="mt-2 flex justify-center">
-        <ReviewPagination
+        <PaginationControls
           pagination={pagination}
           updatePageNumber={updatePageNumber}
           totalCount={totalCount}

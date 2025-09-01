@@ -52,8 +52,13 @@ function UpdateAvatar() {
         labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
       />
       <h3>Select a suitable avatar to upload</h3>
-      <div>
-        <Button onPress={uploadFile} isDisabled={isUpdating}>
+      <div className="mt-2 flex justify-end">
+        <Button
+          radius="sm"
+          size="md"
+          onPress={uploadFile}
+          isDisabled={isUpdating}
+        >
           {isUpdating ? <LoaderSpinner /> : 'Upload'}
         </Button>
       </div>

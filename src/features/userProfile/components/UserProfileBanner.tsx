@@ -38,7 +38,7 @@ function UserProfileBanner({ userProfile }: UserProfileBannerProps) {
       </div>
 
       <Button
-        className="ml-auto"
+        className="ml-auto self-end"
         as={Link}
         color="primary"
         variant="flat"

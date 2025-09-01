@@ -6,6 +6,7 @@ import supabase, { supabaseUrl } from './supabase';
 
 // Type Imports
 import {
+  DetailedImage,
   ImageUploadParams,
   NewVenue,
   UniqueCity,
@@ -43,7 +44,10 @@ export async function getVenues({
   pagination,
   favouriteVenues,
 }: VenuesRequestParams): Promise<VenuesResponse> {
-  let query = supabase.from('venue_details').select('*', { count: 'exact' });
+  let query = supabase
+    .from('venue_details')
+    .select('*', { count: 'exact' })
+    .eq('status', 'approved');
 
   // Apply favouriteVenue filter when in user mode
   // Used to display favourtite venues on profile page
@@ -89,13 +93,23 @@ export async function getVenues({
 export async function getVenue(id: string): Promise<Venue> {
   const { data, error } = await supabase
     .from('venue_details')
-    .select('*')
-    .eq('venue_id', id);
+    .select('*,  venue_images(image_path_large, alt_text)')
+    .eq('venue_id', id)
+    .eq('status', 'approved')
+    .filter('venue_images.status', 'eq', 'approved');
 
   if (error) {
     throw new Error(`Venue could not be loaded. Error:${error.message}`);
   }
-  return camelcaseKeys(data[0]);
+
+  const venue = camelcaseKeys(data[0], { deep: true });
+  venue.venueImages = venue.venueImages.map((img: DetailedImage) => ({
+    ...img,
+    url: `${supabaseUrl}/storage/v1/object/public/venue-images/${img.imagePathLarge}`,
+    alt: img.altText,
+  }));
+  console.log('heres the venue', venue);
+  return venue;
 }
 
 // Uses supabase sql function to fetch unique city list
@@ -188,6 +202,7 @@ export async function createVenueImage({
   imageFiles,
   city,
   venueNameSlug,
+  imageType,
 }: ImageUploadParams) {
   // Compress image. Type asserted as function will return File or throw an Error
   const compressedImages = (await compressImage(imageFiles)) as File[];
@@ -199,70 +214,44 @@ export async function createVenueImage({
     city,
     venueNameSlug
   );
-  // Generate alt text for image + full URL
+  // Generate image entry + alt text
   const newImages = imagePaths.map((imagePath) => ({
-    url: `${supabaseUrl}/storage/v1/object/public/venue-images/${imagePath}`,
-    alt: `An image of ${venueNameSlug} in ${city}`,
+    image_path_large: imagePath,
+    alt_text: `An image of ${venueNameSlug} in ${city}`,
+    venue_id: venueId,
+    review_id: reviewId,
+    image_type: imageType,
   }));
 
-  // Fetch current images array
-  const { data: currentVenueImages, error: venueFetchError } = await supabase
+  const { data, error } = await supabase.from('venue_images').insert(newImages);
+
+  // Check if venue already has a thumbnail & add ** Temp while building
+  const { data: venueData } = await supabase
     .from('venue_details')
-    .select('images')
+    .select('thumbnail_image')
     .eq('venue_id', venueId)
     .single();
 
-  if (venueFetchError) {
-    throw new Error(
-      `Error fetching current images: ${venueFetchError.message}`
-    );
+  if (!venueData?.thumbnail_image) {
+    const { error: thumbnailError } = await supabase
+      .from('venue_details')
+      .update({
+        thumbnail_image: {
+          url: `${supabaseUrl}/storage/v1/object/public/venue-images/${newImages[0].image_path_large}`,
+          alt: newImages[0].alt_text,
+        },
+      })
+      .eq('venue_id', venueId);
+
+    if (thumbnailError) {
+      throw new Error(
+        `Failed to set thumbnail image: ${thumbnailError.message}`
+      );
+    }
   }
-
-  // Append new image objects to existing array
-  // Or create new image array if one does not exist
-  const updatedVenueImages = currentVenueImages.images
-    ? [...currentVenueImages.images, ...newImages]
-    : [...newImages];
-
-  const { data, error } = await supabase
-    .from('venue_details')
-    .update({ images: updatedVenueImages })
-    .eq('venue_id', venueId);
 
   if (error) {
     throw new Error(`Error adding image to database: ${error.message}`);
   }
-
-  if (reviewId) {
-    // Fetch current images array
-    const { data: currentReviewImages, error: venueFetchError } = await supabase
-      .from('venue_reviews')
-      .select('images')
-      .eq('review_id', reviewId)
-      .single();
-
-    if (venueFetchError) {
-      throw new Error(
-        `Error fetching current images: ${venueFetchError.message}`
-      );
-    }
-
-    // Append new image objects to existing array
-    // Or create new image array if one does not exist
-    const updatedReviewImages = currentReviewImages.images
-      ? [...currentReviewImages.images, ...newImages]
-      : [...newImages];
-
-    const { data, error } = await supabase
-      .from('venue_reviews')
-      .update({ images: updatedReviewImages })
-      .eq('review_id', reviewId);
-
-    if (error) {
-      throw new Error(`Error adding image to database: ${error.message}`);
-    }
-    return data;
-  }
-  console.log('this is the uploaded image data', data);
   return data;
 }

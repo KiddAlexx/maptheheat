@@ -9,6 +9,7 @@ import UserProfileBanner from './UserProfileBanner';
 import EditProfilePanel from './EditProfilePanel';
 import { useNavigate, useParams } from 'react-router';
 import { Key } from '@/types/venueTypes';
+import NotificationContainer from './NotificationContainer';
 
 function UserProfile() {
   const { user, isLoading: isLoadingUser, fetchStatus } = useUser();
@@ -25,8 +26,8 @@ function UserProfile() {
   // State for currently active Tab
   const [selected, setSelected] = useState<Key>(section || 'reviews');
 
-  if (fetchStatus == 'fetching' || isLoadingUser || isLoadingProfile) return;
-  <LoaderSpinner />;
+  if (fetchStatus == 'fetching' || isLoadingUser || isLoadingProfile || !userId)
+    return <LoaderSpinner />;
 
   const { favouriteVenues } = userProfile;
 
@@ -36,7 +37,7 @@ function UserProfile() {
   }
 
   return (
-    <div>
+    <div className="w-full max-w-[70rem]">
       <UserProfileBanner userProfile={userProfile} />
 
       <Tabs
@@ -47,8 +48,12 @@ function UserProfile() {
         <Tab key={'reviews'} title="My Reviews">
           <ReviewContainer mode="user" />
         </Tab>
+
         <Tab key={'venues'} title="Favourite Venues">
           <VenueListContainer mode="user" favouriteVenues={favouriteVenues} />
+        </Tab>
+        <Tab key={'notifications'} title="Notifications">
+          <NotificationContainer userId={userId} />
         </Tab>
         <Tab key={'edit'} title="Edit Profile">
           <EditProfilePanel />

@@ -19,6 +19,7 @@ export function useUpdateVenueImage() {
       imageFiles,
       city,
       venueNameSlug,
+      imageType,
     }) => {
       console.log(
         'log from react query',
@@ -33,6 +34,7 @@ export function useUpdateVenueImage() {
         imageFiles,
         city,
         venueNameSlug,
+        imageType,
       });
     },
     onSuccess: (_, variables) => {

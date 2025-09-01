@@ -1,14 +1,15 @@
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
 import SearchAndFilterPanel from './SearchAndFilterPanel';
 import ListView from './VenueListView';
-import VenuePagination from './VenuePagination';
 import { useUserFavVenuesContext } from '@/context/UserFavVenuesContext';
 import { Link } from 'react-router-dom';
 import { Button } from '@heroui/react';
+import { useVenues } from '../hooks/useVenues';
+import PaginationControls from '@/ui/PaginationControls';
 
 interface VenueListContainerProps {
   mode: 'venue' | 'user';
-  favouriteVenues?: string[] | null;
+  favouriteVenues?: string[];
 }
 
 function VenueListContainer({
@@ -20,13 +21,18 @@ function VenueListContainer({
   const useVenueContext =
     mode === 'venue' ? useVenueFilterContext : useUserFavVenuesContext;
 
+  const { pagination, filters, updatePageNumber } = useVenueContext();
+
+  const { totalCount } = useVenues({
+    filters,
+    favouriteVenues: mode === 'user' ? favouriteVenues : undefined,
+  });
+
   return (
     <>
       <SearchAndFilterPanel
         useVenueContext={useVenueContext}
-        favouriteVenues={
-          mode === 'user' ? favouriteVenues ?? undefined : undefined
-        }
+        favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
       />
       {mode === 'venue' && (
         <div className=" my-2 flex items-center justify-between p-1">
@@ -36,11 +42,11 @@ function VenueListContainer({
           </Button>
         </div>
       )}
-      <VenuePagination
-        useVenueContext={useVenueContext}
-        favouriteVenues={
-          mode === 'user' ? favouriteVenues ?? undefined : undefined
-        }
+
+      <PaginationControls
+        updatePageNumber={updatePageNumber}
+        pagination={pagination}
+        totalCount={totalCount}
       />
 
       <ListView
@@ -50,11 +56,10 @@ function VenueListContainer({
         }
       />
 
-      <VenuePagination
-        useVenueContext={useVenueContext}
-        favouriteVenues={
-          mode === 'user' ? favouriteVenues ?? undefined : undefined
-        }
+      <PaginationControls
+        updatePageNumber={updatePageNumber}
+        pagination={pagination}
+        totalCount={totalCount}
       />
     </>
   );

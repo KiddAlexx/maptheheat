@@ -347,8 +347,8 @@ function ReviewForm({ mode }: ReviewFormProps) {
                           message: 'Review must be at least 40 characters long',
                         },
                         maxLength: {
-                          value: 750,
-                          message: 'Review cannot be more than 750 characters',
+                          value: 1500,
+                          message: 'Review cannot be more than 1500 characters',
                         },
                       }}
                       render={({ field }) => (
@@ -393,6 +393,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                   venue={venue || venueDetails}
                   reviewId={createdReviewId || reviewId}
                   mode="integrated"
+                  imageType="review"
                 />
               </div>
             </div>

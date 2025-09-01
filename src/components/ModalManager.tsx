@@ -29,7 +29,7 @@ function ModalManager() {
       Component = <ImageCarousel />;
       break;
     case 'image-uploader':
-      Component = <ImageUploader mode="modal" />;
+      Component = <ImageUploader mode="modal" imageType="standalone" />;
       break;
     case 'confirm-action':
       Component = <ConfirmationDialog />;

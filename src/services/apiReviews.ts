@@ -10,16 +10,16 @@ import { EditformData } from '../features/reviews/components/ReviewForm';
 //Type Imports
 import {
   NewReview,
-  ReviewPaginationParams,
   ReviewSort,
   ReviewWithRelations,
 } from '@/types/reviewTypes';
+import { PaginationControlsParams } from '@/ui/PaginationControls';
 
 export interface ReviewsRequestParams {
   venueId?: string;
   userId?: string;
   sort?: ReviewSort | null;
-  pagination?: ReviewPaginationParams;
+  pagination?: PaginationControlsParams;
 }
 
 export interface ReviewsResponse {
@@ -37,7 +37,8 @@ export async function getReviews({
 }: ReviewsRequestParams): Promise<ReviewsResponse> {
   let query = supabase
     .from('venue_reviews')
-    .select('*, profiles(*), venue_details(*)', { count: 'exact' });
+    .select('*, profiles(*), venue_details(*)', { count: 'exact' })
+    .eq('status', 'approved');
 
   // Apply venueId or userId filter
   if (venueId) {
@@ -79,7 +80,8 @@ export async function getReview(
   const { data, error } = await supabase
     .from('venue_reviews')
     .select('*, profiles(*), venue_details(*)')
-    .eq('review_id', reviewId);
+    .eq('review_id', reviewId)
+    .eq('status', 'approved');
 
   if (error) {
     throw new Error(`Review could not be loaded. Error:${error.message}`);

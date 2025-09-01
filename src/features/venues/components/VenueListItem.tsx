@@ -45,7 +45,7 @@ function ListItem({
     venueName,
     venueId,
     address,
-    images,
+    thumbnailImage,
     averageHeatRating,
     averageQualityRating,
     totalReviews,
@@ -99,8 +99,6 @@ function ListItem({
       ? Math.round(averageQualityRating * 10) / 10
       : 5;
 
-  const mainImage = images?.[0];
-
   return (
     <li>
       <button className="w-full" onClick={handleClick}>
@@ -112,8 +110,10 @@ function ListItem({
             <div className="relative h-48 w-1/3">
               <Image
                 className="h-full w-full object-cover"
-                src={mainImage?.url || greyChilli}
-                alt={mainImage?.alt || 'a greyed out image of a chilli pepper'}
+                src={thumbnailImage?.url || greyChilli}
+                alt={
+                  thumbnailImage?.alt || 'a greyed out image of a chilli pepper'
+                }
                 removeWrapper
                 radius="sm"
               />

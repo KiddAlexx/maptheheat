@@ -10,7 +10,7 @@ async function uploadImages(
   }
 
   // Create storage path
-  const folderPath = folders.join('/');
+  const folderPath = folders.join('/').toLowerCase();
 
   const imagePaths = imageFiles.map(async (imageFile) => {
     // Create unique file name

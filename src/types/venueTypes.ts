@@ -15,7 +15,8 @@ export interface Venue {
   coords: Coords;
   venueId: string;
   venueType: 'restaurant' | 'shop';
-  images?: Image[];
+  thumbnailImage?: Image;
+  venueImages: Image[];
   hottestSauces?: string[];
   hottestDishes?: string[];
   averageHeatRating?: number | null;
@@ -34,6 +35,11 @@ export interface Coords {
 export interface Image {
   url: string;
   alt: string;
+}
+
+export interface DetailedImage {
+  imagePathLarge: string;
+  altText: string;
 }
 
 export interface UniqueCity {
@@ -81,4 +87,5 @@ export interface ImageUploadParams {
   imageFiles: File[];
   city: string;
   venueNameSlug: string;
+  imageType: 'venue' | 'review' | 'standalone';
 }

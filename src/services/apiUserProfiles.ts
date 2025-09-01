@@ -2,6 +2,7 @@ import camelcaseKeys from 'camelcase-keys';
 import supabase, { supabaseUrl } from './supabase';
 import compressImage from '@/utils/compressImage';
 import uploadImages from './supabaseImageUploader';
+import { UserNotification } from '@/types/userTypes';
 
 export async function getUserProfile(userId: string) {
   const { data, error } = await supabase
@@ -15,8 +16,108 @@ export async function getUserProfile(userId: string) {
   return camelcaseKeys(data[0]);
 }
 
-export interface UpdateUsernameParams {
-  username: string;
+export async function getUnreadNotificationsCount({
+  userId,
+}: {
+  userId?: string | null;
+}) {
+  if (!userId) throw new Error('No userId provided');
+  const { count, error } = await supabase
+    .from('user_notifications')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .eq('notification_status', 'unread');
+
+  if (error) {
+    throw new Error(`Error fetching notification count: ${error.message}`);
+  }
+
+  return count;
+}
+
+export interface NotificationPaginationParams {
+  pageNumber: number;
+  maxResults: number;
+}
+
+export interface NotificationsRequestParams {
+  userId: string;
+  isUnread?: boolean;
+  pagination?: NotificationPaginationParams;
+}
+
+export interface NotificationsResponse {
+  data: UserNotification[];
+  count: number | null;
+}
+
+export async function getUserNotifications({
+  userId,
+  isUnread,
+  pagination,
+}: NotificationsRequestParams): Promise<NotificationsResponse> {
+  let query = supabase
+    .from('user_notifications')
+    .select('*', { count: 'exact' })
+    .eq('user_id', userId)
+    .neq('notification_status', 'deleted')
+    .order('created_at', { ascending: false });
+
+  if (isUnread) {
+    query = query.eq('notification_status', 'unread');
+  }
+
+  // Apply pagination
+  if (pagination) {
+    const { pageNumber, maxResults } = pagination;
+    const from = (pageNumber - 1) * maxResults;
+    const to = from + maxResults - 1;
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query;
+
+  console.log('heres the notifications', data, count);
+
+  if (error) {
+    throw new Error(`Error fetching notifications: ${error.message}`);
+  }
+  return { data: camelcaseKeys(data, { deep: true }), count };
+}
+
+export async function deleteUserNotificationApi({
+  notificationId,
+}: {
+  notificationId: string;
+}) {
+  const { data, error } = await supabase
+    .from('user_notifications')
+    .update({ notification_status: 'deleted' })
+    .eq('notification_id', notificationId)
+    .select();
+
+  if (error) {
+    throw new Error(`Error deleting notification ${error.message}`);
+  }
+
+  return data;
+}
+export async function updateUserNotificationApi({
+  notificationId,
+}: {
+  notificationId: string;
+}) {
+  const { data, error } = await supabase
+    .from('user_notifications')
+    .update({ notification_status: 'read' })
+    .eq('notification_id', notificationId)
+    .select();
+
+  if (error) {
+    throw new Error(`Error updating notification ${error.message}`);
+  }
+
+  return data;
 }
 
 export interface UpdateAvatarApiParams {
@@ -49,6 +150,10 @@ export async function updateAvatarApi({ newAvatar }: UpdateAvatarApiParams) {
   }
   console.log('this is the uploaded image data', data);
   return data;
+}
+
+export interface UpdateUsernameParams {
+  username: string;
 }
 
 export async function updateUsernameApi({ username }: UpdateUsernameParams) {
