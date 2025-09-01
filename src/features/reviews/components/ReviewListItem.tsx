@@ -1,6 +1,7 @@
 import VenueRating from '../../venues/components/VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import Avatar from '@/features/userProfile/components/Avatar';
+import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
 
 import { useUser } from '../../authentication/hooks/useUser';
 import { useDeleteReview } from '../hooks/useDeleteReview';
@@ -20,15 +21,17 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Image,
 } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface ReviewListItemProps {
   review: ReviewWithRelations;
+  mode: 'venue' | 'user';
 }
 
 // Component to render a single review item
-function ReviewListItem({ review }: ReviewListItemProps) {
+function ReviewListItem({ review, mode }: ReviewListItemProps) {
   const {
     profiles,
     venueDetails,
@@ -44,7 +47,14 @@ function ReviewListItem({ review }: ReviewListItemProps) {
   } = review;
 
   const { username, totalReviews, userId } = profiles;
-  const { city, venueNameSlug } = venueDetails;
+  const {
+    city,
+    venueNameSlug,
+    thumbnailImage,
+    venueName,
+    totalReviews: totalVenueReviews,
+  } = venueDetails;
+  const isUserMode = mode === 'user';
 
   // Fetch data from hooks
   const { isDeleting, deleteReview } = useDeleteReview();
@@ -76,13 +86,30 @@ function ReviewListItem({ review }: ReviewListItemProps) {
   ) : (
     <article className="mt-2 flex  rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
       <header className="flex justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Avatar userId={userId} />
+        <div className="flex w-44 items-center gap-2">
+          {isUserMode ? (
+            <div className="h-24">
+              <Image
+                className="h-full w-full object-cover"
+                src={thumbnailImage?.url || greyChilli}
+                alt={
+                  thumbnailImage?.alt || 'a greyed out image of a chilli pepper'
+                }
+                removeWrapper
+                radius="sm"
+              />
+            </div>
+          ) : (
+            <Avatar userId={userId} />
+          )}
           <div>
             <div className="mb-1">
-              <h3 className="font-semibold">{username}</h3>
+              <h3 className="font-semibold">
+                {isUserMode ? venueName : username}
+              </h3>
               <p className="text-xs">
-                ({totalReviews} {totalReviews === 1 ? 'review' : 'reviews'})
+                ({isUserMode ? totalVenueReviews : totalReviews}{' '}
+                {totalReviews === 1 ? 'review' : 'reviews'})
               </p>
             </div>
             <div /* className="flex items-center gap-1" */>
@@ -103,25 +130,25 @@ function ReviewListItem({ review }: ReviewListItemProps) {
         <Divider orientation="vertical" />
       </header>
 
-      <section className="ml-5 flex w-full justify-between">
+      <section className="ml-5 flex w-full justify-between p-2">
         <div>
           <h4 className=" mb-1 font-medium">{reviewTitle}</h4>
 
-          <p className="mb-1">{reviewContent}</p>
+          <p className="mb-2">{reviewContent}</p>
 
           {/* <Divider className="my-2" /> */}
 
           {reviewType === 'shop' && (
-            <p className="mt-2">
+            <p>
               Hottest Sauce: <span>{hottestSauce}</span>
             </p>
           )}
           {reviewType === 'restaurant' && (
-            <p className="mt-2">
+            <p>
               Hottest Dish: <span>{hottestDish}</span>
             </p>
           )}
-          <div className="mt-2 text-xs">
+          <div className="mt-1 text-xs">
             <time dateTime={createdAt}>{formattedDate}</time>
           </div>
         </div>

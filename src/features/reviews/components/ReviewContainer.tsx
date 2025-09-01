@@ -56,7 +56,7 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
       {isLoadingReviews || fetchStatus == 'fetching' || isLoadingUser ? (
         <LoaderSpinner />
       ) : (
-        <ReviewListView reviews={reviews} />
+        <ReviewListView reviews={reviews} mode={mode} />
       )}
       <div className="mt-2 flex justify-center">
         <PaginationControls
