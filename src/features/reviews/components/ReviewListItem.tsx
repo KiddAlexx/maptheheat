@@ -74,14 +74,14 @@ function ReviewListItem({ review }: ReviewListItemProps) {
   return isDeleting ? (
     <LoaderSpinner />
   ) : (
-    <article className="mt-2 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
-      <header className="flex justify-between">
+    <article className="mt-2 flex gap-4 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
+      <header className="flex justify-between gap-2">
         <div className="flex items-center gap-2">
           <Avatar userId={userId} />
           <div>
-            <div className="mb-1 flex gap-1">
+            <div className="mb-1">
               <h3 className="font-semibold">{username}</h3>
-              <p>
+              <p className="text-xs">
                 ({totalReviews} {totalReviews === 1 ? 'review' : 'reviews'})
               </p>
             </div>
@@ -97,9 +97,33 @@ function ReviewListItem({ review }: ReviewListItemProps) {
               <div className=" [&>span]:!flex">
                 <VenueRating initialRating={heatRating} readonly size="20" />
               </div>
-              <time dateTime={createdAt}> {formattedDate}</time>
+            </div>
+            <div className="mt-2 text-xs">
+              <time dateTime={createdAt}>{formattedDate}</time>
             </div>
           </div>
+        </div>
+        <Divider orientation="vertical" />
+      </header>
+
+      <section className="flex w-full justify-between">
+        <div>
+          <h4 className=" mb-1 font-medium">{reviewTitle}</h4>
+
+          <p className="mb-1">{reviewContent}</p>
+
+          {/* <Divider className="my-2" /> */}
+
+          {reviewType === 'shop' && (
+            <p>
+              Hottest Sauce: <span>{hottestSauce}</span>
+            </p>
+          )}
+          {reviewType === 'restaurant' && (
+            <p>
+              Hottest Dish: <span>{hottestDish}</span>
+            </p>
+          )}
         </div>
         <Dropdown>
           <DropdownTrigger>
@@ -132,38 +156,6 @@ function ReviewListItem({ review }: ReviewListItemProps) {
             ) : null}
           </DropdownMenu>
         </Dropdown>
-      </header>
-      <Divider className="my-2" />
-      <section>
-        <h4 className="font mb-1 font-medium">{reviewTitle}</h4>
-        <div className="flex gap-1">
-          {/*       <Icon
-            icon="lucide:message-square-text"
-            width={20}
-            height={20}
-            className="mt-[2px] text-gray-500"
-          /> */}
-          <p className="mb-1">{reviewContent}</p>{' '}
-        </div>
-        <Divider className="my-2" />
-        <div className="flex gap-1">
-          {/*     <Icon
-            icon="flowbite:pepper-hot-outline"
-            width={20}
-            height={20}
-            className="text-orange-500"
-          /> */}
-          {reviewType === 'shop' && (
-            <p>
-              Hottest Sauce: <span>{hottestSauce}</span>
-            </p>
-          )}
-          {reviewType === 'restaurant' && (
-            <p>
-              Hottest Dish: <span>{hottestDish}</span>
-            </p>
-          )}
-        </div>
       </section>
     </article>
   );
