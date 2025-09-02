@@ -118,9 +118,19 @@ function VenueForm() {
         .replaceAll(' ', '')
         .replaceAll('-', '');
 
+      const trimmedFormData = {
+        ...formData,
+        venueName: formData.venueName.trim(),
+        address: formData.address.trim(),
+        postcode: formData.postcode.trim(),
+        city: formData.city.trim(),
+        description: formData.description.trim(),
+        website: formData.website.trim(),
+      };
+
       // Compile complete venue data
       const finalVenueData = {
-        ...formData,
+        ...trimmedFormData,
         phoneNumber,
         ...additionalVenueData.venueAddress,
         userId: user!.id, // Value will not be null, checks done prior, further validation to be added
@@ -318,7 +328,7 @@ function VenueForm() {
                           onSelectionChange={(key) => field.onChange(key)}
                         >
                           {(country) => (
-                            <AutocompleteItem key={country.code}>
+                            <AutocompleteItem key={country.name}>
                               {country.name}
                             </AutocompleteItem>
                           )}

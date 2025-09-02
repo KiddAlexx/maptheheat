@@ -16,7 +16,6 @@ export interface Venue {
   venueId: string;
   venueType: 'restaurant' | 'shop';
   thumbnailImage?: Image;
-  venueImages: Image[];
   hottestSauces?: string[];
   hottestDishes?: string[];
   averageHeatRating?: number | null;
