@@ -12,7 +12,7 @@ interface NotificationContainerProps {
 function NotificationContainer({ userId }: NotificationContainerProps) {
   const [isUnread, setIsUnread] = useState(false);
   const [pagination, setPagination] = useState({
-    maxResults: 5,
+    maxResults: 1,
     pageNumber: 1,
   });
 
