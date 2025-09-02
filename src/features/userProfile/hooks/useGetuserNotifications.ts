@@ -19,7 +19,7 @@ export function useGetUserNotifications({
 
   const queryClient = useQueryClient();
 
-  const { isLoading, data, error } = useQuery<NotificationsResponse>({
+  const { isPending, data, error } = useQuery<NotificationsResponse>({
     queryKey: ['notifications', userId, isUnread, pagination],
     queryFn: () => getUserNotifications({ userId, isUnread, pagination }),
     placeholderData: keepPreviousData,
@@ -46,6 +46,14 @@ export function useGetUserNotifications({
         getUserNotifications({ userId, isUnread, pagination: prev }),
     });
   }
+  if (!isUnread) {
+    const unread = { pageNumber: 1, maxResults };
+    queryClient.prefetchQuery({
+      queryKey: ['notifications', userId, true, unread],
+      queryFn: () =>
+        getUserNotifications({ userId, isUnread: true, pagination: unread }),
+    });
+  }
 
-  return { isLoading, error, userNotifications, totalCount };
+  return { isPending, error, userNotifications, totalCount };
 }

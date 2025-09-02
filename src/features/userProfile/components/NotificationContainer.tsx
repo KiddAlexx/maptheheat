@@ -12,11 +12,11 @@ interface NotificationContainerProps {
 function NotificationContainer({ userId }: NotificationContainerProps) {
   const [isUnread, setIsUnread] = useState(false);
   const [pagination, setPagination] = useState({
-    maxResults: 1,
+    maxResults: 5,
     pageNumber: 1,
   });
 
-  const { isLoading, totalCount, userNotifications } = useGetUserNotifications({
+  const { isPending, totalCount, userNotifications } = useGetUserNotifications({
     userId,
     isUnread,
     pagination,
@@ -26,7 +26,12 @@ function NotificationContainer({ userId }: NotificationContainerProps) {
     setPagination((prev) => ({ ...prev, pageNumber }));
   }
 
-  if (isLoading) return <LoaderSpinner />;
+  function handleSelectionChange() {
+    setPagination((prev) => ({ ...prev, pageNumber: 1 }));
+    setIsUnread((prev) => !prev);
+  }
+
+  if (isPending) return <LoaderSpinner />;
 
   return userNotifications ? (
     <div>
@@ -37,7 +42,11 @@ function NotificationContainer({ userId }: NotificationContainerProps) {
           totalCount={totalCount}
           updatePageNumber={handlePageChange}
         />
-        <Switch isSelected={isUnread} onValueChange={setIsUnread} size="sm">
+        <Switch
+          isSelected={isUnread}
+          onValueChange={handleSelectionChange}
+          size="sm"
+        >
           Unread only
         </Switch>
       </div>
