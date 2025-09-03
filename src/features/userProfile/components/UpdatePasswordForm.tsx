@@ -2,7 +2,7 @@ import { useModalContext } from '@/context/ModalContext';
 import { useLogout } from '@/features/authentication/hooks/useLogout';
 import { useUpdatePassword } from '@/features/authentication/hooks/useUpdatePassword';
 import { Button, Input } from '@heroui/react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 function UpdatePasswordForm() {
   interface FormData {
@@ -14,7 +14,7 @@ function UpdatePasswordForm() {
   const { logout } = useLogout();
   const { openModal } = useModalContext();
 
-  const { register, formState, handleSubmit, getValues } = useForm<FormData>();
+  const { control, formState, handleSubmit, getValues } = useForm<FormData>();
   const { errors } = formState;
 
   function formSubmit(formData: FormData) {
@@ -37,19 +37,10 @@ function UpdatePasswordForm() {
       noValidate
       onSubmit={handleSubmit(formSubmit)}
     >
-      <Input
-        type="password"
-        radius="sm"
-        variant="bordered"
-        label="Password"
-        id="password"
-        isInvalid={!!errors.password}
-        errorMessage={
-          errors.password && typeof errors?.password?.message === 'string'
-            ? errors.password.message
-            : ''
-        }
-        {...register('password', {
+      <Controller
+        name="password"
+        control={control}
+        rules={{
           required: 'This field is required',
           minLength: {
             value: 8,
@@ -61,27 +52,40 @@ function UpdatePasswordForm() {
             message:
               'Password must contain at least one uppercase, one lowercase, one number and one special character',
           },
-        })}
+        }}
+        render={({ field }) => (
+          <Input
+            {...field}
+            type="password"
+            radius="sm"
+            variant="bordered"
+            label="Password"
+            isInvalid={!!errors.password}
+            errorMessage={errors.password?.message}
+          />
+        )}
       />
-      <Input
-        className="mt-2"
-        type="password"
-        radius="sm"
-        variant="bordered"
-        label="Confirm Password"
-        id="confirmPassword"
-        isInvalid={!!errors.confirmPassword}
-        errorMessage={
-          errors.confirmPassword &&
-          typeof errors?.confirmPassword?.message === 'string'
-            ? errors.confirmPassword.message
-            : ''
-        }
-        {...register('confirmPassword', {
+
+      <Controller
+        name="confirmPassword"
+        control={control}
+        rules={{
           required: 'This field is required',
           validate: (value) =>
             value === getValues().password || 'Passwords need to match',
-        })}
+        }}
+        render={({ field }) => (
+          <Input
+            {...field}
+            className="mt-2"
+            type="password"
+            radius="sm"
+            variant="bordered"
+            label="Confirm Password"
+            isInvalid={!!errors.confirmPassword}
+            errorMessage={errors.confirmPassword?.message}
+          />
+        )}
       />
       <div className="mt-2 flex justify-end">
         <Button radius="sm" size="md" type="submit">
