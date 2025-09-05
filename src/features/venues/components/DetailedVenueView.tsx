@@ -90,6 +90,8 @@ function DetailedVenueView() {
 
   const totalReviewCount = totalReviews ?? 0;
 
+  console.log(venueImages);
+
   const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
 
   async function handleReview() {
