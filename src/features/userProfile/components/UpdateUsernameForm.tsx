@@ -1,5 +1,5 @@
 import { Button, Input } from '@heroui/react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useUpdateUsername } from '../hooks/useUpdateUsername';
 
 function UpdateUsernameForm() {
@@ -7,7 +7,7 @@ function UpdateUsernameForm() {
     username: string;
   }
 
-  const { register, formState, handleSubmit, reset } = useForm<FormData>();
+  const { control, formState, handleSubmit, reset } = useForm<FormData>();
   const { errors } = formState;
   const { updateUsername } = useUpdateUsername();
 
@@ -23,19 +23,10 @@ function UpdateUsernameForm() {
       noValidate
       onSubmit={handleSubmit(formSubmit)}
     >
-      <Input
-        id="username"
-        type="text"
-        label="New Username"
-        radius="sm"
-        variant="bordered"
-        isInvalid={!!errors.username}
-        errorMessage={
-          errors.username && typeof errors?.username?.message === 'string'
-            ? errors.username.message
-            : ''
-        }
-        {...register('username', {
+      <Controller
+        name="username"
+        control={control}
+        rules={{
           required: 'This field is required',
           minLength: {
             value: 6,
@@ -49,7 +40,23 @@ function UpdateUsernameForm() {
             value: /^[a-zA-Z0-9]+$/,
             message: 'Username can only consist of letter and numbers',
           },
-        })}
+        }}
+        render={({ field }) => (
+          <Input
+            {...field}
+            id="username"
+            type="text"
+            label="New Username"
+            radius="sm"
+            variant="bordered"
+            isInvalid={!!errors.username}
+            errorMessage={
+              errors.username && typeof errors?.username?.message === 'string'
+                ? errors.username.message
+                : ''
+            }
+          />
+        )}
       />
       <div className="mt-2 flex justify-end">
         <Button radius="sm" size="md" type="submit">
