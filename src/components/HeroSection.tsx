@@ -1,10 +1,9 @@
-// React imports
-import { useNavigate } from 'react-router';
-
 import { Button } from '@heroui/react';
+import CitySelect from '@/features/venues/components/CitySelect';
+import { useVenueFilterContext } from '@/context/VenueFilterContext';
+import { Link } from 'react-router-dom';
 
 function HeroSection() {
-  const navigate = useNavigate();
   return (
     <section
       className="grid h-[calc(100vh-5rem)] grid-cols-2 bg-cover bg-center"
@@ -13,16 +12,17 @@ function HeroSection() {
       }}
     >
       <div className="flex flex-col items-center justify-center px-10 text-slate-50">
-        <h1 className="mb-10 text-5xl">
+        <h1 className="mb-5 text-5xl">
           Uncover the Hottest Spots with MapTheHeat!
         </h1>
+        <CitySelect useVenueContext={useVenueFilterContext} />
         <p className="text-3xl">
-          Track down the top places for seriously spicy food. Made for true
-          lovers of heat. Start exploring today!
+          Your city not listed yet? Add your favourite restaurant or shop here!
         </p>
-        <div className="flex gap-10">
-          <Button onPress={() => navigate('app')}>Search Venues</Button>
-          <Button onPress={() => navigate('app')}>Search Shops</Button>
+        <div className="mt-2 self-end">
+          <Button as={Link} to="/add-venue" radius="sm">
+            Add new venue!
+          </Button>
         </div>
       </div>
     </section>
