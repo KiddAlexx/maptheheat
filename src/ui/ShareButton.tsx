@@ -11,6 +11,8 @@ import {
   FacebookMessengerIcon,
   WhatsappShareButton,
   WhatsappIcon,
+  EmailShareButton,
+  EmailIcon,
 } from 'react-share';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import toast from 'react-hot-toast';
@@ -18,9 +20,10 @@ import toast from 'react-hot-toast';
 interface ShareButtonProps {
   shareUrl: string;
   title: string;
+  body: string;
 }
 
-function ShareButton({ shareUrl, title }: ShareButtonProps) {
+function ShareButton({ shareUrl, title, body }: ShareButtonProps) {
   async function copyLink(link: string) {
     try {
       await navigator.clipboard.writeText(link);
@@ -31,7 +34,7 @@ function ShareButton({ shareUrl, title }: ShareButtonProps) {
   }
 
   return (
-    <Dropdown>
+    <Dropdown placement="bottom-end">
       <DropdownTrigger>
         <Button
           radius="none"
@@ -70,6 +73,17 @@ function ShareButton({ shareUrl, title }: ShareButtonProps) {
               Whatsapp
             </WhatsappShareButton>
           </DropdownItem>
+          <DropdownItem key="email">
+            <EmailShareButton
+              className="flex w-full gap-2"
+              url={shareUrl}
+              subject={title}
+              body={body}
+            >
+              <EmailIcon size={20} round />
+              Email
+            </EmailShareButton>
+          </DropdownItem>
         </DropdownSection>
         <DropdownSection>
           <DropdownItem key="copy">
@@ -80,7 +94,12 @@ function ShareButton({ shareUrl, title }: ShareButtonProps) {
               disableAnimation
               onPress={() => copyLink(shareUrl)}
             >
-              <Icon className="mr-1" icon="uil:copy" width="22" height="22" />
+              <Icon
+                className="mr-1 text-slate-600"
+                icon="uil:copy"
+                width="22"
+                height="22"
+              />
               Copy Link
             </Button>
           </DropdownItem>

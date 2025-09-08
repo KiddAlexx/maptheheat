@@ -232,6 +232,7 @@ function DetailedVenueView() {
           <div className="mr-2 flex gap-1">
             <ShareButton
               title="Check out this place I found on Map The Heat!"
+              body={`Hey, \n\nI thought you’d like this venue I found on Map The Heat. \n\nCheck it out here:`}
               shareUrl={`https://www.maptheheat.com/app/venue/${city}/${venueNameSlug}/${venueId}`}
             />
             <LikeButton
