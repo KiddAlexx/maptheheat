@@ -5,14 +5,20 @@ import {
   DropdownItem,
 } from '@heroui/dropdown';
 import { Button } from '@heroui/react';
-import { FacebookMessengerShareButton } from 'react-share';
+import {
+  FacebookMessengerShareButton,
+  FacebookMessengerIcon,
+  WhatsappShareButton,
+  WhatsappIcon,
+} from 'react-share';
 import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface ShareButtonProps {
   shareUrl: string;
+  title: string;
 }
 
-function ShareButton({ shareUrl }: ShareButtonProps) {
+function ShareButton({ shareUrl, title }: ShareButtonProps) {
   return (
     <Dropdown>
       <DropdownTrigger>
@@ -22,7 +28,12 @@ function ShareButton({ shareUrl }: ShareButtonProps) {
           isIconOnly
           disableAnimation
         >
-          <Icon icon="ri:share-fill" width="20" height="20" />
+          <Icon
+            className="text-slate-700"
+            icon="ri:share-fill"
+            width="20"
+            height="20"
+          />
         </Button>
       </DropdownTrigger>
       <DropdownMenu>
@@ -32,14 +43,20 @@ function ShareButton({ shareUrl }: ShareButtonProps) {
             url={shareUrl}
             appId={import.meta.env.VITE_PUBLIC_FB_APP_ID!}
           >
-            <Icon
-              className="text-[#1877F2]"
-              icon="fa6-brands:facebook-messenger"
-              width="20"
-              height="20"
-            />
+            <FacebookMessengerIcon size={20} round />
             FB Messenger
           </FacebookMessengerShareButton>
+        </DropdownItem>
+        <DropdownItem key="whatsapp">
+          <WhatsappShareButton
+            className="flex w-full gap-2"
+            url={shareUrl}
+            title={title}
+            separator=":: "
+          >
+            <WhatsappIcon size={20} round />
+            Whatsapp
+          </WhatsappShareButton>
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
