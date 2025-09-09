@@ -22,6 +22,7 @@ export interface Review {
 export interface ReviewWithRelations extends Review {
   profiles: Profile;
   venueDetails: Venue;
+  venueImages: Image[];
 }
 
 // id not present at creation time, generate by Supabase

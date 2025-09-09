@@ -44,6 +44,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
     reviewType,
     reviewTitle,
     reviewId,
+    venueImages,
   } = review;
 
   const { username, totalReviews, userId } = profiles;
@@ -55,6 +56,8 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
     totalReviews: totalVenueReviews,
   } = venueDetails;
   const isUserMode = mode === 'user';
+
+  const { openModalImages } = useModalContext();
 
   // Fetch data from hooks
   const { isDeleting, deleteReview } = useDeleteReview();
@@ -80,6 +83,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
       deleteReviewWithId
     );
   }
+  console.log('here are the venue images from review view', venueImages);
 
   return isDeleting ? (
     <LoaderSpinner />
@@ -130,7 +134,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
         <Divider orientation="vertical" />
       </header>
 
-      <section className="ml-5 flex w-full justify-between p-2">
+      <section className="ml-5 flex w-full justify-between gap-1 p-2">
         <div>
           <h4 className=" mb-1 font-medium">{reviewTitle}</h4>
 
@@ -152,38 +156,53 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
             <time dateTime={createdAt}>{formattedDate}</time>
           </div>
         </div>
-        <Dropdown>
-          <DropdownTrigger>
-            <Button isIconOnly variant="light" className="ml-2">
-              <Icon icon="lucide:more-vertical" className="h-5 w-5" />
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Review actions ">
-            {within48hours && currentUser ? (
-              <DropdownItem
-                key="editReview"
-                startContent={<Icon icon="lucide:edit" />}
-              >
-                <Link
-                  to={`/app/venue/${city}/${venueNameSlug}/reviews/edit/${reviewId}`}
-                >
-                  Edit Review
-                </Link>
-              </DropdownItem>
-            ) : null}
-            {currentUser ? (
-              <DropdownItem
-                key="deleteReview"
-                onPress={handleDeleteReview}
-                className=" text-danger"
-                startContent={<Icon icon="lucide:trash-2" />}
-              >
-                Delete Review
-              </DropdownItem>
-            ) : null}
-          </DropdownMenu>
-        </Dropdown>
+
+        {venueImages?.length > 0 && (
+          <div
+            className="ml-4 w-48 shrink-0 cursor-pointer self-start overflow-hidden rounded-xl"
+            onClick={() => openModalImages('image-carousel', venueImages)}
+          >
+            <Image
+              className="h-full w-full object-cover transition-transform hover:scale-110"
+              src={venueImages[0].url}
+              alt={venueImages[0].alt || 'Venue image'}
+              radius="sm"
+              removeWrapper
+            />
+          </div>
+        )}
       </section>
+      <Dropdown>
+        <DropdownTrigger>
+          <Button isIconOnly variant="light" className="ml-2">
+            <Icon icon="lucide:more-vertical" className="h-5 w-5" />
+          </Button>
+        </DropdownTrigger>
+        <DropdownMenu aria-label="Review actions ">
+          {within48hours && currentUser ? (
+            <DropdownItem
+              key="editReview"
+              startContent={<Icon icon="lucide:edit" />}
+            >
+              <Link
+                to={`/app/venue/${city}/${venueNameSlug}/reviews/edit/${reviewId}`}
+              >
+                Edit Review
+              </Link>
+            </DropdownItem>
+          ) : null}
+          {currentUser ? (
+            <DropdownItem
+              key="deleteReview"
+              onPress={handleDeleteReview}
+              className=" text-danger"
+              startContent={<Icon icon="lucide:trash-2" />}
+            >
+              Delete Review
+            </DropdownItem>
+          ) : null}
+        </DropdownMenu>
+      </Dropdown>
     </article>
   );
 }
