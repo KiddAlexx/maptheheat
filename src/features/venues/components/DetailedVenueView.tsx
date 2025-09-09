@@ -91,7 +91,7 @@ function DetailedVenueView() {
 
   const totalReviewCount = totalReviews ?? 0;
 
-  console.log(venueImages);
+  console.log('heres the venue images from detailed venue view', venueImages);
 
   const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
 

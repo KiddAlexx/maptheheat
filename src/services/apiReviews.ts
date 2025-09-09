@@ -15,6 +15,8 @@ import {
 } from '@/types/reviewTypes';
 import { PaginationControlsParams } from '@/ui/PaginationControls';
 
+import { addImagePaths } from '@/utils/addImagePaths';
+
 export interface ReviewsRequestParams {
   venueId?: string;
   userId?: string;
@@ -23,7 +25,7 @@ export interface ReviewsRequestParams {
 }
 
 export interface ReviewsResponse {
-  data: ReviewWithRelations[];
+  reviews: ReviewWithRelations[];
   count: number | null;
 }
 
@@ -37,8 +39,12 @@ export async function getReviews({
 }: ReviewsRequestParams): Promise<ReviewsResponse> {
   let query = supabase
     .from('venue_reviews')
-    .select('*, profiles(*), venue_details(*)', { count: 'exact' })
-    .eq('status', 'approved');
+    .select(
+      '*, profiles(*), venue_details(*),  venue_images(image_path_large, alt_text)',
+      { count: 'exact' }
+    )
+    .eq('status', 'approved')
+    .filter('venue_images.status', 'eq', 'approved');
 
   // Apply venueId or userId filter
   if (venueId) {
@@ -70,7 +76,14 @@ export async function getReviews({
     throw new Error(`Reviews could not be loaded. Error:${error.message}`);
   }
 
-  return { data: camelcaseKeys(data, { deep: true }), count };
+  const reviewsData = camelcaseKeys(data, { deep: true });
+
+  const reviews = reviewsData.map((review) => ({
+    ...review,
+    venueImages: addImagePaths(review.venueImages),
+  }));
+
+  return { reviews, count };
 }
 
 // Function to fetch single review matching review id

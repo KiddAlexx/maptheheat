@@ -26,7 +26,7 @@ export function useGetReviews({
     placeholderData: keepPreviousData,
   });
 
-  const reviews = data?.data;
+  const reviews = data?.reviews;
   const totalCount = data?.count ?? 0;
 
   const pageCount = Math.ceil(totalCount / maxResults);

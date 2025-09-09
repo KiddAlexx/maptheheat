@@ -6,7 +6,6 @@ import supabase, { supabaseUrl } from './supabase';
 
 // Type Imports
 import {
-  DetailedImage,
   ImageUploadParams,
   NewVenue,
   UniqueCity,
@@ -20,6 +19,7 @@ import {
 // Util Imports
 import compressImage from '../utils/compressImage';
 import uploadImages from './supabaseImageUploader';
+import { addImagePaths } from '@/utils/addImagePaths';
 
 export interface VenuesRequestParams {
   filters: VenueFilter[];
@@ -102,13 +102,13 @@ export async function getVenue(id: string): Promise<Venue> {
     throw new Error(`Venue could not be loaded. Error:${error.message}`);
   }
 
-  const venue = camelcaseKeys(data[0], { deep: true });
-  venue.venueImages = venue.venueImages.map((img: DetailedImage) => ({
-    ...img,
-    url: `${supabaseUrl}/storage/v1/object/public/venue-images/${img.imagePathLarge}`,
-    alt: img.altText,
-  }));
-  console.log('heres the venue', venue);
+  const venueData = camelcaseKeys(data[0], { deep: true });
+
+  const venue = {
+    ...venueData,
+    venueImages: addImagePaths(venueData.venueImages),
+  };
+
   return venue;
 }
 
