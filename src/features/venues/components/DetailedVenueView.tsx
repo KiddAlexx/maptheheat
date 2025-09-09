@@ -28,6 +28,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import LikeButton from '@/ui/LikeButton';
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
 import toast from 'react-hot-toast';
+import ShareButton from '@/ui/ShareButton';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
@@ -89,6 +90,8 @@ function DetailedVenueView() {
       : 5;
 
   const totalReviewCount = totalReviews ?? 0;
+
+  console.log(venueImages);
 
   const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
 
@@ -226,7 +229,12 @@ function DetailedVenueView() {
               </span>
             ))}
           </div>
-          <div className="mr-1">
+          <div className="mr-2 flex gap-1">
+            <ShareButton
+              title="Check out this place I found on Map The Heat!"
+              body={`Hey, \n\nI thought you’d like this venue I found on Map The Heat. \n\nCheck it out here:`}
+              shareUrl={`https://www.maptheheat.com/app/venue/${city}/${venueNameSlug}/${venueId}`}
+            />
             <LikeButton
               isFavourite={isFavourite}
               isAuthenticated={isAuthenticated}
