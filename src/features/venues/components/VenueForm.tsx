@@ -110,14 +110,6 @@ function VenueForm() {
   async function formSubmit(formData: FormData) {
     console.log(formData);
     try {
-      // Fetch detailed address + coordinates
-      const additionalVenueData = await fetchAddressDetails(formData);
-
-      // Remove spaces and dashes from phoneNumber before adding
-      const phoneNumber = formData.phoneNumber
-        .replaceAll(' ', '')
-        .replaceAll('-', '');
-
       const trimmedFormData = {
         ...formData,
         venueName: formData.venueName.trim(),
@@ -127,6 +119,14 @@ function VenueForm() {
         description: formData.description.trim(),
         website: formData.website.trim(),
       };
+
+      // Fetch detailed address + coordinates
+      const additionalVenueData = await fetchAddressDetails(trimmedFormData);
+
+      // Remove spaces and dashes from phoneNumber before adding
+      const phoneNumber = formData.phoneNumber
+        .replaceAll(' ', '')
+        .replaceAll('-', '');
 
       // Compile complete venue data
       const finalVenueData = {
