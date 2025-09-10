@@ -124,6 +124,16 @@ export async function canUserReview(
   return data.length === 0;
 }
 
+// Function to check whether user has 2 or more pending reviews
+export async function checkPendingReviews() {
+  const { data, error } = await supabase.rpc('can_submit_review');
+  if (error) {
+    throw new Error(`Error checking pending reviews. Error: ${error.message}`);
+  }
+
+  return data;
+}
+
 // Function to create a new review
 export async function createReview(newReview: NewReview) {
   const convertedReview = decamelizeKeys(newReview);

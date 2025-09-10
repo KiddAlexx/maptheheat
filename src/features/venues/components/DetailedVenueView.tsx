@@ -29,6 +29,8 @@ import LikeButton from '@/ui/LikeButton';
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
 import toast from 'react-hot-toast';
 import ShareButton from '@/ui/ShareButton';
+import { checkPendingReviews } from '@/services/apiReviews';
+import { useGlobalError } from '@/context/ErrorContext';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
@@ -56,6 +58,7 @@ function DetailedVenueView() {
 
   const { isLoading: isLoadingReviews } = useGetReviews({ venueId });
   const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
+  const { setGlobalError } = useGlobalError();
   const { updateFavouriteVenue } = useUpdateFavouriteVenue();
 
   if (!venueId || !venue) return null;
@@ -108,9 +111,21 @@ function DetailedVenueView() {
       );
       return;
     }
+    // Check if user has 2 or more pending reviews
+    try {
+      const underReviewLimit = await checkPendingReviews();
+      if (!underReviewLimit) {
+        return openDialog(
+          'You already have 2 pending reviews. Please try again once these have been confirmed'
+        );
+      }
+    } catch (err) {
+      setGlobalError(`${err}`);
+      return;
+    }
     // Check if user has left a review in the last 30 days for this venue
     const { data: canUserReview } = await refetchUserPermission();
-    console.log('here is permission', canUserReview);
+
     if (canUserReview) {
       navigate(`/app/venue/${city}/${venueNameSlug}/reviews/new/${venueId}`);
     } else openDialog('You cannot review the same venue within 30 days');
