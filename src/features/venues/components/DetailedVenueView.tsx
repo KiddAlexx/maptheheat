@@ -184,7 +184,7 @@ function DetailedVenueView() {
         <div
           className="mb-3 flex cursor-pointer gap-1"
           onClick={() =>
-            venueImages
+            venueImages && venueImages.length > 0
               ? openModalImages('image-carousel', venueImages)
               : handleAddImages()
           }
