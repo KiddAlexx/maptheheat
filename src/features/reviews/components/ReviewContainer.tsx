@@ -41,7 +41,7 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
     pagination,
   });
 
-  return reviews ? (
+  return reviews && reviews.length > 0 ? (
     <div>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Reviews</h2>
