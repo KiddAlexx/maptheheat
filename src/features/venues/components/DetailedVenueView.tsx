@@ -30,6 +30,7 @@ import toast from 'react-hot-toast';
 import ShareButton from '@/ui/ShareButton';
 import { canUserReview, checkPendingReviews } from '@/services/apiReviews';
 import { useGlobalError } from '@/context/ErrorContext';
+import { canUserAddImage } from '@/services/apiVenues';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
@@ -89,7 +90,7 @@ function DetailedVenueView() {
   const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
 
   async function handleReview() {
-    if (!venueId) return;
+    if (!venueId) return null;
     // Open login modal if not authenticated
     if (!isAuthenticated) {
       openModal('login');
@@ -126,19 +127,30 @@ function DetailedVenueView() {
     }
   }
 
-  function handleAddImages() {
+  async function handleAddImages() {
     if (!venueId || !venue) return null;
     // Open login modal if not authenticated
     if (!isAuthenticated) {
       openModal('login');
       return;
-    } else {
-      openModalUpload({
-        modal: 'image-uploader',
-        venueId,
-        city,
-        venueNameSlug,
-      });
+    }
+    try {
+      const underImageLimit = await canUserAddImage();
+      if (underImageLimit) {
+        openModalUpload({
+          modal: 'image-uploader',
+          venueId,
+          city,
+          venueNameSlug,
+        });
+      } else {
+        openDialog(
+          'You already have 6 or more pending venues. Please try again once these have been confirmed'
+        );
+      }
+    } catch (err) {
+      setGlobalError(`${err}`);
+      return;
     }
   }
 

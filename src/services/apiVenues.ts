@@ -196,6 +196,15 @@ export async function createUniqueCityApi(cityObj: UniqueCityProps) {
   return data;
 }
 
+// Function to check whether user has 6 or more pending images
+export async function canUserAddImage() {
+  const { data, error } = await supabase.rpc('can_submit_standalone_images');
+  if (error) {
+    throw new Error(`Error checking image permission. Error: ${error.message}`);
+  }
+  return data;
+}
+
 export async function createVenueImage({
   venueId,
   reviewId,
