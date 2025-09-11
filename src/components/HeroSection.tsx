@@ -1,7 +1,7 @@
-import { Button } from '@heroui/react';
 import CitySelect from '@/features/venues/components/CitySelect';
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
-import { Link } from 'react-router-dom';
+
+import AddVenueButton from '@/ui/AddVenueButton';
 
 function HeroSection() {
   return (
@@ -20,9 +20,7 @@ function HeroSection() {
           Your city not listed yet? Add your favourite restaurant or shop here!
         </p>
         <div className="mt-2 self-end">
-          <Button as={Link} to="/add-venue" radius="sm">
-            Add new venue!
-          </Button>
+          <AddVenueButton />
         </div>
       </div>
     </section>

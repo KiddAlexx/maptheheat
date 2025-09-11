@@ -146,6 +146,15 @@ export async function getUniqueCities(): Promise<UniqueCity[]> {
   return data;
 }
 
+// Function to check whether user has 2 or more pending venues
+export async function canUserAddVenue() {
+  const { data, error } = await supabase.rpc('can_submit_venue');
+  if (error) {
+    throw new Error(`Error checking venue permission. Error: ${error.message}`);
+  }
+  return data;
+}
+
 export async function createVenue(newVenue: NewVenue) {
   const convertedVenue = decamelizeKeys(newVenue);
 

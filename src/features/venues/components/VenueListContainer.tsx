@@ -2,10 +2,10 @@ import { useVenueFilterContext } from '@/context/VenueFilterContext';
 import SearchAndFilterPanel from './SearchAndFilterPanel';
 import ListView from './VenueListView';
 import { useUserFavVenuesContext } from '@/context/UserFavVenuesContext';
-import { Link } from 'react-router-dom';
-import { Button } from '@heroui/react';
+
 import { useVenues } from '../hooks/useVenues';
 import PaginationControls from '@/ui/PaginationControls';
+import AddVenueButton from '@/ui/AddVenueButton';
 
 interface VenueListContainerProps {
   mode: 'venue' | 'user';
@@ -37,9 +37,7 @@ function VenueListContainer({
       {mode === 'venue' && (
         <div className=" my-2 flex items-center justify-between p-1">
           <p>Can't find what you are looking for?</p>
-          <Button as={Link} to="/add-venue" radius="sm">
-            Add new venue!
-          </Button>
+          <AddVenueButton />
         </div>
       )}
 
