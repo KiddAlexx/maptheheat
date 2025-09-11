@@ -1,4 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+// Old function, currently unused
+
+/* import { useQuery } from '@tanstack/react-query';
 import { canUserReview as canUserReviewApi } from '../../../services/apiReviews';
 
 export function useCanUserReview(
@@ -19,4 +21,4 @@ export function useCanUserReview(
   });
 
   return { isLoading, error, canUserReview, refetch };
-}
+} */

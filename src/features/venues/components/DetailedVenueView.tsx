@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 
 // Hooks imports
 import { useVenue } from '../hooks/useVenue';
-import { useCanUserReview } from '../../reviews/hooks/useCanUserReview';
 import { useUser } from '../../authentication/hooks/useUser';
 import { useModalContext } from '../../../context/ModalContext';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
@@ -29,7 +28,7 @@ import LikeButton from '@/ui/LikeButton';
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
 import toast from 'react-hot-toast';
 import ShareButton from '@/ui/ShareButton';
-import { checkPendingReviews } from '@/services/apiReviews';
+import { canUserReview, checkPendingReviews } from '@/services/apiReviews';
 import { useGlobalError } from '@/context/ErrorContext';
 
 function DetailedVenueView() {
@@ -46,15 +45,6 @@ function DetailedVenueView() {
   const username = userProfile?.username;
   const favVenuesList = userProfile?.favouriteVenues || null;
   const isFavourite = favVenuesList?.includes(venueId);
-
-  // Passing empty strings to satisfy the query hook's required params
-  // The query won't run unless `enabled` is true (ie user is authenticated)
-  const { refetch: refetchUserPermission } = useCanUserReview(
-    userId || '',
-    venueId || '',
-    30,
-    false
-  );
 
   const { isLoading: isLoadingReviews } = useGetReviews({ venueId });
   const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
@@ -99,6 +89,7 @@ function DetailedVenueView() {
   const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
 
   async function handleReview() {
+    if (!venueId) return;
     // Open login modal if not authenticated
     if (!isAuthenticated) {
       openModal('login');
@@ -124,11 +115,15 @@ function DetailedVenueView() {
       return;
     }
     // Check if user has left a review in the last 30 days for this venue
-    const { data: canUserReview } = await refetchUserPermission();
-
-    if (canUserReview) {
-      navigate(`/app/venue/${city}/${venueNameSlug}/reviews/new/${venueId}`);
-    } else openDialog('You cannot review the same venue within 30 days');
+    try {
+      const withinDayLimit = await canUserReview(venueId);
+      if (withinDayLimit) {
+        navigate(`/app/venue/${city}/${venueNameSlug}/reviews/new/${venueId}`);
+      } else openDialog('You cannot review the same venue within 30 days');
+    } catch (err) {
+      setGlobalError(`${err}`);
+      return;
+    }
   }
 
   function handleAddImages() {

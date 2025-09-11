@@ -2,7 +2,6 @@
 import decamelizeKeys from 'decamelize-keys';
 import camelcaseKeys from 'camelcase-keys';
 import decamelize from 'decamelize';
-import { subDays } from 'date-fns';
 import supabase from './supabase';
 
 import { EditformData } from '../features/reviews/components/ReviewForm';
@@ -102,9 +101,10 @@ export async function getReview(
   return camelcaseKeys(data[0], { deep: true });
 }
 
+// *** Currently unused ***
 // Function to check whether user has left a review for specified venue
 // within number of days provided
-export async function canUserReview(
+/* export async function canUserReview(
   userId: string,
   venueId: string,
   days: number
@@ -122,7 +122,7 @@ export async function canUserReview(
   }
 
   return data.length === 0;
-}
+} */
 
 // Function to check whether user has 2 or more pending reviews
 export async function checkPendingReviews() {
@@ -131,6 +131,21 @@ export async function checkPendingReviews() {
     throw new Error(`Error checking pending reviews. Error: ${error.message}`);
   }
 
+  return data;
+}
+
+// Function to check whether user has left a review for specified venue
+// within set number of days (currently 30)
+
+export async function canUserReview(venueId: string) {
+  const { data, error } = await supabase.rpc('can_submit_review_for_venue', {
+    p_venue_id: venueId,
+  });
+  if (error) {
+    throw new Error(
+      `Error checking review permission. Error: ${error.message}`
+    );
+  }
   return data;
 }
 
