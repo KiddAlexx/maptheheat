@@ -17,7 +17,7 @@ import {
 } from '../types/venueTypes';
 
 // Util Imports
-import compressImage from '../utils/compressImage';
+import { compressImage } from '../utils/compressImage';
 import uploadImages from './supabaseImageUploader';
 import { addImagePaths } from '@/utils/addImagePaths';
 

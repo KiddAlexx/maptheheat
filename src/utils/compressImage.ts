@@ -1,9 +1,16 @@
 // Third party imports
 import imageCompression from 'browser-image-compression';
 
-export default async function compressImage(
+interface CompressionOptions {
+  maxSizeMB?: number;
+  maxWidthOrHeight?: number;
+  useWebWorker?: boolean;
+  fileType?: 'image/webp' | 'image/jpeg' | 'image/png' | 'image/avif';
+}
+
+export async function compressImage(
   imageFiles: File[],
-  compressionOptions?: object
+  compressionOptions?: CompressionOptions
 ) {
   const finalCompressionOptions = {
     maxSizeMB: 0.1,
