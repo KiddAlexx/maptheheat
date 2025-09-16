@@ -1,7 +1,7 @@
 import camelcaseKeys from 'camelcase-keys';
 import supabase, { supabaseUrl } from './supabase';
-import compressImage from '@/utils/compressImage';
-import uploadImages from './supabaseImageUploader';
+import { compressImage } from '@/utils/compressImage';
+import { uploadImages } from './supabaseImageUploader';
 import { UserNotification } from '@/types/userTypes';
 
 export async function getUserProfile(userId: string) {

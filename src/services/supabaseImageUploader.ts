@@ -1,11 +1,24 @@
+import { ImageBundle } from '@/utils/compressImage';
 import supabase from './supabase';
 
-async function uploadImages(
+// Function to upload individual image to supabase bucket
+async function imageUploader(path: string, file: File, bucket: string) {
+  const { error } = await supabase.storage.from(bucket).upload(path, file, {
+    cacheControl: '31536000',
+    upsert: false,
+  });
+  if (error) throw error;
+  return path;
+}
+
+// Function to create folder paths & upload individual images
+// Returns array of image paths
+export async function uploadImages(
   imageFiles: File[],
   bucketName: string,
   ...folders: string[]
 ) {
-  if (!imageFiles) {
+  if (!imageFiles?.length) {
     throw new Error('No image files provided');
   }
 
@@ -14,32 +27,52 @@ async function uploadImages(
 
   const imagePaths = imageFiles.map(async (imageFile) => {
     // Create unique file name
-    const imageName = `${Date.now()}-${Math.random().toString(36).substring(2)}`
-      .replaceAll('/', '-')
-      .replaceAll(' ', '-')
-      .toLowerCase();
+    const imageName = crypto.randomUUID();
 
     const imagePath = `${folderPath}/${imageName}`;
 
-    try {
-      // Upload each image
-      const { error } = await supabase.storage
-        .from(bucketName)
-        .upload(imagePath, imageFile, {
-          cacheControl: '3600',
-          upsert: false,
-        });
-      if (error) throw error;
-      return imagePath;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Error: ${error.message}`);
-      }
-      throw new Error('Unknown error occurred');
-    }
+    // Upload each image
+    return imageUploader(imagePath, imageFile, bucketName);
   });
 
   return Promise.all(imagePaths);
 }
 
-export default uploadImages;
+// Function to create folder paths & upload sm/md/lg image variants
+// Returns array of objects, each containing 3 image paths
+export async function uploadImageBundle(
+  imageFiles: ImageBundle[],
+  bucketName: string,
+  ...folders: string[]
+) {
+  if (!imageFiles?.length) {
+    throw new Error('No image files provided');
+  }
+  // Create storage path
+  const folderPath = folders.join('/').toLowerCase();
+
+  const imagePaths = imageFiles.map(async (imageFile) => {
+    // Create image names + full path
+    const imageBase = crypto.randomUUID();
+
+    const imageNameLg = `${imageBase}-lg`;
+    const imageNameMd = `${imageBase}-md`;
+    const imageNameSm = `${imageBase}-sm`;
+
+    const imagePathLg = `${folderPath}/${imageNameLg}`;
+    const imagePathMd = `${folderPath}/${imageNameMd}`;
+    const imagePathSm = `${folderPath}/${imageNameSm}`;
+
+    // Upload 3 variants in parallel
+
+    const [lgImage, mdImage, smImage] = await Promise.all([
+      imageUploader(imagePathLg, imageFile.variants.lg, bucketName),
+      imageUploader(imagePathMd, imageFile.variants.md, bucketName),
+      imageUploader(imagePathSm, imageFile.variants.sm, bucketName),
+    ]);
+
+    return { lg: lgImage, md: mdImage, sm: smImage };
+  });
+
+  return Promise.all(imagePaths);
+}

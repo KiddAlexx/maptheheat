@@ -13,6 +13,8 @@ export async function compressImage(
   imageFiles: File[],
   compressionOptions?: CompressionOptions
 ) {
+  // Sets default compression options
+  // Overrides any values provided as argument
   const finalCompressionOptions = {
     maxSizeMB: 0.1,
     maxWidthOrHeight: 640,
@@ -62,8 +64,16 @@ const smallCompressionOptions = {
   useWebWorker: true,
 };
 
+export interface ImageBundle {
+  variants: {
+    lg: File;
+    md: File;
+    sm: File;
+  };
+}
+
 export async function compressImageVariants(imageFiles: File[]) {
-  const compressedImageBundle = [];
+  const compressedImageBundle: ImageBundle[] = [];
   for (const imageFile of imageFiles) {
     try {
       const [lg, md, sm] = await Promise.all([

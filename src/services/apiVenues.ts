@@ -17,8 +17,8 @@ import {
 } from '../types/venueTypes';
 
 // Util Imports
-import { compressImage } from '../utils/compressImage';
-import uploadImages from './supabaseImageUploader';
+import { compressImage, compressImageVariants } from '../utils/compressImage';
+import { uploadImageBundle, uploadImages } from './supabaseImageUploader';
 import { addImagePaths } from '@/utils/addImagePaths';
 
 export interface VenuesRequestParams {
@@ -224,6 +224,20 @@ export async function createVenueImage({
 }: ImageUploadParams) {
   // Compress image. Type asserted as function will return File or throw an Error
   const compressedImages = (await compressImage(imageFiles)) as File[];
+
+  const compressedVariants = await compressImageVariants(imageFiles);
+
+  console.log('here are the compressed variants', compressedVariants);
+
+  // Upload image variants
+  const variantPaths = await uploadImageBundle(
+    compressedVariants,
+    'venue-images',
+    city,
+    venueNameSlug
+  );
+
+  console.log('here are the variant paths', variantPaths);
 
   // Upload image to supabase bucket
   const imagePaths = await uploadImages(
