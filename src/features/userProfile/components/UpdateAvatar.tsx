@@ -24,7 +24,6 @@ function UpdateAvatar() {
   const { updateAvatar, isUpdating } = useUpdateAvatar();
 
   function uploadFile() {
-    console.log(newAvatar);
     if (newAvatar.length === 0) {
       setGlobalError('No images were selected!');
       return;

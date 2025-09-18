@@ -11,8 +11,6 @@ export function useParamsAndNavigate() {
     const { city, venueNameSlug, venueId, coords } = venue;
     const { lat, lon } = coords;
 
-    console.log(venue);
-
     // Determine the current mode based on URL path
     const mode = specifiedMode
       ? specifiedMode
@@ -25,11 +23,6 @@ export function useParamsAndNavigate() {
     if (mode === 'map' && lat != null && lon != null) {
       queryString += `&lat=${lat}&lon=${lon}`;
     }
-
-    console.log(queryString);
-    console.log(
-      `/app/${mode}/${city}/${venueNameSlug}/${venueId}?${queryString}`
-    );
 
     navigate(`/app/${mode}/${city}/${venueNameSlug}/${venueId}?${queryString}`);
   }

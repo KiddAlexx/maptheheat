@@ -100,7 +100,6 @@ function ReviewForm({ mode }: ReviewFormProps) {
   // Effect to set default input values to current review values in editing mode.
   useEffect(() => {
     if (mode === 'editing' && review && !isLoadingReview) {
-      console.log('review effect', review);
       reset({
         hottestSauce: review.hottestSauce || '',
         hottestDish: review.hottestDish || '',

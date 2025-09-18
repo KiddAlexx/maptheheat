@@ -14,7 +14,7 @@ export function useEmailLogin() {
       loginApi({ email, password }),
     onSuccess: (user) => {
       queryClient.setQueryData(['user'], user.user);
-      console.log(user);
+
       closeModal();
       navigate('/app/map', { replace: true });
     },

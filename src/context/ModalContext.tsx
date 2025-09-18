@@ -7,7 +7,7 @@ import { ReactNode, createContext, useContext, useReducer } from 'react';
 interface State {
   modalName: string;
   modalOpen: boolean;
-  images: { url: string; alt: string }[];
+  images: { url: string; alt: string; id: string }[];
   message: string;
   venueId: string;
   venueNameSlug: string;
@@ -26,7 +26,7 @@ interface ModalContextType extends State {
   openModal: (modal: string) => void;
   openModalImages: (
     modal: string,
-    images: { url: string; alt: string }[]
+    images: { url: string; alt: string; id: string }[]
   ) => void;
   openModalUpload: (params: OpenModalUploadParams) => void;
   closeModal: () => void;
@@ -37,7 +37,10 @@ type Action =
   | { type: 'open-modal'; payload: string }
   | {
       type: 'open-modal-images';
-      payload: { modal: string; images: { url: string; alt: string }[] };
+      payload: {
+        modal: string;
+        images: { url: string; alt: string; id: string }[];
+      };
     }
   | {
       type: 'open-modal-upload';
@@ -142,7 +145,7 @@ function ModalProvider({ children }: ModalProviderProps) {
   }
   function openModalImages(
     modal: string,
-    images: { url: string; alt: string }[]
+    images: { url: string; alt: string; id: string }[]
   ) {
     dispatch({ type: 'open-modal-images', payload: { modal, images } });
   }

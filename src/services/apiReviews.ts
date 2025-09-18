@@ -39,7 +39,7 @@ export async function getReviews({
   let query = supabase
     .from('venue_reviews')
     .select(
-      '*, profiles(*), venue_details(*),  venue_images(image_path_large, alt_text)',
+      '*, profiles(*), venue_details(*), venue_images(image_path, alt_text, image_id)',
       { count: 'exact' }
     )
     .eq('status', 'approved')
@@ -170,8 +170,6 @@ export async function updateReview(
   finalFormData: EditformData,
   reviewId: string
 ) {
-  console.log(finalFormData);
-  console.log(reviewId);
   const convertedReview = decamelizeKeys(finalFormData);
   const { data, error } = await supabase
     .from('venue_reviews')

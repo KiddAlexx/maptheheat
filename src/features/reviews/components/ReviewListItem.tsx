@@ -59,6 +59,12 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
 
   const { openModalImages } = useModalContext();
 
+  const carouselImagesLg = venueImages?.map((image) => ({
+    url: image.imagePath.lg,
+    alt: image.altText,
+    id: image.imageId,
+  }));
+
   // Fetch data from hooks
   const { isDeleting, deleteReview } = useDeleteReview();
   const { openDialog } = useModalContext();
@@ -83,7 +89,6 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
       deleteReviewWithId
     );
   }
-  console.log('here are the venue images from review view', venueImages);
 
   return isDeleting ? (
     <LoaderSpinner />
@@ -160,12 +165,12 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
         {venueImages?.length > 0 && (
           <div
             className="ml-4 w-48 shrink-0 cursor-pointer self-start overflow-hidden rounded-xl"
-            onClick={() => openModalImages('image-carousel', venueImages)}
+            onClick={() => openModalImages('image-carousel', carouselImagesLg)}
           >
             <Image
               className="h-full w-full object-cover transition-transform hover:scale-110"
-              src={venueImages[0].url}
-              alt={venueImages[0].alt || 'Venue image'}
+              src={venueImages[0].imagePath.sm}
+              alt={venueImages[0].altText || 'Venue image'}
               radius="sm"
               removeWrapper
             />

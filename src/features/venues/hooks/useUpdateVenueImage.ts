@@ -21,13 +21,6 @@ export function useUpdateVenueImage() {
       venueNameSlug,
       imageType,
     }) => {
-      console.log(
-        'log from react query',
-        venueId,
-        imageFiles,
-        city,
-        venueNameSlug
-      );
       await createVenueImage({
         venueId,
         reviewId,
@@ -44,7 +37,6 @@ export function useUpdateVenueImage() {
       queryClient.invalidateQueries({
         queryKey: ['reviews', variables.venueId],
       });
-      console.log('Inavlidate queries should have ran');
     },
     onError: (err) => {
       toast.error(err.message);

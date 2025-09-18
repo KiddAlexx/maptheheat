@@ -18,7 +18,7 @@ import ReviewContainer from '../../reviews/components/ReviewContainer';
 import { Button, Divider, Image } from '@heroui/react';
 
 // Type imports
-import { Image as ImageType } from '../../../types/venueTypes';
+import { DetailedImage } from '../../../types/venueTypes';
 
 // File imports
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
@@ -85,7 +85,11 @@ function DetailedVenueView() {
 
   const totalReviewCount = totalReviews ?? 0;
 
-  console.log('heres the venue images from detailed venue view', venueImages);
+  const carouselImagesLg = venueImages?.map((image) => ({
+    url: image.imagePath.lg,
+    alt: image.altText,
+    id: image.imageId,
+  }));
 
   const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
 
@@ -206,22 +210,22 @@ function DetailedVenueView() {
         <div
           className="mb-3 flex cursor-pointer gap-1"
           onClick={() =>
-            venueImages && venueImages.length > 0
-              ? openModalImages('image-carousel', venueImages)
+            carouselImagesLg && carouselImagesLg.length > 0
+              ? openModalImages('image-carousel', carouselImagesLg)
               : handleAddImages()
           }
         >
           {venueImages && venueImages.length > 0 ? (
             // Slice first 4 images and map over
-            venueImages.slice(0, 4).map((image: ImageType) => (
+            venueImages.slice(0, 4).map((image: DetailedImage) => (
               <div
-                key={image.url}
+                key={image.imageId}
                 className=" h-48 w-1/4 overflow-hidden rounded-xl "
               >
                 <Image
                   className="h-full w-full  object-cover hover:scale-110"
-                  src={image.url}
-                  alt={image.alt}
+                  src={image.imagePath.sm}
+                  alt={image.altText}
                   radius="sm"
                   removeWrapper
                 />

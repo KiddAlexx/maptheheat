@@ -13,7 +13,7 @@ function VenueSearchBar({ useVenueContext }: VenueSearchBarProps) {
   function handleSumbit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formattedSearchValue = `%${searchValue}%`;
-    console.log(searchValue);
+
     updateVenueFilter({
       field: 'venueName',
       value: formattedSearchValue,

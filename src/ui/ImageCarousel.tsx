@@ -13,7 +13,10 @@ function ImageCarousel() {
     <Carousel>
       <CarouselContent className="max-w-2xl">
         {images.map((image) => (
-          <CarouselItem className="flex items-center justify-center">
+          <CarouselItem
+            key={image.id}
+            className="flex items-center justify-center"
+          >
             <img src={image.url} alt={image.alt} />
           </CarouselItem>
         ))}

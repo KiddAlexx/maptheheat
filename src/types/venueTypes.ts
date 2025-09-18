@@ -16,7 +16,7 @@ export interface Venue {
   venueId: string;
   venueType: 'restaurant' | 'shop';
   thumbnailImage?: Image;
-  venueImages?: Image[];
+  venueImages?: DetailedImage[];
   hottestSauces?: string[];
   hottestDishes?: string[];
   averageHeatRating?: number | null;
@@ -38,7 +38,8 @@ export interface Image {
 }
 
 export interface DetailedImage {
-  imagePathLarge: string;
+  imageId: string;
+  imagePath: { lg: string; md: string; sm: string };
   altText: string;
 }
 

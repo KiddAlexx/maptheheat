@@ -108,7 +108,6 @@ function VenueForm() {
   }
 
   async function formSubmit(formData: FormData) {
-    console.log(formData);
     try {
       const trimmedFormData = {
         ...formData,
@@ -140,7 +139,7 @@ function VenueForm() {
       // Add final venue data to supabase table
       const newVenue = await createVenue(finalVenueData);
       setCreatedVenue(newVenue);
-      console.log(createdVenue);
+
       // Adds city details to unique_cities table if entry does not already exist.
       await createUniqueCity(additionalVenueData.cityAddress);
 

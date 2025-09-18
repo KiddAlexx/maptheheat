@@ -51,7 +51,6 @@ function GlobalErrorProvider({ children }: GlobalErrorProviderProps) {
   const [{ globalErrorMessage }, dispatch] = useReducer(reducer, initialState);
 
   function clearGlobalError() {
-    console.log('Clearing error...');
     dispatch({ type: 'clear-error' });
   }
   function setGlobalError(message: string) {

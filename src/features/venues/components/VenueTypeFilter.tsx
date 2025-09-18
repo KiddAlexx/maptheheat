@@ -23,7 +23,6 @@ function VenueTypeFilter({ useVenueContext }: VenueTypeFilterProps) {
         method: 'eq',
       });
     }
-    console.log(filters);
   }
   return (
     <ButtonGroup radius="sm" className="">

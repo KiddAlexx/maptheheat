@@ -7,7 +7,6 @@ import { Review } from '@/types/reviewTypes';
 // because enabled check guarantees reviewId is not null/undefined.
 
 export function useGetReview(reviewId?: string, isEnabled = true) {
-  console.log('Running getReview with id:', reviewId);
   const {
     isLoading,
     data: review,

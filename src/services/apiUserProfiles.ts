@@ -77,8 +77,6 @@ export async function getUserNotifications({
 
   const { data, error, count } = await query;
 
-  console.log('heres the notifications', data, count);
-
   if (error) {
     throw new Error(`Error fetching notifications: ${error.message}`);
   }
@@ -148,7 +146,7 @@ export async function updateAvatarApi({ newAvatar }: UpdateAvatarApiParams) {
   if (error) {
     throw new Error(`Error adding image to database: ${error.message}`);
   }
-  console.log('this is the uploaded image data', data);
+
   return data;
 }
 

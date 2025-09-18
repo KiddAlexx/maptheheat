@@ -86,15 +86,6 @@ function ImageUploader({
     // **** Add error message here too ****
     if (!isAuthenticated) return openModal('login');
 
-    /*     console.log(
-      'log from image uploader ',
-      venueId,
-      reviewId,
-      imageFiles,
-      city,
-      venueNameSlug
-    ); */
-
     uploadImageRef(
       { venueId, reviewId, imageFiles, city, venueNameSlug, imageType },
       {

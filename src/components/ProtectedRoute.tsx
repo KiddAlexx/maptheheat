@@ -28,7 +28,6 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
 
         openModal('login');
       }
-      console.log(isAuthenticated);
     },
     [isAuthenticated, isLoading, fetchStatus, modalOpen, openModal, navigate]
   );

@@ -5,7 +5,11 @@ import { DetailedImage } from '@/types/venueTypes';
 export function addImagePaths(images?: DetailedImage[] | null) {
   if (!images || images.length === 0) return [];
   return images.map((img) => ({
-    url: `${supabaseUrl}/storage/v1/object/public/venue-images/${img.imagePathLarge}`,
-    alt: img.altText,
+    ...img,
+    imagePath: {
+      lg: `${supabaseUrl}/storage/v1/object/public/venue-images/${img.imagePath.lg}`,
+      md: `${supabaseUrl}/storage/v1/object/public/venue-images/${img.imagePath.md}`,
+      sm: `${supabaseUrl}/storage/v1/object/public/venue-images/${img.imagePath.sm}`,
+    },
   }));
 }

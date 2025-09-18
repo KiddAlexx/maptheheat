@@ -45,8 +45,6 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
       ])
     : (finalCityList = uniqueCities!);
 
-  console.log('heres the city list', finalCityList);
-
   // Update venue filters based upon city selection
   async function handleSelectCity(value: Key | null) {
     // Displays all user favourites

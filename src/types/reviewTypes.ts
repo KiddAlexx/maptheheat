@@ -1,6 +1,6 @@
 import { Direction } from './commonTypes';
 import { Profile } from './userTypes';
-import { Image, Venue } from './venueTypes';
+import { DetailedImage, Image, Venue } from './venueTypes';
 
 export interface Review {
   createdAt: string;
@@ -22,7 +22,7 @@ export interface Review {
 export interface ReviewWithRelations extends Review {
   profiles: Profile;
   venueDetails: Venue;
-  venueImages: Image[];
+  venueImages: DetailedImage[];
 }
 
 // id not present at creation time, generate by Supabase

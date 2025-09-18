@@ -84,6 +84,8 @@ export async function getVenues({
 
   const { data, error, count } = await query;
 
+  console.log('venues', data);
+
   if (error) {
     throw new Error(`Venues could not be loaded. Error:${error.message}`);
   }
@@ -93,7 +95,7 @@ export async function getVenues({
 export async function getVenue(id: string): Promise<Venue> {
   const { data, error } = await supabase
     .from('venue_details')
-    .select('*,  venue_images(image_path_large, alt_text)')
+    .select('*,  venue_images(image_path, alt_text, image_id)')
     .eq('venue_id', id)
     .eq('status', 'approved')
     .filter('venue_images.status', 'eq', 'approved');
