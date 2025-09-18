@@ -55,9 +55,9 @@ export async function uploadImageBundle(
     // Create image names + full path
     const imageBase = crypto.randomUUID();
 
-    const imageNameLg = `${imageBase}-lg`;
-    const imageNameMd = `${imageBase}-md`;
-    const imageNameSm = `${imageBase}-sm`;
+    const imageNameLg = `${imageBase}-lg.webp`;
+    const imageNameMd = `${imageBase}-md.webp`;
+    const imageNameSm = `${imageBase}-sm.webp`;
 
     const imagePathLg = `${folderPath}/${imageNameLg}`;
     const imagePathMd = `${folderPath}/${imageNameMd}`;

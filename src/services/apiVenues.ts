@@ -17,8 +17,8 @@ import {
 } from '../types/venueTypes';
 
 // Util Imports
-import { compressImage, compressImageVariants } from '../utils/compressImage';
-import { uploadImageBundle, uploadImages } from './supabaseImageUploader';
+import { compressImageVariants } from '../utils/compressImage';
+import { uploadImageBundle } from './supabaseImageUploader';
 import { addImagePaths } from '@/utils/addImagePaths';
 
 export interface VenuesRequestParams {
@@ -222,12 +222,8 @@ export async function createVenueImage({
   venueNameSlug,
   imageType,
 }: ImageUploadParams) {
-  // Compress image. Type asserted as function will return File or throw an Error
-  const compressedImages = (await compressImage(imageFiles)) as File[];
-
+  // Compress images sm/md/lg variants
   const compressedVariants = await compressImageVariants(imageFiles);
-
-  console.log('here are the compressed variants', compressedVariants);
 
   // Upload image variants
   const variantPaths = await uploadImageBundle(
@@ -237,18 +233,9 @@ export async function createVenueImage({
     venueNameSlug
   );
 
-  console.log('here are the variant paths', variantPaths);
-
-  // Upload image to supabase bucket
-  const imagePaths = await uploadImages(
-    compressedImages,
-    'venue-images',
-    city,
-    venueNameSlug
-  );
   // Generate image entry + alt text
-  const newImages = imagePaths.map((imagePath) => ({
-    image_path_large: imagePath,
+  const newImages = variantPaths.map((imagePath) => ({
+    image_path: { lg: imagePath.lg, md: imagePath.md, sm: imagePath.sm },
     alt_text: `An image of ${venueNameSlug} in ${city}`,
     venue_id: venueId,
     review_id: reviewId,
@@ -269,7 +256,7 @@ export async function createVenueImage({
       .from('venue_details')
       .update({
         thumbnail_image: {
-          url: `${supabaseUrl}/storage/v1/object/public/venue-images/${newImages[0].image_path_large}`,
+          url: `${supabaseUrl}/storage/v1/object/public/venue-images/${newImages[0].image_path.sm}`,
           alt: newImages[0].alt_text,
         },
       })
