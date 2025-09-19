@@ -6,7 +6,7 @@ interface AvatarProps {
   size?: string;
 }
 
-function Avatar({ userId, size = '3.5' }: AvatarProps) {
+function Avatar({ userId, size = '2.8' }: AvatarProps) {
   const { userProfile, isLoading } = useGetUserProfile(userId);
 
   return (
