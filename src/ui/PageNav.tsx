@@ -3,10 +3,11 @@ import { NavLink } from 'react-router-dom';
 
 // Style imports
 import styles from './PageNav.module.css';
-import { useUser } from '../authentication/hooks/useUser';
-import { useModalContext } from '../../context/ModalContext';
+
 import { Button } from '@heroui/button';
 import UserMenu from '@/ui/UserMenu';
+import { useUser } from '@/features/authentication/hooks/useUser';
+import { useModalContext } from '@/context/ModalContext';
 
 function PageNav() {
   const { isAuthenticated } = useUser();

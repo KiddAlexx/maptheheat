@@ -1,13 +1,18 @@
 // Component imports
 
-import RightPanel from '../features/layout/RightPanel';
-import SideBar from '../features/layout/SideBar';
+import VenueListContainer from '@/features/venues/components/VenueListContainer';
+
+import { Outlet } from 'react-router';
 
 function AppLayout() {
   return (
-    <main className="flex h-[calc(100vh-5rem)]">
-      <SideBar />
-      <RightPanel />
+    <main className="flex h-full">
+      <aside className="flex w-[40rem] shrink-0 flex-col p-3">
+        <VenueListContainer mode="venue" />
+      </aside>
+      <section className="flex-1 overflow-y-scroll bg-orange-50">
+        <Outlet />
+      </section>
     </main>
   );
 }
