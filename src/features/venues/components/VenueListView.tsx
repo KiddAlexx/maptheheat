@@ -25,7 +25,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
     pagination,
   });
 
-  const { isLargeScreen } = useUIContext();
+  const { isLargeScreen, updateView } = useUIContext();
 
   const {
     user,
@@ -47,6 +47,14 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
   )
     return <LoaderSpinner />;
 
+  function handleCardClick(venue) {
+    isLargeScreen
+      ? setParamsAndNavigate(venue)
+      : setParamsAndNavigate(venue, 'venue');
+
+    updateView('venue');
+  }
+
   const favVenuesList = userProfile?.favouriteVenues || null;
 
   return (
@@ -55,11 +63,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
         each venue. Onclick set clicked venue as active venue */}
       {venues?.map((venue) => (
         <ListItem
-          handleClick={
-            isLargeScreen
-              ? () => setParamsAndNavigate(venue)
-              : () => setParamsAndNavigate(venue, 'venue')
-          }
+          handleClick={() => handleCardClick(venue)}
           venue={venue}
           userId={userId}
           isAuthenticated={isAuthenticated}

@@ -1,18 +1,20 @@
 // Component imports
 
 import VenueListContainer from '@/features/venues/components/VenueListContainer';
-import { useState } from 'react';
 import clsx from 'clsx';
 
 import { Outlet } from 'react-router';
 import { Button } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
+import { useUIContext } from '@/context/UIContext';
 
 function AppLayout() {
-  const [view, setView] = useState('list');
+  const { currentView, updateView } = useUIContext();
 
   function handleView() {
-    setView((v) => (v === 'list' ? 'map' : 'list'));
+    if (currentView === 'list') updateView('map');
+    if (currentView === 'map') updateView('list');
+    if (currentView === 'venue') updateView('list');
   }
 
   return (
@@ -20,7 +22,7 @@ function AppLayout() {
       <aside
         className={clsx(
           'w-full shrink flex-col p-3 lg:flex lg:min-w-[32rem] lg:basis-1/3',
-          view === 'list' ? 'flex' : 'hidden'
+          currentView === 'list' ? 'flex' : 'hidden'
         )}
       >
         <VenueListContainer mode="venue" />
@@ -28,7 +30,7 @@ function AppLayout() {
       <section
         className={clsx(
           'flex-1 overflow-y-scroll bg-orange-50 lg:block',
-          view === 'map' ? 'block' : 'hidden'
+          currentView === 'map' || currentView === 'venue' ? 'block' : 'hidden'
         )}
       >
         <Outlet />
@@ -38,7 +40,7 @@ function AppLayout() {
         size="lg"
         className="absolute bottom-3 right-1/2 z-[1000] translate-x-1/2 gap-2 lg:hidden"
       >
-        {view === 'list' ? (
+        {currentView === 'list' ? (
           <>
             <Icon icon="lucide:map-pin" width={16} />
             <span>Map</span>
