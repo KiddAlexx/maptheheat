@@ -8,6 +8,7 @@ import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 import { VenueFilterContextType } from '@/context/VenueFilterContext';
+import { useUIContext } from '@/context/UIContext';
 
 interface ListViewProps {
   useVenueContext: () => VenueFilterContextType;
@@ -23,6 +24,8 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
     sort,
     pagination,
   });
+
+  const { isLargeScreen } = useUIContext();
 
   const {
     user,
@@ -52,7 +55,11 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
         each venue. Onclick set clicked venue as active venue */}
       {venues?.map((venue) => (
         <ListItem
-          handleClick={() => setParamsAndNavigate(venue)}
+          handleClick={
+            isLargeScreen
+              ? () => setParamsAndNavigate(venue)
+              : () => setParamsAndNavigate(venue, 'venue')
+          }
           venue={venue}
           userId={userId}
           isAuthenticated={isAuthenticated}

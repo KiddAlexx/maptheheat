@@ -9,6 +9,7 @@ import { ModalProvider } from './context/ModalContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { ReactNode } from 'react';
+import { UIProvider } from './context/UIContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,10 +33,12 @@ function AppProviders({ children }: AppProviderProps) {
             <ReviewSortProvider>
               <UserReviewsProvider>
                 <ModalProvider>
-                  <QueryClientProvider client={queryClient}>
-                    <ReactQueryDevtools initialIsOpen={false} />
-                    {children}
-                  </QueryClientProvider>
+                  <UIProvider>
+                    <QueryClientProvider client={queryClient}>
+                      <ReactQueryDevtools initialIsOpen={false} />
+                      {children}
+                    </QueryClientProvider>
+                  </UIProvider>
                 </ModalProvider>
               </UserReviewsProvider>
             </ReviewSortProvider>
