@@ -1,6 +1,5 @@
 // React imports
 import { useNavigate, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
 
 // Hooks imports
 import { useVenue } from '../hooks/useVenue';
@@ -31,10 +30,12 @@ import ShareButton from '@/ui/ShareButton';
 import { canUserReview, checkPendingReviews } from '@/services/apiReviews';
 import { useGlobalError } from '@/context/ErrorContext';
 import { canUserAddImage } from '@/services/apiVenues';
+import { useUIContext } from '@/context/UIContext';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
   const { venueId } = useParams();
+  const { updateView } = useUIContext();
 
   const { openModal, openModalImages, openModalUpload, openDialog } =
     useModalContext();
@@ -197,11 +198,15 @@ function DetailedVenueView() {
           </div>
         </div>
         <Button
-          as={Link}
           color="primary"
           variant="flat"
           startContent={<Icon icon="lucide:map-pinned" />}
-          to={`/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`}
+          onPress={() => {
+            navigate(
+              `/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`
+            );
+            updateView('map');
+          }}
         >
           Back to Map
         </Button>

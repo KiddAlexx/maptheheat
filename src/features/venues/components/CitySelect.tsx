@@ -1,7 +1,7 @@
 import { Autocomplete, AutocompleteItem } from '@heroui/react';
 import { useUniqueCities } from '../hooks/useUniqueCities';
 import LoaderSpinner from '@/ui/LoaderSpinner';
-import { useLocation, useNavigate } from 'react-router';
+import { useMatch, useNavigate } from 'react-router';
 import { useUserCities } from '../hooks/useUserCities';
 import { VenueFilterContextType } from '@/context/VenueFilterContext';
 import { Key, UniqueCity } from '@/types/venueTypes';
@@ -24,8 +24,8 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
 
   // Determine "mode" based on url - used to differentiate between use
   // within profile view or map/venue view
-  const location = useLocation();
-  const isUserMode = location.pathname === '/profile/venues';
+
+  const isUserMode = useMatch('/profile/venues');
 
   // Ensure uniqueCity arrays have loaded
   if (isPendingCities || isLoadingUserCities) return;

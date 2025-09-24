@@ -4,7 +4,7 @@
 
 // Style imports
 
-import { useLocation } from 'react-router-dom';
+import { useMatch } from 'react-router-dom';
 import VenueTypeFilter from './VenueTypeFilter';
 import CitySelect from './CitySelect';
 import VenueSort from './VenueSort';
@@ -20,8 +20,7 @@ function SearchAndFilterPanel({
   useVenueContext,
   favouriteVenues,
 }: SearchAndFilerPanelProps) {
-  const location = useLocation();
-  const isUserMode = location.pathname === '/profile/venues';
+  const isUserMode = useMatch('/profile/venues');
 
   return (
     <div className="rounded-xl bg-zinc-400 p-3">

@@ -3,18 +3,35 @@
 import VenueListContainer from '@/features/venues/components/VenueListContainer';
 import clsx from 'clsx';
 
-import { Outlet } from 'react-router';
+import { Outlet, useMatch, useNavigate } from 'react-router';
 import { Button } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useUIContext } from '@/context/UIContext';
+import { useSearchParams } from 'react-router-dom';
 
 function AppLayout() {
   const { currentView, updateView } = useUIContext();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const venueMatch = useMatch('/app/venue/:city/:venue/:venueId');
 
   function handleView() {
-    if (currentView === 'list') updateView('map');
-    if (currentView === 'map') updateView('list');
-    if (currentView === 'venue') updateView('list');
+    if (currentView === 'list') {
+      updateView('map');
+      return;
+    }
+    if (currentView === 'map') {
+      updateView('list');
+      return;
+    }
+    if (currentView === 'venue' && venueMatch) {
+      const { city, venue, venueId } = venueMatch.params;
+      const lat = searchParams.get('lat');
+      const lon = searchParams.get('lon');
+      navigate(`/app/map/${city}/${venue}/${venueId}?&lat=${lat}&lon=${lon}`);
+      updateView('list');
+      return;
+    }
   }
 
   return (

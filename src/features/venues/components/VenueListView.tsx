@@ -7,8 +7,13 @@ import ListItem from './VenueListItem';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
-import { VenueFilterContextType } from '@/context/VenueFilterContext';
+import {
+  useVenueFilterContext,
+  VenueFilterContextType,
+} from '@/context/VenueFilterContext';
 import { useUIContext } from '@/context/UIContext';
+import { Venue } from '@/types/venueTypes';
+import { useMatch } from 'react-router';
 
 interface ListViewProps {
   useVenueContext: () => VenueFilterContextType;
@@ -17,6 +22,8 @@ interface ListViewProps {
 
 function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
   const { filters, sort, pagination } = useVenueContext();
+  const { updateVenueFilter } = useVenueFilterContext();
+  const isUserMode = useMatch('/profile/venues');
   // Load venues from supabase
   const { venues, isLoading: isLoadingVenues } = useVenues({
     favouriteVenues,
@@ -47,10 +54,17 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
   )
     return <LoaderSpinner />;
 
-  function handleCardClick(venue) {
-    isLargeScreen
-      ? setParamsAndNavigate(venue)
-      : setParamsAndNavigate(venue, 'venue');
+  function handleCardClick(venue: Venue) {
+    const { city, country } = venue;
+    if (isUserMode) {
+      updateVenueFilter({ field: 'city', value: city, method: 'eq' });
+      updateVenueFilter({ field: 'country', value: country, method: 'eq' });
+    }
+    {
+      isLargeScreen
+        ? setParamsAndNavigate(venue)
+        : setParamsAndNavigate(venue, 'venue');
+    }
 
     updateView('venue');
   }

@@ -16,7 +16,7 @@ import LikeButton from '@/ui/LikeButton';
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
 import toast from 'react-hot-toast';
 import { useModalContext } from '@/context/ModalContext';
-import { useLocation } from 'react-router';
+import { useMatch } from 'react-router';
 import { Card, CardBody, CardFooter, Image, Link } from '@heroui/react';
 
 interface ListItemProps {
@@ -35,9 +35,8 @@ function ListItem({
   favVenuesList,
 }: ListItemProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
-  const location = useLocation();
 
-  const isUserMode = location.pathname === '/profile/venues';
+  const isUserMode = useMatch('/profile/venues');
 
   const { openDialog } = useModalContext();
 
