@@ -45,7 +45,7 @@ export interface DetailedImage {
 
 export interface UniqueCity {
   coords: Coords;
-  id: string;
+  cityId: string;
   city: string;
   country: string;
 }

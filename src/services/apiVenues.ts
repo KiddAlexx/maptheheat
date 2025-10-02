@@ -6,6 +6,7 @@ import supabase, { supabaseUrl } from './supabase';
 
 // Type Imports
 import {
+  Coords,
   ImageUploadParams,
   NewVenue,
   UniqueCity,
@@ -36,6 +37,7 @@ export interface VenuesResponse {
 export interface UniqueCityProps {
   city: string;
   country: string;
+  coords: Coords;
 }
 
 export async function getVenues({
@@ -138,14 +140,14 @@ export async function getUserCitiesSupabase(
 export async function getUniqueCities(): Promise<UniqueCity[]> {
   const { data, error } = await supabase
     .from('unique_cities')
-    .select('coords, country, city, id')
+    .select('coords, country, city, city_id')
     .order('city', { ascending: true });
 
   if (error) {
     throw new Error(`Cities could not be loaded. Error:${error.message}`);
   }
 
-  return data;
+  return camelcaseKeys(data);
 }
 
 // Function to check whether user has 2 or more pending venues
@@ -157,7 +159,7 @@ export async function canUserAddVenue() {
   return data;
 }
 
-export async function createVenue(newVenue: NewVenue) {
+export async function createVenueApi(newVenue: NewVenue) {
   const convertedVenue = decamelizeKeys(newVenue);
 
   const { data, error } = await supabase
@@ -174,34 +176,16 @@ export async function createVenue(newVenue: NewVenue) {
 }
 
 export async function createUniqueCityApi(cityObj: UniqueCityProps) {
-  const { city, country } = cityObj;
+  const { city, country, coords } = cityObj;
 
-  // Check if city already exists in unique_cities table.
-  const { data: existingCity, error: fetchError } = await supabase
-    .from('unique_cities')
-    .select('*')
-    .eq('city', city)
-    .eq('country', country)
-    .maybeSingle();
+  const { data, error } = await supabase.rpc('upsert_unique_city', {
+    p_city: city,
+    p_country: country,
+    p_coords: coords,
+  });
 
-  if (fetchError) {
-    throw new Error(`Error fetching unique cities:${fetchError.message}`);
-  }
-
-  // If city already exists return from function.
-  // No further action required.
-  if (existingCity) return;
-
-  // City not found, insert new city details.
-  const { data, error: insertError } = await supabase
-    .from('unique_cities')
-    .insert(cityObj)
-    .single();
-
-  if (insertError) {
-    throw new Error(
-      `Error adding city to unique_cities table:${insertError.message}`
-    );
+  if (error) {
+    throw new Error(`Error creating unique city. Error:${error.message}`);
   }
 
   return data;

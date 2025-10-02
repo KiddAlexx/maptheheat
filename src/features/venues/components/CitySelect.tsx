@@ -36,7 +36,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
   isUserMode
     ? (finalCityList = [
         {
-          id: 'ALL_KEY',
+          cityId: 'ALL_KEY',
           city: 'All',
           country: 'favourites',
           coords: { lat: 0, lon: 0 },
@@ -56,7 +56,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
 
     if (!finalCityList) return;
     const selectedCityObj = finalCityList.find(
-      (cityObj) => cityObj.id == value
+      (cityObj) => cityObj.cityId == value
     );
     if (!selectedCityObj) return;
     const { city, coords, country } = selectedCityObj;
@@ -83,7 +83,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
     >
       {finalCityList.map((cityObj) => (
         // Using city + index as key for uniqueness in case of duplicate city names
-        <AutocompleteItem key={cityObj.id}>
+        <AutocompleteItem key={cityObj.cityId}>
           {`${cityObj.city} - ${cityObj.country}`}
         </AutocompleteItem>
       ))}

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { createVenue as createVenueApi } from '../../../services/apiVenues';
+import { createVenueApi } from '../../../services/apiVenues';
 
 export function useCreateVenue() {
   const queryClient = useQueryClient();
