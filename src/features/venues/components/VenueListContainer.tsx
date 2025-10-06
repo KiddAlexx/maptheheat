@@ -30,16 +30,17 @@ function VenueListContainer({
 
   return (
     <>
-      <SearchAndFilterPanel
-        useVenueContext={useVenueContext}
-        favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
-      />
-      {mode === 'venue' && (
-        <div className=" my-2 flex items-center justify-between p-1">
-          <p>Can't find what you are looking for?</p>
-          <AddVenueButton />
-        </div>
-      )}
+      <div className="rounded-xl bg-zinc-200 p-3">
+        <SearchAndFilterPanel
+          useVenueContext={useVenueContext}
+          favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
+        />
+        {mode === 'venue' && (
+          <div className="mt-3 flex items-center justify-end text-sm">
+            <AddVenueButton />
+          </div>
+        )}
+      </div>
 
       <PaginationControls
         updatePageNumber={updatePageNumber}

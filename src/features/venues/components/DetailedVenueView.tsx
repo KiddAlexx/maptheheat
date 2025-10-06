@@ -150,7 +150,7 @@ function DetailedVenueView() {
         });
       } else {
         openDialog(
-          'You already have 6 or more pending venues. Please try again once these have been confirmed'
+          'You already have 6 or more pending images. Please try again once these have been confirmed'
         );
       }
     } catch (err) {
@@ -176,7 +176,7 @@ function DetailedVenueView() {
   }
 
   return (
-    <div className="p-3 text-gray-800">
+    <div className="p-3 text-gray-800 ">
       <div className="mb-3 ml-1 flex items-center justify-between">
         <div>
           <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>

@@ -35,6 +35,8 @@ function PaginationControls({
         initialPage={1}
         page={pageNumber}
         onChange={updatePageNumber}
+        color="primary"
+        size="sm"
       />
     </div>
   );

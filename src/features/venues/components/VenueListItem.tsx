@@ -102,7 +102,7 @@ function ListItem({
     <li>
       <button className="w-full" onClick={handleClick}>
         <Card
-          className="mb-2 w-full cursor-pointer border-r border-t border-s-violet-500 shadow-md outline-none transition hover:bg-slate-100"
+          className="mb-2 w-full cursor-pointer  shadow-md  transition hover:bg-primary-50"
           radius="sm"
         >
           <div className="flex">
@@ -163,8 +163,7 @@ function ListItem({
             On click, set clicked venue as active venue. */}
               <CardFooter>
                 <Link
-                  className="absolute bottom-3 right-4 z-10 text-sm"
-                  color="primary"
+                  className="absolute bottom-3 right-4 z-10 text-sm text-blue-500"
                   onPress={() => {
                     setParamsAndNavigate(venue, 'venue');
                   }}

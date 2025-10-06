@@ -46,7 +46,7 @@ function AppLayout() {
       </aside>
       <section
         className={clsx(
-          'flex-1 overflow-y-scroll bg-orange-50 lg:block',
+          'flex-1 overflow-y-scroll bg-zinc-50 lg:block',
           currentView === 'map' || currentView === 'venue' ? 'block' : 'hidden'
         )}
       >

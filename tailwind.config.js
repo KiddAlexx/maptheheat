@@ -70,6 +70,28 @@ export default {
   plugins: [
     heroui({
       addCommonColors: true,
+      themes: {
+        light: {
+          colors: {
+            // Your brand as PRIMARY
+            primary: {
+              50: '#eefff1',
+              100: '#d8ffe1',
+              200: '#baffc9',
+              300: '#78fd96',
+              400: '#36f262',
+              500: '#0cdb3d',
+              600: '#03b62d',
+              700: '#078e27',
+              800: '#0b7024',
+              900: '#0c5b21',
+              950: '#00330e',
+              DEFAULT: '#78fd96',
+              foreground: '#00330e',
+            },
+          },
+        },
+      },
     }),
     tailwindcssAnimate,
   ],

@@ -23,7 +23,7 @@ function SearchAndFilterPanel({
   const isUserMode = useMatch('/profile/venues');
 
   return (
-    <div className="rounded-xl bg-zinc-400 p-3">
+    <>
       {!isUserMode && <VenueSearchBar useVenueContext={useVenueContext} />}
       <CitySelect
         useVenueContext={useVenueContext}
@@ -33,7 +33,7 @@ function SearchAndFilterPanel({
         <VenueTypeFilter useVenueContext={useVenueContext} />
         <VenueSort useVenueContext={useVenueContext} />
       </div>
-    </div>
+    </>
   );
 }
 
