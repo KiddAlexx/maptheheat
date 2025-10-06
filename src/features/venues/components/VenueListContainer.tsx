@@ -35,11 +35,6 @@ function VenueListContainer({
           useVenueContext={useVenueContext}
           favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
         />
-        {mode === 'venue' && (
-          <div className="mt-3 flex items-center justify-end text-sm">
-            <AddVenueButton />
-          </div>
-        )}
       </div>
 
       <PaginationControls

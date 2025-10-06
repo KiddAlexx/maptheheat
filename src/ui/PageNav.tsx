@@ -8,6 +8,7 @@ import { Button } from '@heroui/button';
 import UserMenu from '@/ui/UserMenu';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useModalContext } from '@/context/ModalContext';
+import AddVenueButton from './AddVenueButton';
 
 function PageNav() {
   const { isAuthenticated } = useUser();
@@ -18,13 +19,16 @@ function PageNav() {
       <h3 className={styles.logoMain}>
         <NavLink to="/">MapTheHeat</NavLink>
       </h3>
-      <ul>
+      <ul className="flex gap-4">
+        <div className="text-sm">
+          <AddVenueButton />
+        </div>
         {/* Checks user login state
             Displays Login & Signup or Logout button */}
         {!isAuthenticated ? (
           <>
             <li>
-              <Button size="lg" radius="sm" onPress={() => openModal('login')}>
+              <Button size="md" radius="sm" onPress={() => openModal('login')}>
                 Login / Sign Up
               </Button>
             </li>
