@@ -35,7 +35,7 @@ function AppProviders({ children }: AppProviderProps) {
                 <ModalProvider>
                   <UIProvider>
                     <QueryClientProvider client={queryClient}>
-                      <ReactQueryDevtools initialIsOpen={false} />
+                      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
                       {children}
                     </QueryClientProvider>
                   </UIProvider>

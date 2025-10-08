@@ -54,7 +54,7 @@ function AppLayout() {
       </section>
       <Button
         onPress={handleView}
-        size="lg"
+        size="md"
         className="absolute bottom-3 right-1/2 z-[1000] translate-x-1/2 gap-2 lg:hidden"
       >
         {currentView === 'list' ? (

@@ -11,7 +11,7 @@ function Avatar({ userId, size = '2.8' }: AvatarProps) {
 
   return (
     <div
-      className="overflow-hidden rounded-full border-2 border-primary-500 p-[2px]"
+      className="overflow-hidden rounded-full border-2 border-success-500 p-[2px]"
       style={{ width: `${size}rem`, height: `${size}rem` }}
     >
       <img

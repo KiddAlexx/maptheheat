@@ -155,8 +155,12 @@ function ListItem({
                 <span>Open</span>
               </div>
               <div className="mt-2 flex items-center gap-2 text-sm">
-                <Icon icon="lucide:map-pin" width={16} />
-                <span>{address}</span>
+                <Icon
+                  icon="lucide:map-pin"
+                  width={16}
+                  className="flex-shrink-0"
+                />
+                <span className="truncate">{address}</span>
               </div>
 
               {/* Link to the detailed page of the venue. 

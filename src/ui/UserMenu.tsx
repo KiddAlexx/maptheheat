@@ -29,7 +29,7 @@ function UserMenu() {
   const { id } = user;
 
   const notificationIcon = (
-    <div className="absolute -right-[2px] -top-[2px] flex h-4 w-4 items-center justify-center rounded-full bg-primary-500 text-xs text-white ring-1 ring-white">
+    <div className="absolute -right-[2px] -top-[2px] flex h-4 w-4 items-center justify-center rounded-full bg-success-500 text-xs text-success-foreground ring-1 ring-white">
       {notificationCount <= 99 ? notificationCount : '99+'}
     </div>
   );
