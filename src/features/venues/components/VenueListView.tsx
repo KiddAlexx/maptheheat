@@ -3,7 +3,7 @@ import { useVenues } from '../hooks/useVenues';
 import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
 
 // Component imports
-import ListItem from './VenueListItem';
+import VenueListCard from './VenueListCard';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
@@ -76,7 +76,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
       {/* Map through list of venues and render ListItem component for
         each venue. Onclick set clicked venue as active venue */}
       {venues?.map((venue) => (
-        <ListItem
+        <VenueListCard
           handleClick={() => handleCardClick(venue)}
           venue={venue}
           userId={userId}

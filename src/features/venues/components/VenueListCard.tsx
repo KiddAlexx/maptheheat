@@ -19,7 +19,7 @@ import { useModalContext } from '@/context/ModalContext';
 import { useMatch } from 'react-router';
 import { Card, CardBody, CardFooter, Image, Link } from '@heroui/react';
 
-interface ListItemProps {
+interface VenueListCardProps {
   venue: Venue;
   handleClick: () => void;
   userId: string | null;
@@ -27,13 +27,13 @@ interface ListItemProps {
   favVenuesList?: string[] | null;
 }
 
-function ListItem({
+function VenueListCard({
   venue,
   handleClick,
   userId,
   isAuthenticated,
   favVenuesList,
-}: ListItemProps) {
+}: VenueListCardProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
 
   const isUserMode = useMatch('/profile/venues');
@@ -102,7 +102,7 @@ function ListItem({
     <li>
       <button className="w-full" onClick={handleClick}>
         <Card
-          className="mb-2 w-full cursor-pointer  shadow-md  transition hover:bg-primary-50"
+          className="mb-2 w-full cursor-pointer bg-primary-50/50 shadow-md transition hover:bg-primary-50"
           radius="sm"
         >
           <div className="flex">
@@ -110,6 +110,7 @@ function ListItem({
               <Image
                 className="h-full w-full object-cover"
                 src={thumbnailImage?.url || greyChilli}
+                fallbackSrc={greyChilli}
                 alt={
                   thumbnailImage?.alt || 'a greyed out image of a chilli pepper'
                 }
@@ -118,11 +119,19 @@ function ListItem({
               />
             </div>
             <CardBody className="relative w-2/3">
-              <h3 className="mb-2 text-lg font-medium">{venueName}</h3>
+              <div className="mb-2 flex items-center justify-between">
+                <h3 className="text-lg font-medium">{venueName}</h3>
+
+                <LikeButton
+                  isFavourite={isFavourite}
+                  isAuthenticated={isAuthenticated}
+                  handleClick={toggleFavourite}
+                />
+              </div>
 
               {/* display flex is forced to override default display inline block
             of react rating - ensures icons allign correctly */}
-              <div className="flex items-center gap-1 [&>span]:!flex">
+              <div className="mb-2 flex -translate-x-[1px] gap-1 [&>span]:!flex">
                 <VenueRating
                   initialRating={finalHeatRating}
                   readonly
@@ -134,7 +143,8 @@ function ListItem({
                   {totalReviewCount === 1 ? 'review' : 'reviews'})
                 </span>
               </div>
-              <div className="mt-2 flex items-center gap-1">
+
+              <div className=" mb-2 flex items-start gap-1">
                 <Icon
                   className="text-yellow-600"
                   icon="lucide:star"
@@ -143,31 +153,27 @@ function ListItem({
                 <span className="text-small">({finalQualityRating})</span>
               </div>
 
-              <div className="absolute right-4 top-4 z-10">
-                <LikeButton
-                  isFavourite={isFavourite}
-                  isAuthenticated={isAuthenticated}
-                  handleClick={toggleFavourite}
+              <div className="mb-2 flex items-start gap-1 text-sm">
+                <Icon
+                  icon="lucide:clock"
+                  width={16}
+                  className="e inline-flex h-4 w-4 shrink-0"
                 />
-              </div>
-              <div className="mt-2 flex items-center gap-2 text-sm">
-                <Icon icon="lucide:clock" width={15} />
                 <span>Open</span>
               </div>
-              <div className="mt-2 flex items-center gap-2 text-sm">
+
+              <div className="mb-2 flex items-start gap-1 text-sm">
                 <Icon
                   icon="lucide:map-pin"
                   width={16}
-                  className="flex-shrink-0"
+                  className="inline-flex h-4 w-4 shrink-0 "
                 />
                 <span className="truncate">{address}</span>
               </div>
 
-              {/* Link to the detailed page of the venue. 
-            On click, set clicked venue as active venue. */}
               <CardFooter>
                 <Link
-                  className="absolute bottom-3 right-4 z-10 text-sm text-blue-500"
+                  className="absolute bottom-3 right-2 z-10 text-sm text-blue-500"
                   onPress={() => {
                     setParamsAndNavigate(venue, 'venue');
                   }}
@@ -184,4 +190,4 @@ function ListItem({
   );
 }
 
-export default ListItem;
+export default VenueListCard;

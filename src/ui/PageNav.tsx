@@ -16,9 +16,11 @@ function PageNav() {
 
   return (
     <nav className="flex h-16 items-center justify-between bg-zinc-700 px-12">
-      <h3 className={styles.logoMain}>
-        <NavLink to="/">MapTheHeat</NavLink>
-      </h3>
+      {
+        <h3 className={styles.logoMain}>
+          <NavLink to="/">MapTheHeat</NavLink>
+        </h3>
+      }
       <ul className="flex items-center gap-4">
         <div className="text-sm">
           <AddVenueButton />
