@@ -56,7 +56,7 @@ function UserMenu() {
         </DropdownItem>
 
         <DropdownItem
-          key="profile"
+          key="notifications"
           onPress={() => navigate('/profile/notifications')}
           endContent={
             !isLoadingNotifications && notificationCount > 0 && notificationIcon
