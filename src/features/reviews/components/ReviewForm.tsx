@@ -116,7 +116,8 @@ function ReviewForm({ mode }: ReviewFormProps) {
     toast.error('Please fix the errors in the form');
   }
 
-  // Handles form submission for editing or creating review.
+  // Handles form submission for editing or creating review
+
   // Checks mode and presence of venue or review object before proceeding.
   async function formSubmit(formData: FormData) {
     if (mode === 'creating' && venue) {
