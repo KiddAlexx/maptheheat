@@ -3,10 +3,6 @@ import SearchAndFilterPanel from './SearchAndFilterPanel';
 import ListView from './VenueListView';
 import { useUserFavVenuesContext } from '@/context/UserFavVenuesContext';
 
-import { useVenues } from '../hooks/useVenues';
-import PaginationControls from '@/ui/PaginationControls';
-import AddVenueButton from '@/ui/AddVenueButton';
-
 interface VenueListContainerProps {
   mode: 'venue' | 'user';
   favouriteVenues?: string[];
@@ -21,39 +17,20 @@ function VenueListContainer({
   const useVenueContext =
     mode === 'venue' ? useVenueFilterContext : useUserFavVenuesContext;
 
-  const { pagination, filters, updatePageNumber } = useVenueContext();
-
-  const { totalCount } = useVenues({
-    filters,
-    favouriteVenues: mode === 'user' ? favouriteVenues : undefined,
-  });
-
   return (
     <>
-      <div className="rounded-xl bg-zinc-200 p-3">
+      <div className="mb-2 rounded-xl bg-zinc-200 p-3">
         <SearchAndFilterPanel
           useVenueContext={useVenueContext}
           favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
         />
       </div>
 
-      <PaginationControls
-        updatePageNumber={updatePageNumber}
-        pagination={pagination}
-        totalCount={totalCount}
-      />
-
       <ListView
         useVenueContext={useVenueContext}
         favouriteVenues={
           mode === 'user' ? favouriteVenues ?? undefined : undefined
         }
-      />
-
-      <PaginationControls
-        updatePageNumber={updatePageNumber}
-        pagination={pagination}
-        totalCount={totalCount}
       />
     </>
   );

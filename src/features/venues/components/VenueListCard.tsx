@@ -100,13 +100,13 @@ function VenueListCard({
 
   return (
     <li>
-      <button className="w-full" onClick={handleClick}>
+      <button className=" w-full" onClick={handleClick}>
         <Card
-          className="mb-2 w-full cursor-pointer bg-primary-50/50 shadow-md transition hover:bg-primary-50"
+          className="mb-2 h-48 w-full cursor-pointer bg-primary-50/50 shadow-md transition hover:bg-primary-50"
           radius="sm"
         >
           <div className="flex">
-            <div className="relative h-48 w-1/3">
+            <div className="relative h-48 w-1/3 ">
               <Image
                 className="h-full w-full object-cover"
                 src={thumbnailImage?.url || greyChilli}

@@ -28,7 +28,7 @@ function PaginationControls({
   }
 
   return (
-    <div className="p-2">
+    <div className="mb-2 flex lg:justify-center">
       <Pagination
         showControls
         total={pageCount}

@@ -29,7 +29,7 @@ function SearchAndFilterPanel({
         useVenueContext={useVenueContext}
         favouriteVenues={favouriteVenues}
       />
-      <div className="flex gap-3">
+      <div className="xs:flex-row flex flex-col-reverse gap-3">
         <VenueTypeFilter useVenueContext={useVenueContext} />
         <VenueSort useVenueContext={useVenueContext} />
       </div>

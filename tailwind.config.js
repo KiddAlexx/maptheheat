@@ -14,6 +14,9 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: '30rem',
+      },
       fontFamily: {
         sans: ['Roboto', 'sans-serif'], // overrides Tailwind's default sans
       },
