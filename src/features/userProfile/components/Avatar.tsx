@@ -6,12 +6,12 @@ interface AvatarProps {
   size?: string;
 }
 
-function Avatar({ userId, size = '3.5' }: AvatarProps) {
+function Avatar({ userId, size = '2.8' }: AvatarProps) {
   const { userProfile, isLoading } = useGetUserProfile(userId);
 
   return (
     <div
-      className="overflow-hidden rounded-full border-2 border-green-500 p-[2px]"
+      className="overflow-hidden rounded-full border-2 border-success-500 p-[2px]"
       style={{ width: `${size}rem`, height: `${size}rem` }}
     >
       <img

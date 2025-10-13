@@ -27,7 +27,12 @@ function AddVenueButton() {
   }
 
   return (
-    <Button onPress={handleAddVenue} radius="sm">
+    <Button
+      onPress={handleAddVenue}
+      radius="sm"
+      size="sm"
+      className="bg-primary-400 text-sm"
+    >
       Add new venue!
     </Button>
   );

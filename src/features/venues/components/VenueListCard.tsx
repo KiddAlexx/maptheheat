@@ -16,10 +16,10 @@ import LikeButton from '@/ui/LikeButton';
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
 import toast from 'react-hot-toast';
 import { useModalContext } from '@/context/ModalContext';
-import { useLocation } from 'react-router';
+import { useMatch } from 'react-router';
 import { Card, CardBody, CardFooter, Image, Link } from '@heroui/react';
 
-interface ListItemProps {
+interface VenueListCardProps {
   venue: Venue;
   handleClick: () => void;
   userId: string | null;
@@ -27,17 +27,16 @@ interface ListItemProps {
   favVenuesList?: string[] | null;
 }
 
-function ListItem({
+function VenueListCard({
   venue,
   handleClick,
   userId,
   isAuthenticated,
   favVenuesList,
-}: ListItemProps) {
+}: VenueListCardProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
-  const location = useLocation();
 
-  const isUserMode = location.pathname === '/profile/venues';
+  const isUserMode = useMatch('/profile/venues');
 
   const { openDialog } = useModalContext();
 
@@ -101,16 +100,17 @@ function ListItem({
 
   return (
     <li>
-      <button className="w-full" onClick={handleClick}>
+      <button className=" w-full" onClick={handleClick}>
         <Card
-          className="mb-2 w-full cursor-pointer border-r border-t border-s-violet-500 shadow-md outline-none transition hover:bg-slate-100"
+          className="mb-2 h-48 w-full cursor-pointer bg-primary-50/50 shadow-md transition hover:bg-primary-50"
           radius="sm"
         >
           <div className="flex">
-            <div className="relative h-48 w-1/3">
+            <div className="relative h-48 w-1/3 ">
               <Image
                 className="h-full w-full object-cover"
                 src={thumbnailImage?.url || greyChilli}
+                fallbackSrc={greyChilli}
                 alt={
                   thumbnailImage?.alt || 'a greyed out image of a chilli pepper'
                 }
@@ -119,11 +119,19 @@ function ListItem({
               />
             </div>
             <CardBody className="relative w-2/3">
-              <h3 className="mb-2 text-lg font-medium">{venueName}</h3>
+              <div className="mb-2 flex items-center justify-between">
+                <h3 className="text-lg font-medium">{venueName}</h3>
+
+                <LikeButton
+                  isFavourite={isFavourite}
+                  isAuthenticated={isAuthenticated}
+                  handleClick={toggleFavourite}
+                />
+              </div>
 
               {/* display flex is forced to override default display inline block
             of react rating - ensures icons allign correctly */}
-              <div className="flex items-center gap-1 [&>span]:!flex">
+              <div className="mb-2 flex -translate-x-[1px] gap-1 [&>span]:!flex">
                 <VenueRating
                   initialRating={finalHeatRating}
                   readonly
@@ -135,7 +143,8 @@ function ListItem({
                   {totalReviewCount === 1 ? 'review' : 'reviews'})
                 </span>
               </div>
-              <div className="mt-2 flex items-center gap-1">
+
+              <div className=" mb-2 flex items-start gap-1">
                 <Icon
                   className="text-yellow-600"
                   icon="lucide:star"
@@ -144,28 +153,27 @@ function ListItem({
                 <span className="text-small">({finalQualityRating})</span>
               </div>
 
-              <div className="absolute right-4 top-4 z-10">
-                <LikeButton
-                  isFavourite={isFavourite}
-                  isAuthenticated={isAuthenticated}
-                  handleClick={toggleFavourite}
+              <div className="mb-2 flex items-start gap-1 text-sm">
+                <Icon
+                  icon="lucide:clock"
+                  width={16}
+                  className="e inline-flex h-4 w-4 shrink-0"
                 />
-              </div>
-              <div className="mt-2 flex items-center gap-2 text-sm">
-                <Icon icon="lucide:clock" width={15} />
                 <span>Open</span>
               </div>
-              <div className="mt-2 flex items-center gap-2 text-sm">
-                <Icon icon="lucide:map-pin" width={16} />
-                <span>{address}</span>
+
+              <div className="mb-2 flex items-start gap-1 text-sm">
+                <Icon
+                  icon="lucide:map-pin"
+                  width={16}
+                  className="inline-flex h-4 w-4 shrink-0 "
+                />
+                <span className="truncate">{address}</span>
               </div>
 
-              {/* Link to the detailed page of the venue. 
-            On click, set clicked venue as active venue. */}
               <CardFooter>
                 <Link
-                  className="absolute bottom-3 right-4 z-10 text-sm"
-                  color="primary"
+                  className="absolute bottom-3 right-2 z-10 text-sm text-blue-500"
                   onPress={() => {
                     setParamsAndNavigate(venue, 'venue');
                   }}
@@ -182,4 +190,4 @@ function ListItem({
   );
 }
 
-export default ListItem;
+export default VenueListCard;

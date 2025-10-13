@@ -1,7 +1,7 @@
 import { Autocomplete, AutocompleteItem } from '@heroui/react';
 import { useUniqueCities } from '../hooks/useUniqueCities';
 import LoaderSpinner from '@/ui/LoaderSpinner';
-import { useLocation, useNavigate } from 'react-router';
+import { useMatch, useNavigate } from 'react-router';
 import { useUserCities } from '../hooks/useUserCities';
 import { VenueFilterContextType } from '@/context/VenueFilterContext';
 import { Key, UniqueCity } from '@/types/venueTypes';
@@ -24,8 +24,8 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
 
   // Determine "mode" based on url - used to differentiate between use
   // within profile view or map/venue view
-  const location = useLocation();
-  const isUserMode = location.pathname === '/profile/venues';
+
+  const isUserMode = useMatch('/profile/venues');
 
   // Ensure uniqueCity arrays have loaded
   if (isPendingCities || isLoadingUserCities) return;
@@ -36,7 +36,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
   isUserMode
     ? (finalCityList = [
         {
-          id: 'ALL_KEY',
+          cityId: 'ALL_KEY',
           city: 'All',
           country: 'favourites',
           coords: { lat: 0, lon: 0 },
@@ -56,7 +56,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
 
     if (!finalCityList) return;
     const selectedCityObj = finalCityList.find(
-      (cityObj) => cityObj.id == value
+      (cityObj) => cityObj.cityId == value
     );
     if (!selectedCityObj) return;
     const { city, coords, country } = selectedCityObj;
@@ -83,7 +83,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
     >
       {finalCityList.map((cityObj) => (
         // Using city + index as key for uniqueness in case of duplicate city names
-        <AutocompleteItem key={cityObj.id}>
+        <AutocompleteItem key={cityObj.cityId}>
           {`${cityObj.city} - ${cityObj.country}`}
         </AutocompleteItem>
       ))}

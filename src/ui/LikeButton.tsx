@@ -23,7 +23,7 @@ function LikeButton({
   iconFull = 'bi:heart-fill',
   iconEmpty = 'bi:heart',
   iconEmptyColor = 'text-gray-500',
-  iconFullColor = 'text-rose-500',
+  iconFullColor = 'text-danger-500',
 }: LikeButtonProps) {
   const { openModal } = useModalContext();
 

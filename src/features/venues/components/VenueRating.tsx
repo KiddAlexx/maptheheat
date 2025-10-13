@@ -24,7 +24,7 @@ function VenueRating({
           icon="f7:flame-fill"
           width={size}
           height={size}
-          className="text-orange-600"
+          className="text-primary-500"
         />
       ),
       empty: (
@@ -32,7 +32,7 @@ function VenueRating({
           icon="f7:flame-fill"
           width={size}
           height={size}
-          className="text-gray-500"
+          className="text-zinc-500"
         />
       ),
     },

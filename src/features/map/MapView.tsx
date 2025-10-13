@@ -40,6 +40,25 @@ function MapView() {
     return null;
   }
 
+  function InvalidateOnResize() {
+    const map = useMap();
+
+    useEffect(() => {
+      const container = map.getContainer();
+
+      // Recalculate container size on change / useful toggling view
+      const observer = new ResizeObserver(() => map.invalidateSize());
+      observer.observe(container);
+
+      // One extra pass after mount in case first paint was hidden
+      requestAnimationFrame(() => map.invalidateSize());
+
+      return () => observer.disconnect();
+    }, [map]);
+
+    return null;
+  }
+
   const createCustomIcon = () => {
     return new L.Icon({
       iconUrl: chilliPin,
@@ -77,6 +96,7 @@ function MapView() {
             </Marker>
           )
         )}
+        <InvalidateOnResize />
         <ChangeCenter lat={lat} lon={lon} />
       </MapContainer>
     </div>

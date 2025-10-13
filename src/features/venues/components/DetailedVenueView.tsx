@@ -1,6 +1,5 @@
 // React imports
 import { useNavigate, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
 
 // Hooks imports
 import { useVenue } from '../hooks/useVenue';
@@ -31,10 +30,12 @@ import ShareButton from '@/ui/ShareButton';
 import { canUserReview, checkPendingReviews } from '@/services/apiReviews';
 import { useGlobalError } from '@/context/ErrorContext';
 import { canUserAddImage } from '@/services/apiVenues';
+import { useUIContext } from '@/context/UIContext';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
   const { venueId } = useParams();
+  const { updateView } = useUIContext();
 
   const { openModal, openModalImages, openModalUpload, openDialog } =
     useModalContext();
@@ -149,7 +150,7 @@ function DetailedVenueView() {
         });
       } else {
         openDialog(
-          'You already have 6 or more pending venues. Please try again once these have been confirmed'
+          'You already have 6 or more pending images. Please try again once these have been confirmed'
         );
       }
     } catch (err) {
@@ -175,7 +176,7 @@ function DetailedVenueView() {
   }
 
   return (
-    <div className="p-3 text-gray-800">
+    <div className="p-3 text-gray-800 ">
       <div className="mb-3 ml-1 flex items-center justify-between">
         <div>
           <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>
@@ -197,11 +198,15 @@ function DetailedVenueView() {
           </div>
         </div>
         <Button
-          as={Link}
           color="primary"
           variant="flat"
           startContent={<Icon icon="lucide:map-pinned" />}
-          to={`/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`}
+          onPress={() => {
+            navigate(
+              `/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`
+            );
+            updateView('map');
+          }}
         >
           Back to Map
         </Button>

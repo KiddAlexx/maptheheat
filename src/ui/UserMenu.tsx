@@ -29,7 +29,7 @@ function UserMenu() {
   const { id } = user;
 
   const notificationIcon = (
-    <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white ring-1 ring-white">
+    <div className="absolute -right-[2px] -top-[2px] flex h-4 w-4 items-center justify-center rounded-full bg-success-500 text-xs text-success-foreground ring-1 ring-white">
       {notificationCount <= 99 ? notificationCount : '99+'}
     </div>
   );
@@ -56,7 +56,7 @@ function UserMenu() {
         </DropdownItem>
 
         <DropdownItem
-          key="profile"
+          key="notifications"
           onPress={() => navigate('/profile/notifications')}
           endContent={
             !isLoadingNotifications && notificationCount > 0 && notificationIcon

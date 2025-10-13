@@ -17,7 +17,7 @@ import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
 import DetailedVenueView from './features/venues/components/DetailedVenueView';
 import MapView from './features/map/MapView';
-import PageNav from './features/layout/PageNav';
+
 import ProtectedRoute from './components/ProtectedRoute';
 
 import ErrorModal from './ui/ErrorModal';
@@ -26,58 +26,66 @@ import ReviewForm from './features/reviews/components/ReviewForm';
 import AddNewVenue from './pages/AddNewVenue';
 
 import Profile from './pages/Profile';
-import UpdatePassword from './pages/UpdatePassword';
+
 import AppProviders from './AppProviders';
+import PageNav from './ui/PageNav';
 
 function App() {
   return (
     <AppProviders>
-      <PageNav />
-      <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route
-          path="/add-venue"
-          element={
-            <ProtectedRoute>
-              <AddNewVenue />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="update-password" element={<UpdatePassword />} />
-        <Route
-          path="/profile/:section?/:setting?"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="app" element={<AppLayout />}>
-          <Route index element={<Navigate replace to="map" />} />
-          <Route path="map/:city?/:venue?/:venueId?" element={<MapView />} />
-          <Route
-            path="venue/:city/:venue/:venueId"
-            element={<DetailedVenueView />}
-          />
-          <Route
-            path="venue/:city/:venue/reviews/new/:venueId"
-            element={
-              <ProtectedRoute>
-                <ReviewForm mode="creating" />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="venue/:city/:venue/reviews/edit/:reviewId"
-            element={
-              <ProtectedRoute>
-                <ReviewForm mode="editing" />
-              </ProtectedRoute>
-            }
-          />
-        </Route>
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
+      <div className="flex h-dvh flex-col">
+        <PageNav />
+        <div className="min-h-0 flex-1">
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route
+              path="/add-venue"
+              element={
+                <ProtectedRoute>
+                  <AddNewVenue />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/profile/:section?/:setting?"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="app" element={<AppLayout />}>
+              <Route index element={<Navigate replace to="map" />} />
+              <Route
+                path="map/:city?/:venue?/:venueId?"
+                element={<MapView />}
+              />
+              <Route
+                path="venue/:city/:venue/:venueId"
+                element={<DetailedVenueView />}
+              />
+              <Route
+                path="venue/:city/:venue/reviews/new/:venueId"
+                element={
+                  <ProtectedRoute>
+                    <ReviewForm mode="creating" />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="venue/:city/:venue/reviews/edit/:reviewId"
+                element={
+                  <ProtectedRoute>
+                    <ReviewForm mode="editing" />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </div>
+      </div>
       <ErrorModal />
       <ModalManager />
 
