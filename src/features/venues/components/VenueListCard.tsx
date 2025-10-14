@@ -154,20 +154,12 @@ function VenueListCard({
               </div>
 
               <div className="mb-2 flex items-start gap-1 text-sm">
-                <Icon
-                  icon="lucide:clock"
-                  width={16}
-                  className="e inline-flex h-4 w-4 shrink-0"
-                />
+                <Icon icon="lucide:clock" width={16} className="shrink-0" />
                 <span>Open</span>
               </div>
 
               <div className="mb-2 flex items-start gap-1 text-sm">
-                <Icon
-                  icon="lucide:map-pin"
-                  width={16}
-                  className="inline-flex h-4 w-4 shrink-0 "
-                />
+                <Icon icon="lucide:map-pin" width={16} className="shrink-0" />
                 <span className="truncate">{address}</span>
               </div>
 
