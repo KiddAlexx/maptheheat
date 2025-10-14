@@ -35,7 +35,7 @@ import { useUIContext } from '@/context/UIContext';
 function DetailedVenueView() {
   const navigate = useNavigate();
   const { venueId } = useParams();
-  const { updateView } = useUIContext();
+  const { updateView, isXSmallScreen } = useUIContext();
 
   const { openModal, openModalImages, openModalUpload, openDialog } =
     useModalContext();
@@ -85,6 +85,8 @@ function DetailedVenueView() {
       : 5;
 
   const totalReviewCount = totalReviews ?? 0;
+
+  const numImages = isXSmallScreen ? 4 : 2;
 
   const carouselImagesLg = venueImages?.map((image) => ({
     url: image.imagePath.lg,
@@ -177,14 +179,10 @@ function DetailedVenueView() {
 
   return (
     <div className="p-3 text-gray-800 ">
-      <div className="mb-3 ml-1 flex items-center justify-between">
+      <div className="mb-3 ml-1 flex items-end justify-between">
         <div>
           <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>
-          <div className="flex items-center gap-1">
-            <div className="flex items-center gap-1">
-              <Icon className="text-yellow-600" icon="lucide:star" width={22} />
-              <span className="text-small">({finalQualityRating})</span>
-            </div>
+          <div className="flex gap-2">
             {/* display flex is forced to override default display inline block
             of react rating - ensures icons allign correctly */}
             <div className="flex items-center gap-1 [&>span]:!flex">
@@ -195,21 +193,24 @@ function DetailedVenueView() {
                 {totalReviewCount === 1 ? 'review' : 'reviews'})
               </span>
             </div>
+            <div className="flex items-center gap-1">
+              <Icon className="text-yellow-600" icon="lucide:star" width={22} />
+              <span className="text-small">({finalQualityRating})</span>
+            </div>
           </div>
         </div>
-        <Button
-          color="primary"
-          variant="flat"
-          startContent={<Icon icon="lucide:map-pinned" />}
-          onPress={() => {
-            navigate(
-              `/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`
-            );
-            updateView('map');
-          }}
-        >
-          Back to Map
-        </Button>
+        <div className="mr-2 flex -translate-y-[2px] gap-2">
+          <ShareButton
+            title="Check out this place I found on Map The Heat!"
+            body={`Hey, \n\nI thought you’d like this venue I found on Map The Heat. \n\nCheck it out here:`}
+            shareUrl={`https://www.maptheheat.com/app/venue/${city}/${venueNameSlug}/${venueId}`}
+          />
+          <LikeButton
+            isFavourite={isFavourite}
+            isAuthenticated={isAuthenticated}
+            handleClick={toggleFavourite}
+          />
+        </div>
       </div>
       <article className="mb-5 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
         <div
@@ -222,10 +223,10 @@ function DetailedVenueView() {
         >
           {venueImages && venueImages.length > 0 ? (
             // Slice first 4 images and map over
-            venueImages.slice(0, 4).map((image: DetailedImage) => (
+            venueImages.slice(0, numImages).map((image: DetailedImage) => (
               <div
                 key={image.imageId}
-                className=" h-48 w-1/4 overflow-hidden rounded-xl "
+                className=" xs:w-1/4 h-48 w-1/2 overflow-hidden rounded-xl "
               >
                 <Image
                   className="h-full w-full  object-cover hover:scale-110"
@@ -249,46 +250,48 @@ function DetailedVenueView() {
           )}
         </div>
         {/* Temp data to test layout + styles !!!!!!!!!!!TO BE REPLACED!!!!!*/}
-        <div className=" mt-4 flex justify-between">
+        <div className=" mt-4 flex items-center justify-between">
           <div className="flex gap-2">
             {['Restaurant', 'Spanish', 'Mediterranean'].map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800"
+                className="flex h-6 items-center rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800"
               >
                 {tag}
               </span>
             ))}
           </div>
-          <div className="mr-2 flex gap-1">
-            <ShareButton
-              title="Check out this place I found on Map The Heat!"
-              body={`Hey, \n\nI thought you’d like this venue I found on Map The Heat. \n\nCheck it out here:`}
-              shareUrl={`https://www.maptheheat.com/app/venue/${city}/${venueNameSlug}/${venueId}`}
-            />
-            <LikeButton
-              isFavourite={isFavourite}
-              isAuthenticated={isAuthenticated}
-              handleClick={toggleFavourite}
-            />
-          </div>
+          <Button
+            className="hidden lg:flex"
+            color="primary"
+            variant="flat"
+            startContent={<Icon icon="lucide:map-pinned" />}
+            onPress={() => {
+              navigate(
+                `/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`
+              );
+              updateView('map');
+            }}
+          >
+            Back to Map
+          </Button>
         </div>
 
-        <div className="mt-5 flex items-center gap-2  ">
+        <div className="mt-5 flex items-start gap-2  ">
           <Icon icon="lucide:clock" width={18} />
           <span>Open</span>
         </div>
         {/* Calculate based on opening hours */}
-        <div className="mt-3 flex items-center gap-2">
-          <Icon icon="lucide:map-pin" width={18} />
+        <div className="mt-3 flex items-start gap-2">
+          <Icon icon="lucide:map-pin" width={18} className="shrink-0" />
           <span>{detailedAddress}</span>
         </div>
 
-        <div className="mt-3 flex items-center gap-2">
+        <div className="mt-3 flex items-start gap-2">
           <Icon icon="lucide:phone" width={18} />
           <span>{phoneNumber}</span>
         </div>
-        <div className="mb-6 mt-3 flex items-center gap-2">
+        <div className="mb-6 mt-3 flex items-start gap-2">
           <Icon icon="material-symbols:globe" width={18} />
           <a
             className="text-blue-500  hover:text-blue-400"

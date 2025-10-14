@@ -347,6 +347,11 @@ function VenueForm() {
                           message:
                             'Description must be at least 40 characters long',
                         },
+                        maxLength: {
+                          value: 500,
+                          message:
+                            'Description can not be more than 500 characters long',
+                        },
                       }}
                       render={({ field }) => (
                         <Textarea
