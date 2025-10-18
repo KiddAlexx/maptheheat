@@ -12,6 +12,7 @@ interface State {
 interface UIContextType extends State {
   isLargeScreen: boolean;
   isXSmallScreen: boolean;
+  isSmallScreen: boolean;
   updateView: (view: View) => void;
 }
 
@@ -49,10 +50,17 @@ function UIProvider({ children }: UIProviderProps) {
 
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
   const isXSmallScreen = useMediaQuery('(min-width: 480px)');
+  const isSmallScreen = useMediaQuery('(min-width: 640px)');
 
   return (
     <UIContext.Provider
-      value={{ isLargeScreen, isXSmallScreen, currentView, updateView }}
+      value={{
+        isLargeScreen,
+        isXSmallScreen,
+        isSmallScreen,
+        currentView,
+        updateView,
+      }}
     >
       {children}
     </UIContext.Provider>

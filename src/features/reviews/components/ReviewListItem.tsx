@@ -24,6 +24,7 @@ import {
   Image,
 } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
+import { useUIContext } from '@/context/UIContext';
 
 interface ReviewListItemProps {
   review: ReviewWithRelations;
@@ -58,6 +59,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
   const isUserMode = mode === 'user';
 
   const { openModalImages } = useModalContext();
+  const { isSmallScreen } = useUIContext();
 
   const carouselImagesLg = venueImages?.map((image) => ({
     url: image.imagePath.lg,
@@ -93,9 +95,9 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
   return isDeleting ? (
     <LoaderSpinner />
   ) : (
-    <article className="mt-2 flex  rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
+    <article className="relative mt-2 flex flex-col hyphens-auto rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md sm:flex-row">
       <header className="flex justify-between gap-2">
-        <div className="flex w-44 items-center gap-2">
+        <div className="flex  items-center gap-2 sm:w-44">
           {isUserMode ? (
             <div className="h-24">
               <Image
@@ -111,8 +113,8 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
           ) : (
             <Avatar userId={userId} />
           )}
-          <div>
-            <div className="mb-1">
+          <div className="flex gap-2 sm:block">
+            <div className="mb-1 flex flex-col justify-between">
               <h3 className="font-semibold">
                 {isUserMode ? venueName : username}
               </h3>
@@ -121,11 +123,11 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
                 {totalReviews === 1 ? 'review' : 'reviews'})
               </p>
             </div>
-            <div /* className="flex items-center gap-1" */>
-              <div className=" mt-2 [&>span]:!flex">
+            <div>
+              <div className=" -translate-x-[1px] sm:mt-2 [&>span]:!flex">
                 <VenueRating initialRating={heatRating} readonly size="20" />
               </div>
-              <div className="mt-2 flex items-center gap-1">
+              <div className="mt-1 flex items-start gap-1 sm:mt-2">
                 <Icon
                   className="text-yellow-600"
                   icon="lucide:star"
@@ -136,16 +138,17 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
             </div>
           </div>
         </div>
-        <Divider orientation="vertical" />
+        {isSmallScreen ? <Divider orientation="vertical" /> : null}
       </header>
+      {isSmallScreen ? null : (
+        <Divider className="mt-2" orientation="horizontal" />
+      )}
 
-      <section className="ml-5 flex w-full justify-between gap-1 p-2">
+      <section className="mr-4 flex w-full justify-between gap-1 p-2 sm:ml-5">
         <div>
           <h4 className=" mb-1 font-medium">{reviewTitle}</h4>
 
           <p className="mb-2">{reviewContent}</p>
-
-          {/* <Divider className="my-2" /> */}
 
           {reviewType === 'shop' && (
             <p>
@@ -160,25 +163,26 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
           <div className="mt-1 text-xs">
             <time dateTime={createdAt}>{formattedDate}</time>
           </div>
+          {venueImages?.length > 0 && (
+            <div
+              className="mt-4 w-32 shrink-0 cursor-pointer overflow-hidden rounded-l"
+              onClick={() =>
+                openModalImages('image-carousel', carouselImagesLg)
+              }
+            >
+              <Image
+                className="h-full w-full object-cover transition-transform hover:scale-110"
+                src={venueImages[0].imagePath.sm}
+                alt={venueImages[0].altText || 'Venue image'}
+                radius="sm"
+                removeWrapper
+              />
+            </div>
+          )}
         </div>
-
-        {venueImages?.length > 0 && (
-          <div
-            className="ml-4 w-48 shrink-0 cursor-pointer self-start overflow-hidden rounded-xl"
-            onClick={() => openModalImages('image-carousel', carouselImagesLg)}
-          >
-            <Image
-              className="h-full w-full object-cover transition-transform hover:scale-110"
-              src={venueImages[0].imagePath.sm}
-              alt={venueImages[0].altText || 'Venue image'}
-              radius="sm"
-              removeWrapper
-            />
-          </div>
-        )}
       </section>
       <Dropdown>
-        <DropdownTrigger>
+        <DropdownTrigger className="absolute right-0 top-1">
           <Button isIconOnly variant="light" className="ml-2">
             <Icon icon="lucide:more-vertical" className="h-5 w-5" />
           </Button>

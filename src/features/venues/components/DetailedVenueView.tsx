@@ -184,7 +184,7 @@ function DetailedVenueView() {
           <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>
           <div className="flex gap-2">
             {/* display flex is forced to override default display inline block
-            of react rating - ensures icons allign correctly */}
+              of react rating - ensures icons allign correctly */}
             <div className="flex items-center gap-1 [&>span]:!flex">
               <VenueRating initialRating={finalHeatRating} readonly />
 
