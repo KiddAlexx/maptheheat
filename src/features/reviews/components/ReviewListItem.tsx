@@ -25,6 +25,7 @@ import {
 } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useUIContext } from '@/context/UIContext';
+import ResponsiveImageGrid from '@/ui/ResponsiveImageGrid';
 
 interface ReviewListItemProps {
   review: ReviewWithRelations;
@@ -58,14 +59,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
   } = venueDetails;
   const isUserMode = mode === 'user';
 
-  const { openModalImages } = useModalContext();
   const { isSmallScreen } = useUIContext();
-
-  const carouselImagesLg = venueImages?.map((image) => ({
-    url: image.imagePath.lg,
-    alt: image.altText,
-    id: image.imageId,
-  }));
 
   // Fetch data from hooks
   const { isDeleting, deleteReview } = useDeleteReview();
@@ -160,24 +154,11 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
               Hottest Dish: <span>{hottestDish}</span>
             </p>
           )}
-          <div className="mt-1 text-xs">
+          <div className="mb-2 mt-1 text-xs">
             <time dateTime={createdAt}>{formattedDate}</time>
           </div>
           {venueImages?.length > 0 && (
-            <div
-              className="mt-4 w-32 shrink-0 cursor-pointer overflow-hidden rounded-l"
-              onClick={() =>
-                openModalImages('image-carousel', carouselImagesLg)
-              }
-            >
-              <Image
-                className="h-full w-full object-cover transition-transform hover:scale-110"
-                src={venueImages[0].imagePath.sm}
-                alt={venueImages[0].altText || 'Venue image'}
-                radius="sm"
-                removeWrapper
-              />
-            </div>
+            <ResponsiveImageGrid images={venueImages} height={7} />
           )}
         </div>
       </section>

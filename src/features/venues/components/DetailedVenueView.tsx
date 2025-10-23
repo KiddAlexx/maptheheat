@@ -169,7 +169,7 @@ function DetailedVenueView() {
   }
 
   return (
-    <div className="p-3 text-gray-800 ">
+    <div className="hyphens-auto p-3 text-gray-800">
       <div className="mb-3 ml-1 flex items-end justify-between">
         <div>
           <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>
@@ -263,10 +263,10 @@ function DetailedVenueView() {
           <Icon icon="lucide:phone" width={18} />
           <span>{phoneNumber}</span>
         </div>
-        <div className="mb-6 mt-3 flex items-start gap-2">
-          <Icon icon="material-symbols:globe" width={18} />
+        <div className="mb-6 mt-3 flex  items-start gap-2">
+          <Icon icon="material-symbols:globe" width={18} className="shrink-0" />
           <a
-            className="text-blue-500  hover:text-blue-400"
+            className="break-all text-blue-500 hover:text-blue-400"
             href={website}
             target="_blank"
             rel="noopener noreferrer"
