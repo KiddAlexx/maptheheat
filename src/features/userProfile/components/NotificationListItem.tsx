@@ -33,7 +33,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
               isDisabled={isUpdating || isDeleting}
             >
               <Icon
-                className="text-red-600"
+                className="text-danger-600"
                 icon="mingcute:delete-2-line"
                 width="20"
                 height="20"
@@ -50,7 +50,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
                 isDisabled={isUpdating || isDeleting}
               >
                 <Icon
-                  className="text-green-600"
+                  className="text-success-700"
                   icon="mingcute:check-fill"
                   width="20"
                   height="20"
