@@ -93,7 +93,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
       <header className="flex justify-between gap-2">
         <div className="flex  items-center gap-2 sm:w-44">
           {isUserMode ? (
-            <div className="h-24">
+            <div className="h-16 w-16">
               <Image
                 className="h-full w-full object-cover"
                 src={thumbnailImage?.url || greyChilli}
@@ -117,7 +117,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
                 {totalReviews === 1 ? 'review' : 'reviews'})
               </p>
             </div>
-            <div>
+            <div className="mr-5 sm:mr-0">
               <div className=" -translate-x-[1px] sm:mt-2 [&>span]:!flex">
                 <VenueRating initialRating={heatRating} readonly size="20" />
               </div>

@@ -42,23 +42,27 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
   });
 
   return reviews && reviews.length > 0 ? (
-    <div>
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Reviews</h2>
+    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 @container ">
+      <h2 className="row-start-1 text-2xl font-semibold ">Reviews</h2>
+      <div className="col-span-3 row-start-2 justify-self-center @2xl:col-span-1 @2xl:row-start-1">
         <PaginationControls
           pagination={pagination}
           updatePageNumber={updatePageNumber}
           totalCount={totalCount}
         />
+      </div>
+      <div className="col-start-3 row-start-1 w-48 justify-self-end">
         <ReviewSort updateSort={updateSort} resetSort={resetSort} />
       </div>
 
       {isLoadingReviews || fetchStatus == 'fetching' || isLoadingUser ? (
         <LoaderSpinner />
       ) : (
-        <ReviewListView reviews={reviews} mode={mode} />
+        <div className="col-span-3 ">
+          <ReviewListView reviews={reviews} mode={mode} />
+        </div>
       )}
-      <div className="mt-2 flex justify-center">
+      <div className="col-span-3 col-start-1 justify-self-center @2xl:col-span-1 @2xl:col-start-2">
         <PaginationControls
           pagination={pagination}
           updatePageNumber={updatePageNumber}

@@ -78,11 +78,13 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
 
   return (
     <div className="h-full overflow-y-scroll [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      <PaginationControls
-        updatePageNumber={updatePageNumber}
-        pagination={pagination}
-        totalCount={totalCount}
-      />
+      <div className="mb-2 flex lg:justify-center">
+        <PaginationControls
+          updatePageNumber={updatePageNumber}
+          pagination={pagination}
+          totalCount={totalCount}
+        />
+      </div>
       <ul>
         {/* Map through list of venues and render ListItem component for
         each venue. Onclick set clicked venue as active venue */}
@@ -97,11 +99,13 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
           />
         ))}
       </ul>
-      <PaginationControls
-        updatePageNumber={updatePageNumber}
-        pagination={pagination}
-        totalCount={totalCount}
-      />
+      <div className="mb-2 flex lg:justify-center">
+        <PaginationControls
+          updatePageNumber={updatePageNumber}
+          pagination={pagination}
+          totalCount={totalCount}
+        />
+      </div>
     </div>
   );
 }

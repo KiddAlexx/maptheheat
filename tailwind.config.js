@@ -1,5 +1,6 @@
 // tailwind.config.mjs
 import { heroui } from '@heroui/react';
+import containerQueries from '@tailwindcss/container-queries';
 import tailwindcssAnimate from 'tailwindcss-animate';
 
 /** @type {import('tailwindcss').Config} */
@@ -71,6 +72,7 @@ export default {
   },
   darkMode: ['class'],
   plugins: [
+    containerQueries,
     heroui({
       addCommonColors: true,
       themes: {
