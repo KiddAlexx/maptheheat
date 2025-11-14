@@ -33,7 +33,7 @@ function AddVenueButton() {
       size="sm"
       className="bg-primary-400 text-sm"
     >
-      Add new venue!
+      Add venue!
     </Button>
   );
 }

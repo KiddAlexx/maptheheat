@@ -9,6 +9,7 @@ import UserMenu from '@/ui/UserMenu';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useModalContext } from '@/context/ModalContext';
 import AddVenueButton from './AddVenueButton';
+import MapButton from './MapButton';
 
 function PageNav() {
   const { isAuthenticated } = useUser();
@@ -22,8 +23,12 @@ function PageNav() {
 
       <ul className="flex items-center gap-4">
         <div className="text-sm">
+          <MapButton />
+        </div>
+        <div className="text-sm">
           <AddVenueButton />
         </div>
+
         {/* Checks user login state
             Displays Login & Signup or Logout button */}
         {!isAuthenticated ? (

@@ -16,10 +16,13 @@ interface ReviewContainerProps {
 }
 
 function ReviewContainer({ mode }: ReviewContainerProps) {
+  const isUserMode = mode === 'user';
+  const isVenueMode = mode === 'venue';
   // Assigns which context to use for pagination and sorting
   // based on mode prop
-  const reviewContext =
-    mode === 'venue' ? useReviewSortContext : useUserReviewsContext;
+  const reviewContext = isVenueMode
+    ? useReviewSortContext
+    : useUserReviewsContext;
 
   // Fetch data from hooks
   const { sort, pagination, updatePageNumber, updateSort, resetSort } =
@@ -35,8 +38,8 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
     totalCount,
     reviews,
   } = useGetReviews({
-    venueId: mode === 'venue' ? venueId : undefined,
-    userId: mode === 'user' ? userId : undefined,
+    venueId: isVenueMode ? venueId : undefined,
+    userId: isUserMode ? userId : undefined,
     sort,
     pagination,
   });
