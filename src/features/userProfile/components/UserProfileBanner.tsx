@@ -11,10 +11,13 @@ function UserProfileBanner({ userProfile }: UserProfileBannerProps) {
   return (
     <header className="mb-4 flex items-center gap-3">
       <div>
-        <Avatar userId={userId} size="7" />
+        <Avatar
+          userId={userId}
+          className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24"
+        />
       </div>
-      <div>
-        <h2 className="text-2xl font-semibold">{username}</h2>
+      <div className="text-sm sm:text-base">
+        <h2 className="text-xl font-semibold md:text-2xl">{username}</h2>
         <div className="mt-2 flex gap-3">
           <div className="flex  gap-1">
             <Icon className="text-yellow-600" icon="lucide:star" width={18} />
