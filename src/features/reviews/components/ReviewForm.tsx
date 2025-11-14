@@ -181,20 +181,6 @@ function ReviewForm({ mode }: ReviewFormProps) {
                   {mode === 'creating' ? 'Leave a ' : 'Edit your'} review for{' '}
                   {venueName || venueNameReview}
                 </h2>
-
-                <Button
-                  color="primary"
-                  variant="flat"
-                  startContent={<Icon icon="lucide:map-pinned" />}
-                  onPress={() =>
-                    openDialog(
-                      'Do you want to discard this review?',
-                      naviagateToVenue
-                    )
-                  }
-                >
-                  Back to venue page
-                </Button>
               </div>
               <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-md">
                 <div>
@@ -370,15 +356,32 @@ function ReviewForm({ mode }: ReviewFormProps) {
                       )}
                     />
                   </div>
+                  <div className="flex items-center justify-end gap-3">
+                    <Button
+                      color="primary"
+                      variant="flat"
+                      radius="sm"
+                      /* startContent={<Icon icon="lucide:map-pinned" />} */
+                      onPress={() =>
+                        openDialog(
+                          'Do you want to discard this review?',
+                          naviagateToVenue
+                        )
+                      }
+                    >
+                      Cancel
+                    </Button>
 
-                  <Button
-                    disabled={isUpdating || isCreating}
-                    radius="sm"
-                    size="md"
-                    type="submit"
-                  >
-                    {mode === 'creating' ? 'Submit' : 'Edit'}
-                  </Button>
+                    <Button
+                      className="bg-success-400"
+                      disabled={isUpdating || isCreating}
+                      radius="sm"
+                      size="md"
+                      type="submit"
+                    >
+                      {mode === 'creating' ? 'Submit' : 'Edit'}
+                    </Button>
+                  </div>
                 </form>
               </div>
             </>
