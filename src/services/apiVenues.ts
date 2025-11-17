@@ -126,7 +126,7 @@ export async function getUserCitiesSupabase(
   });
 
   const citiesWithIds = data.map((cityObj: UniqueUserCity, index: number) => ({
-    id: index + 1,
+    cityId: index + 1,
     ...cityObj,
   }));
 

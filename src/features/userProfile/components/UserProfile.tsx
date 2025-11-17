@@ -44,6 +44,7 @@ function UserProfile() {
         aria-label="Options"
         selectedKey={selected}
         onSelectionChange={handleSelectionChange}
+        fullWidth
       >
         <Tab key={'reviews'} title="My Reviews">
           <ReviewContainer mode="user" />

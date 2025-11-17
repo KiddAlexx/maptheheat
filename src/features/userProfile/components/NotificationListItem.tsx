@@ -20,7 +20,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
   const { isDeleting, deleteUserNotification } = useDeleteUserNotification();
 
   return (
-    <article className="my-2 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
+    <article className="mb-3 mt-2 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
       <header className="flex justify-between">
         <h3 className="font-semibold">{title}</h3>
         <div>
@@ -33,7 +33,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
               isDisabled={isUpdating || isDeleting}
             >
               <Icon
-                className="text-red-600"
+                className="text-danger-600"
                 icon="mingcute:delete-2-line"
                 width="20"
                 height="20"
@@ -50,7 +50,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
                 isDisabled={isUpdating || isDeleting}
               >
                 <Icon
-                  className="text-green-600"
+                  className="text-success-700"
                   icon="mingcute:check-fill"
                   width="20"
                   height="20"

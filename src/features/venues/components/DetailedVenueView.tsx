@@ -17,7 +17,6 @@ import ReviewContainer from '../../reviews/components/ReviewContainer';
 import { Button, Divider, Image } from '@heroui/react';
 
 // Type imports
-import { DetailedImage } from '../../../types/venueTypes';
 
 // File imports
 import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
@@ -31,14 +30,14 @@ import { canUserReview, checkPendingReviews } from '@/services/apiReviews';
 import { useGlobalError } from '@/context/ErrorContext';
 import { canUserAddImage } from '@/services/apiVenues';
 import { useUIContext } from '@/context/UIContext';
+import ResponsiveImageGrid from '@/ui/ResponsiveImageGrid';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
   const { venueId } = useParams();
-  const { updateView, isXSmallScreen } = useUIContext();
+  const { updateView } = useUIContext();
 
-  const { openModal, openModalImages, openModalUpload, openDialog } =
-    useModalContext();
+  const { openModal, openModalUpload, openDialog } = useModalContext();
 
   const { isAuthenticated, user } = useUser();
   const userId = user?.id;
@@ -85,14 +84,6 @@ function DetailedVenueView() {
       : 5;
 
   const totalReviewCount = totalReviews ?? 0;
-
-  const numImages = isXSmallScreen ? 4 : 2;
-
-  const carouselImagesLg = venueImages?.map((image) => ({
-    url: image.imagePath.lg,
-    alt: image.altText,
-    id: image.imageId,
-  }));
 
   const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
 
@@ -178,13 +169,13 @@ function DetailedVenueView() {
   }
 
   return (
-    <div className="p-3 text-gray-800 ">
+    <div className="hyphens-auto p-3 text-gray-800">
       <div className="mb-3 ml-1 flex items-end justify-between">
         <div>
           <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>
           <div className="flex gap-2">
             {/* display flex is forced to override default display inline block
-            of react rating - ensures icons allign correctly */}
+              of react rating - ensures icons allign correctly */}
             <div className="flex items-center gap-1 [&>span]:!flex">
               <VenueRating initialRating={finalHeatRating} readonly />
 
@@ -213,42 +204,23 @@ function DetailedVenueView() {
         </div>
       </div>
       <article className="mb-5 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
-        <div
-          className="mb-3 flex cursor-pointer gap-1"
-          onClick={() =>
-            carouselImagesLg && carouselImagesLg.length > 0
-              ? openModalImages('image-carousel', carouselImagesLg)
-              : handleAddImages()
-          }
-        >
-          {venueImages && venueImages.length > 0 ? (
-            // Slice first 4 images and map over
-            venueImages.slice(0, numImages).map((image: DetailedImage) => (
-              <div
-                key={image.imageId}
-                className=" xs:w-1/4 h-48 w-1/2 overflow-hidden rounded-xl "
-              >
-                <Image
-                  className="h-full w-full  object-cover hover:scale-110"
-                  src={image.imagePath.sm}
-                  alt={image.altText}
-                  radius="sm"
-                  removeWrapper
-                />
-              </div>
-            ))
-          ) : (
-            <div className=" h-48 w-1/4  overflow-hidden rounded-xl ">
-              <Image
-                className="h-full w-full  object-cover hover:scale-110"
-                src={greyChilli}
-                alt="an greyed out image of a chilli pepper"
-                removeWrapper
-                radius="sm"
-              />
-            </div>
-          )}
-        </div>
+        {venueImages && venueImages.length > 0 ? (
+          <ResponsiveImageGrid images={venueImages} />
+        ) : (
+          <div
+            onClick={() => handleAddImages()}
+            className=" h-48 overflow-hidden rounded-xl "
+          >
+            <Image
+              className="h-full w-full  object-cover hover:scale-110"
+              src={greyChilli}
+              alt="an greyed out image of a chilli pepper"
+              removeWrapper
+              radius="sm"
+            />
+          </div>
+        )}
+
         {/* Temp data to test layout + styles !!!!!!!!!!!TO BE REPLACED!!!!!*/}
         <div className=" mt-4 flex items-center justify-between">
           <div className="flex gap-2">
@@ -291,10 +263,10 @@ function DetailedVenueView() {
           <Icon icon="lucide:phone" width={18} />
           <span>{phoneNumber}</span>
         </div>
-        <div className="mb-6 mt-3 flex items-start gap-2">
-          <Icon icon="material-symbols:globe" width={18} />
+        <div className="mb-6 mt-3 flex  items-start gap-2">
+          <Icon icon="material-symbols:globe" width={18} className="shrink-0" />
           <a
-            className="text-blue-500  hover:text-blue-400"
+            className="break-all text-blue-500 hover:text-blue-400"
             href={website}
             target="_blank"
             rel="noopener noreferrer"
@@ -309,7 +281,7 @@ function DetailedVenueView() {
           <h2 className="mb-2 text-lg font-medium">About</h2>
           <p className="text-gray-700">{description}</p>
         </div>
-        <div className="mb-7 flex gap-2">
+        <div className="mb-3 flex gap-2">
           <Button
             as="a"
             href={mapsDirectionsUrl}

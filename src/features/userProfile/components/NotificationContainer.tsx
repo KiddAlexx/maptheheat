@@ -35,29 +35,35 @@ function NotificationContainer({ userId }: NotificationContainerProps) {
 
   return userNotifications ? (
     <div>
-      <div className="flex justify-between">
-        <h2 className="text-2xl font-semibold">Notifications</h2>
-        <PaginationControls
-          pagination={pagination}
-          totalCount={totalCount}
-          updatePageNumber={handlePageChange}
-        />
-        <Switch
-          isSelected={isUnread}
-          onValueChange={handleSelectionChange}
-          size="sm"
-        >
-          Unread only
-        </Switch>
-      </div>
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 @container ">
+        <h2 className="row-start-1 text-2xl font-semibold ">Notifications</h2>
+        <div className="col-span-3 row-start-2 justify-self-center @2xl:col-span-1 @2xl:row-start-1">
+          <PaginationControls
+            pagination={pagination}
+            totalCount={totalCount}
+            updatePageNumber={handlePageChange}
+          />
+        </div>
+        <div className="col-start-3 row-start-1 justify-self-end">
+          <Switch
+            isSelected={isUnread}
+            onValueChange={handleSelectionChange}
+            size="sm"
+          >
+            Unread only
+          </Switch>
+        </div>
 
-      <NotificationListView userNotifications={userNotifications} />
-      <div className="mt-2 flex justify-center">
-        <PaginationControls
-          pagination={pagination}
-          totalCount={totalCount}
-          updatePageNumber={handlePageChange}
-        />
+        <div className="col-span-3 ">
+          <NotificationListView userNotifications={userNotifications} />
+        </div>
+        <div className="col-span-3 col-start-1 justify-self-center @2xl:col-span-1 @2xl:col-start-2">
+          <PaginationControls
+            pagination={pagination}
+            totalCount={totalCount}
+            updatePageNumber={handlePageChange}
+          />
+        </div>
       </div>
     </div>
   ) : null;

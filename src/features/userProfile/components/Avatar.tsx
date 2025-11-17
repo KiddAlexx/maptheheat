@@ -3,16 +3,15 @@ import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfil
 
 interface AvatarProps {
   userId: string;
-  size?: string;
+  className?: string;
 }
 
-function Avatar({ userId, size = '2.8' }: AvatarProps) {
+function Avatar({ userId, className = 'w-11 h-11' }: AvatarProps) {
   const { userProfile, isLoading } = useGetUserProfile(userId);
 
   return (
     <div
-      className="overflow-hidden rounded-full border-2 border-success-500 p-[2px]"
-      style={{ width: `${size}rem`, height: `${size}rem` }}
+      className={`overflow-hidden rounded-full border-2 border-success-500 p-[2px] ${className}`}
     >
       <img
         src={

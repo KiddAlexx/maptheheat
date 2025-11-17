@@ -10,8 +10,12 @@ interface State {
 }
 
 interface UIContextType extends State {
+  is2xlScreen: boolean;
+  isXlScreen: boolean;
   isLargeScreen: boolean;
+  isMediumScreen: boolean;
   isXSmallScreen: boolean;
+  isSmallScreen: boolean;
   updateView: (view: View) => void;
 }
 
@@ -47,12 +51,25 @@ function UIProvider({ children }: UIProviderProps) {
     dispatch({ type: 'update-view', payload: { currentView: view } });
   }
 
+  const is2xlScreen = useMediaQuery('(min-width: 1536px)');
+  const isXlScreen = useMediaQuery('(min-width: 1280px)');
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
+  const isMediumScreen = useMediaQuery('(min-width: 768px)');
+  const isSmallScreen = useMediaQuery('(min-width: 640px)');
   const isXSmallScreen = useMediaQuery('(min-width: 480px)');
 
   return (
     <UIContext.Provider
-      value={{ isLargeScreen, isXSmallScreen, currentView, updateView }}
+      value={{
+        is2xlScreen,
+        isXlScreen,
+        isLargeScreen,
+        isMediumScreen,
+        isXSmallScreen,
+        isSmallScreen,
+        currentView,
+        updateView,
+      }}
     >
       {children}
     </UIContext.Provider>

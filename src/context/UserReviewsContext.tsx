@@ -38,7 +38,7 @@ const UserReviewsContext = createContext<UserReviewsContextType | undefined>(
 
 const initialState: State = {
   sort: null,
-  pagination: { pageNumber: 1, maxResults: 5 },
+  pagination: { pageNumber: 1, maxResults: 2 },
 };
 
 function reducer(state: State, action: Action) {
