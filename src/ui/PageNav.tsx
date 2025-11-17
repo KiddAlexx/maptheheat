@@ -17,17 +17,17 @@ function PageNav() {
 
   return (
     <nav className="flex h-16 items-center justify-between bg-zinc-700 px-6">
-      {/* <h3 className={styles.logoMain}>
+      <h3 className={styles.logoMain}>
         <NavLink to="/">MapTheHeat</NavLink>
-      </h3> */}
+      </h3>
 
       <ul className="flex items-center gap-4">
-        {/*  <div className="text-sm">
+        <div className="text-sm">
           <MapButton />
         </div>
         <div className="text-sm">
           <AddVenueButton />
-        </div> */}
+        </div>
 
         {/* Checks user login state
             Displays Login & Signup or Logout button */}
