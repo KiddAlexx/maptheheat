@@ -58,7 +58,7 @@ function VenueForm() {
 
   const defaultFormValues: FormData = {
     city: '',
-    venueType: '',
+    venueType: 'restaurant', // *********temp set as restaurant to fix ts error **************
     venueName: '',
     address: '',
     postcode: '',
@@ -72,7 +72,7 @@ function VenueForm() {
     control,
     handleSubmit,
     formState: { errors },
-    reset,
+    /* reset, */
   } = useForm<FormData>({ defaultValues: defaultFormValues });
 
   // Fetches coordinates + detailed address from user input
