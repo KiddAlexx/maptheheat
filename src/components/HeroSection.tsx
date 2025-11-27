@@ -20,7 +20,7 @@ function HeroSection() {
           Your city not listed yet? Add your favourite restaurant or shop here!
         </p>
         <div className="mt-2 self-end">
-          <AddVenueButton />
+          <AddVenueButton isButton />
         </div>
       </div>
     </section>
