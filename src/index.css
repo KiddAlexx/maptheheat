@@ -72,7 +72,7 @@
 } */
 
 @layer base {
-  * body {
+  body {
     @apply bg-background font-sans text-foreground;
   }
 }
