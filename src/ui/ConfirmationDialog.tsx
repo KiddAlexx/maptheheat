@@ -8,16 +8,19 @@ function ConfirmationDialog() {
     confirmAction ? confirmAction() : closeModal();
   }
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
-      <p>{message}</p>
+    <form className="px-3 pt-4" onSubmit={(e) => handleSubmit(e)}>
+      <p className="mb-4">{message}</p>
+      <div className="flex w-full justify-end gap-2">
+        {confirmAction && (
+          <Button className="bg-danger-300" type="button" onPress={closeModal}>
+            Cancel
+          </Button>
+        )}
 
-      {confirmAction && (
-        <Button type="button" onPress={closeModal}>
-          Cancel
+        <Button className="bg-success-400" type="submit">
+          OK
         </Button>
-      )}
-
-      <Button type="submit">OK</Button>
+      </div>
     </form>
   );
 }
