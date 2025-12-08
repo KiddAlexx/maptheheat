@@ -37,7 +37,7 @@ function ForgotPasswordForm() {
   }
 
   return (
-    <div className="flex min-w-80 flex-col items-center justify-between gap-10">
+    <div className="flex w-80 flex-col items-center justify-between gap-10">
       <header>
         <h2 className="mt-5 text-3xl font-medium">Reset Password</h2>
       </header>

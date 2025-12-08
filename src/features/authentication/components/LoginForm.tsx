@@ -45,7 +45,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-w-80 flex-col items-center justify-between gap-10">
+    <div className="flex w-80 flex-col items-center justify-between gap-10">
       {isLoading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-white/60">
           <LoaderSpinner />
