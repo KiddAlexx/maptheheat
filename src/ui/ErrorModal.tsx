@@ -63,15 +63,23 @@ function ErrorModal({
   if (!finalErrorMessage || !modalRoot) return null;
 
   return createPortal(
-    <div className="fixed left-0 top-0 z-[9000] flex h-full w-full items-center justify-center bg-black/60">
+    <div className="fixed left-0 top-0 z-[90000] flex h-full w-full  items-center justify-center bg-black/60 p-3">
       <FocusTrap focusTrapOptions={{}}>
         <div
-          className="relative flex  items-center justify-center gap-3 rounded-xl bg-white p-5 shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)]"
+          className="relative flex flex-col items-center justify-center gap-5 rounded-xl bg-white p-5 shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)] sm:flex-row sm:gap-3"
           ref={modalRef}
         >
-          <Icon className="text-red-600" icon="ic:baseline-error" width="40" />
-          <p className="max-w-md">{finalErrorMessage}</p>
-          <Button onPress={handleClearError}>Close</Button>
+          <div className="flex items-center gap-3">
+            <Icon
+              className="shrink-0 text-danger-600"
+              icon="ic:baseline-error"
+              width="40"
+            />
+            <p className="max-w-md">{finalErrorMessage}</p>
+          </div>
+          <Button className="bg-success-400" onPress={handleClearError}>
+            Close
+          </Button>
         </div>
       </FocusTrap>
     </div>,

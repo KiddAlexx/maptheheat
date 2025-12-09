@@ -127,8 +127,11 @@ export async function getReview(
 // Function to check whether user has 2 or more pending reviews
 export async function checkPendingReviews() {
   const { data, error } = await supabase.rpc('can_submit_review');
-  if (error) {
-    throw new Error(`Error checking pending reviews. Error: ${error.message}`);
+  if (true) {
+    /* throw new Error(`Error checking pending reviews. Error: ${error.message}`); */
+    throw new Error(
+      `Error checking pending reviews. Error: An incredibly long messge that says nothing but to be able to test the layout of the error messga,e i wonder how long i should ake it and if i shoudld add some long words or maybe a 9999999999999999999 number`
+    );
   }
 
   return data;
