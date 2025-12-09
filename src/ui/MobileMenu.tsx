@@ -31,10 +31,11 @@ function MobileMenu() {
           radius="none"
           classNames={{
             closeButton: 'text-primary-900 text-2xl bg-primary-50 p-1 m-2',
+            wrapper: 'z-[9999]',
           }}
         >
           <DrawerContent>
-            <DrawerHeader className=" h-16 bg-zinc-700">
+            <DrawerHeader className=" h-16 bg-zinc-700 ">
               <MainLogo />
             </DrawerHeader>
 
