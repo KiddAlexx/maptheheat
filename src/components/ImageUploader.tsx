@@ -108,7 +108,7 @@ function ImageUploader({
   }
 
   return (
-    <div className={`${isModal && 'min-w-[36rem]'} w-full`}>
+    <div className={`${isModal && 'min-w-[18rem]'} w-full `}>
       {isUploading ? (
         <LoaderSpinner />
       ) : (
@@ -127,10 +127,15 @@ function ImageUploader({
       )}
       <h3>Add up to a maximum of {maxPhotos} photos</h3>
       <div className="flex justify-end gap-1">
-        <Button onPress={handleClose} isDisabled={isUploading}>
+        <Button
+          className="bg-danger-200"
+          onPress={handleClose}
+          isDisabled={isUploading}
+        >
           Not right now
         </Button>
         <Button
+          className="bg-success-400"
           id="firstElementToFocus"
           onPress={uploadFile}
           isDisabled={isUploading}

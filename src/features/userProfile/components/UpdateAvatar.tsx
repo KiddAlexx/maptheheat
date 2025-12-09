@@ -53,6 +53,7 @@ function UpdateAvatar() {
       <h3>Select a suitable avatar to upload</h3>
       <div className="mt-2 flex justify-end">
         <Button
+          className="bg-success-400"
           radius="sm"
           size="md"
           onPress={uploadFile}
