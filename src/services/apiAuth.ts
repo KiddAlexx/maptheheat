@@ -27,7 +27,7 @@ export async function loginGoogleApi() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: 'http://localhost:5173/app/map',
+      redirectTo: `${window.location.origin}/app/map`,
     },
   });
   if (error) throw new Error(`Google sign in failed:  ${error.message}`);
@@ -51,7 +51,7 @@ export async function updatePasswordApi({ password }: Password) {
 
 export async function recoverPasswordApi({ email }: Email) {
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: 'http://localhost:5173/update-password',
+    redirectTo: `${window.location.origin}/update-password`,
   });
   if (error) throw new Error(`Password recovery failed: ${error.message}`);
 
