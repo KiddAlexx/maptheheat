@@ -19,7 +19,6 @@ import { Review } from '@/types/reviewTypes';
 import { Button, Input, Textarea } from '@heroui/react';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import { useQueryClient } from '@tanstack/react-query';
-import { Icon } from '@iconify/react/dist/iconify.js';
 import { useModalContext } from '@/context/ModalContext';
 
 // Types

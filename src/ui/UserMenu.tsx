@@ -23,8 +23,7 @@ function UserMenu() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  if (isLoadingUser) return;
-  if (!user) return;
+  if (isLoadingUser || !user) return null;
 
   const { id } = user;
 
@@ -42,7 +41,10 @@ function UserMenu() {
       }}
     >
       <DropdownTrigger>
-        <button className="relative  transform transition hover:brightness-90">
+        <button
+          aria-label="Open user menu"
+          className="relative  transform transition hover:brightness-90"
+        >
           {!isLoadingNotifications &&
             notificationCount > 0 &&
             !isMenuOpen &&

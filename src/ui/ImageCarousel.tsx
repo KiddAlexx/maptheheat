@@ -11,13 +11,17 @@ function ImageCarousel() {
   const { images } = useModalContext();
   return (
     <Carousel>
-      <CarouselContent className="max-w-2xl">
+      <CarouselContent className="max-w-[80dvw]">
         {images.map((image) => (
           <CarouselItem
             key={image.id}
-            className="flex items-center justify-center"
+            className="flex items-center justify-center "
           >
-            <img src={image.url} alt={image.alt} />
+            <img
+              src={image.url}
+              alt={image.alt}
+              className="max-h-[75dvh] max-w-full object-contain"
+            />
           </CarouselItem>
         ))}
       </CarouselContent>

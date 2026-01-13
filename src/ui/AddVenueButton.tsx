@@ -1,16 +1,29 @@
 import { useGlobalError } from '@/context/ErrorContext';
 import { useModalContext } from '@/context/ModalContext';
+import { useUser } from '@/features/authentication/hooks/useUser';
 import { canUserAddVenue } from '@/services/apiVenues';
 import { Button } from '@heroui/react';
 import { useNavigate } from 'react-router-dom';
 
-function AddVenueButton() {
+interface AddVenueButtonProps {
+  className: string;
+  closeOtherModals?: () => void;
+}
+
+function AddVenueButton({ closeOtherModals, className }: AddVenueButtonProps) {
   const { setGlobalError } = useGlobalError();
-  const { openDialog } = useModalContext();
+  const { openDialog, openModal } = useModalContext();
   const navigate = useNavigate();
+  const { isAuthenticated } = useUser();
 
   // Check if user has 2 or more pending venues
   async function handleAddVenue() {
+    closeOtherModals?.();
+
+    if (!isAuthenticated) {
+      openModal('login');
+      return;
+    }
     try {
       const underVenueLimit = await canUserAddVenue();
       if (underVenueLimit) {
@@ -29,11 +42,11 @@ function AddVenueButton() {
   return (
     <Button
       onPress={handleAddVenue}
-      radius="sm"
       size="sm"
-      className="bg-primary-400 text-sm"
+      radius="sm"
+      className={className}
     >
-      Add venue!
+      Add Venue
     </Button>
   );
 }

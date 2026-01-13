@@ -1,44 +1,58 @@
 // React imports
 import { NavLink } from 'react-router-dom';
 
-// Style imports
-import styles from './PageNav.module.css';
-
 import { Button } from '@heroui/button';
 import UserMenu from '@/ui/UserMenu';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useModalContext } from '@/context/ModalContext';
 import AddVenueButton from './AddVenueButton';
-import MapButton from './MapButton';
+import MobileMenu from './MobileMenu';
+import MainLogo from './MainLogo';
 
 function PageNav() {
   const { isAuthenticated } = useUser();
   const { openModal } = useModalContext();
 
   return (
-    <nav className="flex h-16 items-center justify-between bg-zinc-700 px-6">
-      <h3 className={styles.logoMain}>
-        <NavLink to="/">MapTheHeat</NavLink>
-      </h3>
-
-      <ul className="flex items-center gap-4">
-        <div className="text-sm">
-          <MapButton />
-        </div>
-        <div className="text-sm">
-          <AddVenueButton />
-        </div>
+    <nav
+      aria-label="Main navigation"
+      className="flex h-16 items-center justify-between bg-zinc-700 px-4 sm:px-6 "
+    >
+      {/* Mobile menu */}
+      <div className="sm:hidden">
+        <MobileMenu />
+      </div>
+      {/* Desktop menu */}
+      <ul className=" flex w-full items-center justify-between">
+        <li className="hidden sm:block">
+          <NavLink to="/">
+            <MainLogo />
+          </NavLink>
+        </li>
+        <li>
+          <div className="hidden items-center gap-5 sm:flex">
+            <NavLink
+              to="/app/map"
+              className="text-xl font-medium text-primary-50 transition-colors hover:text-primary-300"
+            >
+              Map
+            </NavLink>
+            <AddVenueButton className="h-auto bg-transparent px-0 text-xl font-medium text-primary-50 hover:text-primary-300 data-[hover=true]:bg-transparent" />
+          </div>
+        </li>
 
         {/* Checks user login state
             Displays Login & Signup or Logout button */}
         {!isAuthenticated ? (
-          <>
-            <li>
-              <Button size="md" radius="sm" onPress={() => openModal('login')}>
-                Login / Sign Up
-              </Button>
-            </li>
-          </>
+          <li>
+            <Button
+              size="sm"
+              onPress={() => openModal('login')}
+              className="h-9 min-w-32 bg-success-300 text-base font-medium text-success-foreground "
+            >
+              Sign In
+            </Button>
+          </li>
         ) : (
           <li className="flex items-center">
             <UserMenu />
