@@ -6,10 +6,11 @@ import { Button } from '@heroui/react';
 import { useNavigate } from 'react-router-dom';
 
 interface AddVenueButtonProps {
-  isButton?: boolean;
+  className: string;
+  closeOtherModals?: () => void;
 }
 
-function AddVenueButton({ isButton = false }: AddVenueButtonProps) {
+function AddVenueButton({ closeOtherModals, className }: AddVenueButtonProps) {
   const { setGlobalError } = useGlobalError();
   const { openDialog, openModal } = useModalContext();
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ function AddVenueButton({ isButton = false }: AddVenueButtonProps) {
 
   // Check if user has 2 or more pending venues
   async function handleAddVenue() {
+    closeOtherModals?.();
+
     if (!isAuthenticated) {
       openModal('login');
       return;
@@ -41,11 +44,7 @@ function AddVenueButton({ isButton = false }: AddVenueButtonProps) {
       onPress={handleAddVenue}
       size="sm"
       radius="sm"
-      className={
-        isButton
-          ? 'h-9 min-w-32 bg-primary-300 text-base font-medium text-primary-foreground'
-          : 'h-auto bg-transparent px-0 text-xl font-medium text-primary-50 hover:text-primary-300 data-[hover=true]:bg-transparent'
-      }
+      className={className}
     >
       Add Venue
     </Button>

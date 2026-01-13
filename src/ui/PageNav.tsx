@@ -1,15 +1,13 @@
 // React imports
 import { NavLink } from 'react-router-dom';
 
-// Style imports
-import styles from './PageNav.module.css';
-
 import { Button } from '@heroui/button';
 import UserMenu from '@/ui/UserMenu';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useModalContext } from '@/context/ModalContext';
 import AddVenueButton from './AddVenueButton';
-import MapButton from './MapButton';
+import MobileMenu from './MobileMenu';
+import MainLogo from './MainLogo';
 
 function PageNav() {
   const { isAuthenticated } = useUser();
@@ -18,16 +16,28 @@ function PageNav() {
   return (
     <nav
       aria-label="Main navigation"
-      className="flex h-16 items-center justify-between bg-zinc-700 px-8 "
+      className="flex h-16 items-center justify-between bg-zinc-700 px-4 sm:px-6 "
     >
-      <ul className="flex w-full items-center justify-between">
-        <li className={styles.logoMain}>
-          <NavLink to="/">MapTheHeat</NavLink>
+      {/* Mobile menu */}
+      <div className="sm:hidden">
+        <MobileMenu />
+      </div>
+      {/* Desktop menu */}
+      <ul className=" flex w-full items-center justify-between">
+        <li className="hidden sm:block">
+          <NavLink to="/">
+            <MainLogo />
+          </NavLink>
         </li>
         <li>
-          <div className="flex items-center gap-5">
-            <MapButton />
-            <AddVenueButton />
+          <div className="hidden items-center gap-5 sm:flex">
+            <NavLink
+              to="/app/map"
+              className="text-xl font-medium text-primary-50 transition-colors hover:text-primary-300"
+            >
+              Map
+            </NavLink>
+            <AddVenueButton className="h-auto bg-transparent px-0 text-xl font-medium text-primary-50 hover:text-primary-300 data-[hover=true]:bg-transparent" />
           </div>
         </li>
 
