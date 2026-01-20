@@ -60,7 +60,7 @@ function VenueRating({
 
   return (
     <Rating
-      initialRating={initialRating || 5}
+      initialRating={initialRating || 0}
       onChange={(value: number) => handleRatingChange?.(value)}
       readonly={readonly}
       emptySymbol={empty}

@@ -1,23 +1,23 @@
-// Hooks imports
-import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
-
-// File imports
-import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
-
+// Third Party Imports
+import { useMatch } from 'react-router';
+import toast from 'react-hot-toast';
+import { Card, CardBody, CardFooter, Image } from '@heroui/react';
 import { Icon } from '@iconify/react';
 
-// Component imports
+// Hooks
+import { useParamsAndNavigate } from '@/hooks/useParamsAndNavigate';
+import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
+import { useModalContext } from '@/context/ModalContext';
+
+// Assets
+import greyChilli from '@/assets/chilli-explosion-grey-md.jpg';
+
+// Components
 import VenueRating from './VenueRating';
+import LikeButton from '@/ui/LikeButton';
 
 // Type imports
-import { Venue } from '../../../types/venueTypes';
-
-import LikeButton from '@/ui/LikeButton';
-import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
-import toast from 'react-hot-toast';
-import { useModalContext } from '@/context/ModalContext';
-import { useMatch } from 'react-router';
-import { Card, CardBody, CardFooter, Image, Link } from '@heroui/react';
+import type { Venue } from '@/types/venueTypes';
 
 interface VenueListCardProps {
   venue: Venue;
@@ -35,10 +35,10 @@ function VenueListCard({
   favVenuesList,
 }: VenueListCardProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
+  const { updateFavouriteVenue } = useUpdateFavouriteVenue();
+  const { openDialog } = useModalContext();
 
   const isUserMode = useMatch('/profile/venues');
-
-  const { openDialog } = useModalContext();
 
   const {
     venueName,
@@ -54,7 +54,17 @@ function VenueListCard({
 
   const isFavourite = favVenuesList?.includes(venueId);
 
-  const { updateFavouriteVenue } = useUpdateFavouriteVenue();
+  const finalHeatRating =
+    averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 0;
+
+  const finalQualityRating =
+    averageQualityRating != null
+      ? Math.round(averageQualityRating * 10) / 10
+      : 0;
+
+  // Create a unique id to be used on each main button
+  // Used to assign accessible name
+  const accMainButtonId = `select-venue-${venueId}`;
 
   function toggleFavourite() {
     if (!isAuthenticated || !userId) return;
@@ -90,19 +100,12 @@ function VenueListCard({
     }
   }
 
-  const finalHeatRating =
-    averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 5;
-
-  const finalQualityRating =
-    averageQualityRating != null
-      ? Math.round(averageQualityRating * 10) / 10
-      : 5;
-
   return (
     <li>
-      <button className=" w-full" onClick={handleClick}>
+      {/* <button className=" w-full" onClick={handleClick}> */}
+      <div>
         <Card
-          className="mb-2 h-48 w-full cursor-pointer bg-primary-50/50 shadow-md transition hover:bg-primary-50"
+          className="mb-2 h-48 w-full  bg-primary-50/50 shadow-md transition hover:bg-primary-50"
           radius="sm"
         >
           <div className="flex">
@@ -131,53 +134,71 @@ function VenueListCard({
 
               {/* display flex is forced to override default display inline block
             of react rating - ensures icons allign correctly */}
-              <div className="mb-2 flex -translate-x-[1px] gap-1 [&>span]:!flex">
-                <VenueRating
-                  initialRating={finalHeatRating}
-                  readonly
-                  size="20"
-                />
-
-                <span className="text-sm">
-                  ({totalReviewCount}{' '}
-                  {totalReviewCount === 1 ? 'review' : 'reviews'})
+              <button
+                type="button"
+                className=" w-full cursor-pointer"
+                onClick={handleClick}
+                aria-labelledby={accMainButtonId}
+              >
+                <span id={accMainButtonId} hidden>
+                  Select venue {venueName}
                 </span>
-              </div>
+                <div className="mb-2 flex -translate-x-[1px] gap-1 [&>span]:!flex">
+                  <VenueRating
+                    initialRating={finalHeatRating}
+                    readonly
+                    size="20"
+                  />
 
-              <div className=" mb-2 flex items-start gap-1">
-                <Icon
-                  className="text-yellow-600"
-                  icon="lucide:star"
-                  width={18}
-                />
-                <span className="text-small">({finalQualityRating})</span>
-              </div>
+                  <span className="text-sm">
+                    ({totalReviewCount}{' '}
+                    {totalReviewCount === 1 ? 'review' : 'reviews'})
+                  </span>
+                </div>
 
-              <div className="mb-2 flex items-start gap-1 text-sm">
-                <Icon icon="lucide:clock" width={16} className="shrink-0" />
-                <span>Open</span>
-              </div>
+                <div className=" mb-2 flex items-start gap-1">
+                  <Icon
+                    className="text-yellow-600"
+                    icon="lucide:star"
+                    width={18}
+                  />
+                  <span className="text-small">({finalQualityRating})</span>
+                </div>
 
-              <div className="mb-2 flex items-start gap-1 text-sm">
-                <Icon icon="lucide:map-pin" width={16} className="shrink-0" />
-                <span className="truncate">{address}</span>
-              </div>
+                <div className="mb-2 flex items-start gap-1 text-sm">
+                  <Icon icon="lucide:clock" width={16} className="shrink-0" />
+                  <span>Open</span>
+                </div>
+
+                <div className="mb-2 flex items-start gap-1 text-sm">
+                  <Icon icon="lucide:map-pin" width={16} className="shrink-0" />
+                  <span className="truncate">{address}</span>
+                </div>
+              </button>
 
               <CardFooter>
-                <Link
-                  className="absolute bottom-3 right-2 z-10 text-sm text-blue-500"
-                  onPress={() => {
+                <button
+                  type="button"
+                  className="absolute bottom-3 right-2 z-10 flex cursor-pointer items-center text-sm text-blue-500 underline hover:opacity-80"
+                  onClick={() => {
                     setParamsAndNavigate(venue, 'venue');
                   }}
-                  showAnchorIcon
                 >
-                  More information!
-                </Link>
+                  <span>More information</span>
+                  {
+                    <Icon
+                      icon="lucide:chevron-right"
+                      width="16"
+                      height="16"
+                      aria-hidden="true"
+                    />
+                  }
+                </button>
               </CardFooter>
             </CardBody>
           </div>
         </Card>
-      </button>
+      </div>
     </li>
   );
 }
