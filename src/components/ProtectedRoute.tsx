@@ -1,8 +1,11 @@
+// Hooks
 import { useNavigate } from 'react-router';
-import { useUser } from '../features/authentication/hooks/useUser';
+import { useUser } from '@/features/authentication/hooks/useUser';
+import { useModalContext } from '@/context/ModalContext';
 import { useEffect, ReactNode } from 'react';
-import LoaderSpinner from '../ui/LoaderSpinner';
-import { useModalContext } from '../context/ModalContext';
+
+// Components
+import LoaderSpinner from '@/ui/LoaderSpinner';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -24,8 +27,6 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
         fetchStatus !== 'fetching' &&
         !modalOpen
       ) {
-        navigate('/app/map');
-
         openModal('login');
       }
     },
@@ -38,7 +39,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
   // 4. If there is an authenticated user then render component
 
   if (isAuthenticated) return children;
-  return <div></div>;
+  return null;
 }
 
 export default ProtectedRoute;
