@@ -34,7 +34,9 @@ function App() {
   return (
     <AppProviders>
       <div className="flex h-dvh flex-col">
-        <PageNav />
+        <header>
+          <PageNav />
+        </header>
         <div className="min-h-0 flex-1">
           <Routes>
             <Route path="/" element={<Homepage />} />

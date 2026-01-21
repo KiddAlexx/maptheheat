@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createVenueImage } from '../../../services/apiVenues';
+import { createVenueImage } from '@/services/apiVenues';
 import toast from 'react-hot-toast';
 
 // Type Imports
-import { ImageUploadParams } from '../../../types/venueTypes';
+import type { ImageUploadParams } from '@/types/venueTypes';
 
 export function useUpdateVenueImage() {
   const queryClient = useQueryClient();
@@ -12,6 +12,7 @@ export function useUpdateVenueImage() {
     mutate: uploadImageRef,
     isPending: isUploading,
     isSuccess: fileUploaded,
+    error: uploadError,
   } = useMutation<void, Error, ImageUploadParams>({
     mutationFn: async ({
       venueId,
@@ -38,9 +39,6 @@ export function useUpdateVenueImage() {
         queryKey: ['reviews', variables.venueId],
       });
     },
-    onError: (err) => {
-      toast.error(err.message);
-    },
   });
-  return { uploadImageRef, isUploading, fileUploaded };
+  return { uploadImageRef, isUploading, fileUploaded, uploadError };
 }
