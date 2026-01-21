@@ -1,20 +1,25 @@
+// Third Party Imports
 import { Controller, useForm } from 'react-hook-form';
+
+// Hooks
 import { useEmailSignup } from '../hooks/useEmailSignup';
-import LoaderSpinner from '../../../ui/LoaderSpinner';
-import { Input } from '@heroui/input';
-import { Button } from '@heroui/button';
-import { Link } from '@heroui/link';
-import { useModalContext } from '../../../context/ModalContext';
-import { Divider } from '@heroui/divider';
+import { useModalContext } from '@/context/ModalContext';
+import { useGlobalError } from '@/context/ErrorContext';
+
+// Assets
+
+// Components
+import { Input, Button, Link, Divider } from '@heroui/react';
+import LoaderSpinner from '@/ui/LoaderSpinner';
+
+interface FormData {
+  email: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
 
 function SignupForm() {
-  interface FormData {
-    email: string;
-    username: string;
-    password: string;
-    confirmPassword: string;
-  }
-
   const {
     control,
     handleSubmit,
@@ -31,7 +36,9 @@ function SignupForm() {
   });
 
   const { signupEmail, isPending: isPendingEmail } = useEmailSignup();
-  const { openModal, closeModal } = useModalContext();
+  const { openModal, openDialog } = useModalContext();
+
+  const { setGlobalError } = useGlobalError();
 
   function formSubmit(formData: FormData) {
     const { email, password } = formData;
@@ -40,9 +47,14 @@ function SignupForm() {
     signupEmail(
       { email, password },
       {
-        onSettled: () => {
+        onSuccess: () => {
+          openDialog(
+            'Account successfully created! Please check your emails and verify your account'
+          );
           reset();
-          closeModal();
+        },
+        onError: (err) => {
+          setGlobalError(err.message);
         },
       }
     );
@@ -152,7 +164,7 @@ function SignupForm() {
             size="lg"
             type="submit"
           >
-            Confirm Account
+            Create Account
           </Button>
         </div>
       </form>

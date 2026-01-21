@@ -1,20 +1,25 @@
-import { useModalContext } from '@/context/ModalContext';
-import { Button, Input, Link } from '@heroui/react';
+// Third Party Imports
 import { Controller, useForm } from 'react-hook-form';
+
+// Hooks
+import { useModalContext } from '@/context/ModalContext';
 import { useRecoverPassword } from '../hooks/useRecoverPassword';
 import { useGlobalError } from '@/context/ErrorContext';
 
-function ForgotPasswordForm() {
-  interface FormData {
-    email: string;
-  }
+// Components
+import { Button, Input, Link } from '@heroui/react';
 
+interface FormData {
+  email: string;
+}
+
+function ForgotPasswordForm() {
   const { control, handleSubmit, formState } = useForm<FormData>();
+  const { errors } = formState;
+
   const { openModal, openDialog } = useModalContext();
   const { setGlobalError } = useGlobalError();
   const { recoverPassword } = useRecoverPassword();
-
-  const { errors } = formState;
 
   function formSubmit(formData: FormData) {
     const { email } = formData;
@@ -77,9 +82,9 @@ function ForgotPasswordForm() {
       </form>
 
       <footer className="mb-2 flex gap-2">
-        <p>Oh! I remembered it! Back to - </p>
+        <p>Oh! I remembered it!</p>
         <Link underline="hover" size="md" onPress={() => openModal('login')}>
-          Login
+          Back to Login
         </Link>
       </footer>
     </div>

@@ -1,17 +1,26 @@
-import { Input, Link, Button, Divider } from '@heroui/react';
+// Third Party Imports
 import { Controller, useForm } from 'react-hook-form';
-import googleBtnLight from '../../../assets/btn_google_light_normal_ios.svg';
+
+// React imports
+
+// Hooks
 import { useEmailLogin } from '../hooks/useEmailLogin';
 import { useGoogleLogin } from '../hooks/useGoogleLogin';
 import { useModalContext } from '@/context/ModalContext';
+
+// Assets
+import googleBtnLight from '@/assets/btn_google_light_normal_ios.svg';
+
+// Components
 import LoaderSpinner from '@/ui/LoaderSpinner';
+import { Input, Link, Button, Divider } from '@heroui/react';
+
+interface FormData {
+  email: string;
+  password: string;
+}
 
 function LoginForm() {
-  interface FormData {
-    email: string;
-    password: string;
-  }
-
   const {
     control,
     handleSubmit,
@@ -138,8 +147,8 @@ function LoginForm() {
             type="button"
             onPress={() => loginGoogle()}
           >
-            <img src={googleBtnLight} alt="Google logo" />
-            Sign In With Google
+            <img src={googleBtnLight} alt="" aria-hidden="true" />
+            Sign in with Google
           </Button>
         </div>
       </form>
