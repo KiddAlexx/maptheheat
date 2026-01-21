@@ -2,8 +2,10 @@
 
 // React imports
 import { createContext, ReactNode, useContext, useReducer } from 'react';
-import { ReviewSort } from '@/types/reviewTypes';
-import { PaginationControlsParams } from '@/ui/PaginationControls';
+
+// Type imports
+import type { ReviewSort } from '@/types/reviewTypes';
+import type { PaginationControlsParams } from '@/ui/PaginationControls';
 
 // Data types
 
@@ -12,7 +14,7 @@ interface State {
   pagination: PaginationControlsParams;
 }
 
-interface ReviewFilterContextType extends State {
+interface ReviewSortContextType extends State {
   updateSort: (sortBy: ReviewSort) => void;
   resetSort: () => void;
   updatePageNumber: (pageNumber: number) => void;
@@ -23,11 +25,11 @@ type Action =
   | { type: 'reset-sort' }
   | { type: 'update-page'; payload: number };
 
-interface ReviewFilterProviderProps {
+interface ReviewSortProviderProps {
   children: ReactNode;
 }
 
-const ReviewSortContext = createContext<ReviewFilterContextType | undefined>(
+const ReviewSortContext = createContext<ReviewSortContextType | undefined>(
   undefined
 );
 
@@ -77,7 +79,7 @@ function reducer(state: State, action: Action) {
   }
 }
 
-function ReviewSortProvider({ children }: ReviewFilterProviderProps) {
+function ReviewSortProvider({ children }: ReviewSortProviderProps) {
   const [{ sort, pagination }, dispatch] = useReducer(reducer, initialState);
 
   // Function to update sort
