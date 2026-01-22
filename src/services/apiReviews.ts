@@ -150,7 +150,7 @@ export async function canUserReview(venueId: string) {
 }
 
 // Function to create a new review
-export async function createReview(newReview: NewReview) {
+export async function createReviewApi(newReview: NewReview) {
   const convertedReview = decamelizeKeys(newReview);
   const { data, error } = await supabase
     .from('venue_reviews')
