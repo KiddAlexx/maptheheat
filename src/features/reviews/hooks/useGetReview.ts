@@ -8,7 +8,7 @@ import { Review } from '@/types/reviewTypes';
 
 export function useGetReview(reviewId?: string, isEnabled = true) {
   const {
-    isLoading,
+    isPending,
     data: review,
     error,
   } = useQuery<Review>({
@@ -17,5 +17,5 @@ export function useGetReview(reviewId?: string, isEnabled = true) {
     enabled: !!reviewId && isEnabled,
   });
 
-  return { isLoading, error, review };
+  return { isPending, error, review };
 }

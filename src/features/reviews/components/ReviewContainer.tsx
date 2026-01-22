@@ -18,6 +18,7 @@ interface ReviewContainerProps {
 function ReviewContainer({ mode }: ReviewContainerProps) {
   const isUserMode = mode === 'user';
   const isVenueMode = mode === 'venue';
+
   // Assigns which context to use for pagination and sorting
   // based on mode prop
   const reviewContext = isVenueMode
@@ -28,13 +29,17 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
   const { sort, pagination, updatePageNumber, updateSort, resetSort } =
     reviewContext();
   const { venueId } = useParams();
-  const { user, isLoading: isLoadingUser, fetchStatus } = useUser();
+  const {
+    user,
+    isPending: isPendingUser,
+    isFetching: isFetchingUser,
+  } = useUser();
   const userId = user?.id;
 
   // Fetch reviews - use mode prop to conditionally pass either
   // venueId or userId
   const {
-    isLoading: isLoadingReviews,
+    isPending: isPendingReviews,
     totalCount,
     reviews,
   } = useGetReviews({
@@ -58,7 +63,7 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
         <ReviewSort updateSort={updateSort} resetSort={resetSort} />
       </div>
 
-      {isLoadingReviews || fetchStatus == 'fetching' || isLoadingUser ? (
+      {isPendingReviews || isFetchingUser || isPendingUser ? (
         <LoaderSpinner />
       ) : (
         <div className="col-span-3 ">

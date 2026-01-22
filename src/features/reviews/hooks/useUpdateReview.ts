@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateReview as updateReviewApi } from '../../../services/apiReviews';
+import { updateReviewApi } from '../../../services/apiReviews';
 import toast from 'react-hot-toast';
 import { EditformData } from '../components/ReviewForm';
 

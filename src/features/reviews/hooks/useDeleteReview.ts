@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteReview as deleteReviewApi } from '../../../services/apiReviews';
+import { deleteReviewApi } from '../../../services/apiReviews';
 import toast from 'react-hot-toast';
 
 export function useDeleteReview() {

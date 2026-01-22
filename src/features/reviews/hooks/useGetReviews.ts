@@ -20,7 +20,7 @@ export function useGetReviews({
 
   const queryClient = useQueryClient();
 
-  const { isLoading, data, error } = useQuery<ReviewsResponse>({
+  const { isPending, data, error } = useQuery<ReviewsResponse>({
     queryKey: ['reviews', venueId, userId, sort, pagination],
     queryFn: () => getReviews({ venueId, userId, sort, pagination }),
     placeholderData: keepPreviousData,
@@ -45,5 +45,5 @@ export function useGetReviews({
       queryFn: () => getReviews({ venueId, userId, sort, pagination: prev }),
     });
   }
-  return { error, isLoading, reviews, totalCount };
+  return { error, isPending, reviews, totalCount };
 }

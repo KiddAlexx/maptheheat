@@ -85,7 +85,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
   // For instances where review does not exist.
   const { reviewId: reviewIdParam } = useParams();
 
-  const { isLoading: isLoadingReview, review } = useGetReview(
+  const { isPending: isPendingReview, review } = useGetReview(
     reviewIdParam,
     mode === 'editing'
   );
@@ -98,7 +98,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
 
   // Effect to set default input values to current review values in editing mode.
   useEffect(() => {
-    if (mode === 'editing' && review && !isLoadingReview) {
+    if (mode === 'editing' && review && !isPendingReview) {
       reset({
         hottestSauce: review.hottestSauce || '',
         hottestDish: review.hottestDish || '',
@@ -108,7 +108,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
     }
     setHeatRating(review?.heatRating || 5);
     setQualityRating(review?.qualityRating || 5);
-  }, [mode, review, reset, isLoadingReview]);
+  }, [mode, review, reset, isPendingReview]);
 
   // Toast for form errors
   function toastFormError() {
@@ -169,7 +169,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
 
   return (
     <>
-      {isLoadingReview || isLoadingVenue ? (
+      {isPendingReview || isLoadingVenue ? (
         <LoaderSpinner />
       ) : (
         <div className="m-3">

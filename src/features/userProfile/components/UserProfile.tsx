@@ -12,7 +12,7 @@ import { Key } from '@/types/venueTypes';
 import NotificationContainer from './NotificationContainer';
 
 function UserProfile() {
-  const { user, isLoading: isLoadingUser, fetchStatus } = useUser();
+  const { user, isPending: isPendingUser, isFetching } = useUser();
 
   // Extract user id if present and use to fetch userProfile
   const userId = user?.id;
@@ -26,7 +26,7 @@ function UserProfile() {
   // State for currently active Tab
   const [selected, setSelected] = useState<Key>(section || 'reviews');
 
-  if (fetchStatus == 'fetching' || isLoadingUser || isLoadingProfile || !userId)
+  if (isFetching || isPendingUser || isLoadingProfile || !userId)
     return <LoaderSpinner />;
 
   const { favouriteVenues } = userProfile;
