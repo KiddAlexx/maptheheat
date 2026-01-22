@@ -26,6 +26,9 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      colors: {
+        ring: 'hsl(var(--heroui-primary) / <alpha-value>)',
+      },
       /*  colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -78,6 +81,7 @@ export default {
       themes: {
         light: {
           colors: {
+            focus: 'rgba(246, 138, 81, 1  )',
             primary: {
               50: '#fef5ee',
               100: '#fee9d6',

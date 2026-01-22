@@ -7,7 +7,8 @@ import { useRecoverPassword } from '../hooks/useRecoverPassword';
 import { useGlobalError } from '@/context/ErrorContext';
 
 // Components
-import { Button, Input, Link } from '@heroui/react';
+import { Button, Input } from '@heroui/react';
+import LoaderSpinner from '@/ui/LoaderSpinner';
 
 interface FormData {
   email: string;
@@ -19,7 +20,7 @@ function ForgotPasswordForm() {
 
   const { openModal, openDialog } = useModalContext();
   const { setGlobalError } = useGlobalError();
-  const { recoverPassword } = useRecoverPassword();
+  const { recoverPassword, isPending } = useRecoverPassword();
 
   function formSubmit(formData: FormData) {
     const { email } = formData;
@@ -42,7 +43,12 @@ function ForgotPasswordForm() {
   }
 
   return (
-    <div className="flex w-80 flex-col items-center justify-between gap-10">
+    <div className="relative flex w-80 flex-col items-center justify-between gap-8">
+      {isPending && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-white/60">
+          <LoaderSpinner />
+        </div>
+      )}
       <header>
         <h2 className="mt-5 text-3xl font-medium">Reset Password</h2>
       </header>
@@ -75,17 +81,28 @@ function ForgotPasswordForm() {
         </div>
 
         <div className="mt-6">
-          <Button className="w-full" radius="sm" size="lg" type="submit">
+          <Button
+            isDisabled={isPending}
+            className="w-full"
+            radius="sm"
+            size="lg"
+            type="submit"
+          >
             Reset Password
           </Button>
         </div>
       </form>
 
-      <footer className="mb-2 flex gap-2">
+      <footer className="mb-2 flex items-center gap-2">
         <p>Oh! I remembered it!</p>
-        <Link underline="hover" size="md" onPress={() => openModal('login')}>
+        <button
+          disabled={isPending}
+          type="button"
+          className="flex items-center rounded-xl p-1 text-primary-500 underline hover:opacity-80"
+          onClick={() => openModal('login')}
+        >
           Back to Login
-        </Link>
+        </button>
       </footer>
     </div>
   );

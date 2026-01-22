@@ -41,6 +41,7 @@ export async function updateEmailApi({ email }: Email) {
   if (error) throw new Error(`Email update failed: ${error.message}`);
   return data;
 }
+
 export async function updatePasswordApi({ password }: Password) {
   const { data, error } = await supabase.auth.updateUser({
     password,
