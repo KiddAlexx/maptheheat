@@ -1,23 +1,27 @@
+// Third Party Imports
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet';
+
 // React imports
 import { useEffect } from 'react';
 
-// Third party imports
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import L from 'leaflet';
-import chilliPin from '../../assets/chillipin.png';
+// Hooks
+import { useVenueFilterContext } from '@/context/VenueFilterContext';
+import { useVenues } from '../venues/hooks/useVenues';
+import { useSearchParams } from 'react-router-dom';
+
+// Assets
+import chilliPin from '@/assets/chillipin.png';
+
+// Components
 import MapPopupContent from './MapPopupContent';
+import LoaderSpinner from '@/ui/LoaderSpinner';
+
+// Type imports
+import type { Coords } from '@/types/venueTypes';
 
 // Style imports
 import styles from './MapView.module.css';
-
-// Type imports
-import { Coords } from '../../types/venueTypes';
-
-// Hooks imports
-import { useVenues } from '../venues/hooks/useVenues';
-import { useSearchParams } from 'react-router-dom';
-import { useVenueFilterContext } from '@/context/VenueFilterContext';
-import LoaderSpinner from '@/ui/LoaderSpinner';
 
 function MapView() {
   const [searchParams] = useSearchParams();
@@ -70,7 +74,7 @@ function MapView() {
 
   // Render the map with markers for each venue and center it based on the active venue or default coordinates.
   return (
-    <div className={styles.mapContainer}>
+    <div className={styles.mapContainer} aria-label="Venue map">
       <MapContainer
         className={styles.map}
         center={[lat, lon]}
@@ -81,10 +85,10 @@ function MapView() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
         />
-        {venues?.map((venue) =>
-          isLoadingVenues ? (
-            <LoaderSpinner />
-          ) : (
+        {isLoadingVenues ? (
+          <LoaderSpinner />
+        ) : (
+          venues?.map((venue) => (
             <Marker
               key={venue.venueId}
               position={[Number(venue.coords.lat), Number(venue.coords.lon)]}
@@ -94,7 +98,7 @@ function MapView() {
                 <MapPopupContent venue={venue} />
               </Popup>
             </Marker>
-          )
+          ))
         )}
         <InvalidateOnResize />
         <ChangeCenter lat={lat} lon={lon} />
