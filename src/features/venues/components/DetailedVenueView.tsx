@@ -47,14 +47,14 @@ function DetailedVenueView() {
   const favVenuesList = userProfile?.favouriteVenues || null;
   const isFavourite = favVenuesList?.includes(venueId);
 
-  const { isLoading: isLoadingReviews } = useGetReviews({ venueId });
+  const { isPending: isPendingReviews } = useGetReviews({ venueId });
   const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
   const { setGlobalError } = useGlobalError();
   const { updateFavouriteVenue } = useUpdateFavouriteVenue();
 
   if (!venueId || !venue) return null;
 
-  if (isLoadingVenue || isLoadingReviews) {
+  if (isLoadingVenue || isPendingReviews) {
     return <LoaderSpinner />;
   }
 

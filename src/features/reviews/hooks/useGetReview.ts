@@ -11,11 +11,12 @@ export function useGetReview(reviewId?: string, isEnabled = true) {
     isPending,
     data: review,
     error,
+    isFetching,
   } = useQuery<Review>({
     queryKey: ['review', reviewId],
     queryFn: () => getReview(reviewId!),
     enabled: !!reviewId && isEnabled,
   });
 
-  return { isPending, error, review };
+  return { isPending, isFetching, error, review };
 }

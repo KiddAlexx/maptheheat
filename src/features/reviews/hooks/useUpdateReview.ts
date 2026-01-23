@@ -15,13 +15,10 @@ export function useUpdateReview() {
     mutationFn: ({ finalFormData, reviewId }: UpdateReviewArgs) =>
       updateReviewApi(finalFormData, reviewId),
     onSuccess: () => {
-      toast.success('Your review has been successfully updated!');
+      toast.success('Your review update has been submitted for approval');
       queryClient.invalidateQueries({ queryKey: ['reviews'] });
       queryClient.invalidateQueries({ queryKey: ['venue'] });
       queryClient.invalidateQueries({ queryKey: ['venues'] });
-    },
-    onError: (err) => {
-      toast.error(err.message);
     },
   });
   return { isUpdating, updateReview };

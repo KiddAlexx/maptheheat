@@ -8,13 +8,12 @@ export function useCreateReview() {
   const { mutateAsync: createReview, isPending: isCreating } = useMutation({
     mutationFn: createReviewApi,
     onSuccess: () => {
-      toast.success('Your review has been successfully added!');
+      toast.success(
+        'Thanks for sharing! Your review has been submitted for approval.'
+      );
       queryClient.invalidateQueries({ queryKey: ['reviews'] });
       queryClient.invalidateQueries({ queryKey: ['venue'] });
       queryClient.invalidateQueries({ queryKey: ['venues'] });
-    },
-    onError: (err) => {
-      toast.error(err.message);
     },
   });
   return { isCreating, createReview };
