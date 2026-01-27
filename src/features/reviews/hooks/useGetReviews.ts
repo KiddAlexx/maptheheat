@@ -7,7 +7,7 @@ import {
   getReviews,
   ReviewsRequestParams,
   ReviewsResponse,
-} from '../../../services/apiReviews';
+} from '@/services/apiReviews';
 
 export function useGetReviews({
   venueId,
