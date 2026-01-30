@@ -41,7 +41,6 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
     isPending: isPendingReviews,
     totalCount,
     reviews,
-    error,
   } = useGetReviews({
     venueId: venueId ? venueId : undefined,
     userId: isUserMode ? userId : undefined,
