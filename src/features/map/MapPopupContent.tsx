@@ -1,20 +1,21 @@
-// React imports
+//Third Party Imports
+
+// Hooks
+import { useParamsAndNavigate } from '@/hooks/useParamsAndNavigate';
+
+// Assets
+import greyChilli from '@/assets/chilli-explosion-grey-md.jpg';
+import { Icon } from '@iconify/react/dist/iconify.js';
+
+// Components
+import VenueRating from '../venues/components/VenueRating';
+import { Image } from '@heroui/react';
+
+// Type imports
+import type { Venue } from '@/types/venueTypes';
 
 // Style imports
 import styles from './MapPopupContent.module.css';
-
-// Type imports
-import { Venue } from '../../types/venueTypes';
-// Hooks imports
-import { useParamsAndNavigate } from '../../hooks/useParamsAndNavigate';
-
-// Component imports
-import VenueRating from '../venues/components/VenueRating';
-
-// File imports
-import greyChilli from '../../assets/chilli-explosion-grey-md.jpg';
-import { Image } from '@heroui/react';
-import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface MapPopupContentProps {
   venue: Venue;
@@ -30,17 +31,22 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
     address,
     phoneNumber,
     thumbnailImage,
+    venueId,
   } = venue;
 
   /*   const totalReviewCount = totalReviews ?? 0; */
 
+  // Create a unique id to be used on each main button
+  // Used to assign accessible name
+  const accMapButtonId = `select-map-venue-${venueId}`;
+
   const finalHeatRating =
-    averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 5;
+    averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 0;
 
   const finalQualityRating =
     averageQualityRating != null
       ? Math.round(averageQualityRating * 10) / 10
-      : 5;
+      : 0;
 
   return (
     <div className={styles.global}>
@@ -58,13 +64,19 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
       <div className="px-2">
         <h3>
           <button
+            type="button"
             onClick={() => {
               setParamsAndNavigate(venue, 'venue');
             }}
             className="my-1 text-xl font-medium"
+            aria-labelledby={accMapButtonId}
           >
             {venueName}
           </button>
+
+          <span id={accMapButtonId} hidden>
+            Detailed information for {venueName}
+          </span>
         </h3>
 
         <div className="flex items-center gap-1">

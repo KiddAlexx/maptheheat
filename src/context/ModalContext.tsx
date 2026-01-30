@@ -63,7 +63,7 @@ interface ModalProviderProps {
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
-const initialState = {
+const initialState: State = {
   modalName: '',
   modalOpen: false,
   images: [],
@@ -149,6 +149,7 @@ function ModalProvider({ children }: ModalProviderProps) {
   ) {
     dispatch({ type: 'open-modal-images', payload: { modal, images } });
   }
+
   function openModalUpload({
     modal,
     venueId,
@@ -160,6 +161,7 @@ function ModalProvider({ children }: ModalProviderProps) {
       payload: { modal, venueId, venueNameSlug, city },
     });
   }
+
   function openDialog(message: string, confirmAction?: () => void) {
     const confirmActionAndClose = confirmAction
       ? () => {
@@ -172,6 +174,7 @@ function ModalProvider({ children }: ModalProviderProps) {
       payload: { message, confirmActionAndClose },
     });
   }
+
   function closeModal() {
     dispatch({ type: 'close-modal' });
   }

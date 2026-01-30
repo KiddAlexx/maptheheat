@@ -34,7 +34,9 @@ function App() {
   return (
     <AppProviders>
       <div className="flex h-dvh flex-col">
-        <PageNav />
+        <header>
+          <PageNav />
+        </header>
         <div className="min-h-0 flex-1">
           <Routes>
             <Route path="/" element={<Homepage />} />
@@ -88,14 +90,20 @@ function App() {
       </div>
       <ErrorModal />
       <ModalManager />
-
       <Toaster
         position="top-center"
         gutter={12}
         containerStyle={{ margin: '8px' }}
         toastOptions={{
-          success: { duration: 3000 },
-          error: { duration: 5000 },
+          success: {
+            duration: 3000,
+            /* Temp make all toasts alert due to status + poilte not being announced */
+            ariaProps: { role: 'alert', 'aria-live': 'assertive' },
+          },
+          error: {
+            duration: 5000,
+            ariaProps: { role: 'alert', 'aria-live': 'assertive' },
+          },
           style: {
             fontSize: '16px',
             maxWidth: '500px',

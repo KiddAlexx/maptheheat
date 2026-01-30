@@ -31,6 +31,7 @@ import { useGlobalError } from '@/context/ErrorContext';
 import { canUserAddImage } from '@/services/apiVenues';
 import { useUIContext } from '@/context/UIContext';
 import ResponsiveImageGrid from '@/ui/ResponsiveImageGrid';
+import { useEffect, useRef } from 'react';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
@@ -47,14 +48,23 @@ function DetailedVenueView() {
   const favVenuesList = userProfile?.favouriteVenues || null;
   const isFavourite = favVenuesList?.includes(venueId);
 
-  const { isLoading: isLoadingReviews } = useGetReviews({ venueId });
+  const { isPending: isPendingReviews } = useGetReviews({ venueId });
   const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
+  const venueHeadingRef = useRef<HTMLHeadingElement | null>(null);
+
   const { setGlobalError } = useGlobalError();
   const { updateFavouriteVenue } = useUpdateFavouriteVenue();
 
+  useEffect(() => {
+    if (!venue) return;
+    requestAnimationFrame(() => {
+      venueHeadingRef.current?.focus();
+    });
+  }, [venueId, venue]);
+
   if (!venueId || !venue) return null;
 
-  if (isLoadingVenue || isLoadingReviews) {
+  if (isLoadingVenue || isPendingReviews) {
     return <LoaderSpinner />;
   }
 
@@ -172,7 +182,13 @@ function DetailedVenueView() {
     <div className="hyphens-auto p-3 text-gray-800">
       <div className="mb-3 ml-1 flex items-end justify-between">
         <div>
-          <h2 className="mb-1 text-2xl font-semibold">{venueName}</h2>
+          <h2
+            ref={venueHeadingRef}
+            tabIndex={-1}
+            className="mb-1 text-2xl font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+          >
+            {venueName}
+          </h2>
           <div className="flex gap-2">
             {/* display flex is forced to override default display inline block
               of react rating - ensures icons allign correctly */}

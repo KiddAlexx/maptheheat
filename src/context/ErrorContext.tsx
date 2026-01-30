@@ -25,7 +25,7 @@ const GlobalErrorContext = createContext<GlobalErrorContextType | undefined>(
   undefined
 );
 
-const initialState = {
+const initialState: State = {
   globalErrorMessage: null,
 };
 
@@ -53,6 +53,7 @@ function GlobalErrorProvider({ children }: GlobalErrorProviderProps) {
   function clearGlobalError() {
     dispatch({ type: 'clear-error' });
   }
+
   function setGlobalError(message: string) {
     dispatch({ type: 'set-error', payload: { message } });
   }

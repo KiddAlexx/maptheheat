@@ -2,13 +2,15 @@
 
 // React imports
 import { createContext, ReactNode, useContext, useReducer } from 'react';
-import {
+
+// Type imports
+import type {
   ResetSort,
   ReviewSort,
   UpdatePageNumber,
   UpdateSort,
 } from '@/types/reviewTypes';
-import { PaginationControlsParams } from '@/ui/PaginationControls';
+import type { PaginationControlsParams } from '@/ui/PaginationControls';
 
 // Data types
 

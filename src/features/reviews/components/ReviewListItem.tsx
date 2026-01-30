@@ -1,19 +1,24 @@
-import VenueRating from '../../venues/components/VenueRating';
-import LoaderSpinner from '../../../ui/LoaderSpinner';
-import Avatar from '@/features/userProfile/components/Avatar';
-import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
+// Third Party Imports
+import { format, parseISO } from 'date-fns';
+import { Link } from 'react-router-dom';
+import { useUIContext } from '@/context/UIContext';
+import { Icon } from '@iconify/react/dist/iconify.js';
 
+// Utils
+import { withinTimeframe } from '@/utils/withinTimeframe';
+
+// Hooks
 import { useUser } from '../../authentication/hooks/useUser';
 import { useDeleteReview } from '../hooks/useDeleteReview';
-import { useModalContext } from '../../../context/ModalContext';
+import { useModalContext } from '@/context/ModalContext';
 
-import { format, parseISO } from 'date-fns';
+// Assets
+import greyChilli from '@/assets/chilli-explosion-grey-md.jpg';
 
-import { Link } from 'react-router-dom';
-
-import { withinTimeframe } from '../../../utils/withinTimeframe';
-
-import { ReviewWithRelations } from '@/types/reviewTypes';
+// Components
+import VenueRating from '../../venues/components/VenueRating';
+import LoaderSpinner from '@/ui/LoaderSpinner';
+import Avatar from '@/features/userProfile/components/Avatar';
 import {
   Button,
   Divider,
@@ -23,9 +28,10 @@ import {
   DropdownTrigger,
   Image,
 } from '@heroui/react';
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { useUIContext } from '@/context/UIContext';
 import ResponsiveImageGrid from '@/ui/ResponsiveImageGrid';
+
+// Type imports
+import type { ReviewWithRelations } from '@/types/reviewTypes';
 
 interface ReviewListItemProps {
   review: ReviewWithRelations;
@@ -57,14 +63,14 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
     venueName,
     totalReviews: totalVenueReviews,
   } = venueDetails;
-  const isUserMode = mode === 'user';
 
-  const { isSmallScreen } = useUIContext();
+  const isUserMode = mode === 'user';
 
   // Fetch data from hooks
   const { isDeleting, deleteReview } = useDeleteReview();
   const { openDialog } = useModalContext();
   const { user } = useUser();
+  const { isSmallScreen } = useUIContext();
 
   // Used to check if current user is the author of the review
   const currentUser = user?.id === userId;
@@ -87,7 +93,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
   }
 
   return isDeleting ? (
-    <LoaderSpinner />
+    <LoaderSpinner message="deleting review" />
   ) : (
     <article className="relative mt-2 flex flex-col hyphens-auto rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md sm:flex-row">
       <header className="flex justify-between gap-2">
@@ -141,9 +147,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
       <section className="mr-4 flex w-full justify-between gap-1 p-2 sm:ml-5">
         <div>
           <h4 className=" mb-1 font-medium">{reviewTitle}</h4>
-
           <p className="mb-2">{reviewContent}</p>
-
           {reviewType === 'shop' && (
             <p>
               Hottest Sauce: <span>{hottestSauce}</span>

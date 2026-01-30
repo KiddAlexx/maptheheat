@@ -15,9 +15,6 @@ export function useUpdateAvatar() {
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       toast.success('Avatar successfully updated');
     },
-    onError: (err) => {
-      toast.error(err.message);
-    },
   });
   return { updateAvatar, isUpdating };
 }

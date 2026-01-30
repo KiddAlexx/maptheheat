@@ -1,15 +1,17 @@
+// Third Party Imports
+import { useParams } from 'react-router';
+
+// Hooks
+import { useGetReviews } from '../hooks/useGetReviews';
+import { useUser } from '@/features/authentication/hooks/useUser';
 import { useReviewSortContext } from '@/context/ReviewSortContext';
 import { useUserReviewsContext } from '@/context/UserReviewsContext';
 
-import ReviewListView from './ReviewListView';
-
-import ReviewSort from './ReviewSort';
+// Components
+import PaginationControls from '@/ui/PaginationControls';
 import LoaderSpinner from '@/ui/LoaderSpinner';
-
-import { useParams } from 'react-router';
-import { useUser } from '@/features/authentication/hooks/useUser';
-import { useGetReviews } from '../hooks/useGetReviews';
-import PaginationControls from '../../../ui/PaginationControls';
+import ReviewListView from './ReviewListView';
+import ReviewSort from './ReviewSort';
 
 interface ReviewContainerProps {
   mode: 'venue' | 'user';
@@ -18,6 +20,7 @@ interface ReviewContainerProps {
 function ReviewContainer({ mode }: ReviewContainerProps) {
   const isUserMode = mode === 'user';
   const isVenueMode = mode === 'venue';
+
   // Assigns which context to use for pagination and sorting
   // based on mode prop
   const reviewContext = isVenueMode
@@ -28,21 +31,25 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
   const { sort, pagination, updatePageNumber, updateSort, resetSort } =
     reviewContext();
   const { venueId } = useParams();
-  const { user, isLoading: isLoadingUser, fetchStatus } = useUser();
+
+  const { user, isPending: isPendingUser } = useUser();
   const userId = user?.id;
 
   // Fetch reviews - use mode prop to conditionally pass either
   // venueId or userId
   const {
-    isLoading: isLoadingReviews,
+    isPending: isPendingReviews,
     totalCount,
     reviews,
   } = useGetReviews({
-    venueId: isVenueMode ? venueId : undefined,
+    venueId: venueId ? venueId : undefined,
     userId: isUserMode ? userId : undefined,
     sort,
     pagination,
   });
+
+  if ((isUserMode && isPendingUser) || isPendingReviews)
+    return <LoaderSpinner message="Loading reviews" />;
 
   return reviews && reviews.length > 0 ? (
     <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 @container ">
@@ -58,13 +65,10 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
         <ReviewSort updateSort={updateSort} resetSort={resetSort} />
       </div>
 
-      {isLoadingReviews || fetchStatus == 'fetching' || isLoadingUser ? (
-        <LoaderSpinner />
-      ) : (
-        <div className="col-span-3 ">
-          <ReviewListView reviews={reviews} mode={mode} />
-        </div>
-      )}
+      <div className="col-span-3 ">
+        <ReviewListView reviews={reviews} mode={mode} />
+      </div>
+
       <div className="col-span-3 col-start-1 justify-self-center @2xl:col-span-1 @2xl:col-start-2">
         <PaginationControls
           pagination={pagination}
