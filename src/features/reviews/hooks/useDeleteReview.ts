@@ -1,11 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteReview as deleteReviewApi } from '../../../services/apiReviews';
+import { deleteReviewApi } from '../../../services/apiReviews';
 import toast from 'react-hot-toast';
 
 export function useDeleteReview() {
   const queryClient = useQueryClient();
 
-  const { isPending: isDeleting, mutate: deleteReview } = useMutation({
+  const {
+    isPending: isDeleting,
+    mutate: deleteReview,
+    error,
+  } = useMutation({
     mutationFn: deleteReviewApi,
     onSuccess: () => {
       toast.success('Review successfully deleted');
@@ -15,5 +19,5 @@ export function useDeleteReview() {
     },
     onError: (err) => toast.error(err.message),
   });
-  return { isDeleting, deleteReview };
+  return { isDeleting, deleteReview, error };
 }

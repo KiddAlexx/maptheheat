@@ -1,20 +1,29 @@
+// Third Party Imports
 import { Controller, useForm } from 'react-hook-form';
+
+// Hooks
 import { useEmailSignup } from '../hooks/useEmailSignup';
-import LoaderSpinner from '../../../ui/LoaderSpinner';
-import { Input } from '@heroui/input';
-import { Button } from '@heroui/button';
-import { Link } from '@heroui/link';
-import { useModalContext } from '../../../context/ModalContext';
-import { Divider } from '@heroui/divider';
+import { useModalContext } from '@/context/ModalContext';
+import { useGlobalError } from '@/context/ErrorContext';
+
+// React imports
+import { useState } from 'react';
+
+// Assets
+import { Icon } from '@iconify/react/dist/iconify.js';
+
+// Components
+import { Input, Button, Divider } from '@heroui/react';
+import LoaderSpinner from '@/ui/LoaderSpinner';
+
+interface FormData {
+  email: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
 
 function SignupForm() {
-  interface FormData {
-    email: string;
-    username: string;
-    password: string;
-    confirmPassword: string;
-  }
-
   const {
     control,
     handleSubmit,
@@ -31,7 +40,12 @@ function SignupForm() {
   });
 
   const { signupEmail, isPending: isPendingEmail } = useEmailSignup();
-  const { openModal, closeModal } = useModalContext();
+  const { openModal, openDialog } = useModalContext();
+
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
+  const { setGlobalError } = useGlobalError();
 
   function formSubmit(formData: FormData) {
     const { email, password } = formData;
@@ -40,16 +54,21 @@ function SignupForm() {
     signupEmail(
       { email, password },
       {
-        onSettled: () => {
+        onSuccess: () => {
+          openDialog(
+            'Account successfully created! Please check your emails and verify your account'
+          );
           reset();
-          closeModal();
+        },
+        onError: (err) => {
+          setGlobalError(err.message);
         },
       }
     );
   }
 
   return (
-    <div className="flex w-80 flex-col items-center justify-between gap-10">
+    <div className="relative flex w-80 flex-col items-center justify-between gap-10">
       {isPendingEmail && (
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-white/60">
           <LoaderSpinner />
@@ -110,12 +129,28 @@ function SignupForm() {
                 {...field}
                 isDisabled={isPendingEmail}
                 className="mb-5"
-                type="password"
+                type={isVisible ? 'text' : 'password'}
                 radius="sm"
                 variant="bordered"
                 label="Password"
                 isInvalid={!!errors.password}
                 errorMessage={errors.password?.message}
+                endContent={
+                  <div className="flex h-full items-center">
+                    <button
+                      aria-label={isVisible ? 'Hide password' : 'Show password'}
+                      type="button"
+                      onClick={toggleVisibility}
+                      className="rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 "
+                    >
+                      {isVisible ? (
+                        <Icon icon="lucide:eye" width="18" height="18" />
+                      ) : (
+                        <Icon icon="lucide:eye-off" width="18" height="18" />
+                      )}
+                    </button>
+                  </div>
+                }
               />
             )}
           />
@@ -133,12 +168,28 @@ function SignupForm() {
                 {...field}
                 isDisabled={isPendingEmail}
                 className="mb-5"
-                type="password"
+                type={isVisible ? 'text' : 'password'}
                 radius="sm"
                 variant="bordered"
                 label="Confirm Password"
                 isInvalid={!!errors.confirmPassword}
                 errorMessage={errors.confirmPassword?.message}
+                endContent={
+                  <div className="flex h-full items-center">
+                    <button
+                      aria-label={isVisible ? 'Hide password' : 'Show password'}
+                      type="button"
+                      onClick={toggleVisibility}
+                      className="rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 "
+                    >
+                      {isVisible ? (
+                        <Icon icon="lucide:eye" width="18" height="18" />
+                      ) : (
+                        <Icon icon="lucide:eye-off" width="18" height="18" />
+                      )}
+                    </button>
+                  </div>
+                }
               />
             )}
           />
@@ -152,21 +203,21 @@ function SignupForm() {
             size="lg"
             type="submit"
           >
-            Confirm Account
+            Create Account
           </Button>
         </div>
       </form>
 
-      <footer className="mb-5 flex w-full justify-center gap-2">
+      <footer className="mb-5 flex w-full items-center justify-center gap-2 ">
         <p>Already have an account?</p>
-        <Link
-          isDisabled={isPendingEmail}
-          underline="hover"
-          size="md"
-          onPress={() => openModal('login')}
+        <button
+          disabled={isPendingEmail}
+          type="button"
+          className="flex items-center rounded-xl p-1 text-primary-500 underline hover:opacity-80"
+          onClick={() => openModal('login')}
         >
           Login
-        </Link>
+        </button>
       </footer>
     </div>
   );

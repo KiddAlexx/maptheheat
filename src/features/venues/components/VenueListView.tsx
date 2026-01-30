@@ -41,8 +41,8 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
 
   const {
     user,
-    isLoading: isLoadingUser,
-    fetchStatus,
+    isPending: isPendingUser,
+    isFetching,
     isAuthenticated,
   } = useUser();
   const userId = user ? user.id : null;
@@ -51,12 +51,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
 
   const setParamsAndNavigate = useParamsAndNavigate();
 
-  if (
-    fetchStatus == 'fetching' ||
-    isLoadingUser ||
-    isLoadingProfile ||
-    isLoadingVenues
-  )
+  if (isFetching || isPendingUser || isLoadingProfile || isLoadingVenues)
     return <LoaderSpinner />;
 
   function handleCardClick(venue: Venue) {

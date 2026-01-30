@@ -77,6 +77,13 @@
   }
 }
 
+/* Override default focus state for heroui bordered inputs */
+@layer utilities {
+  [data-slot='input-wrapper'][data-focus='true'] {
+    border-color: hsl(var(--heroui-primary)) !important;
+  }
+}
+
 /* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {

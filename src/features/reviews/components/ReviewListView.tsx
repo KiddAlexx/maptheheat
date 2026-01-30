@@ -1,6 +1,8 @@
-import { ReviewWithRelations } from '@/types/reviewTypes';
-
+// Components
 import ReviewListItem from './ReviewListItem';
+
+// Type imports
+import type { ReviewWithRelations } from '@/types/reviewTypes';
 
 interface ReviewListViewProps {
   reviews: ReviewWithRelations[];

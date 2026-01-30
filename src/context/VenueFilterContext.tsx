@@ -1,9 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
-
 import { ReactNode, createContext, useContext, useReducer } from 'react';
-import {
+
+// Type imports
+import type {
   FilterField,
   VenueFilter,
   VenuePagination,
@@ -47,7 +48,7 @@ const VenueFilterContext = createContext<VenueFilterContextType | undefined>(
 
 // Initial state for the filters
 const initialState: State = {
-  filters: [{ field: 'city', value: 'Barcelona', method: 'eq' }],
+  filters: [{ field: 'city', value: '', method: 'eq' }],
   sort: null,
   pagination: { pageNumber: 1, maxResults: 10 },
 };

@@ -27,7 +27,7 @@ export async function loginGoogleApi() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: 'http://localhost:5173/app/map',
+      redirectTo: `${window.location.origin}/app/map`,
     },
   });
   if (error) throw new Error(`Google sign in failed:  ${error.message}`);
@@ -41,6 +41,7 @@ export async function updateEmailApi({ email }: Email) {
   if (error) throw new Error(`Email update failed: ${error.message}`);
   return data;
 }
+
 export async function updatePasswordApi({ password }: Password) {
   const { data, error } = await supabase.auth.updateUser({
     password,
@@ -51,7 +52,7 @@ export async function updatePasswordApi({ password }: Password) {
 
 export async function recoverPasswordApi({ email }: Email) {
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: 'http://localhost:5173/update-password',
+    redirectTo: `${window.location.origin}/update-password`,
   });
   if (error) throw new Error(`Password recovery failed: ${error.message}`);
 
@@ -67,7 +68,7 @@ export async function getCurrentUser() {
   return data?.user;
 }
 
-export async function logout() {
+export async function logoutApi() {
   const { error } = await supabase.auth.signOut();
   if (error) throw new Error(`unable to logout ${error.message}`);
 }

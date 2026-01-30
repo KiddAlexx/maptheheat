@@ -29,7 +29,13 @@ function UpdateAvatar() {
       return;
     }
 
-    updateAvatar({ newAvatar }, { onSuccess: () => setNewAvatar([]) });
+    updateAvatar(
+      { newAvatar },
+      {
+        onSuccess: () => setNewAvatar([]),
+        onError: (error) => setGlobalError(error.message),
+      }
+    );
   }
 
   return (

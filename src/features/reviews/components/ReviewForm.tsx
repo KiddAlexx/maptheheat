@@ -1,27 +1,31 @@
-// React Imports
-import { useEffect, useState } from 'react';
+// Third Party Imports
+import { useNavigate, useParams } from 'react-router';
+import { Controller, useForm } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
-// Hooks Imports
+// React Imports
+import { useEffect, useRef, useState } from 'react';
+
+// Hooks
 import { useCreateReview } from '../hooks/useCreateReview';
 import { useGetReview } from '../hooks/useGetReview';
 import { useUpdateReview } from '../hooks/useUpdateReview';
 import { useVenue } from '../../venues/hooks/useVenue';
+import { useModalContext } from '@/context/ModalContext';
+import { useGlobalError } from '@/context/ErrorContext';
 
-// Third Party Imports
-import { useNavigate, useParams } from 'react-router';
-import { Controller, useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
+// Assets
 
-// Component Imports
+// Components
 import VenueRating from '../../venues/components/VenueRating';
 import ImageUploader from '@/components/ImageUploader';
-import { Review } from '@/types/reviewTypes';
-import { Button, Input, Textarea } from '@heroui/react';
 import LoaderSpinner from '@/ui/LoaderSpinner';
-import { useQueryClient } from '@tanstack/react-query';
-import { useModalContext } from '@/context/ModalContext';
+import { Button, Input, Textarea } from '@heroui/react';
 
-// Types
+// Type Imports
+import type { Review } from '@/types/reviewTypes';
+
 interface ReviewFormProps {
   mode: 'creating' | 'editing';
 }
@@ -39,17 +43,32 @@ export interface EditformData extends FormData {
 }
 
 function ReviewForm({ mode }: ReviewFormProps) {
-  const [formIndex, setFormIndex] = useState(1);
   const [createdReview, setCreatedReview] = useState<Review | null>(null);
   const createdReviewId = createdReview ? createdReview.reviewId : null;
+
+  const [formIndex, setFormIndex] = useState(1);
   const [heatRating, setHeatRating] = useState(5);
   const [qualityRating, setQualityRating] = useState(5);
+
+  const form2Headingref = useRef<HTMLHeadingElement | null>(null);
 
   const { isCreating, createReview } = useCreateReview();
   const { isUpdating, updateReview } = useUpdateReview();
 
   const { openDialog } = useModalContext();
+  const { setGlobalError } = useGlobalError();
   const navigate = useNavigate();
+
+  // Effect to move focus to image uploader after
+  // review is created/edited
+
+  useEffect(() => {
+    if (formIndex === 2) {
+      requestAnimationFrame(() => {
+        form2Headingref.current?.focus();
+      });
+    }
+  }, [formIndex]);
 
   // Form and data state
   const defaultFormValues: FormData = {
@@ -85,10 +104,11 @@ function ReviewForm({ mode }: ReviewFormProps) {
   // For instances where review does not exist.
   const { reviewId: reviewIdParam } = useParams();
 
-  const { isLoading: isLoadingReview, review } = useGetReview(
-    reviewIdParam,
-    mode === 'editing'
-  );
+  const {
+    isPending: isPendingReview,
+    isFetching: isFetchingReview,
+    review,
+  } = useGetReview(reviewIdParam, mode === 'editing');
 
   const { reviewId, reviewType, venueDetails } = review ?? {};
   const venueNameReview = venueDetails?.venueName;
@@ -98,7 +118,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
 
   // Effect to set default input values to current review values in editing mode.
   useEffect(() => {
-    if (mode === 'editing' && review && !isLoadingReview) {
+    if (mode === 'editing' && review && !isPendingReview) {
       reset({
         hottestSauce: review.hottestSauce || '',
         hottestDish: review.hottestDish || '',
@@ -108,7 +128,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
     }
     setHeatRating(review?.heatRating || 5);
     setQualityRating(review?.qualityRating || 5);
-  }, [mode, review, reset, isLoadingReview]);
+  }, [mode, review, reset, isPendingReview]);
 
   // Toast for form errors
   function toastFormError() {
@@ -129,11 +149,10 @@ function ReviewForm({ mode }: ReviewFormProps) {
       };
       const newReview = await createReview(finalFormData, {
         onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ['review', createdReviewId],
-          });
-
           setFormIndex(2);
+        },
+        onError: (err) => {
+          setGlobalError(err.message);
         },
       });
       setCreatedReview(newReview);
@@ -154,6 +173,9 @@ function ReviewForm({ mode }: ReviewFormProps) {
 
             setFormIndex(2);
           },
+          onError: (err) => {
+            setGlobalError(err.message);
+          },
         }
       );
     }
@@ -169,7 +191,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
 
   return (
     <>
-      {isLoadingReview || isLoadingVenue ? (
+      {(isPendingReview && isFetchingReview) || isLoadingVenue ? (
         <LoaderSpinner />
       ) : (
         <div className="m-3">
@@ -387,7 +409,11 @@ function ReviewForm({ mode }: ReviewFormProps) {
           )}
           {formIndex === 2 && (
             <div>
-              <h2 className=" mb-3 ml-1 text-2xl font-semibold">
+              <h2
+                tabIndex={-1}
+                ref={form2Headingref}
+                className=" mb-3 ml-1 text-2xl font-semibold focus:outline-none focus-visible:ring-2  focus-visible:ring-offset-2"
+              >
                 Add photos to your review
               </h2>
               <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-md">

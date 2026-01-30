@@ -1,25 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router';
-import { loginApi } from '../../../services/apiAuth';
-import toast from 'react-hot-toast';
-import { AuthCredentials } from '../../../types/authenticationTypes';
-import { useModalContext } from '../../../context/ModalContext';
+
+import { loginApi } from '@/services/apiAuth';
+
+import type { AuthCredentials } from '@/types/authenticationTypes';
 
 export function useEmailLogin() {
-  const navigate = useNavigate();
-  const { closeModal } = useModalContext();
   const queryClient = useQueryClient();
   const { mutate: loginEmail, isPending } = useMutation({
     mutationFn: ({ email, password }: AuthCredentials) =>
       loginApi({ email, password }),
-    onSuccess: (user) => {
-      queryClient.setQueryData(['user'], user.user);
-
-      closeModal();
-      navigate('/app/map', { replace: true });
-    },
-    onError: () => {
-      toast.error(`Provided email or password are incorrect`);
+    onSuccess: (data) => {
+      queryClient.setQueryData(['user'], data.user);
     },
   });
   return { loginEmail, isPending };

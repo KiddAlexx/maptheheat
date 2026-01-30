@@ -8,14 +8,15 @@ import { Review } from '@/types/reviewTypes';
 
 export function useGetReview(reviewId?: string, isEnabled = true) {
   const {
-    isLoading,
+    isPending,
     data: review,
     error,
+    isFetching,
   } = useQuery<Review>({
     queryKey: ['review', reviewId],
     queryFn: () => getReview(reviewId!),
     enabled: !!reviewId && isEnabled,
   });
 
-  return { isLoading, error, review };
+  return { isPending, isFetching, error, review };
 }

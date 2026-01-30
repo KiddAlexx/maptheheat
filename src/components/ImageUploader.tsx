@@ -1,3 +1,4 @@
+// Third Party Imports
 // Import React FilePond
 import { FilePond, registerPlugin } from 'react-filepond';
 
@@ -10,15 +11,21 @@ import 'filepond/dist/filepond.min.css';
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+
+// Hooks
+import { useGlobalError } from '@/context/ErrorContext';
+import { useNavigate } from 'react-router';
 import { useState } from 'react';
 import { useModalContext } from '@/context/ModalContext';
 import { useUpdateVenueImage } from '@/features/venues/hooks/useUpdateVenueImage';
 import { useUser } from '@/features/authentication/hooks/useUser';
-import { Button } from '@heroui/button';
-import { useGlobalError } from '@/context/ErrorContext';
-import { useNavigate } from 'react-router';
-import { Venue } from '@/types/venueTypes';
+
+// Components
 import LoaderSpinner from '@/ui/LoaderSpinner';
+import { Button } from '@heroui/button';
+
+// Type imports
+import type { Venue } from '@/types/venueTypes';
 
 // Types
 interface ImageUploaderProps {
@@ -70,11 +77,10 @@ function ImageUploader({
   const isIntegrated = mode === 'integrated';
 
   const navigate = useNavigate();
+  const { setGlobalError } = useGlobalError();
 
   //File Upload State
   const [imageFiles, setImageFiles] = useState<File[]>([]);
-
-  const { setGlobalError } = useGlobalError();
 
   // Function to handle compression and upload of selected image to Supabase storage.
   async function uploadFile() {
@@ -83,7 +89,6 @@ function ImageUploader({
       return;
     }
 
-    // **** Add error message here too ****
     if (!isAuthenticated) return openModal('login');
 
     uploadImageRef(
@@ -91,6 +96,9 @@ function ImageUploader({
       {
         onSuccess: () => {
           handleClose();
+        },
+        onError: (error) => {
+          setGlobalError(error.message);
         },
       }
     );
@@ -123,23 +131,31 @@ function ImageUploader({
           maxFiles={maxPhotos}
           name="files"
           labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+          id="firstElementToFocus"
         />
       )}
-      <h3>Add up to a maximum of {maxPhotos} photos</h3>
+      <p>Add up to a maximum of {maxPhotos} photos</p>
       <div className="flex justify-end gap-1">
         <Button
           className="bg-danger-200"
           onPress={handleClose}
           isDisabled={isUploading}
+          aria-labelledby="cancel-accName"
         >
+          <span id="cancel-accName" hidden>
+            Cancel upload
+          </span>
           Not right now
         </Button>
         <Button
           className="bg-success-400"
-          id="firstElementToFocus"
           onPress={uploadFile}
           isDisabled={isUploading}
+          aria-labelledby="upload-accName"
         >
+          <span id="upload-accName" hidden>
+            Upload Images
+          </span>
           Upload
         </Button>
       </div>

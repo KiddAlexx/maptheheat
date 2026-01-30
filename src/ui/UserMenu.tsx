@@ -13,7 +13,7 @@ import { useGetNotificationCount } from '@/features/userProfile/hooks/useGetNoti
 import { useState } from 'react';
 
 function UserMenu() {
-  const { user, isLoading: isLoadingUser } = useUser();
+  const { user, isFetching: isFetchingUser } = useUser();
   const userId = user?.id;
   const { isLoading: isLoadingNotifications, notificationCount } =
     useGetNotificationCount({ userId });
@@ -23,7 +23,7 @@ function UserMenu() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  if (isLoadingUser || !user) return null;
+  if (isFetchingUser || !user) return null;
 
   const { id } = user;
 

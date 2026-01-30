@@ -1,8 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
 
+// React imports
 import { createContext, ReactNode, useContext, useReducer } from 'react';
+
+// Hooks
 import { useMediaQuery } from 'usehooks-ts';
 
+// Types
 type View = 'list' | 'venue' | 'map';
 
 interface State {

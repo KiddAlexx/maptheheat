@@ -150,7 +150,7 @@ export async function canUserReview(venueId: string) {
 }
 
 // Function to create a new review
-export async function createReview(newReview: NewReview) {
+export async function createReviewApi(newReview: NewReview) {
   const convertedReview = decamelizeKeys(newReview);
   const { data, error } = await supabase
     .from('venue_reviews')
@@ -166,7 +166,7 @@ export async function createReview(newReview: NewReview) {
 }
 
 // Function to update a review
-export async function updateReview(
+export async function updateReviewApi(
   finalFormData: EditformData,
   reviewId: string
 ) {
@@ -184,7 +184,7 @@ export async function updateReview(
 }
 
 // Function to delete a review
-export async function deleteReview(reviewId: string) {
+export async function deleteReviewApi(reviewId: string) {
   const { data, error } = await supabase
     .from('venue_reviews')
     .delete()

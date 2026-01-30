@@ -1,13 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
-import {
+import { ReactNode, createContext, useContext, useReducer } from 'react';
+
+// Type imports
+import type {
   FilterField,
   VenueFilter,
   VenuePagination,
   VenueSort,
 } from '@/types/venueTypes';
-import { ReactNode, createContext, useContext, useReducer } from 'react';
 
 // Data types
 
