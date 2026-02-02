@@ -33,6 +33,7 @@ import ResponsiveImageGrid from '@/ui/ResponsiveImageGrid';
 // Type imports
 import type { ReviewWithRelations } from '@/types/reviewTypes';
 
+
 interface ReviewListItemProps {
   review: ReviewWithRelations;
   mode: 'venue' | 'user';
@@ -91,6 +92,8 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
       deleteReviewWithId
     );
   }
+
+
 
   return isDeleting ? (
     <LoaderSpinner message="deleting review" />
