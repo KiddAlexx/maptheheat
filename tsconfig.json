@@ -5,11 +5,13 @@
     "lib": ["ES2021", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "types": ["vitest/globals"],
 
     /* For Shadcn UI */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "tests/*": ["tests/*"]
     },
 
     /* Bundler mode */
@@ -26,6 +28,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "tests", "vite.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
