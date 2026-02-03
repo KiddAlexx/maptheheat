@@ -86,8 +86,6 @@ export async function getVenues({
 
   const { data, error, count } = await query;
 
-  console.log('venues', data);
-
   if (error) {
     throw new Error(`Venues could not be loaded. Error:${error.message}`);
   }

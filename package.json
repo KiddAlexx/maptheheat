@@ -10,7 +10,9 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "checks": "npm run lint && npm run typecheck",
     "ci": "npm run lint && npm run typecheck && npm run build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@heroui/react": "2.7.6",
@@ -53,8 +55,12 @@
     "usehooks-ts": "^3.1.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.2.0",
     "@iconify/react": "^6.0.0",
+    "@mswjs/data": "^0.16.2",
     "@tailwindcss/container-queries": "^0.1.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/leaflet": "^1.9.3",
     "@types/node": "^20.17.41",
     "@types/react": "^18.2.15",
@@ -63,16 +69,19 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
+    "@vitest/ui": "^4.0.18",
     "autoprefixer": "^10.4.18",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "jsdom": "^27.4.0",
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "supabase": "^2.58.5",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.0.2",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vitest": "^4.0.18"
   }
 }
