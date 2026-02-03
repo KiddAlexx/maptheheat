@@ -10,7 +10,8 @@
     /* For Shadcn UI */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "tests/*": ["tests/*"]
     },
 
     /* Bundler mode */
