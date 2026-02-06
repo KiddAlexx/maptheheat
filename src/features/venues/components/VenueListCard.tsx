@@ -103,102 +103,112 @@ function VenueListCard({
   return (
     <li>
       {/* <button className=" w-full" onClick={handleClick}> */}
-      <div>
-        <Card
-          className="mb-2 h-48 w-full  bg-primary-50/50 shadow-md transition hover:bg-primary-50"
-          radius="sm"
-        >
-          <div className="flex">
-            <div className="relative h-48 w-1/3 ">
-              <Image
-                className="h-full w-full object-cover"
-                src={thumbnailImage?.url || greyChilli}
-                fallbackSrc={greyChilli}
-                alt={
-                  thumbnailImage?.alt || 'a greyed out image of a chilli pepper'
-                }
-                removeWrapper
-                radius="sm"
+
+      <Card
+        className="mb-2 h-48 w-full  bg-primary-50/50 shadow-md transition hover:bg-primary-50"
+        radius="sm"
+      >
+        <div className="flex">
+          <div className="relative h-48 w-1/3 ">
+            <Image
+              className="h-full w-full object-cover"
+              src={thumbnailImage?.url || greyChilli}
+              fallbackSrc={greyChilli}
+              alt={
+                thumbnailImage?.alt || 'a greyed out image of a chilli pepper'
+              }
+              removeWrapper
+              radius="sm"
+            />
+          </div>
+          <CardBody className="relative w-2/3">
+            <div className="mb-2 flex items-center justify-between">
+              <h3 className="text-lg font-medium">{venueName}</h3>
+
+              <LikeButton
+                isFavourite={isFavourite}
+                isAuthenticated={isAuthenticated}
+                handleClick={toggleFavourite}
               />
             </div>
-            <CardBody className="relative w-2/3">
-              <div className="mb-2 flex items-center justify-between">
-                <h3 className="text-lg font-medium">{venueName}</h3>
 
-                <LikeButton
-                  isFavourite={isFavourite}
-                  isAuthenticated={isAuthenticated}
-                  handleClick={toggleFavourite}
+            {/* display flex is forced to override default display inline block
+            of react rating - ensures icons allign correctly */}
+            <button
+              type="button"
+              className=" w-full cursor-pointer"
+              onClick={handleClick}
+              aria-labelledby={accMainButtonId}
+            >
+              <span id={accMainButtonId} hidden>
+                Select venue {venueName}
+              </span>
+              <div className="mb-2 flex -translate-x-[1px] gap-1 [&>span]:!flex">
+                <VenueRating
+                  initialRating={finalHeatRating}
+                  readonly
+                  size="20"
                 />
+
+                <span className="text-sm">
+                  ({totalReviewCount}{' '}
+                  {totalReviewCount === 1 ? 'review' : 'reviews'})
+                </span>
               </div>
 
-              {/* display flex is forced to override default display inline block
-            of react rating - ensures icons allign correctly */}
+              <div className=" mb-2 flex items-start gap-1">
+                <Icon
+                  aria-hidden="true"
+                  className="text-yellow-600"
+                  icon="lucide:star"
+                  width={18}
+                />
+                <span className="text-small">({finalQualityRating})</span>
+              </div>
+
+              <div className="mb-2 flex items-start gap-1 text-sm">
+                <Icon
+                  aria-hidden="true"
+                  icon="lucide:clock"
+                  width={16}
+                  className="shrink-0"
+                />
+                <span>Open</span>
+              </div>
+
+              <div className="mb-2 flex items-start gap-1 text-sm">
+                <Icon
+                  aria-hidden="true"
+                  icon="lucide:map-pin"
+                  width={16}
+                  className="shrink-0"
+                />
+                <span className="truncate">{address}</span>
+              </div>
+            </button>
+
+            <CardFooter>
               <button
                 type="button"
-                className=" w-full cursor-pointer"
-                onClick={handleClick}
-                aria-labelledby={accMainButtonId}
+                className="absolute bottom-3 right-2 z-10 flex cursor-pointer items-center text-sm text-blue-500 underline hover:opacity-80"
+                onClick={() => {
+                  setParamsAndNavigate(venue, 'venue');
+                }}
               >
-                <span id={accMainButtonId} hidden>
-                  Select venue {venueName}
-                </span>
-                <div className="mb-2 flex -translate-x-[1px] gap-1 [&>span]:!flex">
-                  <VenueRating
-                    initialRating={finalHeatRating}
-                    readonly
-                    size="20"
-                  />
-
-                  <span className="text-sm">
-                    ({totalReviewCount}{' '}
-                    {totalReviewCount === 1 ? 'review' : 'reviews'})
-                  </span>
-                </div>
-
-                <div className=" mb-2 flex items-start gap-1">
+                <span>More information</span>
+                {
                   <Icon
-                    className="text-yellow-600"
-                    icon="lucide:star"
-                    width={18}
+                    aria-hidden="true"
+                    icon="lucide:chevron-right"
+                    width="16"
+                    height="16"
                   />
-                  <span className="text-small">({finalQualityRating})</span>
-                </div>
-
-                <div className="mb-2 flex items-start gap-1 text-sm">
-                  <Icon icon="lucide:clock" width={16} className="shrink-0" />
-                  <span>Open</span>
-                </div>
-
-                <div className="mb-2 flex items-start gap-1 text-sm">
-                  <Icon icon="lucide:map-pin" width={16} className="shrink-0" />
-                  <span className="truncate">{address}</span>
-                </div>
+                }
               </button>
-
-              <CardFooter>
-                <button
-                  type="button"
-                  className="absolute bottom-3 right-2 z-10 flex cursor-pointer items-center text-sm text-blue-500 underline hover:opacity-80"
-                  onClick={() => {
-                    setParamsAndNavigate(venue, 'venue');
-                  }}
-                >
-                  <span>More information</span>
-                  {
-                    <Icon
-                      icon="lucide:chevron-right"
-                      width="16"
-                      height="16"
-                      aria-hidden="true"
-                    />
-                  }
-                </button>
-              </CardFooter>
-            </CardBody>
-          </div>
-        </Card>
-      </div>
+            </CardFooter>
+          </CardBody>
+        </div>
+      </Card>
     </li>
   );
 }
