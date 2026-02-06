@@ -192,7 +192,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
   return (
     <>
       {(isPendingReview && isFetchingReview) || isLoadingVenue ? (
-        <LoaderSpinner />
+        <LoaderSpinner message="Loading" />
       ) : (
         <div className="m-3">
           {formIndex === 1 && (
