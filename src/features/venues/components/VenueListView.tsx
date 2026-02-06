@@ -36,7 +36,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
   // Load venues from supabase
   const {
     venues,
-    isLoading: isLoadingVenues,
+    isPending: isLoadingVenues,
     totalCount,
   } = useVenues({
     favouriteVenues,

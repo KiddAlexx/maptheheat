@@ -23,7 +23,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
   const { uniqueCities, isPending: isPendingCities } = useUniqueCities();
   // Fetch unique cities for venues in users favourite venues list
   // if favouriteVenues is present
-  const { isLoading: isLoadingUserCities, userCities } =
+  const { isPending: isLoadingUserCities, userCities } =
     useUserCities(favouriteVenues);
 
   const { updateVenueFilter, removeVenueFilter } = useVenueContext();

@@ -48,7 +48,7 @@ function DetailedVenueView() {
   const isFavourite = favVenuesList?.includes(venueId);
 
   const { isPending: isPendingReviews } = useGetReviews({ venueId });
-  const { isLoading: isLoadingVenue, venue } = useVenue(venueId);
+  const { isPending: isLoadingVenue, venue } = useVenue(venueId);
   const venueHeadingRef = useRef<HTMLHeadingElement | null>(null);
 
   const { setGlobalError } = useGlobalError();
