@@ -1,37 +1,36 @@
-// React imports
+// Third Party Imports
 import { useNavigate, useParams } from 'react-router';
+import toast from 'react-hot-toast';
 
-// Hooks imports
+// React imports
+import { useEffect, useRef } from 'react';
+
+// Hooks
 import { useVenue } from '../hooks/useVenue';
 import { useUser } from '../../authentication/hooks/useUser';
-import { useModalContext } from '../../../context/ModalContext';
+import { useModalContext } from '@/context/ModalContext';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
+import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
+import { useUIContext } from '@/context/UIContext';
+import { useGlobalError } from '@/context/ErrorContext';
 
-// Component imports
+// Assets
+import greyChilli from '@/assets/chilli-explosion-grey-md.jpg';
+import { Icon } from '@iconify/react/dist/iconify.js';
+
+// Components
 import VenueRating from './VenueRating';
 import LoaderSpinner from '../../../ui/LoaderSpinner';
 import ReviewContainer from '../../reviews/components/ReviewContainer';
-
-// NextUI Component imports
 import { Button, Divider, Image } from '@heroui/react';
-
-// Type imports
-
-// File imports
-import greyChilli from '../../../assets/chilli-explosion-grey-md.jpg';
-
-import { Icon } from '@iconify/react/dist/iconify.js';
 import LikeButton from '@/ui/LikeButton';
-import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
-import toast from 'react-hot-toast';
 import ShareButton from '@/ui/ShareButton';
-import { canUserReview, checkPendingReviews } from '@/services/apiReviews';
-import { useGlobalError } from '@/context/ErrorContext';
-import { canUserAddImage } from '@/services/apiVenues';
-import { useUIContext } from '@/context/UIContext';
 import ResponsiveImageGrid from '@/ui/ResponsiveImageGrid';
-import { useEffect, useRef } from 'react';
+
+// Utils
+import { canUserReview, checkPendingReviews } from '@/services/apiReviews';
+import { canUserAddImage } from '@/services/apiVenues';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
@@ -62,11 +61,31 @@ function DetailedVenueView() {
     });
   }, [venueId, venue]);
 
-  if (!venueId || !venue) return null;
-
   if (isLoadingVenue || isPendingReviews) {
-    return <LoaderSpinner />;
+    return <LoaderSpinner message="Loading venue" />;
   }
+
+  if (!venueId || !venue)
+    return (
+      <div className="mx-auto mt-8 max-w-[70rem] p-3">
+        <div
+          role="alert"
+          className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-md"
+        >
+          <h1 className="mb-2 text-xl font-semibold text-gray-800">
+            Venue not found
+          </h1>
+          <p className="text-gray-600">
+            The venue you're looking for doesn't exist or may have been removed.
+          </p>
+          <div className="mt-4">
+            <Button variant="flat" color="primary" onPress={() => navigate(-1)}>
+              Go back
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
 
   const {
     venueName,
@@ -86,12 +105,12 @@ function DetailedVenueView() {
   const { lat, lon } = coords;
 
   const finalHeatRating =
-    averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 5;
+    averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 0;
 
   const finalQualityRating =
     averageQualityRating != null
       ? Math.round(averageQualityRating * 10) / 10
-      : 5;
+      : 0;
 
   const totalReviewCount = totalReviews ?? 0;
 
@@ -266,21 +285,31 @@ function DetailedVenueView() {
         </div>
 
         <div className="mt-5 flex items-start gap-2  ">
-          <Icon icon="lucide:clock" width={18} />
+          <Icon aria-hidden="true" icon="lucide:clock" width={18} />
           <span>Open</span>
         </div>
         {/* Calculate based on opening hours */}
         <div className="mt-3 flex items-start gap-2">
-          <Icon icon="lucide:map-pin" width={18} className="shrink-0" />
+          <Icon
+            aria-hidden="true"
+            icon="lucide:map-pin"
+            width={18}
+            className="shrink-0"
+          />
           <span>{detailedAddress}</span>
         </div>
 
         <div className="mt-3 flex items-start gap-2">
-          <Icon icon="lucide:phone" width={18} />
+          <Icon aria-hidden="true" icon="lucide:phone" width={18} />
           <span>{phoneNumber}</span>
         </div>
         <div className="mb-6 mt-3 flex  items-start gap-2">
-          <Icon icon="material-symbols:globe" width={18} className="shrink-0" />
+          <Icon
+            aria-hidden="true"
+            icon="material-symbols:globe"
+            width={18}
+            className="shrink-0"
+          />
           <a
             className="break-all text-blue-500 hover:text-blue-400"
             href={website}
