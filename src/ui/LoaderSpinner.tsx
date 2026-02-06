@@ -2,8 +2,7 @@
 import { ColorRing } from 'react-loader-spinner';
 
 interface LoaderSpinnerProps {
-  /* fix temp optional while refactor */
-  message?: string;
+  message: string;
 }
 
 function LoaderSpinner({ message }: LoaderSpinnerProps) {

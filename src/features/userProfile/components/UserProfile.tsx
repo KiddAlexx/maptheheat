@@ -1,22 +1,33 @@
+// Third Party Imports
+import { useNavigate, useParams } from 'react-router';
+
+// React imports
+import { useState } from 'react';
+
+// Hooks
 import { useUser } from '@/features/authentication/hooks/useUser';
+import { useGetUserProfile } from '../hooks/useGetUserProfile';
+
+// Assets
+
+// Components
 import ReviewContainer from '@/features/reviews/components/ReviewContainer';
 import VenueListContainer from '@/features/venues/components/VenueListContainer';
-import { useGetUserProfile } from '../hooks/useGetUserProfile';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import { Tab, Tabs } from '@heroui/react';
-import { useState } from 'react';
 import UserProfileBanner from './UserProfileBanner';
 import EditProfilePanel from './EditProfilePanel';
-import { useNavigate, useParams } from 'react-router';
-import { Key } from '@/types/venueTypes';
 import NotificationContainer from './NotificationContainer';
+
+// Type imports
+import type { Key } from '@/types/venueTypes';
 
 function UserProfile() {
   const { user, isPending: isPendingUser, isFetching } = useUser();
 
   // Extract user id if present and use to fetch userProfile
   const userId = user?.id;
-  const { userProfile, isLoading: isLoadingProfile } =
+  const { userProfile, isPending: isLoadingProfile } =
     useGetUserProfile(userId);
 
   // Get dynamic 'section' route param
@@ -27,7 +38,7 @@ function UserProfile() {
   const [selected, setSelected] = useState<Key>(section || 'reviews');
 
   if (isFetching || isPendingUser || isLoadingProfile || !userId)
-    return <LoaderSpinner />;
+    return <LoaderSpinner message="Loading profile" />;
 
   const { favouriteVenues } = userProfile;
 
@@ -41,7 +52,7 @@ function UserProfile() {
       <UserProfileBanner userProfile={userProfile} />
 
       <Tabs
-        aria-label="Options"
+        aria-label="Profile Sections"
         selectedKey={selected}
         onSelectionChange={handleSelectionChange}
         fullWidth
