@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 export function useUserCities(favVenueList?: string[]) {
   const {
     error,
-    isPending,
+    isLoading,
     data: userCities,
   } = useQuery<UniqueCity[]>({
     queryKey: ['userCities'],
@@ -14,5 +14,5 @@ export function useUserCities(favVenueList?: string[]) {
     enabled: !!favVenueList,
   });
 
-  return { error, isPending, userCities };
+  return { error, isLoading, userCities };
 }
