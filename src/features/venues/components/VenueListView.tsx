@@ -54,7 +54,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
     isAuthenticated,
   } = useUser();
   const userId = user ? user.id : null;
-  const { userProfile, isPending: isLoadingProfile } =
+  const { userProfile, isLoading: isLoadingProfile } =
     useGetUserProfile(userId);
 
   const setParamsAndNavigate = useParamsAndNavigate();

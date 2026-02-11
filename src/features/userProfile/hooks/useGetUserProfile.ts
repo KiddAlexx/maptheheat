@@ -3,7 +3,7 @@ import { getUserProfile } from '../../../services/apiUserProfiles';
 
 export function useGetUserProfile(userId?: string | null) {
   const {
-    isPending,
+    isLoading,
     data: userProfile,
     error,
   } = useQuery({
@@ -13,5 +13,5 @@ export function useGetUserProfile(userId?: string | null) {
     enabled: !!userId,
   });
 
-  return { isPending, error, userProfile };
+  return { isLoading, error, userProfile };
 }

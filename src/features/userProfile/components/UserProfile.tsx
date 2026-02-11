@@ -27,7 +27,7 @@ function UserProfile() {
 
   // Extract user id if present and use to fetch userProfile
   const userId = user?.id;
-  const { userProfile, isPending: isLoadingProfile } =
+  const { userProfile, isLoading: isLoadingProfile } =
     useGetUserProfile(userId);
 
   // Get dynamic 'section' route param
