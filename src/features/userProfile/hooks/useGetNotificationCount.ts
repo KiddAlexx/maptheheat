@@ -7,7 +7,7 @@ export function useGetNotificationCount({
   userId?: string | null;
 }) {
   const {
-    isLoading,
+    isPending,
     data: notificationCount,
     error,
   } = useQuery({
@@ -20,5 +20,5 @@ export function useGetNotificationCount({
   });
   // return 0 when hook does not run
   // ensures correct behaviour for displaying notifications
-  return { isLoading, notificationCount: notificationCount ?? 0, error };
+  return { isPending, notificationCount: notificationCount ?? 0, error };
 }

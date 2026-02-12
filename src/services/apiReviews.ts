@@ -82,8 +82,6 @@ export async function getReviews({
     venueImages: addImagePaths(review.venueImages),
   }));
 
-  console.log('here are the reviews', reviews);
-
   return { reviews, count };
 }
 

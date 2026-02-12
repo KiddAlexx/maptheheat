@@ -8,7 +8,7 @@ import { Venue } from '../../../types/venueTypes';
 
 export function useVenue(venueId?: string, isEnabled = true) {
   const {
-    isLoading,
+    isPending,
     data: venue,
     error,
   } = useQuery<Venue>({
@@ -17,5 +17,5 @@ export function useVenue(venueId?: string, isEnabled = true) {
     enabled: !!venueId && isEnabled,
   });
 
-  return { isLoading, error, venue };
+  return { isPending, error, venue };
 }

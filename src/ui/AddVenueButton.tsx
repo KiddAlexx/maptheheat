@@ -1,9 +1,16 @@
+// Third Party Imports
+import { useNavigate } from 'react-router-dom';
+
+// Hooks
 import { useGlobalError } from '@/context/ErrorContext';
 import { useModalContext } from '@/context/ModalContext';
 import { useUser } from '@/features/authentication/hooks/useUser';
-import { canUserAddVenue } from '@/services/apiVenues';
+
+// Components
 import { Button } from '@heroui/react';
-import { useNavigate } from 'react-router-dom';
+
+// Utils
+import { canUserAddVenue } from '@/services/apiVenues';
 
 interface AddVenueButtonProps {
   className: string;
@@ -18,6 +25,7 @@ function AddVenueButton({ closeOtherModals, className }: AddVenueButtonProps) {
 
   // Check if user has 2 or more pending venues
   async function handleAddVenue() {
+    // Currently used to close modal menu when VenueButton is used within it
     closeOtherModals?.();
 
     if (!isAuthenticated) {
@@ -45,6 +53,7 @@ function AddVenueButton({ closeOtherModals, className }: AddVenueButtonProps) {
       size="sm"
       radius="sm"
       className={className}
+      type="button"
     >
       Add Venue
     </Button>

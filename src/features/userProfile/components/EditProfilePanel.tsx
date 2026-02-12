@@ -1,10 +1,15 @@
+// Third Party Imports
+import { useNavigate, useParams } from 'react-router';
+
+// React imports
+import { useState } from 'react';
+
+// Components
 import { Accordion, AccordionItem, Selection } from '@heroui/react';
 import UpdateAvatar from './UpdateAvatar';
 import UpdateEmailForm from './UpdateEmailForm';
 import UpdatePasswordForm from './UpdatePasswordForm';
 import UpdateUsernameForm from './UpdateUsernameForm';
-import { useNavigate, useParams } from 'react-router';
-import { useState } from 'react';
 
 function EditProfilePanel() {
   const { setting } = useParams();

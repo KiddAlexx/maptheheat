@@ -1,11 +1,4 @@
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  DropdownSection,
-} from '@heroui/dropdown';
-import { Button } from '@heroui/react';
+// Third Party Imports
 import {
   FacebookMessengerShareButton,
   FacebookMessengerIcon,
@@ -14,8 +7,20 @@ import {
   EmailShareButton,
   EmailIcon,
 } from 'react-share';
-import { Icon } from '@iconify/react/dist/iconify.js';
 import toast from 'react-hot-toast';
+
+// Assets
+import { Icon } from '@iconify/react/dist/iconify.js';
+
+// Components
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  DropdownSection,
+} from '@heroui/dropdown';
+import { Button } from '@heroui/react';
 
 interface ShareButtonProps {
   shareUrl: string;
