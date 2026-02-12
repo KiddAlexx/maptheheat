@@ -9,6 +9,7 @@ function LoaderSpinner({ message }: LoaderSpinnerProps) {
   return (
     <div
       role="status"
+      aria-label={message}
       aria-live="polite"
       aria-busy="true"
       className="flex h-full w-full items-center justify-center "

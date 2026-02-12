@@ -33,7 +33,6 @@ import ResponsiveImageGrid from '@/ui/ResponsiveImageGrid';
 // Type imports
 import type { ReviewWithRelations } from '@/types/reviewTypes';
 
-
 interface ReviewListItemProps {
   review: ReviewWithRelations;
   mode: 'venue' | 'user';
@@ -92,8 +91,6 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
       deleteReviewWithId
     );
   }
-
-
 
   return isDeleting ? (
     <LoaderSpinner message="deleting review" />
@@ -171,7 +168,12 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
       </section>
       <Dropdown>
         <DropdownTrigger className="absolute right-0 top-1">
-          <Button isIconOnly variant="light" className="ml-2">
+          <Button
+            aria-label="Open review actions"
+            isIconOnly
+            variant="light"
+            className="ml-2"
+          >
             <Icon icon="lucide:more-vertical" className="h-5 w-5" />
           </Button>
         </DropdownTrigger>

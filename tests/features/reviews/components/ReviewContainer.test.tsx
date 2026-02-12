@@ -1,43 +1,23 @@
 import { it, expect, describe } from 'vitest';
-import { screen } from '@testing-library/react';
+import { logRoles, screen } from '@testing-library/react';
 
 import ReviewContainer from '@/features/reviews/components/ReviewContainer';
 import { db } from 'tests/mocks/db';
 
-import { renderWithRoute } from 'tests/utils';
+import { renderWithRoute } from 'tests/utils/renderWithRoute';
+import { drop } from '@mswjs/data';
+import { seedVenueWithReviews } from 'tests/utils/seedVenueWithReviews';
 
 type DbVenue = ReturnType<typeof db.venue.create>;
 
 describe('ReviewContainer', () => {
-  const reviewIds: string[] = [];
-  const userIds: string[] = [];
-  let venue1: DbVenue;
-
-  beforeAll(() => {
-    const venue = db.venue.create();
-    venue1 = venue;
-
-    const user = db.profile.create();
-    userIds.push(user.userId);
-
-    [1, 2, 3, 4, 5].forEach(() => {
-      const review = db.review.create({
-        venueId: venue.venueId,
-        venueDetails: venue,
-        profiles: user,
-      });
-      reviewIds.push(review.reviewId);
-    });
-  });
-
-  afterAll(() => {
-    db.review.deleteMany({ where: { reviewId: { in: reviewIds } } });
-    db.venue.deleteMany({ where: { venueId: { equals: venue1.venueId } } });
-    db.profile.deleteMany({ where: { userId: { in: userIds } } });
+  beforeEach(() => {
+    drop(db);
   });
 
   it('it should render review heading', async () => {
-    const { heading } = await renderComponent({ venue: venue1 });
+    const { venue } = seedVenueWithReviews(5);
+    const { heading } = await renderComponent({ venue });
     expect(heading).toBeInTheDocument();
   });
 });
@@ -54,6 +34,13 @@ const renderComponent = async ({ venue }: RenderComponentProps) => {
   });
 
   const heading = await screen.findByRole('heading', { name: /reviews/i });
+
+  const getLoaderSpinner = () =>
+    screen.queryByRole('status', {
+      name: /loading reviews/i,
+    });
+
   screen.debug(undefined, Infinity);
-  return { heading };
+  logRoles(document.body);
+  return { heading, getLoaderSpinner };
 };
