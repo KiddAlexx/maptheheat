@@ -27,7 +27,7 @@ function MapView() {
   const [searchParams] = useSearchParams();
   const { filters } = useVenueFilterContext();
   // Load venues from supabase
-  const { venues, isLoading: isLoadingVenues } = useVenues({ filters });
+  const { venues, isPending: isLoadingVenues } = useVenues({ filters });
 
   // Sets coordinates based on searchParams if available
   // Used to center map on selected venue
@@ -86,7 +86,7 @@ function MapView() {
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
         />
         {isLoadingVenues ? (
-          <LoaderSpinner />
+          <LoaderSpinner message="Loading venues on map" />
         ) : (
           venues?.map((venue) => (
             <Marker

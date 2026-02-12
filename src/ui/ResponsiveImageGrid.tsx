@@ -1,6 +1,5 @@
 import { DetailedImage } from '@/types/venueTypes';
 import { Image } from '@heroui/react';
-
 import { useModalContext } from '@/context/ModalContext';
 import { useUIContext } from '@/context/UIContext';
 

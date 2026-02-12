@@ -1,9 +1,15 @@
+// Third Party Imports
+import FocusTrap from 'focus-trap-react';
+
+// React imports
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+// Hooks
 import { useModalContext } from '../context/ModalContext';
-import FocusTrap from 'focus-trap-react';
 import { useGlobalError } from '@/context/ErrorContext';
+
+// Assets
 import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface ModalProps {
@@ -58,10 +64,13 @@ function Modal({ children }: ModalProps) {
         <div
           className="relative flex max-h-[90dvh] max-w-[90dvw] items-center  justify-center gap-5 rounded-xl bg-white p-5 shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)]"
           ref={modalRef}
+          role="dialog"
+          aria-modal="true"
         >
           <button
             onClick={() => closeModal()}
             className="absolute right-2 top-2 z-[2100]"
+            aria-label="Close modal"
           >
             <Icon icon="material-symbols:cancel-rounded" width="26" />
           </button>

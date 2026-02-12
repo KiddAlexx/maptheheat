@@ -1,9 +1,16 @@
-import { Direction } from '@/types/commonTypes';
-import { ResetSort, ReviewSortField, UpdateSort } from '@/types/reviewTypes';
+// Assets
+import { FaSortAmountDownAlt, FaSortAmountUp } from 'react-icons/fa';
 
+// Components
 import { Select, SelectItem } from '@heroui/react';
 
-import { FaSortAmountDownAlt, FaSortAmountUp } from 'react-icons/fa';
+// Type imports
+import type { Direction } from '@/types/commonTypes';
+import type {
+  ResetSort,
+  ReviewSortField,
+  UpdateSort,
+} from '@/types/reviewTypes';
 
 interface ReviewSortParams {
   updateSort: UpdateSort;

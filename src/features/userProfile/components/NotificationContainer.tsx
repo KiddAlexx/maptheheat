@@ -1,8 +1,13 @@
-import LoaderSpinner from '@/ui/LoaderSpinner';
+// React imports
+import { useState } from 'react';
+
+// Hooks
 import { useGetUserNotifications } from '../hooks/useGetuserNotifications';
+
+// Components
+import LoaderSpinner from '@/ui/LoaderSpinner';
 import NotificationListView from './NotificationListView';
 import { Switch } from '@heroui/react';
-import { useState } from 'react';
 import PaginationControls from '@/ui/PaginationControls';
 
 interface NotificationContainerProps {
@@ -31,7 +36,7 @@ function NotificationContainer({ userId }: NotificationContainerProps) {
     setIsUnread((prev) => !prev);
   }
 
-  if (isPending) return <LoaderSpinner />;
+  if (isPending) return <LoaderSpinner message="Loading notifications" />;
 
   return userNotifications ? (
     <div>

@@ -27,13 +27,14 @@ function VenueSearchBar({ useVenueContext }: VenueSearchBarProps) {
   return (
     <form className="relative mb-3" onSubmit={handleSumbit}>
       <Input
+        aria-label="Search venue by name"
         radius="sm"
         onValueChange={(value) => setSearchValue(value)}
         value={searchValue}
         placeholder="Search by venue name"
       />
       <div className="absolute bottom-0 right-0 z-20">
-        <Button radius="none" onPress={clearSearch}>
+        <Button type="button" radius="none" onPress={clearSearch}>
           Clear
         </Button>
         <Button className="rounded-r-md" radius="none" type="submit">

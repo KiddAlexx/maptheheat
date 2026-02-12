@@ -28,21 +28,21 @@ function VenueTypeFilter({ useVenueContext }: VenueTypeFilterProps) {
     <ButtonGroup radius="sm" size="md" fullWidth>
       <Button
         color={activeType === 'all' ? 'primary' : 'default'}
-        isDisabled={activeType === 'all'}
+        aria-pressed={activeType === 'all'}
         onPress={() => handleFilterClick('all')}
       >
         All
       </Button>
       <Button
         color={activeType === 'restaurant' ? 'primary' : 'default'}
-        isDisabled={activeType === 'restaurant'}
+        aria-pressed={activeType === 'restaurant'}
         onPress={() => handleFilterClick('restaurant')}
       >
         Restaurants
       </Button>
       <Button
         color={activeType === 'shop' ? 'primary' : 'default'}
-        isDisabled={activeType === 'shop'}
+        aria-pressed={activeType === 'shop'}
         onPress={() => handleFilterClick('shop')}
       >
         Shops

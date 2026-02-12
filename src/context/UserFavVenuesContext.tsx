@@ -50,7 +50,7 @@ const UserFavVenuesContext = createContext<
 const initialState: State = {
   filters: [],
   sort: null,
-  pagination: { pageNumber: 1, maxResults: 5 },
+  pagination: { pageNumber: 1, maxResults: 10 },
 };
 
 // Reducer function to handle filter updates and removals

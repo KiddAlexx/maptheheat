@@ -2,8 +2,7 @@
 import { ColorRing } from 'react-loader-spinner';
 
 interface LoaderSpinnerProps {
-  /* fix temp optional while refactor */
-  message?: string;
+  message: string;
 }
 
 function LoaderSpinner({ message }: LoaderSpinnerProps) {
@@ -20,7 +19,7 @@ function LoaderSpinner({ message }: LoaderSpinnerProps) {
         width="80"
         wrapperStyle={{}}
         wrapperClass="blocks-wrapper"
-        colors={['#2b6027', '#53b84c', '#d46326', '#fd7350', '#f18d74']}
+        colors={['#176D3B', '#59C469', '#f25e1d', '#FF6978', '#FFACA4']}
       />
       <span className="sr-only">{message}</span>
     </div>

@@ -8,6 +8,7 @@ import {
   useQueryClient,
   keepPreviousData,
 } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 export function useGetUserNotifications({
   userId,
@@ -28,32 +29,41 @@ export function useGetUserNotifications({
   const userNotifications = data?.data;
   const totalCount = data?.count ?? 0;
 
-  const pageCount = Math.ceil(totalCount / maxResults);
+  useEffect(() => {
+    if (!userId) return;
 
-  if (pageNumber < pageCount) {
-    const next = { pageNumber: pageNumber + 1, maxResults };
-    queryClient.prefetchQuery({
-      queryKey: ['notifications', userId, isUnread, next],
-      queryFn: () =>
-        getUserNotifications({ userId, isUnread, pagination: next }),
-    });
-  }
-  if (pageNumber > 1) {
-    const prev = { pageNumber: pageNumber - 1, maxResults };
-    queryClient.prefetchQuery({
-      queryKey: ['notifications', userId, isUnread, prev],
-      queryFn: () =>
-        getUserNotifications({ userId, isUnread, pagination: prev }),
-    });
-  }
-  if (!isUnread) {
-    const unread = { pageNumber: 1, maxResults };
-    queryClient.prefetchQuery({
-      queryKey: ['notifications', userId, true, unread],
-      queryFn: () =>
-        getUserNotifications({ userId, isUnread: true, pagination: unread }),
-    });
-  }
+    const pageCount = Math.ceil(totalCount / maxResults);
+
+    // next page
+    if (pageNumber < pageCount) {
+      const next = { pageNumber: pageNumber + 1, maxResults };
+      queryClient.prefetchQuery({
+        queryKey: ['notifications', userId, isUnread, next],
+        queryFn: () =>
+          getUserNotifications({ userId, isUnread, pagination: next }),
+      });
+    }
+
+    // prev page
+    if (pageNumber > 1) {
+      const prev = { pageNumber: pageNumber - 1, maxResults };
+      queryClient.prefetchQuery({
+        queryKey: ['notifications', userId, isUnread, prev],
+        queryFn: () =>
+          getUserNotifications({ userId, isUnread, pagination: prev }),
+      });
+    }
+
+    // preload unread tab
+    if (!isUnread) {
+      const unread = { pageNumber: 1, maxResults };
+      queryClient.prefetchQuery({
+        queryKey: ['notifications', userId, true, unread],
+        queryFn: () =>
+          getUserNotifications({ userId, isUnread: true, pagination: unread }),
+      });
+    }
+  }, [queryClient, userId, isUnread, pageNumber, maxResults, totalCount]);
 
   return { isPending, error, userNotifications, totalCount };
 }

@@ -15,7 +15,7 @@ import { useState } from 'react';
 function UserMenu() {
   const { user, isFetching: isFetchingUser } = useUser();
   const userId = user?.id;
-  const { isLoading: isLoadingNotifications, notificationCount } =
+  const { isPending: isLoadingNotifications, notificationCount } =
     useGetNotificationCount({ userId });
 
   const { logout } = useLogout();
