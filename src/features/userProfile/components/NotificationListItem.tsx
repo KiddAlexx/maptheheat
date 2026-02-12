@@ -1,9 +1,18 @@
-import { UserNotification } from '@/types/userTypes';
-import { Button, Tooltip } from '@heroui/react';
-import { Icon } from '@iconify/react/dist/iconify.js';
+// Third Party Imports
 import { parseISO, format } from 'date-fns';
+
+// Hooks
 import { useUpdateUserNotification } from '../hooks/useUpdateUserNotification';
 import { useDeleteUserNotification } from '../hooks/useDeleteUserNotification';
+
+// Components
+import { Button, Tooltip } from '@heroui/react';
+
+// Assets
+import { Icon } from '@iconify/react/dist/iconify.js';
+
+// Type imports
+import type { UserNotification } from '@/types/userTypes';
 
 interface NotificationListItemProps {
   notification: UserNotification;
@@ -26,6 +35,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
         <div>
           <Tooltip content="Delete notification">
             <Button
+              aria-label="Delete notification"
               radius="none"
               className="h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
               isIconOnly
@@ -33,6 +43,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
               isDisabled={isUpdating || isDeleting}
             >
               <Icon
+                aria-hidden="true"
                 className="text-danger-600"
                 icon="mingcute:delete-2-line"
                 width="20"
@@ -43,6 +54,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
           {notificationStatus === 'unread' && (
             <Tooltip content="Mark as read">
               <Button
+                aria-label="Mark notification as read"
                 radius="none"
                 className="ml-2 h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
                 isIconOnly
@@ -50,6 +62,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
                 isDisabled={isUpdating || isDeleting}
               >
                 <Icon
+                  aria-hidden="true"
                   className="text-success-700"
                   icon="mingcute:check-fill"
                   width="20"

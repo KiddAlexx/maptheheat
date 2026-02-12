@@ -1,10 +1,11 @@
-// Hooks imports
-import { useVenues } from '../hooks/useVenues';
-import { useParamsAndNavigate } from '../../../hooks/useParamsAndNavigate';
+// Third Party Imports
+import { useMatch } from 'react-router';
 
-// Component imports
-import VenueListCard from './VenueListCard';
-import LoaderSpinner from '../../../ui/LoaderSpinner';
+// React imports
+
+// Hooks
+import { useVenues } from '../hooks/useVenues';
+import { useParamsAndNavigate } from '@/hooks/useParamsAndNavigate';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 import {
@@ -12,9 +13,16 @@ import {
   VenueFilterContextType,
 } from '@/context/VenueFilterContext';
 import { useUIContext } from '@/context/UIContext';
-import { Venue } from '@/types/venueTypes';
-import { useMatch } from 'react-router';
+
+// Assets
+
+// Components
+import VenueListCard from './VenueListCard';
+import LoaderSpinner from '@/ui/LoaderSpinner';
 import PaginationControls from '@/ui/PaginationControls';
+
+// Type imports
+import type { Venue } from '@/types/venueTypes';
 
 interface ListViewProps {
   useVenueContext: () => VenueFilterContextType;
@@ -28,7 +36,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
   // Load venues from supabase
   const {
     venues,
-    isLoading: isLoadingVenues,
+    isPending: isLoadingVenues,
     totalCount,
   } = useVenues({
     favouriteVenues,
@@ -52,7 +60,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
 
   if (isFetching || isPendingUser || isLoadingProfile || isLoadingVenues)
-    return <LoaderSpinner />;
+    return <LoaderSpinner message="Loading venues" />;
 
   function handleCardClick(venue: Venue) {
     const { city, country } = venue;
@@ -80,20 +88,33 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
           totalCount={totalCount}
         />
       </div>
-      <ul>
-        {/* Map through list of venues and render ListItem component for
+      {venues?.length === 0 ? (
+        <div
+          role="alert"
+          aria-live="polite"
+          className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-md"
+        >
+          <p className="mb-2 text-xl font-semibold text-gray-600">
+            No venues found, please adjust filters
+          </p>
+        </div>
+      ) : (
+        <ul>
+          {/* Map through list of venues and render ListItem component for
         each venue. Onclick set clicked venue as active venue */}
-        {venues?.map((venue) => (
-          <VenueListCard
-            handleClick={() => handleCardClick(venue)}
-            venue={venue}
-            userId={userId}
-            isAuthenticated={isAuthenticated}
-            favVenuesList={favVenuesList}
-            key={venue.venueId}
-          />
-        ))}
-      </ul>
+          {venues?.map((venue) => (
+            <VenueListCard
+              handleClick={() => handleCardClick(venue)}
+              venue={venue}
+              userId={userId}
+              isAuthenticated={isAuthenticated}
+              favVenuesList={favVenuesList}
+              key={venue.venueId}
+            />
+          ))}
+        </ul>
+      )}
+
       <div className="mb-2 flex lg:justify-center">
         <PaginationControls
           updatePageNumber={updatePageNumber}

@@ -29,7 +29,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
   );
 
   // 3. Show spinner while loading
-  if (isPending) return <LoaderSpinner />;
+  if (isPending) return <LoaderSpinner message="Checking session" />;
 
   // 4. If there is an authenticated user then render component
 

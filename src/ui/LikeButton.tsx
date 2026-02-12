@@ -14,7 +14,7 @@ interface LikeButtonProps {
 }
 
 // LikeButton displays an icon indicating if an item is a favourite.
-// isFavourite determines the initial state, and handleClick is triggered on click.
+// isFavourite determines the initial state, and handleClick toggles parent state
 function LikeButton({
   isFavourite,
   isAuthenticated,
@@ -37,6 +37,9 @@ function LikeButton({
     }
   }
 
+  // For aria accessible label
+  const label = isFavourite ? 'Remove from favourites' : 'Add to favourites';
+
   return (
     <Button
       radius="none"
@@ -44,6 +47,8 @@ function LikeButton({
       isIconOnly
       disableAnimation
       onPress={() => handleFavouriteClick()}
+      type="button"
+      aria-label={label}
     >
       {isFavourite ? (
         <Icon
@@ -51,6 +56,7 @@ function LikeButton({
           className={`${iconFullColor}`}
           width={size}
           height={size}
+          aria-hidden="true"
         />
       ) : (
         <Icon
@@ -58,6 +64,7 @@ function LikeButton({
           icon={iconEmpty}
           width={size}
           height={size}
+          aria-hidden="true"
         />
       )}
     </Button>

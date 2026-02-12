@@ -93,7 +93,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
   // All destructured variables assigned default values,
   // For instances where venue does not exist.
   const { venueId: venueIdParam } = useParams();
-  const { isLoading: isLoadingVenue, venue } = useVenue(
+  const { isPending: isLoadingVenue, venue } = useVenue(
     venueIdParam,
     mode === 'creating'
   );
@@ -192,7 +192,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
   return (
     <>
       {(isPendingReview && isFetchingReview) || isLoadingVenue ? (
-        <LoaderSpinner />
+        <LoaderSpinner message="Loading" />
       ) : (
         <div className="m-3">
           {formIndex === 1 && (
