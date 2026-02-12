@@ -8,6 +8,7 @@ import { useModalContext } from '@/context/ModalContext';
 import AddVenueButton from './AddVenueButton';
 import MobileMenu from './MobileMenu';
 import MainLogo from './MainLogo';
+import styles from './MainLogo.module.css';
 
 function PageNav() {
   const { isAuthenticated } = useUser();
@@ -25,7 +26,7 @@ function PageNav() {
       {/* Desktop menu */}
       <ul className=" flex w-full items-center justify-between">
         <li className="hidden sm:block">
-          <NavLink to="/">
+          <NavLink to="/" className={styles.logoWrap}>
             <MainLogo />
           </NavLink>
         </li>

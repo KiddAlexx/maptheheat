@@ -1,9 +1,6 @@
 .logoMain {
-  background: linear-gradient(
-    90deg,
-    rgb(255, 184, 143) 0%,
-    rgb(234, 88, 83) 100%
-  );
+  background: repeating-linear-gradient(90deg, #ffb88f, #ea5853, #ffb88f);
+  background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -12,14 +9,24 @@
   font-weight: 700;
 }
 
-.logoMain:hover {
-  background: linear-gradient(
-    90deg,
-    rgb(234, 88, 83) 0%,
-    rgb(255, 184, 143) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+/* wrapper class */
+.logoWrap:hover .logoMain,
+.logoWrap:focus-visible .logoMain {
+  animation: logoGradientShift 1.2s linear infinite;
+}
+
+@keyframes logoGradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 0%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logoWrap:hover .logoMain,
+  .logoWrap:focus-visible .logoMain {
+    animation: none;
+  }
 }
