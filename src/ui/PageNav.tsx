@@ -1,13 +1,22 @@
-// React imports
+// Third Party Imports
 import { NavLink } from 'react-router-dom';
 
-import { Button } from '@heroui/button';
-import UserMenu from '@/ui/UserMenu';
+// React imports
+
+// Hooks
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useModalContext } from '@/context/ModalContext';
+
+// Assets
+import MainLogo from './MainLogo';
+
+// Components
+import { Button } from '@heroui/button';
+import UserMenu from '@/ui/UserMenu';
 import AddVenueButton from './AddVenueButton';
 import MobileMenu from './MobileMenu';
-import MainLogo from './MainLogo';
+
+// Style imports
 import styles from './MainLogo.module.css';
 
 function PageNav() {
@@ -26,7 +35,11 @@ function PageNav() {
       {/* Desktop menu */}
       <ul className=" flex w-full items-center justify-between">
         <li className="hidden sm:block">
-          <NavLink to="/" className={styles.logoWrap}>
+          <NavLink
+            to="/"
+            className={styles.logoWrap}
+            aria-label="Go to home page"
+          >
             <MainLogo />
           </NavLink>
         </li>
