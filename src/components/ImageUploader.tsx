@@ -118,7 +118,7 @@ function ImageUploader({
   return (
     <div className={`${isModal && 'min-w-[18rem]'} w-full `}>
       {isUploading ? (
-        <LoaderSpinner />
+        <LoaderSpinner message="Images currently uploading" />
       ) : (
         <FilePond
           files={imageFiles}
@@ -134,7 +134,12 @@ function ImageUploader({
           id="firstElementToFocus"
         />
       )}
-      <p>Add up to a maximum of {maxPhotos} photos</p>
+      {isUploading ? (
+        <span>Compression & Upload in progress. Won't be too long!</span>
+      ) : (
+        <p>Add up to a maximum of {maxPhotos} photos</p>
+      )}
+
       <div className="flex justify-end gap-1">
         <Button
           className="bg-danger-200"

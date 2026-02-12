@@ -1,13 +1,17 @@
-// Component imports
-
-import VenueListContainer from '@/features/venues/components/VenueListContainer';
+// Third Party Imports
 import clsx from 'clsx';
-
 import { Outlet, useMatch, useNavigate } from 'react-router';
-import { Button } from '@heroui/react';
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { useUIContext } from '@/context/UIContext';
+
+// Hooks
 import { useSearchParams } from 'react-router-dom';
+import { useUIContext } from '@/context/UIContext';
+
+// Assets
+import { Icon } from '@iconify/react/dist/iconify.js';
+
+// Components
+import VenueListContainer from '@/features/venues/components/VenueListContainer';
+import { Button } from '@heroui/react';
 
 function AppLayout() {
   const { currentView, updateView } = useUIContext();
@@ -59,12 +63,12 @@ function AppLayout() {
       >
         {currentView === 'list' ? (
           <>
-            <Icon icon="lucide:map-pin" width={16} />
+            <Icon aria-hidden="true" icon="lucide:map-pin" width={16} />
             <span>Map</span>
           </>
         ) : (
           <>
-            <Icon icon="mi:list" width={20} />
+            <Icon aria-hidden="true" icon="mi:list" width={20} />
             <span>List</span>
           </>
         )}

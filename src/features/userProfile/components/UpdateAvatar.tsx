@@ -1,6 +1,4 @@
-import { useState } from 'react';
-
-// Import React FilePond
+// Third Party Imports
 import { FilePond, registerPlugin } from 'react-filepond';
 
 // Import the Image EXIF Orientation and Image Preview plugins
@@ -9,9 +7,16 @@ import { FilePond, registerPlugin } from 'react-filepond';
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
-import { Button } from '@heroui/react';
+
+// React imports
+import { useState } from 'react';
+
+// Hooks
 import { useGlobalError } from '@/context/ErrorContext';
 import { useUpdateAvatar } from '../hooks/useUpdateAvatar';
+
+// Components
+import { Button } from '@heroui/react';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 
 // Register the plugins
@@ -65,7 +70,7 @@ function UpdateAvatar() {
           onPress={uploadFile}
           isDisabled={isUpdating}
         >
-          {isUpdating ? <LoaderSpinner /> : 'Upload'}
+          {isUpdating ? <LoaderSpinner message="Uploading avatar" /> : 'Upload'}
         </Button>
       </div>
     </div>

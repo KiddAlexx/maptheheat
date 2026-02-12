@@ -29,31 +29,31 @@ function VenueSort({ useVenueContext }: VenueSortProps) {
         endContent={<FaSortAmountUp />}
         key={'averageHeatRating-desc'}
       >
-        Heat Rating
+        Hottest!
       </SelectItem>
       <SelectItem
         endContent={<FaSortAmountDownAlt />}
         key={'averageHeatRating-asc'}
       >
-        Heat Rating
+        Mildest
       </SelectItem>
       <SelectItem
         endContent={<FaSortAmountUp />}
         key={'averageQualityRating-desc'}
       >
-        Quality Rating
+        Highest Quality
       </SelectItem>
       <SelectItem
         endContent={<FaSortAmountDownAlt />}
         key={'averageQualityRating-asc'}
       >
-        Quality Rating
+        Lowest Quality
       </SelectItem>
       <SelectItem endContent={<FaSortAmountUp />} key={'totalReviews-desc'}>
-        Review Count
+        Most Reviews
       </SelectItem>
       <SelectItem endContent={<FaSortAmountDownAlt />} key={'totalReviews-asc'}>
-        Review Count
+        Least Reviews
       </SelectItem>
     </Select>
   );

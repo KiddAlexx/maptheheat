@@ -1,10 +1,17 @@
-import { Autocomplete, AutocompleteItem } from '@heroui/react';
-import { useUniqueCities } from '../hooks/useUniqueCities';
-import LoaderSpinner from '@/ui/LoaderSpinner';
+// Third Party Imports
 import { useMatch, useNavigate } from 'react-router';
+
+// Hooks
+import { useUniqueCities } from '../hooks/useUniqueCities';
 import { useUserCities } from '../hooks/useUserCities';
-import { VenueFilterContextType } from '@/context/VenueFilterContext';
-import { Key, UniqueCity } from '@/types/venueTypes';
+
+// Components
+import { Autocomplete, AutocompleteItem } from '@heroui/react';
+import LoaderSpinner from '@/ui/LoaderSpinner';
+
+// Type imports
+import type { VenueFilterContextType } from '@/context/VenueFilterContext';
+import type { Key, UniqueCity } from '@/types/venueTypes';
 
 interface VenueFilterProps {
   useVenueContext: () => VenueFilterContextType;
@@ -70,7 +77,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
   }
 
   return isPendingCities || isLoadingUserCities ? (
-    <LoaderSpinner />
+    <LoaderSpinner message="Loading" />
   ) : (
     <Autocomplete
       className="mb-3"

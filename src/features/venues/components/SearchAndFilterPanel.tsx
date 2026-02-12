@@ -1,9 +1,3 @@
-// React imports
-
-// Type imports
-
-// Style imports
-
 import { useMatch } from 'react-router-dom';
 import VenueTypeFilter from './VenueTypeFilter';
 import CitySelect from './CitySelect';
@@ -29,7 +23,7 @@ function SearchAndFilterPanel({
         useVenueContext={useVenueContext}
         favouriteVenues={favouriteVenues}
       />
-      <div className="xs:flex-row flex flex-col-reverse gap-3">
+      <div className="flex flex-col-reverse gap-3 xs:flex-row">
         <VenueTypeFilter useVenueContext={useVenueContext} />
         <VenueSort useVenueContext={useVenueContext} />
       </div>
