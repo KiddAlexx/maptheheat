@@ -64,20 +64,32 @@ function ErrorModal({
 
   return createPortal(
     <div className="fixed left-0 top-0 z-[90000] flex h-full w-full  items-center justify-center bg-black/60 p-3">
-      <FocusTrap focusTrapOptions={{}}>
+      <FocusTrap focusTrapOptions={{ initialFocus: '#initialErrorFocus' }}>
         <div
+          role="alertdialog"
+          aria-labelledby="error-title"
+          aria-modal="true"
           className="relative flex flex-col items-center justify-center gap-5 rounded-xl bg-white p-5 shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)] sm:flex-row sm:gap-3"
           ref={modalRef}
         >
           <div className="flex items-center gap-3">
             <Icon
+              aria-hidden="true"
               className="shrink-0 text-danger-600"
               icon="ic:baseline-error"
               width="40"
             />
+            <h2 id="error-title" className="sr-only">
+              Error
+            </h2>
             <p className="max-w-md">{finalErrorMessage}</p>
           </div>
-          <Button className="bg-success-400" onPress={handleClearError}>
+          <Button
+            id="initialErrorFocus"
+            className="bg-success-400"
+            onPress={handleClearError}
+            type="button"
+          >
             Close
           </Button>
         </div>
