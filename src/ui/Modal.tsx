@@ -1,9 +1,15 @@
+// Third Party Imports
+import FocusTrap from 'focus-trap-react';
+
+// React imports
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+// Hooks
 import { useModalContext } from '../context/ModalContext';
-import FocusTrap from 'focus-trap-react';
 import { useGlobalError } from '@/context/ErrorContext';
+
+// Assets
 import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface ModalProps {

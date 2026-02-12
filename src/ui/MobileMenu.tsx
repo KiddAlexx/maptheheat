@@ -1,3 +1,8 @@
+// Third Party Imports
+import Hamburger from 'hamburger-react';
+import { NavLink } from 'react-router-dom';
+
+// Components
 import {
   Drawer,
   DrawerContent,
@@ -5,9 +10,6 @@ import {
   DrawerHeader,
   useDisclosure,
 } from '@heroui/react';
-
-import Hamburger from 'hamburger-react';
-import { NavLink } from 'react-router-dom';
 import AddVenueButton from './AddVenueButton';
 import MainLogo from './MainLogo';
 
@@ -49,8 +51,9 @@ function MobileMenu() {
                   Home
                 </NavLink>
               </li>
-              <li onClick={onClose}>
+              <li>
                 <NavLink
+                  onClick={onClose}
                   to="/app/map"
                   className="text-2xl font-medium text-primary-950 transition-colors hover:text-primary-300"
                 >
