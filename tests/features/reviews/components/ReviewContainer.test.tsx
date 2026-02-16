@@ -157,8 +157,60 @@ describe('ReviewContainer', () => {
         heatRatingsInDomOrder[i - 1]
       );
     }
+  });
+
+  it('should display pagination controls when number of reviews > page size', async () => {
+    const { venue } = seedVenueWithReviews(DEFAULT_REVIEWS_PAGE_SIZE * 3);
+    const { getLoaderSpinner } = await renderComponent({
+      venue,
+    });
+    await waitForElementToBeRemoved(getLoaderSpinner);
+
+    const prevButtons = screen.getAllByRole('button', {
+      name: /prev/i,
+    });
+    expect(prevButtons).toHaveLength(2);
+    const nextButtons = screen.getAllByRole('button', {
+      name: /next/i,
+    });
+    expect(nextButtons).toHaveLength(2);
+
+    const pageOneButton = screen.getAllByRole('button', {
+      name: /item 1/i,
+    });
+    expect(pageOneButton).toHaveLength(2);
+    const pageTwoButton = screen.getAllByRole('button', {
+      name: /item 2/i,
+    });
+    expect(pageTwoButton).toHaveLength(2);
+    const pageThreeButton = screen.getAllByRole('button', {
+      name: /item 3/i,
+    });
+    expect(pageThreeButton).toHaveLength(2);
+
     screen.debug(undefined, Infinity);
     logRoles(document.body);
+  });
+
+  it('should display reviews for selected page', async () => {
+    const pageSize = DEFAULT_REVIEWS_PAGE_SIZE;
+    const { venue, reviews } = seedVenueWithReviews(pageSize * 3);
+    const { getLoaderSpinner, selectPageButton } = await renderComponent({
+      venue,
+    });
+
+    await waitForElementToBeRemoved(getLoaderSpinner);
+    reviews.slice(0, pageSize).forEach((review) => {
+      expect(screen.getByText(review.reviewTitle)).toBeInTheDocument();
+    });
+    await selectPageButton(/item 2/);
+    reviews.slice(pageSize, pageSize * 2).forEach((review) => {
+      expect(screen.getByText(review.reviewTitle)).toBeInTheDocument();
+    });
+    await selectPageButton(/next/);
+    reviews.slice(pageSize * 2, pageSize * 3).forEach((review) => {
+      expect(screen.getByText(review.reviewTitle)).toBeInTheDocument();
+    });
   });
 });
 
@@ -172,6 +224,8 @@ const renderComponent = async ({ venue }: RenderComponentProps) => {
     route: `/app/venue/${venue.city}/${venue.venueNameSlug}/${venue.venueId}`,
     path: '/app/venue/:city/:venue/:venueId',
   });
+
+  const user = userEvent.setup();
 
   const getLoaderSpinner = () =>
     screen.queryByRole('status', {
@@ -190,7 +244,6 @@ const renderComponent = async ({ venue }: RenderComponentProps) => {
   };
 
   const selectSortOption = async (sortOption: RegExp | string) => {
-    const user = userEvent.setup();
     await waitForElementToBeRemoved(getLoaderSpinner);
 
     await user.click(screen.getByRole('button', { name: /sort by/i }));
@@ -200,10 +253,17 @@ const renderComponent = async ({ venue }: RenderComponentProps) => {
     );
   };
 
+  const selectPageButton = async (pageButton: RegExp | string) => {
+    const paginationContainer = screen.getAllByLabelText(/pagination/i);
+    const topPagination = within(paginationContainer[0]);
+    await user.click(topPagination.getByRole('button', { name: pageButton }));
+  };
+
   return {
     getLoaderSpinner,
     getVisibleReviewCards,
     getHeatRatingsInDomOrder,
     selectSortOption,
+    selectPageButton,
   };
 };
