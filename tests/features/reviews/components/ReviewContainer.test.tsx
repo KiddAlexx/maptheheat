@@ -127,18 +127,12 @@ describe('ReviewContainer', () => {
 
   it('should sort reviews by heat rating in descending order', async () => {
     const { venue } = seedVenueWithReviews(DEFAULT_REVIEWS_PAGE_SIZE);
-    const { getLoaderSpinner, getHeatRatingsInDomOrder } =
+    const { selectSortOption, getHeatRatingsInDomOrder } =
       await renderComponent({
         venue,
       });
-    const user = userEvent.setup();
-    await waitForElementToBeRemoved(getLoaderSpinner);
 
-    await user.click(screen.getByRole('button', { name: /sort by/i }));
-    await user.click(screen.getByRole('option', { name: /hottest/i }));
-    await waitForElementToBeRemoved(
-      screen.queryByRole('listbox', { name: /sort by/i })
-    );
+    await selectSortOption(/hottest/i);
 
     const heatRatingsInDomOrder = getHeatRatingsInDomOrder();
     for (let i = 1; i < heatRatingsInDomOrder.length; i++) {
@@ -150,18 +144,12 @@ describe('ReviewContainer', () => {
 
   it('should sort reviews by heat rating in ascending order', async () => {
     const { venue } = seedVenueWithReviews(DEFAULT_REVIEWS_PAGE_SIZE);
-    const { getLoaderSpinner, getHeatRatingsInDomOrder } =
+    const { selectSortOption, getHeatRatingsInDomOrder } =
       await renderComponent({
         venue,
       });
-    const user = userEvent.setup();
-    await waitForElementToBeRemoved(getLoaderSpinner);
 
-    await user.click(screen.getByRole('button', { name: /sort by/i }));
-    await user.click(screen.getByRole('option', { name: /mildest/i }));
-    await waitForElementToBeRemoved(
-      screen.queryByRole('listbox', { name: /sort by/i })
-    );
+    await selectSortOption(/mildest/i);
 
     const heatRatingsInDomOrder = getHeatRatingsInDomOrder();
     for (let i = 1; i < heatRatingsInDomOrder.length; i++) {
@@ -201,5 +189,21 @@ const renderComponent = async ({ venue }: RenderComponentProps) => {
     });
   };
 
-  return { getLoaderSpinner, getVisibleReviewCards, getHeatRatingsInDomOrder };
+  const selectSortOption = async (sortOption: RegExp | string) => {
+    const user = userEvent.setup();
+    await waitForElementToBeRemoved(getLoaderSpinner);
+
+    await user.click(screen.getByRole('button', { name: /sort by/i }));
+    await user.click(screen.getByRole('option', { name: sortOption }));
+    await waitForElementToBeRemoved(
+      screen.queryByRole('listbox', { name: /sort by/i })
+    );
+  };
+
+  return {
+    getLoaderSpinner,
+    getVisibleReviewCards,
+    getHeatRatingsInDomOrder,
+    selectSortOption,
+  };
 };
