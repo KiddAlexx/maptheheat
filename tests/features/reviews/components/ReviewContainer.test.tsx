@@ -3,6 +3,7 @@ import {
   logRoles,
   screen,
   waitForElementToBeRemoved,
+  within,
 } from '@testing-library/react';
 
 import ReviewContainer from '@/features/reviews/components/ReviewContainer';
@@ -16,6 +17,7 @@ import {
   simulateReviewsDelay,
   simulateReviewsError,
 } from 'tests/mocks/apiReviews';
+import { formatDate } from '@/utils/dateTimeHelpers';
 
 type DbVenue = ReturnType<typeof db.venue.create>;
 
@@ -42,8 +44,51 @@ describe('ReviewContainer', () => {
     expect(
       await screen.findByText(/error loading reviews/i)
     ).toBeInTheDocument();
+  });
+
+  it('should display first page of reviews on load', async () => {
+    const { venue, reviews } = seedVenueWithReviews(DEFAULT_REVIEWS_PAGE_SIZE);
+    const { getLoaderSpinner, getVisibleReviewCards } = await renderComponent({
+      venue,
+    });
+    await waitForElementToBeRemoved(getLoaderSpinner);
+    const reviewCards = getVisibleReviewCards();
+
+    expect(
+      screen.getByRole('heading', { name: /reviews/i })
+    ).toBeInTheDocument();
+    expect(reviewCards).toHaveLength(DEFAULT_REVIEWS_PAGE_SIZE);
+    reviews.forEach((review) => {
+      expect(screen.getByText(review.reviewTitle)).toBeInTheDocument();
+    });
+  });
+
+  it('should display important review details within review card', async () => {
+    const { venue, reviews, user } = seedVenueWithReviews(1);
+    const { getLoaderSpinner, getVisibleReviewCards } = await renderComponent({
+      venue,
+    });
+    await waitForElementToBeRemoved(getLoaderSpinner);
+    const review = reviews[0];
+    const reviewCard = within(getVisibleReviewCards()[0]);
     screen.debug(undefined, Infinity);
     logRoles(document.body);
+
+    expect(reviewCard.getByText(review.reviewTitle)).toBeInTheDocument();
+    expect(reviewCard.getByText(review.reviewContent)).toBeInTheDocument();
+    expect(reviewCard.getByText(user.username)).toBeInTheDocument();
+    const expectedDate = formatDate(review.createdAt);
+    expect(reviewCard.getByText(expectedDate)).toBeInTheDocument();
+    expect(reviewCard.getByRole('img', { name: /avatar/i }));
+    expect(
+      reviewCard.getByLabelText(`Review heat rating ${review.heatRating}`)
+    ).toBeInTheDocument();
+    expect(
+      reviewCard.getByLabelText(`Review quality rating ${review.qualityRating}`)
+    ).toBeInTheDocument();
+    expect(
+      reviewCard.getByRole('button', { name: /open review actions/i })
+    ).toBeInTheDocument();
   });
 });
 
@@ -63,10 +108,9 @@ const renderComponent = async ({ venue }: RenderComponentProps) => {
       name: /loading reviews/i,
     });
 
-  const getReviewCards = () => {
-    const cards = screen.getAllByRole('article');
-    return cards;
+  const getVisibleReviewCards = () => {
+    return screen.getAllByRole('article');
   };
 
-  return { getLoaderSpinner, getReviewCards };
+  return { getLoaderSpinner, getVisibleReviewCards };
 };

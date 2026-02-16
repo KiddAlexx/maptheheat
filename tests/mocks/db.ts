@@ -44,8 +44,10 @@ export const db = factory({
   review: {
     reviewId: primaryKey(() => faker.string.uuid()),
     createdAt: () => new Date().toISOString(),
-    heatRating: () => faker.number.float({ min: 1, max: 5 }),
-    qualityRating: () => faker.number.float({ min: 1, max: 5 }),
+    heatRating: () =>
+      Math.round(faker.number.float({ min: 0.5, max: 5 }) * 2) / 2,
+    qualityRating: () =>
+      Math.round(faker.number.float({ min: 0.5, max: 5 }) * 2) / 2,
     hottestDish: () => faker.lorem.words(3),
     hottestSauce: () => faker.lorem.words(2),
     images: () => [],
