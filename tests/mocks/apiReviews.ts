@@ -4,11 +4,33 @@ import { db } from './db';
 import { vi } from 'vitest';
 
 export const getReviewsAction = vi.fn(
-  async ({ venueId, userId, pagination }: ReviewsRequestParams) => {
+  async ({ venueId, userId, pagination, sort }: ReviewsRequestParams) => {
     let rows = db.review.getAll();
 
     if (venueId) rows = rows.filter((r) => r.venueId === venueId);
     if (userId) rows = rows.filter((r) => r.userId === userId);
+
+    //  apply sort
+    if (sort?.field && sort?.direction) {
+      const dir = sort.direction === 'asc' ? 1 : -1;
+
+      rows = [...rows].sort((a, b) => {
+        const aVal = a[sort.field];
+        const bVal = b[sort.field];
+
+        // numbers (heatRating/qualityRating)
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          return (aVal - bVal) * dir;
+        }
+
+        // dates (createdAt as ISO string)
+        if (sort.field === 'createdAt') {
+          return (Date.parse(a.createdAt) - Date.parse(b.createdAt)) * dir;
+        }
+
+        return 0;
+      });
+    }
 
     const pageNumber = pagination?.pageNumber ?? 1;
     const maxResults = pagination?.maxResults ?? 10;

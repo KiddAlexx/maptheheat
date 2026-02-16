@@ -5,6 +5,7 @@ import {
   waitForElementToBeRemoved,
   within,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import ReviewContainer from '@/features/reviews/components/ReviewContainer';
 import { db } from 'tests/mocks/db';
@@ -71,8 +72,6 @@ describe('ReviewContainer', () => {
     await waitForElementToBeRemoved(getLoaderSpinner);
     const review = reviews[0];
     const reviewCard = within(getVisibleReviewCards()[0]);
-    screen.debug(undefined, Infinity);
-    logRoles(document.body);
 
     expect(reviewCard.getByText(review.reviewTitle)).toBeInTheDocument();
     expect(reviewCard.getByText(review.reviewContent)).toBeInTheDocument();
@@ -89,6 +88,89 @@ describe('ReviewContainer', () => {
     expect(
       reviewCard.getByRole('button', { name: /open review actions/i })
     ).toBeInTheDocument();
+  });
+
+  it('should render sort component', async () => {
+    const { venue } = seedVenueWithReviews(DEFAULT_REVIEWS_PAGE_SIZE);
+    const { getLoaderSpinner } = await renderComponent({
+      venue,
+    });
+    await waitForElementToBeRemoved(getLoaderSpinner);
+
+    expect(screen.getByRole('button', { name: /sort/i })).toBeInTheDocument();
+  });
+
+  it('should render sort component with options', async () => {
+    const { venue } = seedVenueWithReviews(DEFAULT_REVIEWS_PAGE_SIZE);
+    const { getLoaderSpinner } = await renderComponent({
+      venue,
+    });
+    await waitForElementToBeRemoved(getLoaderSpinner);
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: /sort by/i }));
+
+    expect(
+      screen.getByRole('option', { name: /hottest/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: /mildest/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: /highest quality/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: /lowest quality/i })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: /newest/i })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: /oldest/i })).toBeInTheDocument();
+  });
+
+  it('should sort reviews by heat rating in descending order', async () => {
+    const { venue } = seedVenueWithReviews(DEFAULT_REVIEWS_PAGE_SIZE);
+    const { getLoaderSpinner, getHeatRatingsInDomOrder } =
+      await renderComponent({
+        venue,
+      });
+    const user = userEvent.setup();
+    await waitForElementToBeRemoved(getLoaderSpinner);
+
+    await user.click(screen.getByRole('button', { name: /sort by/i }));
+    await user.click(screen.getByRole('option', { name: /hottest/i }));
+    await waitForElementToBeRemoved(
+      screen.queryByRole('listbox', { name: /sort by/i })
+    );
+
+    const heatRatingsInDomOrder = getHeatRatingsInDomOrder();
+    for (let i = 1; i < heatRatingsInDomOrder.length; i++) {
+      expect(heatRatingsInDomOrder[i]).toBeLessThanOrEqual(
+        heatRatingsInDomOrder[i - 1]
+      );
+    }
+  });
+
+  it('should sort reviews by heat rating in ascending order', async () => {
+    const { venue } = seedVenueWithReviews(DEFAULT_REVIEWS_PAGE_SIZE);
+    const { getLoaderSpinner, getHeatRatingsInDomOrder } =
+      await renderComponent({
+        venue,
+      });
+    const user = userEvent.setup();
+    await waitForElementToBeRemoved(getLoaderSpinner);
+
+    await user.click(screen.getByRole('button', { name: /sort by/i }));
+    await user.click(screen.getByRole('option', { name: /mildest/i }));
+    await waitForElementToBeRemoved(
+      screen.queryByRole('listbox', { name: /sort by/i })
+    );
+
+    const heatRatingsInDomOrder = getHeatRatingsInDomOrder();
+    for (let i = 1; i < heatRatingsInDomOrder.length; i++) {
+      expect(heatRatingsInDomOrder[i]).toBeGreaterThanOrEqual(
+        heatRatingsInDomOrder[i - 1]
+      );
+    }
+    screen.debug(undefined, Infinity);
+    logRoles(document.body);
   });
 });
 
@@ -112,5 +194,12 @@ const renderComponent = async ({ venue }: RenderComponentProps) => {
     return screen.getAllByRole('article');
   };
 
-  return { getLoaderSpinner, getVisibleReviewCards };
+  const getHeatRatingsInDomOrder = () => {
+    return getVisibleReviewCards().map((card) => {
+      const ratingLabel = within(card).getByLabelText(/heat rating/i);
+      return Number(ratingLabel.getAttribute('data-value'));
+    });
+  };
+
+  return { getLoaderSpinner, getVisibleReviewCards, getHeatRatingsInDomOrder };
 };

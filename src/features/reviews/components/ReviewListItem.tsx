@@ -126,6 +126,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
             <div className="mr-5 sm:mr-0">
               <div
                 aria-label={`Review heat rating ${heatRating}`}
+                data-value={heatRating}
                 className=" -translate-x-[1px] sm:mt-2 [&>span]:!flex"
               >
                 <VenueRating initialRating={heatRating} readonly size="20" />

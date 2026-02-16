@@ -43,7 +43,7 @@ export const db = factory({
   },
   review: {
     reviewId: primaryKey(() => faker.string.uuid()),
-    createdAt: () => new Date().toISOString(),
+    createdAt: () => faker.date.past({ years: 2 }).toISOString(),
     heatRating: () =>
       Math.round(faker.number.float({ min: 0.5, max: 5 }) * 2) / 2,
     qualityRating: () =>
