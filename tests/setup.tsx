@@ -5,8 +5,11 @@ import { getCurrentUserMock } from './mocks/apiAuth';
 import { getUserProfileMock } from './mocks/apiUserProfiles';
 import React from 'react';
 
-
 // mock supabase api functions
+vi.mock('@supabase/supabase-js', () => ({
+  createClient: vi.fn(() => ({})),
+}));
+
 vi.mock('@/services/apiReviews', () => ({
   getReviews: getReviewsMock,
   deleteReviewApi: deleteReviewMock,
