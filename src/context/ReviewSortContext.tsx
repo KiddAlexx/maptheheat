@@ -7,6 +7,8 @@ import { createContext, ReactNode, useContext, useReducer } from 'react';
 import type { ReviewSort } from '@/types/reviewTypes';
 import type { PaginationControlsParams } from '@/ui/PaginationControls';
 
+import { DEFAULT_REVIEWS_PAGE_SIZE } from '@/constants/constants';
+
 // Data types
 
 interface State {
@@ -35,7 +37,7 @@ const ReviewSortContext = createContext<ReviewSortContextType | undefined>(
 
 const initialState: State = {
   sort: null,
-  pagination: { pageNumber: 1, maxResults: 5 },
+  pagination: { pageNumber: 1, maxResults: DEFAULT_REVIEWS_PAGE_SIZE },
 };
 
 function reducer(state: State, action: Action) {

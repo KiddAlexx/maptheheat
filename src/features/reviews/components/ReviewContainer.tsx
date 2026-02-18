@@ -41,6 +41,7 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
     isPending: isPendingReviews,
     totalCount,
     reviews,
+    error: reviewError,
   } = useGetReviews({
     venueId: venueId ? venueId : undefined,
     userId: isUserMode ? userId : undefined,
@@ -50,6 +51,19 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
 
   if ((isUserMode && isPendingUser) || isPendingReviews)
     return <LoaderSpinner message="Loading reviews" />;
+
+  if (reviewError) {
+    return (
+      <div
+        role="alert"
+        className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-md"
+      >
+        <p className="mb-2 text-xl font-semibold text-gray-600">
+          Error loading reviews - Please try refreshing
+        </p>
+      </div>
+    );
+  }
 
   return reviews && reviews.length > 0 ? (
     <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 @container ">

@@ -1,10 +1,26 @@
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 import { deleteReviewMock, getReviewsMock } from './mocks/apiReviews';
+import { getCurrentUserMock } from './mocks/apiAuth';
+import { getUserProfileMock } from './mocks/apiUserProfiles';
+import React from 'react';
+
+// mock supabase api functions
+vi.mock('@supabase/supabase-js', () => ({
+  createClient: vi.fn(() => ({})),
+}));
 
 vi.mock('@/services/apiReviews', () => ({
   getReviews: getReviewsMock,
   deleteReviewApi: deleteReviewMock,
+}));
+
+vi.mock('@/services/apiAuth', () => ({
+  getCurrentUser: getCurrentUserMock,
+}));
+
+vi.mock('@/services/apiUserProfiles', () => ({
+  getUserProfile: getUserProfileMock,
 }));
 
 Object.defineProperty(window, 'matchMedia', {
@@ -19,4 +35,10 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
+});
+
+vi.mock('focus-trap-react', () => {
+  return {
+    default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  };
 });

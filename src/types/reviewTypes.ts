@@ -29,10 +29,7 @@ export interface ReviewWithRelations extends Review {
 export type NewReview = Omit<Review, 'reviewId' | 'createdAt' | 'userId'>;
 
 // Review context types - used in UserReviewsContext & ReviewSortContext
-export type ReviewSortField =
-  | 'averageHeatRating'
-  | 'averageQualityRating'
-  | 'createdAt';
+export type ReviewSortField = 'heatRating' | 'qualityRating' | 'createdAt';
 
 export interface ReviewSort {
   field: ReviewSortField;
