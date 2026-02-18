@@ -1,6 +1,6 @@
 import { db } from 'tests/mocks/db';
 
-export const seedVenueWithReviews = (count: number) => {
+export const seedVenueWithReviews = (count: number, options?: object) => {
   const venue = db.venue.create();
   const user = db.profile.create();
 
@@ -9,6 +9,7 @@ export const seedVenueWithReviews = (count: number) => {
       venueId: venue.venueId,
       venueDetails: venue,
       profiles: user,
+      ...options,
     })
   );
 

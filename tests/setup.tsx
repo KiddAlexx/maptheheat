@@ -3,6 +3,8 @@ import { vi } from 'vitest';
 import { deleteReviewMock, getReviewsMock } from './mocks/apiReviews';
 import { getCurrentUserMock } from './mocks/apiAuth';
 import { getUserProfileMock } from './mocks/apiUserProfiles';
+import React from 'react';
+
 
 // mock supabase api functions
 vi.mock('@/services/apiReviews', () => ({
@@ -30,4 +32,10 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
+});
+
+vi.mock('focus-trap-react', () => {
+  return {
+    default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  };
 });

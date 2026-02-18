@@ -1,23 +1,31 @@
+// Testing libraries
 import { it, expect, describe } from 'vitest';
 import {
-  logRoles,
   screen,
   waitForElementToBeRemoved,
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import ReviewContainer from '@/features/reviews/components/ReviewContainer';
-import { db } from 'tests/mocks/db';
-
-import { renderWithRoute } from 'tests/utils/renderWithRoute';
-import { drop } from '@mswjs/data';
-import { seedVenueWithReviews } from 'tests/utils/seedVenueWithReviews';
+// Helpers
+import { subHours } from 'date-fns';
 import { DEFAULT_REVIEWS_PAGE_SIZE } from '@/constants/constants';
+
+// Components
+import ReviewContainer from '@/features/reviews/components/ReviewContainer';
+
+// Mocks
+import { db } from 'tests/mocks/db';
+import { drop } from '@mswjs/data';
 import {
   simulateReviewsDelay,
   simulateReviewsError,
 } from 'tests/mocks/apiReviews';
+import { getCurrentUserMock } from 'tests/mocks/apiAuth';
+
+// Utils
+import { renderWithRoute } from 'tests/utils/renderWithRoute';
+import { seedVenueWithReviews } from 'tests/utils/seedVenueWithReviews';
 import { formatDate } from '@/utils/dateTimeHelpers';
 
 type DbVenue = ReturnType<typeof db.venue.create>;
@@ -27,7 +35,7 @@ describe('ReviewContainer', () => {
     drop(db);
   });
 
-  it('shows loader while fetching reviews', async () => {
+  it('should show loader while fetching reviews', async () => {
     const { venue } = seedVenueWithReviews(DEFAULT_REVIEWS_PAGE_SIZE);
 
     // Calls mock api call with delay
@@ -65,7 +73,7 @@ describe('ReviewContainer', () => {
   });
 
   it('should display important review details within review card', async () => {
-    const { venue, reviews, user } = seedVenueWithReviews(1);
+    const { venue, reviews, user: reviewAuthor } = seedVenueWithReviews(1);
     const { getLoaderSpinner, getVisibleReviewCards } = await renderComponent({
       venue,
     });
@@ -75,7 +83,7 @@ describe('ReviewContainer', () => {
 
     expect(reviewCard.getByText(review.reviewTitle)).toBeInTheDocument();
     expect(reviewCard.getByText(review.reviewContent)).toBeInTheDocument();
-    expect(reviewCard.getByText(user.username)).toBeInTheDocument();
+    expect(reviewCard.getByText(reviewAuthor.username)).toBeInTheDocument();
     const expectedDate = formatDate(review.createdAt);
     expect(reviewCard.getByText(expectedDate)).toBeInTheDocument();
     expect(reviewCard.getByRole('img', { name: /avatar/i }));
@@ -102,11 +110,10 @@ describe('ReviewContainer', () => {
 
   it('should render sort component with options', async () => {
     const { venue } = seedVenueWithReviews(DEFAULT_REVIEWS_PAGE_SIZE);
-    const { getLoaderSpinner } = await renderComponent({
+    const { getLoaderSpinner, user } = await renderComponent({
       venue,
     });
     await waitForElementToBeRemoved(getLoaderSpinner);
-    const user = userEvent.setup();
     await user.click(screen.getByRole('button', { name: /sort by/i }));
 
     expect(
@@ -187,9 +194,6 @@ describe('ReviewContainer', () => {
       name: /item 3/i,
     });
     expect(pageThreeButton).toHaveLength(2);
-
-    screen.debug(undefined, Infinity);
-    logRoles(document.body);
   });
 
   it('should display reviews for selected page', async () => {
@@ -211,6 +215,106 @@ describe('ReviewContainer', () => {
     reviews.slice(pageSize * 2, pageSize * 3).forEach((review) => {
       expect(screen.getByText(review.reviewTitle)).toBeInTheDocument();
     });
+  });
+
+  it('should display edit + delete when current user = review author + authenticated', async () => {
+    const todaysDate = new Date().toISOString();
+    const { venue, user: reviewAuthor } = seedVenueWithReviews(1, {
+      createdAt: todaysDate,
+    });
+
+    getCurrentUserMock.mockResolvedValue({
+      id: reviewAuthor.userId,
+      role: 'authenticated',
+    });
+
+    const { getLoaderSpinner, openReviewActionsMenu } = await renderComponent({
+      venue,
+    });
+    await waitForElementToBeRemoved(getLoaderSpinner);
+    await openReviewActionsMenu();
+
+    expect(
+      screen.getByRole('menuitem', { name: /edit review/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: /delete review/i })
+    ).toBeInTheDocument();
+  });
+
+  it('should hide edit when review is older than 48h', async () => {
+    const date48hAgo = subHours(new Date(), 48).toISOString();
+    const { venue, user: reviewAuthor } = seedVenueWithReviews(1, {
+      createdAt: date48hAgo,
+    });
+    getCurrentUserMock.mockResolvedValue({
+      id: reviewAuthor.userId,
+      role: 'authenticated',
+    });
+
+    const { getLoaderSpinner, openReviewActionsMenu } = await renderComponent({
+      venue,
+    });
+    await waitForElementToBeRemoved(getLoaderSpinner);
+
+    await openReviewActionsMenu();
+
+    expect(
+      screen.queryByRole('menuitem', { name: /edit review/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: /delete review/i })
+    ).toBeInTheDocument();
+  });
+
+  it('should hide edit + delete when user is not the author', async () => {
+    const { venue } = seedVenueWithReviews(1);
+
+    const { getLoaderSpinner, openReviewActionsMenu } = await renderComponent({
+      venue,
+    });
+    await waitForElementToBeRemoved(getLoaderSpinner);
+    await openReviewActionsMenu();
+
+    expect(
+      screen.queryByRole('menuitem', { name: /edit review/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('menuitem', { name: /delete review/i })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should delete review when selected by author', async () => {
+    const { venue, user: reviewAuthor } = seedVenueWithReviews(
+      DEFAULT_REVIEWS_PAGE_SIZE
+    );
+    getCurrentUserMock.mockResolvedValue({
+      id: reviewAuthor.userId,
+      role: 'authenticated',
+    });
+    const {
+      getLoaderSpinner,
+      openReviewActionsMenu,
+      getVisibleReviewCards,
+      user,
+    } = await renderComponent({
+      venue,
+    });
+
+    await waitForElementToBeRemoved(getLoaderSpinner);
+    await openReviewActionsMenu();
+    await user.click(screen.getByRole('menuitem', { name: /delete review/i }));
+    await waitForElementToBeRemoved(
+      screen.queryByRole('menu', { name: /review actions/i })
+    );
+    expect(
+      screen.getByText(/are you sure you want to delete this review/i)
+    ).toBeInTheDocument();
+    await user.click(
+      screen.getByRole('button', { name: /confirm dialog action/i })
+    );
+    const visibleReviewCards = getVisibleReviewCards();
+    expect(visibleReviewCards).toHaveLength(DEFAULT_REVIEWS_PAGE_SIZE - 1);
   });
 });
 
@@ -259,11 +363,20 @@ const renderComponent = async ({ venue }: RenderComponentProps) => {
     await user.click(topPagination.getByRole('button', { name: pageButton }));
   };
 
+  const openReviewActionsMenu = async () => {
+    const reviewCard = within(getVisibleReviewCards()[0]);
+    await user.click(
+      reviewCard.getByRole('button', { name: /open review actions/i })
+    );
+  };
+
   return {
     getLoaderSpinner,
     getVisibleReviewCards,
     getHeatRatingsInDomOrder,
     selectSortOption,
     selectPageButton,
+    openReviewActionsMenu,
+    user,
   };
 };
