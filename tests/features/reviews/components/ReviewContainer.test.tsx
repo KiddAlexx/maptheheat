@@ -351,10 +351,9 @@ const renderComponent = async ({ venue }: RenderComponentProps) => {
     await waitForElementToBeRemoved(getLoaderSpinner);
 
     await user.click(screen.getByRole('button', { name: /sort by/i }));
+    const listbox = screen.queryByRole('listbox', { name: /sort by/i });
     await user.click(screen.getByRole('option', { name: sortOption }));
-    await waitForElementToBeRemoved(
-      screen.queryByRole('listbox', { name: /sort by/i })
-    );
+    await waitForElementToBeRemoved(listbox);
   };
 
   const selectPageButton = async (pageButton: RegExp | string) => {
