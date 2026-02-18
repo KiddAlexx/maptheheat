@@ -39,25 +39,25 @@ function ReviewSort({ updateSort, resetSort }: ReviewSortParams) {
     >
       <SelectItem key={'default'}>Default</SelectItem>
       <SelectItem endContent={<FaSortAmountUp />} key={'heatRating-desc'}>
-        Heat Rating
+        Hottest
       </SelectItem>
       <SelectItem endContent={<FaSortAmountDownAlt />} key={'heatRating-asc'}>
-        Heat Rating
+        Mildest
       </SelectItem>
       <SelectItem endContent={<FaSortAmountUp />} key={'qualityRating-desc'}>
-        Quality Rating
+        Highest Quality
       </SelectItem>
       <SelectItem
         endContent={<FaSortAmountDownAlt />}
         key={'qualityRating-asc'}
       >
-        Quality Rating
+        Lowest Quality
       </SelectItem>
       <SelectItem endContent={<FaSortAmountUp />} key={'createdAt-desc'}>
-        Date Added
+        Newest first
       </SelectItem>
       <SelectItem endContent={<FaSortAmountDownAlt />} key={'createdAt-asc'}>
-        Date Added
+        Oldest first
       </SelectItem>
     </Select>
   );

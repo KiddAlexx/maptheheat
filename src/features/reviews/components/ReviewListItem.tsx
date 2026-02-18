@@ -1,11 +1,11 @@
 // Third Party Imports
-import { format, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { useUIContext } from '@/context/UIContext';
 import { Icon } from '@iconify/react/dist/iconify.js';
 
 // Utils
-import { withinTimeframe } from '@/utils/withinTimeframe';
+import { formatDate, withinTimeframe } from '@/utils/dateTimeHelpers';
 
 // Hooks
 import { useUser } from '../../authentication/hooks/useUser';
@@ -32,7 +32,6 @@ import ResponsiveImageGrid from '@/ui/ResponsiveImageGrid';
 
 // Type imports
 import type { ReviewWithRelations } from '@/types/reviewTypes';
-
 
 interface ReviewListItemProps {
   review: ReviewWithRelations;
@@ -79,7 +78,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
   // Format date and time + use withinTimeFrame helper function
   // to check whether review was left within the last 48 hours
   const date = parseISO(createdAt);
-  const formattedDate = format(date, 'dd MMM yyyy');
+  const formattedDate = formatDate(createdAt);
   const within48hours = withinTimeframe(date, 2);
 
   // Passes function to delete review to openDialog function which
@@ -92,8 +91,6 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
       deleteReviewWithId
     );
   }
-
-
 
   return isDeleting ? (
     <LoaderSpinner message="deleting review" />
@@ -127,16 +124,24 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
               </p>
             </div>
             <div className="mr-5 sm:mr-0">
-              <div className=" -translate-x-[1px] sm:mt-2 [&>span]:!flex">
+              <div
+                aria-label={`Review heat rating ${heatRating}`}
+                data-value={heatRating}
+                className=" -translate-x-[1px] sm:mt-2 [&>span]:!flex"
+              >
                 <VenueRating initialRating={heatRating} readonly size="20" />
               </div>
-              <div className="mt-1 flex items-start gap-1 sm:mt-2">
+              <div
+                aria-label={`Review quality rating ${qualityRating}`}
+                className="mt-1 flex items-start gap-1 sm:mt-2"
+              >
                 <Icon
+                  aria-hidden="true"
                   className="text-yellow-600"
                   icon="lucide:star"
                   width={18}
                 />
-                <span>({qualityRating})</span>
+                <span aria-hidden="true">({qualityRating})</span>
               </div>
             </div>
           </div>
@@ -171,7 +176,12 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
       </section>
       <Dropdown>
         <DropdownTrigger className="absolute right-0 top-1">
-          <Button isIconOnly variant="light" className="ml-2">
+          <Button
+            aria-label="Open review actions"
+            isIconOnly
+            variant="light"
+            className="ml-2"
+          >
             <Icon icon="lucide:more-vertical" className="h-5 w-5" />
           </Button>
         </DropdownTrigger>
