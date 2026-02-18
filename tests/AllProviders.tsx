@@ -7,6 +7,10 @@ import { VenueFilterProvider } from '@/context/VenueFilterContext';
 import { ModalProvider } from '@/context/ModalContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PropsWithChildren } from 'react';
+import { HeroUIProvider } from '@heroui/system';
+
+import ErrorModal from '@/ui/ErrorModal';
+import ModalManager from '@/components/ModalManager';
 
 const AllProviders = ({ children }: PropsWithChildren) => {
   const client = new QueryClient({
@@ -18,23 +22,31 @@ const AllProviders = ({ children }: PropsWithChildren) => {
   });
 
   return (
-    <GlobalErrorProvider>
-      <VenueFilterProvider>
-        <UserFavVenuesProvider>
-          <ReviewSortProvider>
-            <UserReviewsProvider>
-              <ModalProvider>
-                <UIProvider>
-                  <QueryClientProvider client={client}>
-                    {children}
-                  </QueryClientProvider>
-                </UIProvider>
-              </ModalProvider>
-            </UserReviewsProvider>
-          </ReviewSortProvider>
-        </UserFavVenuesProvider>
-      </VenueFilterProvider>
-    </GlobalErrorProvider>
+    <>
+      <HeroUIProvider>
+        <GlobalErrorProvider>
+          <VenueFilterProvider>
+            <UserFavVenuesProvider>
+              <ReviewSortProvider>
+                <UserReviewsProvider>
+                  <ModalProvider>
+                    <UIProvider>
+                      <QueryClientProvider client={client}>
+                        {children}
+                        <ErrorModal />
+                        <ModalManager />
+                      </QueryClientProvider>
+                    </UIProvider>
+                  </ModalProvider>
+                </UserReviewsProvider>
+              </ReviewSortProvider>
+            </UserFavVenuesProvider>
+          </VenueFilterProvider>
+        </GlobalErrorProvider>
+      </HeroUIProvider>
+      <div id="root"></div>
+      <div id="modal-root"></div>
+    </>
   );
 };
 

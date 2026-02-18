@@ -1,0 +1,1 @@
+export const DEFAULT_REVIEWS_PAGE_SIZE = 5;

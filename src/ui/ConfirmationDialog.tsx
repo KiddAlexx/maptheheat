@@ -8,20 +8,34 @@ function ConfirmationDialog() {
     confirmAction ? confirmAction() : closeModal();
   }
   return (
-    <form className="px-3 pt-4" onSubmit={(e) => handleSubmit(e)}>
-      <p className="mb-4">{message}</p>
-      <div className="flex w-full justify-end gap-2">
-        {confirmAction && (
-          <Button className="bg-danger-300" type="button" onPress={closeModal}>
-            Cancel
-          </Button>
-        )}
+    <div className="px-3 pt-4">
+      <p role="alert" className="mb-4">
+        {message}
+      </p>
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <div className="flex w-full justify-end gap-2">
+          {confirmAction && (
+            <Button
+              className="bg-danger-300"
+              id="firstElementToFocus"
+              type="button"
+              onPress={closeModal}
+              aria-label="cancel dialog action"
+            >
+              Cancel
+            </Button>
+          )}
 
-        <Button className="bg-success-400" type="submit">
-          OK
-        </Button>
-      </div>
-    </form>
+          <Button
+            aria-label="confirm dialog action"
+            className="bg-success-400"
+            type="submit"
+          >
+            OK
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }
 
