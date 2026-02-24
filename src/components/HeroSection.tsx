@@ -4,7 +4,7 @@ import AddVenueButton from '@/ui/AddVenueButton';
 
 function HeroSection() {
   return (
-    <section className=" grid h-[calc(100vh-8rem)] grid-cols-2 justify-items-center">
+    <section className=" grid flex-1 grid-cols-2 justify-items-center">
       <div className="max-w-3xl self-center px-10">
         <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 md:text-6xl">
           Find the <span className="text-primary-500">spiciest</span>{' '}
