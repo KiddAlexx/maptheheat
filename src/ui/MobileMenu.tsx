@@ -37,7 +37,7 @@ function MobileMenu() {
           }}
         >
           <DrawerContent>
-            <DrawerHeader className=" h-16 bg-zinc-700 ">
+            <DrawerHeader className=" h-16 bg-slate-950/80 ">
               <MainLogo />
             </DrawerHeader>
 

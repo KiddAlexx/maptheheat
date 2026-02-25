@@ -27,12 +27,11 @@ import AddNewVenue from './pages/AddNewVenue';
 
 import Profile from './pages/Profile';
 
-import AppProviders from './AppProviders';
 import PageNav from './ui/PageNav';
 
 function App() {
   return (
-    <AppProviders>
+    <>
       <div className="flex h-dvh flex-col">
         <header>
           <PageNav />
@@ -113,7 +112,7 @@ function App() {
           },
         }}
       />
-    </AppProviders>
+    </>
   );
 }
 
