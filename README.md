@@ -1,27 +1,116 @@
-# Map The Heat
+# 🌶 MapTheHeat
 
-Map The Heat is a community-driven web application that allows users to share and discover spicy food places around the world. Whether you're a spice connoisseur seeking the next challenge, or just looking for a place to try a hot dish for the first time, Map The Heat is here to guide you.
+MapTheHeat is a React application for discovering the _spiciest_ restaurants and shops in your city - powered by real user activity.
 
-More info coming soon!
+Users can explore venues via list or map, add reviews, save favourites, and submit new venues.
 
-## Live Link
+> The app is actively evolving. Planned improvements are outlined in the [roadmap](#-roadmap) below.
 
-Link will be live for a couple of weeks to get some feedback.
+---
 
-[Map The Heat on Netlify](https://maptheheat.netlify.app/)
+## 🌍 Live Demo
 
-## Features
+**Staging URL:** https://staging.maptheheat.com/  
+**Status:** Fully functional using seeded demo data
 
-Currently, in the early stages of development. Here's a glimpse of what's to come:
+---
 
-1. Discover spicy food places: Browse a map populated with hotspots recommended by fellow spice lovers.
+## ✨ Features
 
-2. Contribute your discoveries: Found a new place that needs recognition? Add it to the map and share your experience.
+- View venues on interactive map (Leaflet)
+- View list of venues & filter by city and category (restaurants / shops)
+- Sort venues and reviews by heat rating, quality rating etc
+- Add venues - use the Nominatim API to fetch address details and coordinates
+- Add/edit reviews
+- Upload images (with venue, review or standalone)
+- All submissions enter a pending moderation state
+- Users receive automatic status notifications
+- Submissions moderated using admin panel + user notified of result
+- Save venues to favourites
+- User profiles with:
+  - Reviews added
+  - Favourites
+  - Notifications
+  - Account updates (email, password, username, avatar)
 
-3. Review and rate places: Share your feedback on the dishes, and rate the heat level to help other users know what to expect.
+### Moderation & backend rules
 
-## Development
+- Submissions can be **pending** and require approval
+- Limits enforced at the database layer:
+  - Max **2 pending venues** per user
+  - Max **2 pending reviews** per user
+  - Max **2 pending image sets** per user
+- Enforced via Supabase database rules, row-level security, and SQL functions
+- Client-side checks also provide early feedback
 
-This application is being built with React, Firebase, Leaflet for maps, and various other technologies.
+---
 
-Test comment
+## 🛠 Tech Stack
+
+**Frontend**
+
+- React 18 + TypeScript
+- Tailwind CSS
+- TanStack React Query
+- Vite
+- React Router v6
+- React Hook Form
+- HeroUI
+- Leaflet / React Leaflet
+
+**Backend**
+
+- Supabase (Postgres, Auth, Storage)
+
+**Testing & Tooling**
+
+- Vitest
+- React Testing Library
+- MSW
+- ESLint + TypeScript strict mode
+- Prettier
+- CI with Github Actions
+- Cloudflare Pages with pre deployment checks
+
+---
+
+## ♿ Accessibility
+
+Accessibility is an ongoing focus:
+
+- Semantic HTML structure
+- Accessible names and ARIA attributes
+- Keyboard navigation support
+- Focus management in modals
+- Accessible toast notifications
+- Accessible error messaging
+- Manual testing with screen reader
+
+---
+
+## 🚀 Deployment
+
+Hosted on **Cloudflare Pages**  
+Built with Vite
+
+---
+
+## 📌 Project Goals
+
+This project was built to demonstrate:
+
+- Feature-based folder structure
+- Strict TypeScript
+- Real-world moderation logic
+- Testing discipline
+- Accessibility awareness
+- Scalable frontend patterns
+
+---
+
+## 🛣 Roadmap
+
+- Expanded test coverage
+- Extensive accessibility refinements
+- UI refinements - Reduce reliance on component library where custom solutions provide better flexibility.
+- Refactor shared UI state (modals/filters/sort) - reduce provider nesting and unnecessary re-renders (Context to Zustand)
