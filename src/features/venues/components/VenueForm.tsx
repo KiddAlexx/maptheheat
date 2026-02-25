@@ -442,7 +442,7 @@ function VenueForm() {
                 )}
                 <Button
                   isDisabled={isCreatingVenue}
-                  color="primary"
+                  className="h-9 min-w-28 bg-primary-500 text-sm font-semibold text-primary-50"
                   onPress={() =>
                     openDialog('Do you want to discard this venue?', () =>
                       navigate('/app/map')
@@ -454,7 +454,7 @@ function VenueForm() {
                 </Button>
                 <Button
                   isDisabled={isCreatingVenue}
-                  className="bg-success-400"
+                  className="h-9 min-w-28 bg-success-500 text-sm font-semibold text-success-900"
                   type="submit"
                 >
                   Submit
