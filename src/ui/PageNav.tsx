@@ -26,7 +26,7 @@ function PageNav() {
   return (
     <nav
       aria-label="Main navigation"
-      className="flex h-16 items-center justify-between bg-zinc-700 px-4 sm:px-6 "
+      className="flex h-16 items-center justify-between bg-slate-950/80 px-4 sm:px-8 "
     >
       {/* Mobile menu */}
       <div className="sm:hidden">
@@ -62,7 +62,7 @@ function PageNav() {
             <Button
               size="sm"
               onPress={() => openModal('login')}
-              className="h-9 min-w-32 bg-success-300 text-base font-medium text-success-foreground "
+              className="h-9 min-w-28 bg-success-300 text-sm font-medium text-success-foreground"
             >
               Sign In
             </Button>
