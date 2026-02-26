@@ -1,4 +1,4 @@
-import { Button, Input } from '@heroui/react';
+import { Button, ButtonGroup, Input } from '@heroui/react';
 import { useState } from 'react';
 import { VenueFilterContextType } from '@/context/VenueFilterContext';
 
@@ -10,7 +10,7 @@ function VenueSearchBar({ useVenueContext }: VenueSearchBarProps) {
   const { updateVenueFilter, removeVenueFilter } = useVenueContext();
   const [searchValue, setSearchValue] = useState('');
 
-  function handleSumbit(e: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formattedSearchValue = `%${searchValue}%`;
 
@@ -25,22 +25,21 @@ function VenueSearchBar({ useVenueContext }: VenueSearchBarProps) {
     removeVenueFilter('venueName');
   }
   return (
-    <form className="relative mb-3" onSubmit={handleSumbit}>
+    <form className="mb-3 flex gap-2" onSubmit={handleSubmit}>
       <Input
-        aria-label="Search venue by name"
         radius="sm"
-        onValueChange={(value) => setSearchValue(value)}
         value={searchValue}
+        onValueChange={setSearchValue}
         placeholder="Search by venue name"
       />
-      <div className="absolute bottom-0 right-0 z-20">
-        <Button type="button" radius="none" onPress={clearSearch}>
+      <ButtonGroup radius="sm">
+        <Button variant="flat" type="button" onPress={clearSearch}>
           Clear
         </Button>
-        <Button className="rounded-r-md" radius="none" type="submit">
+        <Button color="primary" type="submit">
           Search
         </Button>
-      </div>
+      </ButtonGroup>
     </form>
   );
 }
