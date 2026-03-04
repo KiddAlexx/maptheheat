@@ -18,7 +18,7 @@ function VenueListContainer({
     mode === 'venue' ? useVenueFilterContext : useUserFavVenuesContext;
 
   return (
-    <>
+    <div className="h-full overflow-y-scroll [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <div className="mb-2 rounded-xl bg-zinc-200 p-3">
         <SearchAndFilterPanel
           useVenueContext={useVenueContext}
@@ -32,7 +32,7 @@ function VenueListContainer({
           mode === 'user' ? favouriteVenues ?? undefined : undefined
         }
       />
-    </>
+    </div>
   );
 }
 
