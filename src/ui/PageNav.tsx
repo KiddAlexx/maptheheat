@@ -47,11 +47,11 @@ function PageNav() {
           <div className="hidden items-center gap-5 sm:flex">
             <NavLink
               to="/app/map"
-              className="text-xl font-medium text-primary-50 transition-colors hover:text-primary-300"
+              className="rounded-xl p-1 text-xl font-medium text-primary-50 transition-colors hover:text-primary-300"
             >
               Map
             </NavLink>
-            <AddVenueButton className="h-auto bg-transparent px-0 text-xl font-medium text-primary-50 hover:text-primary-300 data-[hover=true]:bg-transparent" />
+            <AddVenueButton className="h-auto bg-transparent p-1 px-0 text-xl font-medium text-primary-50 hover:text-primary-300 data-[hover=true]:bg-transparent" />
           </div>
         </li>
 
