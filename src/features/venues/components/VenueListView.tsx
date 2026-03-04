@@ -80,7 +80,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
   const favVenuesList = userProfile?.favouriteVenues || null;
 
   return (
-    <div className="h-full overflow-y-scroll [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <>
       <div className="mb-2 flex lg:justify-center">
         <PaginationControls
           updatePageNumber={updatePageNumber}
@@ -122,7 +122,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
           totalCount={totalCount}
         />
       </div>
-    </div>
+    </>
   );
 }
 
