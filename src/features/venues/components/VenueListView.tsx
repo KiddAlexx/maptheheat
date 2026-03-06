@@ -79,7 +79,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
 
   return (
     <>
-      <div className="mb-2 flex lg:justify-center">
+      <div className="mb-2 flex justify-center">
         <PaginationControls
           updatePageNumber={updatePageNumber}
           pagination={pagination}
@@ -113,7 +113,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
         </ul>
       )}
 
-      <div className="mb-2 flex lg:justify-center">
+      <div className="mb-2 flex justify-center">
         <PaginationControls
           updatePageNumber={updatePageNumber}
           pagination={pagination}
