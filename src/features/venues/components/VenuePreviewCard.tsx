@@ -11,7 +11,7 @@ interface VenuePreviewCardProps {
 
 function VenuePreviewCard({ venue }: VenuePreviewCardProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
-  const { isLargeScreen, updateView } = useUIContext();
+  const { isLargeScreen } = useUIContext();
 
   const { city, venueName, thumbnailImage, averageHeatRating, totalReviews } =
     venue;
@@ -25,7 +25,6 @@ function VenuePreviewCard({ venue }: VenuePreviewCardProps) {
     isLargeScreen
       ? setParamsAndNavigate(venue)
       : setParamsAndNavigate(venue, 'venue');
-    updateView('venue');
   }
 
   return (

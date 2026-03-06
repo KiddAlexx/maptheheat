@@ -1,10 +1,13 @@
 // Third Party Imports
 import clsx from 'clsx';
-import { Outlet, useMatch, useNavigate } from 'react-router';
 
 // Hooks
-import { useSearchParams } from 'react-router-dom';
-import { useUIContext } from '@/context/UIContext';
+import {
+  Outlet,
+  useMatch,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 
 // Assets
 import { Icon } from '@iconify/react/dist/iconify.js';
@@ -14,26 +17,42 @@ import VenueListContainer from '@/features/venues/components/VenueListContainer'
 import { Button } from '@heroui/react';
 
 function AppLayout() {
-  const { currentView, updateView } = useUIContext();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+
   const venueMatch = useMatch('/app/venue/:city/:venue/:venueId');
 
-  function handleView() {
-    if (currentView === 'list') {
-      updateView('map');
-      return;
-    }
-    if (currentView === 'map') {
-      updateView('list');
-      return;
-    }
-    if (currentView === 'venue' && venueMatch) {
+  // Assign visible pane for mobile view based on url
+  const currentPane =
+    searchParams.get('pane') ?? (venueMatch ? 'venue' : 'list');
+
+  // Helper function to to set current pane for mobile screen
+  function setPane(pane: string) {
+    const params = new URLSearchParams(searchParams);
+    params.set('pane', pane);
+    setSearchParams(params);
+  }
+
+  // Toggle pane on mobile screens
+  function updatePane() {
+    if (currentPane === 'list' && venueMatch) {
       const { city, venue, venueId } = venueMatch.params;
-      const lat = searchParams.get('lat');
-      const lon = searchParams.get('lon');
-      navigate(`/app/map/${city}/${venue}/${venueId}?&lat=${lat}&lon=${lon}`);
-      updateView('list');
+      const params = new URLSearchParams(searchParams);
+      params.set('pane', 'map');
+      navigate(`/app/map/${city}/${venue}/${venueId}?${params.toString()}`);
+      return;
+    }
+    if (currentPane === 'list') {
+      setPane('map');
+      return;
+    }
+    if (currentPane === 'map') {
+      setPane('list');
+      return;
+    }
+
+    if (currentPane === 'venue') {
+      setPane('list');
       return;
     }
   }
@@ -43,7 +62,7 @@ function AppLayout() {
       <aside
         className={clsx(
           'w-full shrink flex-col p-3 lg:flex lg:min-w-[32rem] lg:basis-1/3',
-          currentView === 'list' ? 'flex' : 'hidden'
+          currentPane === 'list' ? 'flex' : 'hidden'
         )}
       >
         <VenueListContainer mode="venue" />
@@ -51,17 +70,18 @@ function AppLayout() {
       <section
         className={clsx(
           'flex-1 overflow-y-scroll bg-zinc-50 lg:block',
-          currentView === 'map' || currentView === 'venue' ? 'block' : 'hidden'
+          currentPane === 'map' || currentPane === 'venue' ? 'block' : 'hidden'
         )}
       >
         <Outlet />
       </section>
+
       <Button
-        onPress={handleView}
+        onPress={updatePane}
         size="md"
         className="absolute bottom-14 right-1/2 z-[1000] translate-x-1/2 gap-2 bg-success-300 lg:hidden"
       >
-        {currentView === 'list' ? (
+        {currentPane === 'list' ? (
           <>
             <Icon aria-hidden="true" icon="lucide:map-pin" width={16} />
             <span>Map</span>
