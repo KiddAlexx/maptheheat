@@ -36,7 +36,6 @@ function DetailedVenueView() {
   const navigate = useNavigate();
   const { venueId } = useParams();
 
-
   const { openModal, openModalUpload, openDialog } = useModalContext();
 
   const { isAuthenticated, user } = useUser();
@@ -90,6 +89,7 @@ function DetailedVenueView() {
   const {
     venueName,
     city,
+    country,
     venueNameSlug,
     phoneNumber,
     detailedAddress,
@@ -146,7 +146,9 @@ function DetailedVenueView() {
     try {
       const withinDayLimit = await canUserReview(venueId);
       if (withinDayLimit) {
-        navigate(`/app/venue/${city}/${venueNameSlug}/reviews/new/${venueId}`);
+        navigate(
+          `/app/venue/${city}/${country}/${venueNameSlug}/reviews/new/${venueId}`
+        );
       } else openDialog('You cannot review the same venue within 30 days');
     } catch (err) {
       setGlobalError(`${err}`);
@@ -229,7 +231,7 @@ function DetailedVenueView() {
           <ShareButton
             title="Check out this place I found on Map The Heat!"
             body={`Hey, \n\nI thought you’d like this venue I found on Map The Heat. \n\nCheck it out here:`}
-            shareUrl={`https://www.maptheheat.com/app/venue/${city}/${venueNameSlug}/${venueId}`}
+            shareUrl={`https://www.maptheheat.com/app/venue/${city}/${country}/${venueNameSlug}/${venueId}`}
           />
           <LikeButton
             isFavourite={isFavourite}
@@ -275,7 +277,7 @@ function DetailedVenueView() {
             startContent={<Icon icon="lucide:map-pinned" />}
             onPress={() => {
               navigate(
-                `/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`
+                `/app/map/${city}/${country}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`
               );
             }}
           >
