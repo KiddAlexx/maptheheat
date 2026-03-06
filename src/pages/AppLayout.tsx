@@ -16,6 +16,8 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import VenueListContainer from '@/features/venues/components/VenueListContainer';
 import { Button } from '@heroui/react';
 
+type Pane = 'venue' | 'map' | 'list';
+
 function AppLayout() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -27,7 +29,7 @@ function AppLayout() {
     searchParams.get('pane') ?? (venueMatch ? 'venue' : 'list');
 
   // Helper function to to set current pane for mobile screen
-  function setPane(pane: string) {
+  function setPane(pane: Pane) {
     const params = new URLSearchParams(searchParams);
     params.set('pane', pane);
     setSearchParams(params);
