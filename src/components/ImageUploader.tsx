@@ -65,6 +65,7 @@ function ImageUploader({
   const {
     venueNameSlug: propVenueNameSlug,
     city: propCity,
+    country,
     venueId: propVenueId,
   } = venue ?? {};
 
@@ -109,7 +110,7 @@ function ImageUploader({
       closeModal();
     }
     if (isIntegrated) {
-      navigate(`/app/venue/${city}/${venueNameSlug}/${venueId}`, {
+      navigate(`/app/venue/${city}/${country}/${venueNameSlug}/${venueId}`, {
         replace: true,
       });
     }

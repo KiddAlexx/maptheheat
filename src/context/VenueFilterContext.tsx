@@ -48,7 +48,7 @@ const VenueFilterContext = createContext<VenueFilterContextType | undefined>(
 
 // Initial state for the filters
 const initialState: State = {
-  filters: [{ field: 'city', value: '', method: 'eq' }],
+  filters: [],
   sort: null,
   pagination: { pageNumber: 1, maxResults: 10 },
 };

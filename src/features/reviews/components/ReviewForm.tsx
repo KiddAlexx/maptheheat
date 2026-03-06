@@ -97,7 +97,8 @@ function ReviewForm({ mode }: ReviewFormProps) {
     venueIdParam,
     mode === 'creating'
   );
-  const { venueName, venueType, venueId, venueNameSlug, city } = venue ?? {};
+  const { venueName, venueType, venueId, venueNameSlug, city, country } =
+    venue ?? {};
 
   // Fetch review details in "editing" mode.
   // All destructured variables assigned default values,
@@ -183,7 +184,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
 
   const naviagateToVenue = function () {
     mode === 'creating'
-      ? navigate(`/app/venue/${city}/${venueNameSlug}/${venueId}`)
+      ? navigate(`/app/venue/${city}/${country}/${venueNameSlug}/${venueId}`)
       : navigate(
           `/app/venue/${venueCityReview}/${venueSlugReview}/${venueIdReview}`
         );

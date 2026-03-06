@@ -58,6 +58,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
   const { username, totalReviews, userId } = profiles;
   const {
     city,
+    country,
     venueNameSlug,
     thumbnailImage,
     venueName,
@@ -192,7 +193,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
               startContent={<Icon icon="lucide:edit" />}
             >
               <Link
-                to={`/app/venue/${city}/${venueNameSlug}/reviews/edit/${reviewId}`}
+                to={`/app/venue/${city}/${country}/${venueNameSlug}/reviews/edit/${reviewId}`}
               >
                 Edit Review
               </Link>
