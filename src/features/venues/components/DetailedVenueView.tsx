@@ -12,7 +12,7 @@ import { useModalContext } from '@/context/ModalContext';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
-import { useUIContext } from '@/context/UIContext';
+
 import { useGlobalError } from '@/context/ErrorContext';
 
 // Assets
@@ -35,7 +35,7 @@ import { canUserAddImage } from '@/services/apiVenues';
 function DetailedVenueView() {
   const navigate = useNavigate();
   const { venueId } = useParams();
-  const { updateView } = useUIContext();
+
 
   const { openModal, openModalUpload, openDialog } = useModalContext();
 
@@ -277,7 +277,6 @@ function DetailedVenueView() {
               navigate(
                 `/app/map/${city}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`
               );
-              updateView('map');
             }}
           >
             Back to Map

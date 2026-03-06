@@ -45,7 +45,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
     pagination,
   });
 
-  const { isLargeScreen, updateView } = useUIContext();
+  const { isLargeScreen } = useUIContext();
 
   const {
     user,
@@ -73,8 +73,6 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
         ? setParamsAndNavigate(venue)
         : setParamsAndNavigate(venue, 'venue');
     }
-
-    updateView('venue');
   }
 
   const favVenuesList = userProfile?.favouriteVenues || null;
