@@ -59,15 +59,15 @@ function App() {
             <Route path="app" element={<AppLayout />}>
               <Route index element={<Navigate replace to="map" />} />
               <Route
-                path="map/:city?/:venue?/:venueId?"
+                path="map/:city?/:country?/:venue?/:venueId?"
                 element={<MapView />}
               />
               <Route
-                path="venue/:city/:venue/:venueId"
+                path="venue/:city/:country?/:venue/:venueId"
                 element={<DetailedVenueView />}
               />
               <Route
-                path="venue/:city/:venue/reviews/new/:venueId"
+                path="venue/:city/:country?/:venue/reviews/new/:venueId"
                 element={
                   <ProtectedRoute>
                     <ReviewForm mode="creating" />
@@ -75,7 +75,7 @@ function App() {
                 }
               />
               <Route
-                path="venue/:city/:venue/reviews/edit/:reviewId"
+                path="venue/:city/:country?/:venue/reviews/edit/:reviewId"
                 element={
                   <ProtectedRoute>
                     <ReviewForm mode="editing" />
