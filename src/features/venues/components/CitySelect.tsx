@@ -72,7 +72,9 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
     updateVenueFilter({ field: 'country', value: country, method: 'eq' });
     removeVenueFilter('venueName');
     if (!isUserMode) {
-      navigate(`/app/map/${city}?&lat=${coords.lat}&lon=${coords.lon}`);
+      navigate(
+        `/app/map/${city}/${country}?&lat=${coords.lat}&lon=${coords.lon}`
+      );
     }
   }
 

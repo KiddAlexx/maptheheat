@@ -22,7 +22,7 @@ function AppLayout() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const venueMatch = useMatch('/app/venue/:city/:venue/:venueId');
+  const venueMatch = useMatch('/app/venue/:city/:country/:venue/:venueId');
 
   // Assign visible pane for mobile view based on url
   const currentPane =
@@ -38,10 +38,12 @@ function AppLayout() {
   // Toggle pane on mobile screens
   function updatePane() {
     if (currentPane === 'list' && venueMatch) {
-      const { city, venue, venueId } = venueMatch.params;
+      const { city, country, venue, venueId } = venueMatch.params;
       const params = new URLSearchParams(searchParams);
       params.set('pane', 'map');
-      navigate(`/app/map/${city}/${venue}/${venueId}?${params.toString()}`);
+      navigate(
+        `/app/map/${city}/${country}/${venue}/${venueId}?${params.toString()}`
+      );
       return;
     }
     if (currentPane === 'list') {
