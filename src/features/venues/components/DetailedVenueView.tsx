@@ -327,7 +327,7 @@ function DetailedVenueView() {
           <h2 className="mb-2 text-lg font-medium">About</h2>
           <p className="text-gray-700">{description}</p>
         </div>
-        <div className="mb-3 flex gap-2">
+        <div className="mb-3 flex gap-2 ">
           <Button
             as="a"
             href={mapsDirectionsUrl}
@@ -335,20 +335,26 @@ function DetailedVenueView() {
             rel="noopener noreferrer"
             color="primary"
             variant="flat"
-            startContent={<Icon icon="lucide:navigation" />}
+            startContent={
+              <Icon className="hidden xs:block" icon="lucide:navigation" />
+            }
           >
             Get Directions
           </Button>
           <Button
             variant="flat"
-            startContent={<Icon icon="lucide:message-circle" />}
+            startContent={
+              <Icon className="hidden xs:block" icon="lucide:message-circle" />
+            }
             onPress={handleReview}
           >
             Leave a review
           </Button>
           <Button
             variant="flat"
-            startContent={<Icon icon="lucide:image-plus" />}
+            startContent={
+              <Icon className="hidden xs:block" icon="lucide:image-plus" />
+            }
             onPress={handleAddImages}
           >
             Add Images
