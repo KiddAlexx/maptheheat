@@ -27,66 +27,62 @@ import AddNewVenue from './pages/AddNewVenue';
 
 import Profile from './pages/Profile';
 
-import PageNav from './ui/PageNav';
+import RootLayout from './RootLayout';
 
 function App() {
   return (
     <>
-      <div className="flex h-dvh flex-col">
-        <header>
-          <PageNav />
-        </header>
-        <div className="min-h-0 flex-1">
-          <Routes>
-            <Route path="/" element={<Homepage />} />
-            <Route
-              path="/add-venue"
-              element={
-                <ProtectedRoute>
-                  <AddNewVenue />
-                </ProtectedRoute>
-              }
-            />
+      <Routes>
+        <Route element={<RootLayout />}>
+          <Route path="/" element={<Homepage />} />
+          <Route
+            path="/add-venue"
+            element={
+              <ProtectedRoute>
+                <AddNewVenue />
+              </ProtectedRoute>
+            }
+          />
 
+          <Route
+            path="/profile/:section?/:setting?"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="app" element={<AppLayout />}>
+            <Route index element={<Navigate replace to="map" />} />
             <Route
-              path="/profile/:section?/:setting?"
+              path="map/:city?/:country?/:venue?/:venueId?"
+              element={<MapView />}
+            />
+            <Route
+              path="venue/:city/:country?/:venue/:venueId"
+              element={<DetailedVenueView />}
+            />
+            <Route
+              path="venue/:city/:country?/:venue/reviews/new/:venueId"
               element={
                 <ProtectedRoute>
-                  <Profile />
+                  <ReviewForm mode="creating" />
                 </ProtectedRoute>
               }
             />
-            <Route path="app" element={<AppLayout />}>
-              <Route index element={<Navigate replace to="map" />} />
-              <Route
-                path="map/:city?/:country?/:venue?/:venueId?"
-                element={<MapView />}
-              />
-              <Route
-                path="venue/:city/:country?/:venue/:venueId"
-                element={<DetailedVenueView />}
-              />
-              <Route
-                path="venue/:city/:country?/:venue/reviews/new/:venueId"
-                element={
-                  <ProtectedRoute>
-                    <ReviewForm mode="creating" />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="venue/:city/:country?/:venue/reviews/edit/:reviewId"
-                element={
-                  <ProtectedRoute>
-                    <ReviewForm mode="editing" />
-                  </ProtectedRoute>
-                }
-              />
-            </Route>
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </div>
-      </div>
+            <Route
+              path="venue/:city/:country?/:venue/reviews/edit/:reviewId"
+              element={
+                <ProtectedRoute>
+                  <ReviewForm mode="editing" />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+          <Route path="*" element={<PageNotFound />} />
+        </Route>
+      </Routes>
+
       <ErrorModal />
       <ModalManager />
       <Toaster
