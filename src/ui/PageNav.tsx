@@ -1,5 +1,5 @@
 // Third Party Imports
-import { NavLink } from 'react-router-dom';
+import { NavLink, useParams, useSearchParams } from 'react-router-dom';
 
 // React imports
 
@@ -22,6 +22,15 @@ import styles from './MainLogo.module.css';
 function PageNav() {
   const { isAuthenticated } = useUser();
   const { openModal } = useModalContext();
+  const { city, country } = useParams();
+  const [searchParams] = useSearchParams();
+  const lat = searchParams.get('lat');
+  const lon = searchParams.get('lon');
+
+  const mapHref =
+    city && country && lat && lon
+      ? `/app/map/${city}/${country}?&lat=${lat}&lon=${lon}`
+      : '/app/map';
 
   return (
     <nav
@@ -46,7 +55,7 @@ function PageNav() {
         <li>
           <div className="hidden items-center gap-5 sm:flex">
             <NavLink
-              to="/app/map"
+              to={mapHref}
               className="rounded-xl p-1 text-xl font-medium text-primary-50 transition-colors hover:text-primary-300"
             >
               Map
