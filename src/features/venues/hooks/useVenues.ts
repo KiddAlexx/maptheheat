@@ -22,12 +22,10 @@ export function useVenues({
   const finalFilters = useMemo(() => {
     let nextFilters = [...filters];
 
-    if (city) {
+    if (city && country) {
       nextFilters = nextFilters.filter((filter) => filter.field !== 'city');
       nextFilters.push({ field: 'city', value: city, method: 'eq' });
-    }
 
-    if (country) {
       nextFilters = nextFilters.filter((filter) => filter.field !== 'country');
       nextFilters.push({ field: 'country', value: country, method: 'eq' });
     }
