@@ -1,5 +1,5 @@
 // Third Party Imports
-import { NavLink, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 
 // React imports
 
@@ -29,7 +29,7 @@ function PageNav() {
 
   const mapHref =
     city && country && lat && lon
-      ? `/app/map/${city}/${country}?&lat=${lat}&lon=${lon}`
+      ? `/app/map/${city}/${country}?lat=${lat}&lon=${lon}`
       : '/app/map';
 
   return (
@@ -42,46 +42,40 @@ function PageNav() {
         <MobileMenu />
       </div>
       {/* Desktop menu */}
-      <ul className=" flex w-full items-center justify-between">
-        <li className="hidden sm:block">
-          <NavLink
-            to="/"
-            className={styles.logoWrap}
-            aria-label="Go to home page"
-          >
+      <div className=" flex w-full items-center justify-between">
+        <div className="hidden sm:block">
+          <Link to="/" className={styles.logoWrap} aria-label="Home">
             <MainLogo />
-          </NavLink>
-        </li>
-        <li>
-          <div className="hidden items-center gap-5 sm:flex">
-            <NavLink
-              to={mapHref}
-              className="rounded-xl p-1 text-xl font-medium text-primary-50 transition-colors hover:text-primary-300"
-            >
-              Map
-            </NavLink>
-            <AddVenueButton className="h-auto bg-transparent p-1 px-0 text-xl font-medium text-primary-50 hover:text-primary-300 data-[hover=true]:bg-transparent" />
-          </div>
-        </li>
+          </Link>
+        </div>
+
+        <div className="hidden items-center gap-5 sm:flex">
+          <Link
+            to={mapHref}
+            className="rounded-xl p-1 text-xl font-medium text-primary-50 transition-colors hover:text-primary-300"
+          >
+            Map
+          </Link>
+
+          <AddVenueButton className="h-auto bg-transparent p-1 px-0 text-xl font-medium text-primary-50 hover:text-primary-300 data-[hover=true]:bg-transparent" />
+        </div>
 
         {/* Checks user login state
             Displays Login & Signup or Logout button */}
         {!isAuthenticated ? (
-          <li>
-            <Button
-              size="sm"
-              onPress={() => openModal('login')}
-              className="h-9 min-w-28 bg-success-300 text-sm font-medium text-success-foreground"
-            >
-              Sign In
-            </Button>
-          </li>
+          <Button
+            size="sm"
+            onPress={() => openModal('login')}
+            className="h-9 min-w-28 bg-success-300 text-sm font-medium text-success-foreground"
+          >
+            Sign In
+          </Button>
         ) : (
-          <li className="flex items-center">
+          <div className="flex items-center">
             <UserMenu />
-          </li>
+          </div>
         )}
-      </ul>
+      </div>
     </nav>
   );
 }
