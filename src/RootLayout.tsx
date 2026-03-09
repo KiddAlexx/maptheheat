@@ -1,5 +1,7 @@
 import { Outlet } from 'react-router-dom';
+import { Suspense } from 'react';
 import PageNav from './ui/PageNav';
+import LoaderSpinner from './ui/LoaderSpinner';
 
 function RootLayout() {
   return (
@@ -9,7 +11,9 @@ function RootLayout() {
       </header>
 
       <div className="min-h-0 flex-1">
-        <Outlet />
+        <Suspense fallback={<LoaderSpinner message="Loading page" />}>
+          <Outlet />
+        </Suspense>
       </div>
     </div>
   );
