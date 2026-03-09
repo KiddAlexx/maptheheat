@@ -11,7 +11,7 @@ function RootLayout() {
       </header>
 
       <div className="min-h-0 flex-1">
-        <Suspense fallback={<LoaderSpinner message="Loading page" />}>
+        <Suspense fallback={<LoaderSpinner/>}>
           <Outlet />
         </Suspense>
       </div>
