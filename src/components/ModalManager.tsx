@@ -1,14 +1,27 @@
+// React imports
+import { lazy, Suspense } from 'react';
+
 // Hooks
 import { useModalContext } from '@/context/ModalContext';
 
 // Components
-import SignupForm from '@/features/authentication/components/SignupForm';
+
 import ConfirmationDialog from '@/ui/ConfirmationDialog';
 import Modal from '@/ui/Modal';
-import ImageCarousel from '@/ui/ImageCarousel';
-import ImageUploader from './ImageUploader';
-import LoginForm from '@/features/authentication/components/LoginForm';
-import ForgotPasswordForm from '@/features/authentication/components/ForgotPasswordForm';
+import LoaderSpinner from '@/ui/LoaderSpinner';
+
+const ImageCarousel = lazy(() => import('@/ui/ImageCarousel'));
+const ImageUploader = lazy(() => import('./ImageUploader'));
+
+const LoginForm = lazy(
+  () => import('@/features/authentication/components/LoginForm')
+);
+const SignupForm = lazy(
+  () => import('@/features/authentication/components/SignupForm')
+);
+const ForgotPasswordForm = lazy(
+  () => import('@/features/authentication/components/ForgotPasswordForm')
+);
 
 function ModalManager() {
   const { modalName, modalOpen } = useModalContext();
@@ -17,21 +30,41 @@ function ModalManager() {
   let Component = null;
   switch (modalName) {
     case 'login':
-      Component = <LoginForm />;
+      Component = (
+        <Suspense fallback={<LoaderSpinner message="Loading login form" />}>
+          <LoginForm />
+        </Suspense>
+      );
       break;
-
     case 'sign-up':
-      Component = <SignupForm />;
+      Component = (
+        <Suspense fallback={<LoaderSpinner message="Loading sign up form" />}>
+          <SignupForm />
+        </Suspense>
+      );
       break;
     case 'forgot-password':
-      Component = <ForgotPasswordForm />;
+      Component = (
+        <Suspense
+          fallback={<LoaderSpinner message="Loading password recovery form" />}
+        >
+          <ForgotPasswordForm />
+        </Suspense>
+      );
       break;
-
     case 'image-carousel':
-      Component = <ImageCarousel />;
+      Component = (
+        <Suspense fallback={<LoaderSpinner message="Loading images" />}>
+          <ImageCarousel />
+        </Suspense>
+      );
       break;
     case 'image-uploader':
-      Component = <ImageUploader mode="modal" imageType="standalone" />;
+      Component = (
+        <Suspense fallback={<LoaderSpinner message="Loading uploader" />}>
+          <ImageUploader mode="modal" imageType="standalone" />
+        </Suspense>
+      );
       break;
     case 'confirm-action':
       Component = <ConfirmationDialog />;
