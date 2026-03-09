@@ -11,7 +11,7 @@ import { useVenues } from '../venues/hooks/useVenues';
 import { useSearchParams } from 'react-router-dom';
 
 // Assets
-import chilliPin from '@/assets/chillipin.png';
+import chilliPin from '@/assets/chillipin.webp';
 
 // Components
 import MapPopupContent from './MapPopupContent';
