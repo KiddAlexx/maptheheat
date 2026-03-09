@@ -111,6 +111,6 @@ This project was built to demonstrate:
 ## 🛣 Roadmap
 
 - Expanded test coverage
-- Extensive accessibility refinements
+- Extensive accessibility refinements - Current version of HeroUi has lots of accessibility issues!
 - UI refinements - Reduce reliance on component library where custom solutions provide better flexibility.
-- Refactor shared UI state (modals/filters/sort) - reduce provider nesting and unnecessary re-renders (Context to Zustand)
+- Refactor shared UI state (modals/filters/sort) - reduce provider nesting and unnecessary re-renders (Context to Zustand?)
