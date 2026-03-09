@@ -1,4 +1,4 @@
-import defaultAvatar from '../../../assets/default-avatar.png';
+import defaultAvatar from '../../../assets/default-avatar.webp';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 
 interface AvatarProps {
