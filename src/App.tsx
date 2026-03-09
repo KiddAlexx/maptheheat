@@ -1,5 +1,6 @@
 // React imports
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { lazy } from 'react';
 
 // Third Party Imports
 
@@ -8,26 +9,25 @@ import { Toaster } from 'react-hot-toast';
 // Styles imports
 import './App.css';
 
-// Hooks imports
-
-// Component imports
-
+// Components and pages
 import Homepage from './pages/Homepage';
-import AppLayout from './pages/AppLayout';
 import PageNotFound from './pages/PageNotFound';
-import DetailedVenueView from './features/venues/components/DetailedVenueView';
-import MapView from './features/map/MapView';
-
 import ProtectedRoute from './components/ProtectedRoute';
-
 import ErrorModal from './ui/ErrorModal';
 import ModalManager from './components/ModalManager';
-import ReviewForm from './features/reviews/components/ReviewForm';
-import AddNewVenue from './pages/AddNewVenue';
-
-import Profile from './pages/Profile';
-
 import RootLayout from './RootLayout';
+
+// Lazy loaded pages + components
+const AppLayout = lazy(() => import('./pages/AppLayout'));
+const DetailedVenueView = lazy(
+  () => import('./features/venues/components/DetailedVenueView')
+);
+const MapView = lazy(() => import('./features/map/MapView'));
+const ReviewForm = lazy(
+  () => import('./features/reviews/components/ReviewForm')
+);
+const Profile = lazy(() => import('./pages/Profile'));
+const AddNewVenue = lazy(() => import('./pages/AddNewVenue'));
 
 function App() {
   return (
