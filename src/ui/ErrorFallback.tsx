@@ -1,5 +1,5 @@
 import { FallbackProps } from 'react-error-boundary';
-import brokenChilli from '../assets/broken-chilli-grey-md.png';
+import brokenChilli from '../assets/broken-chilli-grey-md.webp';
 import { Button, Image } from '@heroui/react';
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
