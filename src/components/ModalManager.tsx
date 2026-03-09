@@ -31,37 +31,35 @@ function ModalManager() {
   switch (modalName) {
     case 'login':
       Component = (
-        <Suspense fallback={<LoaderSpinner message="Loading login form" />}>
+        <Suspense fallback={<LoaderSpinner />}>
           <LoginForm />
         </Suspense>
       );
       break;
     case 'sign-up':
       Component = (
-        <Suspense fallback={<LoaderSpinner message="Loading sign up form" />}>
+        <Suspense fallback={<LoaderSpinner />}>
           <SignupForm />
         </Suspense>
       );
       break;
     case 'forgot-password':
       Component = (
-        <Suspense
-          fallback={<LoaderSpinner message="Loading password recovery form" />}
-        >
+        <Suspense fallback={<LoaderSpinner />}>
           <ForgotPasswordForm />
         </Suspense>
       );
       break;
     case 'image-carousel':
       Component = (
-        <Suspense fallback={<LoaderSpinner message="Loading images" />}>
+        <Suspense fallback={<LoaderSpinner />}>
           <ImageCarousel />
         </Suspense>
       );
       break;
     case 'image-uploader':
       Component = (
-        <Suspense fallback={<LoaderSpinner message="Loading uploader" />}>
+        <Suspense fallback={<LoaderSpinner />}>
           <ImageUploader mode="modal" imageType="standalone" />
         </Suspense>
       );
