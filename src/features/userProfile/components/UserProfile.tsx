@@ -2,7 +2,7 @@
 import { useNavigate, useParams } from 'react-router';
 
 // React imports
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 
 // Hooks
 import { useUser } from '@/features/authentication/hooks/useUser';
@@ -11,13 +11,19 @@ import { useGetUserProfile } from '../hooks/useGetUserProfile';
 // Assets
 
 // Components
-import ReviewContainer from '@/features/reviews/components/ReviewContainer';
-import VenueListContainer from '@/features/venues/components/VenueListContainer';
+
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import { Tab, Tabs } from '@heroui/react';
 import UserProfileBanner from './UserProfileBanner';
 import EditProfilePanel from './EditProfilePanel';
-import NotificationContainer from './NotificationContainer';
+
+const ReviewContainer = lazy(
+  () => import('@/features/reviews/components/ReviewContainer')
+);
+const VenueListContainer = lazy(
+  () => import('@/features/venues/components/VenueListContainer')
+);
+const NotificationContainer = lazy(() => import('./NotificationContainer'));
 
 // Type imports
 import type { Key } from '@/types/venueTypes';
@@ -57,17 +63,25 @@ function UserProfile() {
         onSelectionChange={handleSelectionChange}
         fullWidth
       >
-        <Tab key={'reviews'} title="My Reviews">
-          <ReviewContainer mode="user" />
+        <Tab key="reviews" title="My Reviews">
+          <Suspense fallback={<LoaderSpinner />}>
+            <ReviewContainer mode="user" />
+          </Suspense>
         </Tab>
 
-        <Tab key={'venues'} title="Favourite Venues">
-          <VenueListContainer mode="user" favouriteVenues={favouriteVenues} />
+        <Tab key="venues" title="Favourite Venues">
+          <Suspense fallback={<LoaderSpinner />}>
+            <VenueListContainer mode="user" favouriteVenues={favouriteVenues} />
+          </Suspense>
         </Tab>
-        <Tab key={'notifications'} title="Notifications">
-          <NotificationContainer userId={userId} />
+
+        <Tab key="notifications" title="Notifications">
+          <Suspense fallback={<LoaderSpinner />}>
+            <NotificationContainer userId={userId} />
+          </Suspense>
         </Tab>
-        <Tab key={'edit'} title="Edit Profile">
+
+        <Tab key="edit" title="Edit Profile">
           <EditProfilePanel />
         </Tab>
       </Tabs>

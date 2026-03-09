@@ -9,19 +9,12 @@ import { useModalContext } from '@/context/ModalContext';
 import ConfirmationDialog from '@/ui/ConfirmationDialog';
 import Modal from '@/ui/Modal';
 import LoaderSpinner from '@/ui/LoaderSpinner';
+import LoginForm from '@/features/authentication/components/LoginForm';
+import SignupForm from '@/features/authentication/components/SignupForm';
+import ForgotPasswordForm from '@/features/authentication/components/ForgotPasswordForm';
 
 const ImageCarousel = lazy(() => import('@/ui/ImageCarousel'));
 const ImageUploader = lazy(() => import('./ImageUploader'));
-
-const LoginForm = lazy(
-  () => import('@/features/authentication/components/LoginForm')
-);
-const SignupForm = lazy(
-  () => import('@/features/authentication/components/SignupForm')
-);
-const ForgotPasswordForm = lazy(
-  () => import('@/features/authentication/components/ForgotPasswordForm')
-);
 
 function ModalManager() {
   const { modalName, modalOpen } = useModalContext();
@@ -30,25 +23,13 @@ function ModalManager() {
   let Component = null;
   switch (modalName) {
     case 'login':
-      Component = (
-        <Suspense fallback={<LoaderSpinner />}>
-          <LoginForm />
-        </Suspense>
-      );
+      Component = <LoginForm />;
       break;
     case 'sign-up':
-      Component = (
-        <Suspense fallback={<LoaderSpinner />}>
-          <SignupForm />
-        </Suspense>
-      );
+      Component = <SignupForm />;
       break;
     case 'forgot-password':
-      Component = (
-        <Suspense fallback={<LoaderSpinner />}>
-          <ForgotPasswordForm />
-        </Suspense>
-      );
+      Component = <ForgotPasswordForm />;
       break;
     case 'image-carousel':
       Component = (
