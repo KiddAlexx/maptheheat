@@ -35,14 +35,14 @@ function PageNav() {
   return (
     <nav
       aria-label="Main navigation"
-      className="flex h-16 items-center justify-between bg-slate-950/80 px-4 sm:px-8 "
+      className="flex h-16 items-center justify-between bg-slate-950/80 px-4 sm:px-8"
     >
       {/* Mobile menu */}
       <div className="sm:hidden">
         <MobileMenu />
       </div>
       {/* Desktop menu */}
-      <div className=" flex w-full items-center justify-between">
+      <div className=" flex sm:w-full items-center justify-between">
         <div className="hidden sm:block">
           <Link to="/" className={styles.logoWrap} aria-label="Home">
             <MainLogo />
