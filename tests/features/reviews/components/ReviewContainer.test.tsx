@@ -325,8 +325,8 @@ interface RenderComponentProps {
 const renderComponent = async ({ venue }: RenderComponentProps) => {
   renderWithRoute({
     element: <ReviewContainer mode="venue" />,
-    route: `/app/venue/${venue.city}/${venue.venueNameSlug}/${venue.venueId}`,
-    path: '/app/venue/:city/:venue/:venueId',
+    route: `/app/venue/${venue.city}/${venue.country}/${venue.venueNameSlug}/${venue.venueId}`,
+    path: '/app/venue/:city/:country/:venue/:venueId',
   });
 
   const user = userEvent.setup();
