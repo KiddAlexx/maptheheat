@@ -37,6 +37,22 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
+if (
+  typeof SVGElement !== 'undefined' &&
+  !('getBBox' in SVGElement.prototype)
+) {
+  Object.defineProperty(SVGElement.prototype, 'getBBox', {
+    configurable: true,
+    writable: true,
+    value: () => ({
+      x: 0,
+      y: 0,
+      width: 24,
+      height: 24,
+    }),
+  });
+}
+
 vi.mock('focus-trap-react', () => {
   return {
     default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
