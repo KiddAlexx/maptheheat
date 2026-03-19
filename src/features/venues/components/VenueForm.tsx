@@ -101,7 +101,7 @@ function VenueForm() {
           country,
         },
       };
-    } catch (err) {
+    } catch {
       throw new Error(
         "Couldn't find address. Please confirm that the details are correct"
       );
