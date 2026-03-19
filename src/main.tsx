@@ -4,6 +4,7 @@ import App from './App.tsx';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import './index.css';
+import '@smastrom/react-rating/style.css';
 import { BrowserRouter } from 'react-router-dom';
 import ErrorFallback from './ui/ErrorFallback.tsx';
 import AppProviders from './AppProviders.tsx';
