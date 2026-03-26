@@ -1,7 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
-import { ReactNode, createContext, useContext, useReducer } from 'react';
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useReducer,
+} from 'react';
 
 // Type imports
 import type {
@@ -147,40 +154,67 @@ function UserFavVenuesProvider({ children }: UserFavVenuesProviderProps) {
   );
 
   // Function to update filter
-  function updateVenueFilter(filter: VenueFilter) {
-    dispatch({ type: 'update-filter', payload: { filter } });
-  }
+  const updateVenueFilter = useCallback(
+    (filter: VenueFilter) => {
+      dispatch({ type: 'update-filter', payload: { filter } });
+    },
+    [dispatch]
+  );
 
   // Function to remove filter
-  function removeVenueFilter(field: FilterField) {
-    dispatch({ type: 'remove-filter', payload: { field } });
-  }
-  // Function to update sort
-  function updateSort(sortBy: VenueSort) {
-    dispatch({ type: 'update-sort', payload: { sortBy } });
-  }
-  // Function to reset sort to null
-  function resetSort() {
-    dispatch({ type: 'reset-sort' });
-  }
-  // Function to update page number
-  function updatePageNumber(pageNumber: number) {
-    dispatch({ type: 'update-page', payload: pageNumber });
-  }
-  return (
-    <UserFavVenuesContext.Provider
-      value={{
-        filters,
-        sort,
-        pagination,
+  const removeVenueFilter = useCallback(
+    (field: FilterField) => {
+      dispatch({ type: 'remove-filter', payload: { field } });
+    },
+    [dispatch]
+  );
 
-        updateVenueFilter,
-        removeVenueFilter,
-        updateSort,
-        resetSort,
-        updatePageNumber,
-      }}
-    >
+  // Function to update sort
+  const updateSort = useCallback(
+    (sortBy: VenueSort) => {
+      dispatch({ type: 'update-sort', payload: { sortBy } });
+    },
+    [dispatch]
+  );
+
+  // Function to reset sort to null
+  const resetSort = useCallback(() => {
+    dispatch({ type: 'reset-sort' });
+  }, [dispatch]);
+
+  // Function to update page number
+  const updatePageNumber = useCallback(
+    (pageNumber: number) => {
+      dispatch({ type: 'update-page', payload: pageNumber });
+    },
+    [dispatch]
+  );
+
+  const value = useMemo(
+    () => ({
+      filters,
+      sort,
+      pagination,
+      updateVenueFilter,
+      removeVenueFilter,
+      updateSort,
+      resetSort,
+      updatePageNumber,
+    }),
+    [
+      filters,
+      sort,
+      pagination,
+      updateVenueFilter,
+      removeVenueFilter,
+      updateSort,
+      resetSort,
+      updatePageNumber,
+    ]
+  );
+
+  return (
+    <UserFavVenuesContext.Provider value={value}>
       {children}
     </UserFavVenuesContext.Provider>
   );

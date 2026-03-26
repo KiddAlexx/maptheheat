@@ -1,7 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
-import { ReactNode, createContext, useContext, useReducer } from 'react';
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useReducer,
+} from 'react';
 
 // Data types
 interface State {
@@ -140,65 +147,85 @@ function ModalProvider({ children }: ModalProviderProps) {
     },
     dispatch,
   ] = useReducer(reducer, initialState);
-  function openModal(modal: string) {
-    dispatch({ type: 'open-modal', payload: modal });
-  }
-  function openModalImages(
-    modal: string,
-    images: { url: string; alt: string; id: string }[]
-  ) {
-    dispatch({ type: 'open-modal-images', payload: { modal, images } });
-  }
+  const openModal = useCallback(
+    (modal: string) => {
+      dispatch({ type: 'open-modal', payload: modal });
+    },
+    [dispatch]
+  );
 
-  function openModalUpload({
-    modal,
-    venueId,
-    venueNameSlug,
-    city,
-  }: OpenModalUploadParams) {
-    dispatch({
-      type: 'open-modal-upload',
-      payload: { modal, venueId, venueNameSlug, city },
-    });
-  }
+  const openModalImages = useCallback(
+    (modal: string, images: { url: string; alt: string; id: string }[]) => {
+      dispatch({ type: 'open-modal-images', payload: { modal, images } });
+    },
+    [dispatch]
+  );
 
-  function openDialog(message: string, confirmAction?: () => void) {
-    const confirmActionAndClose = confirmAction
-      ? () => {
-          confirmAction();
-          closeModal();
-        }
-      : null;
-    dispatch({
-      type: 'open-dialog',
-      payload: { message, confirmActionAndClose },
-    });
-  }
+  const openModalUpload = useCallback(
+    ({ modal, venueId, venueNameSlug, city }: OpenModalUploadParams) => {
+      dispatch({
+        type: 'open-modal-upload',
+        payload: { modal, venueId, venueNameSlug, city },
+      });
+    },
+    [dispatch]
+  );
 
-  function closeModal() {
+  const closeModal = useCallback(() => {
     dispatch({ type: 'close-modal' });
-  }
+  }, [dispatch]);
+
+  const openDialog = useCallback(
+    (message: string, confirmAction?: () => void) => {
+      const confirmActionAndClose = confirmAction
+        ? () => {
+            confirmAction();
+            closeModal();
+          }
+        : null;
+      dispatch({
+        type: 'open-dialog',
+        payload: { message, confirmActionAndClose },
+      });
+    },
+    [dispatch, closeModal]
+  );
+
+  const value = useMemo(
+    () => ({
+      modalName,
+      modalOpen,
+      openModal,
+      closeModal,
+      openDialog,
+      openModalImages,
+      openModalUpload,
+      images,
+      venueId,
+      city,
+      venueNameSlug,
+      message,
+      confirmAction,
+    }),
+    [
+      modalName,
+      modalOpen,
+      openModal,
+      closeModal,
+      openDialog,
+      openModalImages,
+      openModalUpload,
+      images,
+      venueId,
+      city,
+      venueNameSlug,
+      message,
+      confirmAction,
+    ]
+  );
 
   return (
-    <ModalContext.Provider
-      value={{
-        modalName,
-        modalOpen,
-        openModal,
-        closeModal,
-        openDialog,
-        openModalImages,
-        openModalUpload,
-        images,
-        venueId,
-        city,
-        venueNameSlug,
-        message,
-        confirmAction,
-      }}
-    >
-      {children}
-    </ModalContext.Provider>
+    <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
   );
 }
 
