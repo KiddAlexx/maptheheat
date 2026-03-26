@@ -1,3 +1,6 @@
+// React imports
+import { useEffect, useState } from 'react';
+
 // Third Party Imports
 import { useMatch } from 'react-router';
 import toast from 'react-hot-toast';
@@ -35,7 +38,7 @@ function VenueListCard({
   favVenuesList,
 }: VenueListCardProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
-  const { updateFavouriteVenue } = useUpdateFavouriteVenue();
+  const { updateFavouriteVenue, isUpdating } = useUpdateFavouriteVenue();
   const { openDialog } = useModalContext();
 
   const isUserMode = useMatch('/profile/venues');
@@ -52,7 +55,13 @@ function VenueListCard({
 
   const totalReviewCount = totalReviews ?? 0;
 
-  const isFavourite = favVenuesList?.includes(venueId);
+  const isFavourite = favVenuesList?.includes(venueId) ?? false;
+  const [optimisticIsFavourite, setOptimisticIsFavourite] =
+    useState(isFavourite);
+
+  useEffect(() => {
+    setOptimisticIsFavourite(isFavourite);
+  }, [isFavourite]);
 
   const finalHeatRating =
     averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 0;
@@ -67,33 +76,45 @@ function VenueListCard({
   const accMainButtonId = `select-venue-${venueId}`;
 
   function toggleFavourite() {
-    if (!isAuthenticated || !userId) return;
+    if (!isAuthenticated || !userId || isUpdating) return;
     if (isUserMode) {
       openDialog(
         'Are you sure you want to remove this venue from your favourites?',
         () => {
+          const previousFavourite = optimisticIsFavourite;
+          const nextFavourite = !previousFavourite;
+          setOptimisticIsFavourite(nextFavourite);
+
           updateFavouriteVenue(
             { userId, venueId },
             {
               onSuccess: () => {
-                const newFavouriteState = !isFavourite;
-                newFavouriteState
+                nextFavourite
                   ? toast.success(`${venueName} added to favourites!`)
                   : toast.success(`${venueName} removed from favourites!`);
+              },
+              onError: () => {
+                setOptimisticIsFavourite(previousFavourite);
               },
             }
           );
         }
       );
     } else {
+      const previousFavourite = optimisticIsFavourite;
+      const nextFavourite = !previousFavourite;
+      setOptimisticIsFavourite(nextFavourite);
+
       updateFavouriteVenue(
         { userId, venueId },
         {
           onSuccess: () => {
-            const newFavouriteState = !isFavourite;
-            newFavouriteState
+            nextFavourite
               ? toast.success(`${venueName} added to favourites!`)
               : toast.success(`${venueName} removed from favourites!`);
+          },
+          onError: () => {
+            setOptimisticIsFavourite(previousFavourite);
           },
         }
       );
@@ -126,9 +147,10 @@ function VenueListCard({
               <h3 className="text-lg font-medium">{venueName}</h3>
 
               <LikeButton
-                isFavourite={isFavourite}
+                isFavourite={optimisticIsFavourite}
                 isAuthenticated={isAuthenticated}
                 handleClick={toggleFavourite}
+                isDisabled={isUpdating}
               />
             </div>
 

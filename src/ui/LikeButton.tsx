@@ -6,6 +6,7 @@ interface LikeButtonProps {
   isFavourite?: boolean;
   isAuthenticated: boolean;
   handleClick: () => void;
+  isDisabled?: boolean;
   size?: string;
   iconFull?: string;
   iconEmpty?: string;
@@ -19,6 +20,7 @@ function LikeButton({
   isFavourite,
   isAuthenticated,
   handleClick,
+  isDisabled = false,
   size = '20',
   iconFull = 'bi:heart-fill',
   iconEmpty = 'bi:heart',
@@ -46,6 +48,7 @@ function LikeButton({
       className="h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
       isIconOnly
       disableAnimation
+      isDisabled={isDisabled}
       onPress={() => handleFavouriteClick()}
       type="button"
       aria-label={label}
