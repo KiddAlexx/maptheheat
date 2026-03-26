@@ -1,5 +1,6 @@
 // Third Party Imports
 import clsx from 'clsx';
+import { Suspense } from 'react';
 
 // Hooks
 import {
@@ -15,6 +16,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 // Components
 import VenueListContainer from '@/features/venues/components/VenueListContainer';
 import { Button } from '@heroui/react';
+import LoaderSpinner from '@/ui/LoaderSpinner';
 
 type Pane = 'venue' | 'map' | 'list';
 
@@ -77,7 +79,15 @@ function AppLayout() {
           currentPane === 'map' || currentPane === 'venue' ? 'block' : 'hidden'
         )}
       >
-        <Outlet />
+        <Suspense
+          fallback={
+            <div className="h-full">
+              <LoaderSpinner message="Loading view" />
+            </div>
+          }
+        >
+          <Outlet />
+        </Suspense>
       </section>
 
       <Button

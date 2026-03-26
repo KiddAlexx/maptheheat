@@ -240,7 +240,7 @@ function DetailedVenueView() {
           />
         </div>
       </div>
-      <article className="mb-5 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
+      <article className="mb-5 rounded-xl border border-gray-200 bg-white p-4 text-sm shadow-md">
         {venueImages && venueImages.length > 0 ? (
           <ResponsiveImageGrid images={venueImages} />
         ) : (
