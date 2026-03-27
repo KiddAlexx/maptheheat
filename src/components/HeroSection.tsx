@@ -13,7 +13,7 @@ function HeroSection() {
           restaurants and shops in your city.
         </h1>
 
-        <div className="mt-8 w-full rounded-xl  border border-gray-200 bg-white p-5 shadow-md">
+        <div className="mt-8 w-full rounded-2xl border border-primary-100/80 bg-white/90 p-5 shadow-[0_20px_50px_-30px_rgba(122,37,21,0.45)] backdrop-blur-sm ">
           {/*  <p className="mb-3 ml-1 text-sm font-medium text-slate-700">
             Where are you exploring today?
           </p> */}
