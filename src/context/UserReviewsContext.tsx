@@ -1,7 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
-import { createContext, ReactNode, useContext, useReducer } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useReducer,
+} from 'react';
 
 // Type imports
 import type {
@@ -89,21 +96,39 @@ function UserReviewsProvider({ children }: UserReviewsProviderProps) {
   const [{ sort, pagination }, dispatch] = useReducer(reducer, initialState);
 
   // Function to update sort
-  function updateSort(sortBy: ReviewSort) {
-    dispatch({ type: 'update-sort', payload: { sortBy } });
-  }
+  const updateSort = useCallback(
+    (sortBy: ReviewSort) => {
+      dispatch({ type: 'update-sort', payload: { sortBy } });
+    },
+    [dispatch]
+  );
+
   // Function to reset sort to null
-  function resetSort() {
+  const resetSort = useCallback(() => {
     dispatch({ type: 'reset-sort' });
-  }
+  }, [dispatch]);
+
   // Function to update page number
-  function updatePageNumber(pageNumber: number) {
-    dispatch({ type: 'update-page', payload: pageNumber });
-  }
+  const updatePageNumber = useCallback(
+    (pageNumber: number) => {
+      dispatch({ type: 'update-page', payload: pageNumber });
+    },
+    [dispatch]
+  );
+
+  const value = useMemo(
+    () => ({
+      sort,
+      pagination,
+      updateSort,
+      resetSort,
+      updatePageNumber,
+    }),
+    [sort, pagination, updateSort, resetSort, updatePageNumber]
+  );
+
   return (
-    <UserReviewsContext.Provider
-      value={{ sort, pagination, updateSort, resetSort, updatePageNumber }}
-    >
+    <UserReviewsContext.Provider value={value}>
       {children}
     </UserReviewsContext.Provider>
   );

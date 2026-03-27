@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 
 // React imports
-import { createContext, ReactNode, useContext } from 'react';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 
 // Hooks
 import { useMediaQuery } from 'usehooks-ts';
@@ -29,20 +29,26 @@ function UIProvider({ children }: UIProviderProps) {
   const isSmallScreen = useMediaQuery('(min-width: 640px)');
   const isXSmallScreen = useMediaQuery('(min-width: 480px)');
 
-  return (
-    <UIContext.Provider
-      value={{
-        is2xlScreen,
-        isXlScreen,
-        isLargeScreen,
-        isMediumScreen,
-        isXSmallScreen,
-        isSmallScreen,
-      }}
-    >
-      {children}
-    </UIContext.Provider>
+  const value = useMemo(
+    () => ({
+      is2xlScreen,
+      isXlScreen,
+      isLargeScreen,
+      isMediumScreen,
+      isXSmallScreen,
+      isSmallScreen,
+    }),
+    [
+      is2xlScreen,
+      isXlScreen,
+      isLargeScreen,
+      isMediumScreen,
+      isXSmallScreen,
+      isSmallScreen,
+    ]
   );
+
+  return <UIContext.Provider value={value}>{children}</UIContext.Provider>;
 }
 
 // A custom hook to provide easy access to the UIContext

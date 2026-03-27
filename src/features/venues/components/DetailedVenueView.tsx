@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router';
 import toast from 'react-hot-toast';
 
 // React imports
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // Hooks
 import { useVenue } from '../hooks/useVenue';
@@ -44,14 +44,16 @@ function DetailedVenueView() {
   const { userProfile } = useGetUserProfile(userId);
   const username = userProfile?.username;
   const favVenuesList = userProfile?.favouriteVenues || null;
-  const isFavourite = favVenuesList?.includes(venueId);
+  const isFavourite = favVenuesList?.includes(venueId) ?? false;
+  const [optimisticIsFavourite, setOptimisticIsFavourite] =
+    useState(isFavourite);
 
   const { isPending: isPendingReviews } = useGetReviews({ venueId });
   const { isPending: isLoadingVenue, venue } = useVenue(venueId);
   const venueHeadingRef = useRef<HTMLHeadingElement | null>(null);
 
   const { setGlobalError } = useGlobalError();
-  const { updateFavouriteVenue } = useUpdateFavouriteVenue();
+  const { updateFavouriteVenue, isUpdating } = useUpdateFavouriteVenue();
 
   useEffect(() => {
     if (!venue) return;
@@ -59,6 +61,10 @@ function DetailedVenueView() {
       venueHeadingRef.current?.focus();
     });
   }, [venueId, venue]);
+
+  useEffect(() => {
+    setOptimisticIsFavourite(isFavourite);
+  }, [isFavourite]);
 
   if (isLoadingVenue || isPendingReviews) {
     return <LoaderSpinner message="Loading venue" />;
@@ -184,16 +190,22 @@ function DetailedVenueView() {
   }
 
   function toggleFavourite() {
-    if (!isAuthenticated || !userId || !venueId) return;
+    if (!isAuthenticated || !userId || !venueId || isUpdating) return;
+
+    const previousFavourite = optimisticIsFavourite;
+    const nextFavourite = !previousFavourite;
+    setOptimisticIsFavourite(nextFavourite);
 
     updateFavouriteVenue(
       { userId, venueId },
       {
         onSuccess: () => {
-          const newFavouriteState = !isFavourite;
-          newFavouriteState
+          nextFavourite
             ? toast.success(`${venueName} added to favourites!`)
             : toast.success(`${venueName} removed from favourites!`);
+        },
+        onError: () => {
+          setOptimisticIsFavourite(previousFavourite);
         },
       }
     );
@@ -234,9 +246,10 @@ function DetailedVenueView() {
             shareUrl={`https://www.maptheheat.com/app/venue/${city}/${country}/${venueNameSlug}/${venueId}`}
           />
           <LikeButton
-            isFavourite={isFavourite}
+            isFavourite={optimisticIsFavourite}
             isAuthenticated={isAuthenticated}
             handleClick={toggleFavourite}
+            isDisabled={isUpdating}
           />
         </div>
       </div>

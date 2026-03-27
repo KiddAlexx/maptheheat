@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 
 // React imports
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 // Hooks
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
@@ -63,14 +63,16 @@ function MapView() {
     return null;
   }
 
-  const createCustomIcon = () => {
-    return new L.Icon({
-      iconUrl: chilliPin,
-      iconSize: [23, 66],
-      iconAnchor: [0, 66],
-      popupAnchor: [11, -47],
-    });
-  };
+  const customIcon = useMemo(
+    () =>
+      new L.Icon({
+        iconUrl: chilliPin,
+        iconSize: [23, 66],
+        iconAnchor: [0, 66],
+        popupAnchor: [11, -47],
+      }),
+    []
+  );
 
   // Render the map with markers for each venue and center it based on the active venue or default coordinates.
   return (
@@ -92,7 +94,7 @@ function MapView() {
             <Marker
               key={venue.venueId}
               position={[Number(venue.coords.lat), Number(venue.coords.lon)]}
-              icon={createCustomIcon()}
+              icon={customIcon}
             >
               <Popup>
                 <MapPopupContent venue={venue} />
