@@ -1,6 +1,5 @@
 // Third Party Imports
 import { useNavigate, useParams } from 'react-router';
-import toast from 'react-hot-toast';
 
 // React imports
 import { useEffect, useRef, useState } from 'react';
@@ -199,11 +198,6 @@ function DetailedVenueView() {
     updateFavouriteVenue(
       { userId, venueId },
       {
-        onSuccess: () => {
-          nextFavourite
-            ? toast.success(`${venueName} added to favourites!`)
-            : toast.success(`${venueName} removed from favourites!`);
-        },
         onError: () => {
           setOptimisticIsFavourite(previousFavourite);
         },
