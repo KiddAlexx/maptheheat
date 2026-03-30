@@ -168,7 +168,7 @@ function VenueForm() {
       )}
 
       {formIndex === 1 && (
-        <div className="w-full max-w-4xl">
+        <div className="z-10 w-full max-w-4xl">
           <h2 className=" text-2xl font-semibold">Add a New Venue</h2>
 
           <div className="mt-3 rounded-xl border border-gray-200 bg-white p-3 shadow-md">
