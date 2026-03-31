@@ -47,8 +47,7 @@ function LikeButton({
   const iconClassName = isFavourite ? iconFullColor : iconEmptyColor;
 
   return (
-    <Button
-      radius="none"
+    <Button radius="full"
       className="h-auto w-auto min-w-0 overflow-visible bg-transparent p-0 shadow-none"
       isIconOnly
       disableAnimation

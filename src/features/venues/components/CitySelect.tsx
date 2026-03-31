@@ -85,7 +85,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
       className="mb-3"
       placeholder="Select City"
       aria-label="city"
-      radius="sm"
+      radius="full"
       /* onInputChange={handleSelectCity} */
       onSelectionChange={handleSelectCity}
       /* defaultSelectedKey={isUserMode && 'ALL_KEY'} */

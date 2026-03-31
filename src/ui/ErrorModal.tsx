@@ -5,8 +5,8 @@ import { useGlobalError } from '../context/ErrorContext';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import FocusTrap from 'focus-trap-react';
-import { Button } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
+import ActionButton from '@/ui/ActionButton';
 
 interface ErrorModalProps {
   errorMessage?: string | null;
@@ -84,14 +84,14 @@ function ErrorModal({
             </h2>
             <p className="max-w-md">{finalErrorMessage}</p>
           </div>
-          <Button
+          <ActionButton
+            intent="confirm"
             id="initialErrorFocus"
-            className="bg-success-400"
             onPress={handleClearError}
             type="button"
           >
             Close
-          </Button>
+          </ActionButton>
         </div>
       </FocusTrap>
     </div>,

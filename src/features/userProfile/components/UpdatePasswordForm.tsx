@@ -1,7 +1,8 @@
 import { useModalContext } from '@/context/ModalContext';
 import { useLogout } from '@/features/authentication/hooks/useLogout';
 import { useUpdatePassword } from '@/features/authentication/hooks/useUpdatePassword';
-import { Button, Input } from '@heroui/react';
+import ActionButton from '@/ui/ActionButton';
+import { Input } from '@heroui/react';
 import { Controller, useForm } from 'react-hook-form';
 
 function UpdatePasswordForm() {
@@ -56,8 +57,7 @@ function UpdatePasswordForm() {
         render={({ field }) => (
           <Input
             {...field}
-            type="password"
-            radius="sm"
+            type="password" radius="full"
             variant="bordered"
             label="Password"
             isInvalid={!!errors.password}
@@ -78,8 +78,7 @@ function UpdatePasswordForm() {
           <Input
             {...field}
             className="mt-2"
-            type="password"
-            radius="sm"
+            type="password" radius="full"
             variant="bordered"
             label="Confirm Password"
             isInvalid={!!errors.confirmPassword}
@@ -88,9 +87,9 @@ function UpdatePasswordForm() {
         )}
       />
       <div className="mt-2 flex justify-end">
-        <Button radius="sm" size="md" type="submit">
+        <ActionButton intent="confirm" size="md" type="submit">
           Update Password
-        </Button>
+        </ActionButton>
       </div>
     </form>
   );

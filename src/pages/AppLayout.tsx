@@ -90,7 +90,7 @@ function AppLayout() {
         </Suspense>
       </section>
 
-      <Button
+      <Button radius="full"
         onPress={updatePane}
         size="md"
         className="absolute bottom-14 right-1/2 z-[1000] translate-x-1/2 gap-2 bg-success-300 lg:hidden"

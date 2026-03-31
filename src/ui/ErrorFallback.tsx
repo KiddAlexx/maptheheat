@@ -35,7 +35,7 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
         </details>
 
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <Button
+          <Button radius="full"
             variant="flat"
             color="primary"
             onPress={() => {
@@ -46,7 +46,7 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
             Try again
           </Button>
 
-          <Button
+          <Button radius="full"
             className="bg-success-400"
             onPress={() => {
               resetErrorBoundary();

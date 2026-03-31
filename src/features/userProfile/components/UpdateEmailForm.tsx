@@ -1,5 +1,6 @@
 import { useUpdateEmail } from '@/features/authentication/hooks/useUpdateEmail';
-import { Button, Input } from '@heroui/react';
+import ActionButton from '@/ui/ActionButton';
+import { Input } from '@heroui/react';
 import { Controller, useForm } from 'react-hook-form';
 
 function UpdateEmailForm() {
@@ -40,8 +41,7 @@ function UpdateEmailForm() {
             {...field}
             id="email"
             type="email"
-            label="Email"
-            radius="sm"
+            label="Email" radius="full"
             variant="bordered"
             isInvalid={!!errors.email}
             errorMessage={errors?.email?.message}
@@ -62,8 +62,7 @@ function UpdateEmailForm() {
             className="mt-2"
             id="confirmEmail"
             type="email"
-            label="Confirm Email"
-            radius="sm"
+            label="Confirm Email" radius="full"
             variant="bordered"
             isInvalid={!!errors.confirmEmail}
             errorMessage={
@@ -77,9 +76,9 @@ function UpdateEmailForm() {
       />
 
       <div className="mt-2 flex justify-end">
-        <Button radius="sm" size="md" type="submit">
+        <ActionButton intent="confirm" size="md" type="submit">
           Update Email
-        </Button>
+        </ActionButton>
       </div>
     </form>
   );

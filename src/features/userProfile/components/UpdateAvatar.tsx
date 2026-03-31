@@ -16,7 +16,7 @@ import { useGlobalError } from '@/context/ErrorContext';
 import { useUpdateAvatar } from '../hooks/useUpdateAvatar';
 
 // Components
-import { Button } from '@heroui/react';
+import ActionButton from '@/ui/ActionButton';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 
 // Register the plugins
@@ -63,15 +63,14 @@ function UpdateAvatar() {
       />
       <h3>Select a suitable avatar to upload</h3>
       <div className="mt-2 flex justify-end">
-        <Button
-          className="bg-success-400"
-          radius="sm"
+        <ActionButton
+          intent="confirm"
           size="md"
           onPress={uploadFile}
           isDisabled={isUpdating}
         >
           {isUpdating ? <LoaderSpinner message="Uploading avatar" /> : 'Upload'}
-        </Button>
+        </ActionButton>
       </div>
     </div>
   );

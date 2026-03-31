@@ -70,8 +70,7 @@ function ForgotPasswordForm() {
                 {...field}
                 id="firstElementToFocus"
                 type="email"
-                label="Email"
-                radius="sm"
+                label="Email" radius="full"
                 variant="bordered"
                 isInvalid={!!errors.email}
                 errorMessage={errors?.email?.message}
@@ -83,8 +82,7 @@ function ForgotPasswordForm() {
         <div className="mt-6">
           <Button
             isDisabled={isPending}
-            className="w-full"
-            radius="sm"
+            className="w-full" radius="full"
             size="lg"
             type="submit"
           >

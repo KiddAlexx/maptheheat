@@ -1,6 +1,5 @@
 // Third Party Imports
 import { useNavigate, useParams } from 'react-router';
-import toast from 'react-hot-toast';
 
 // React imports
 import { useEffect, useRef, useState } from 'react';
@@ -84,7 +83,7 @@ function DetailedVenueView() {
             The venue you're looking for doesn't exist or may have been removed.
           </p>
           <div className="mt-4">
-            <Button variant="flat" color="primary" onPress={() => navigate(-1)}>
+            <Button radius="full" variant="flat" color="primary" onPress={() => navigate(-1)}>
               Go back
             </Button>
           </div>
@@ -199,11 +198,6 @@ function DetailedVenueView() {
     updateFavouriteVenue(
       { userId, venueId },
       {
-        onSuccess: () => {
-          nextFavourite
-            ? toast.success(`${venueName} added to favourites!`)
-            : toast.success(`${venueName} removed from favourites!`);
-        },
         onError: () => {
           setOptimisticIsFavourite(previousFavourite);
         },
@@ -283,7 +277,7 @@ function DetailedVenueView() {
               </span>
             ))}
           </div>
-          <Button
+          <Button radius="full"
             className="hidden lg:flex"
             color="primary"
             variant="flat"
@@ -341,7 +335,7 @@ function DetailedVenueView() {
           <p className="text-gray-700">{description}</p>
         </div>
         <div className="mb-3 flex gap-2 ">
-          <Button
+          <Button radius="full"
             as="a"
             href={mapsDirectionsUrl}
             target="_blank"
@@ -354,7 +348,7 @@ function DetailedVenueView() {
           >
             Get Directions
           </Button>
-          <Button
+          <Button radius="full"
             variant="flat"
             startContent={
               <Icon className="hidden xs:block" icon="lucide:message-circle" />
@@ -363,7 +357,7 @@ function DetailedVenueView() {
           >
             Leave a review
           </Button>
-          <Button
+          <Button radius="full"
             variant="flat"
             startContent={
               <Icon className="hidden xs:block" icon="lucide:image-plus" />

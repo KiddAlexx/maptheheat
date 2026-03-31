@@ -71,7 +71,7 @@ function SignupForm() {
     <div className="relative flex w-80 flex-col items-center justify-between gap-10">
       {isPendingEmail && (
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-white/60">
-          <LoaderSpinner message='Sign up in progress'/>
+          <LoaderSpinner message="Sign up in progress" />
         </div>
       )}
       <header>
@@ -97,8 +97,7 @@ function SignupForm() {
                 id="firstElementToFocus"
                 className="mb-5"
                 type="email"
-                label="Email"
-                radius="sm"
+                label="Email" radius="full"
                 variant="bordered"
                 isInvalid={!!errors.email}
                 errorMessage={errors.email?.message}
@@ -129,8 +128,7 @@ function SignupForm() {
                 {...field}
                 isDisabled={isPendingEmail}
                 className="mb-5"
-                type={isVisible ? 'text' : 'password'}
-                radius="sm"
+                type={isVisible ? 'text' : 'password'} radius="full"
                 variant="bordered"
                 label="Password"
                 isInvalid={!!errors.password}
@@ -168,8 +166,7 @@ function SignupForm() {
                 {...field}
                 isDisabled={isPendingEmail}
                 className="mb-5"
-                type={isVisible ? 'text' : 'password'}
-                radius="sm"
+                type={isVisible ? 'text' : 'password'} radius="full"
                 variant="bordered"
                 label="Confirm Password"
                 isInvalid={!!errors.confirmPassword}
@@ -198,8 +195,7 @@ function SignupForm() {
         <div className="mt-5 flex w-full flex-col items-center gap-2">
           <Button
             isDisabled={isPendingEmail}
-            className="w-full"
-            radius="sm"
+            className="w-full" radius="full"
             size="lg"
             type="submit"
           >
