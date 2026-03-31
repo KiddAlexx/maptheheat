@@ -187,6 +187,7 @@ function VenueForm() {
                         label: 'text-md font-normal ',
                         base: 'mb-10',
                       }}
+                      radius="full"
                       id="venueType"
                       label="Venue Type"
                       labelPlacement="outside"
@@ -223,7 +224,7 @@ function VenueForm() {
                       label="Venue Name"
                       labelPlacement="outside"
                       placeholder="Venue Name..."
-                      radius="sm"
+                      radius="full"
                       isInvalid={!!errors.venueName}
                       errorMessage={errors.venueName?.message}
                     />
@@ -247,7 +248,7 @@ function VenueForm() {
                       label="Address"
                       labelPlacement="outside"
                       placeholder="Number followed by street name..."
-                      radius="sm"
+                      radius="full"
                       isInvalid={!!errors.address}
                       errorMessage={errors.address?.message}
                     />
@@ -272,7 +273,7 @@ function VenueForm() {
                       label="Postcode"
                       labelPlacement="outside"
                       placeholder="Postcode..."
-                      radius="sm"
+                      radius="full"
                       isInvalid={!!errors.postcode}
                       errorMessage={errors.postcode?.message}
                     />
@@ -296,7 +297,7 @@ function VenueForm() {
                       label="City"
                       labelPlacement="outside"
                       placeholder="City..."
-                      radius="sm"
+                      radius="full"
                       isInvalid={!!errors.city}
                       errorMessage={errors.city?.message}
                     />
@@ -317,7 +318,7 @@ function VenueForm() {
                       {...field}
                       id="country"
                       placeholder="Select Country"
-                      radius="sm"
+                      radius="full"
                       defaultItems={countries}
                       isInvalid={!!errors.country}
                       errorMessage={errors.country?.message}
@@ -361,7 +362,7 @@ function VenueForm() {
                       label="Description"
                       labelPlacement="outside"
                       placeholder="Please enter a detailed description of the venue..."
-                      radius="sm"
+                      radius="full"
                       isInvalid={!!errors.description}
                       errorMessage={errors.description?.message}
                     />
@@ -396,7 +397,7 @@ function VenueForm() {
                       label="Phone Number"
                       labelPlacement="outside"
                       placeholder="Phone Number..."
-                      radius="sm"
+                      radius="full"
                       isInvalid={!!errors.phoneNumber}
                       errorMessage={errors.phoneNumber?.message}
                     />
@@ -427,7 +428,7 @@ function VenueForm() {
                       label="Website"
                       labelPlacement="outside"
                       placeholder="http://www.example.com..."
-                      radius="sm"
+                      radius="full"
                       isInvalid={!!errors.website}
                       errorMessage={errors.website?.message}
                     />
@@ -441,6 +442,7 @@ function VenueForm() {
                   </div>
                 )}
                 <Button
+                  radius="full"
                   isDisabled={isCreatingVenue}
                   className="h-9 min-w-28 bg-primary-500 text-sm font-semibold text-primary-50"
                   onPress={() =>
@@ -453,6 +455,7 @@ function VenueForm() {
                   Cancel
                 </Button>
                 <Button
+                  radius="full"
                   isDisabled={isCreatingVenue}
                   className="h-9 min-w-28 bg-success-500 text-sm font-semibold text-success-900"
                   type="submit"

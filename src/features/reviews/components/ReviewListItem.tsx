@@ -177,7 +177,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
       </section>
       <Dropdown>
         <DropdownTrigger className="absolute right-0 top-1">
-          <Button
+          <Button radius="full"
             aria-label="Open review actions"
             isIconOnly
             variant="light"

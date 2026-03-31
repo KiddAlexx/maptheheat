@@ -69,7 +69,7 @@ function LoginForm() {
     <div className="relative flex w-80 flex-col items-center justify-between gap-10">
       {isLoading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-white/60">
-          <LoaderSpinner message='Logging in' />
+          <LoaderSpinner message="Logging in" />
         </div>
       )}
       <header>
@@ -95,8 +95,7 @@ function LoginForm() {
                 id="firstElementToFocus"
                 className="mb-5"
                 type="email"
-                label="Email"
-                radius="sm"
+                label="Email" radius="full"
                 variant="bordered"
                 isInvalid={!!errors.email}
                 errorMessage={errors.email?.message}
@@ -112,8 +111,7 @@ function LoginForm() {
               <Input
                 {...field}
                 isDisabled={isLoading}
-                type={isVisible ? 'text' : 'password'}
-                radius="sm"
+                type={isVisible ? 'text' : 'password'} radius="full"
                 variant="bordered"
                 label="Password"
                 isInvalid={!!errors.password}
@@ -151,8 +149,7 @@ function LoginForm() {
         <div className="mt-3 flex w-full flex-col items-center gap-2">
           <Button
             isDisabled={isLoading}
-            className="w-full"
-            radius="sm"
+            className="w-full" radius="full"
             size="lg"
             type="submit"
           >
@@ -167,8 +164,7 @@ function LoginForm() {
 
           <Button
             isDisabled={isLoading}
-            className="w-full "
-            radius="sm"
+            className="w-full " radius="full"
             size="lg"
             type="button"
             onPress={() => loginGoogle()}

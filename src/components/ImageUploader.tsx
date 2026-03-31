@@ -143,6 +143,7 @@ function ImageUploader({
 
       <div className="flex justify-end gap-1">
         <Button
+          radius="full"
           className="bg-danger-200"
           onPress={handleClose}
           isDisabled={isUploading}
@@ -154,6 +155,7 @@ function ImageUploader({
           Not right now
         </Button>
         <Button
+          radius="full"
           className="bg-success-400"
           onPress={uploadFile}
           isDisabled={isUploading}

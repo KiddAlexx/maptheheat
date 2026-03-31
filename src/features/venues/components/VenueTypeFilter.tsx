@@ -25,7 +25,7 @@ function VenueTypeFilter({ useVenueContext }: VenueTypeFilterProps) {
     }
   }
   return (
-    <ButtonGroup radius="sm" size="md" fullWidth>
+    <ButtonGroup radius="full" size="md" fullWidth>
       <Button
         color={activeType === 'all' ? 'primary' : 'default'}
         aria-pressed={activeType === 'all'}

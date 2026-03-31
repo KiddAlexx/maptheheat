@@ -41,8 +41,7 @@ function ShareButton({ shareUrl, title, body }: ShareButtonProps) {
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
-        <Button
-          radius="none"
+        <Button radius="full"
           className="h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
           isIconOnly
           disableAnimation
@@ -92,8 +91,7 @@ function ShareButton({ shareUrl, title, body }: ShareButtonProps) {
         </DropdownSection>
         <DropdownSection>
           <DropdownItem key="copy">
-            <Button
-              radius="none"
+            <Button radius="full"
               className="flex h-auto w-auto bg-transparent"
               isIconOnly
               disableAnimation

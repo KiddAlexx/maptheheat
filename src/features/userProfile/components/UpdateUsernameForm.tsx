@@ -46,8 +46,7 @@ function UpdateUsernameForm() {
             {...field}
             id="username"
             type="text"
-            label="New Username"
-            radius="sm"
+            label="New Username" radius="full"
             variant="bordered"
             isInvalid={!!errors.username}
             errorMessage={
@@ -59,7 +58,7 @@ function UpdateUsernameForm() {
         )}
       />
       <div className="mt-2 flex justify-end">
-        <Button radius="sm" size="md" type="submit">
+        <Button radius="full" size="md" type="submit">
           Update Username
         </Button>
       </div>

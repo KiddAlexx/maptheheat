@@ -256,8 +256,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                           id="reviewTitle"
                           type="text"
                           label="Review Title"
-                          labelPlacement="outside"
-                          radius="sm"
+                          labelPlacement="outside" radius="full"
                           placeholder="Give your review a descriptive name!"
                           isInvalid={!!errors.reviewTitle}
                           errorMessage={errors.reviewTitle?.message}
@@ -295,8 +294,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                             type="text"
                             label="Hottest Sauce"
                             labelPlacement="outside"
-                            placeholder="Whats the hottest sauce available?"
-                            radius="sm"
+                            placeholder="Whats the hottest sauce available?" radius="full"
                             isInvalid={!!errors.hottestSauce}
                             errorMessage={errors.hottestSauce?.message}
                           />
@@ -334,8 +332,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                             type="text"
                             label="Hottest Dish"
                             labelPlacement="outside"
-                            placeholder="Whats the hottest dish they serve?"
-                            radius="sm"
+                            placeholder="Whats the hottest dish they serve?" radius="full"
                             isInvalid={!!errors.hottestDish}
                             errorMessage={errors.hottestDish?.message}
                           />
@@ -371,7 +368,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                           rows={3}
                           placeholder="What would you like to let others know about the venue..."
                           labelPlacement="outside"
-                          radius="sm"
+                          radius="full"
                           isInvalid={!!errors.reviewContent}
                           errorMessage={errors.reviewContent?.message}
                         />
@@ -381,8 +378,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                   <div className="flex items-center justify-end gap-3">
                     <Button
                       color="primary"
-                      variant="flat"
-                      radius="sm"
+                      variant="flat" radius="full"
                       /* startContent={<Icon icon="lucide:map-pinned" />} */
                       onPress={() =>
                         openDialog(
@@ -396,8 +392,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
 
                     <Button
                       className="bg-success-400"
-                      disabled={isUpdating || isCreating}
-                      radius="sm"
+                      disabled={isUpdating || isCreating} radius="full"
                       size="md"
                       type="submit"
                     >

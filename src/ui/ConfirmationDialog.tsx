@@ -15,7 +15,7 @@ function ConfirmationDialog() {
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="flex w-full justify-end gap-2">
           {confirmAction && (
-            <Button
+            <Button radius="full"
               className="bg-danger-300"
               id="firstElementToFocus"
               type="button"
@@ -26,7 +26,7 @@ function ConfirmationDialog() {
             </Button>
           )}
 
-          <Button
+          <Button radius="full"
             aria-label="confirm dialog action"
             className="bg-success-400"
             type="submit"

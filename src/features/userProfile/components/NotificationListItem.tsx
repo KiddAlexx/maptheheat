@@ -35,8 +35,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
         <div>
           <Tooltip content="Delete notification">
             <Button
-              aria-label="Delete notification"
-              radius="none"
+              aria-label="Delete notification" radius="full"
               className="h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
               isIconOnly
               onPress={() => deleteUserNotification({ notificationId })}
@@ -54,8 +53,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
           {notificationStatus === 'unread' && (
             <Tooltip content="Mark as read">
               <Button
-                aria-label="Mark notification as read"
-                radius="none"
+                aria-label="Mark notification as read" radius="full"
                 className="ml-2 h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
                 isIconOnly
                 onPress={() => updateUserNotification({ notificationId })}

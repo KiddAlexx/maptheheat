@@ -83,7 +83,7 @@ function DetailedVenueView() {
             The venue you're looking for doesn't exist or may have been removed.
           </p>
           <div className="mt-4">
-            <Button variant="flat" color="primary" onPress={() => navigate(-1)}>
+            <Button radius="full" variant="flat" color="primary" onPress={() => navigate(-1)}>
               Go back
             </Button>
           </div>
@@ -277,7 +277,7 @@ function DetailedVenueView() {
               </span>
             ))}
           </div>
-          <Button
+          <Button radius="full"
             className="hidden lg:flex"
             color="primary"
             variant="flat"
@@ -335,7 +335,7 @@ function DetailedVenueView() {
           <p className="text-gray-700">{description}</p>
         </div>
         <div className="mb-3 flex gap-2 ">
-          <Button
+          <Button radius="full"
             as="a"
             href={mapsDirectionsUrl}
             target="_blank"
@@ -348,7 +348,7 @@ function DetailedVenueView() {
           >
             Get Directions
           </Button>
-          <Button
+          <Button radius="full"
             variant="flat"
             startContent={
               <Icon className="hidden xs:block" icon="lucide:message-circle" />
@@ -357,7 +357,7 @@ function DetailedVenueView() {
           >
             Leave a review
           </Button>
-          <Button
+          <Button radius="full"
             variant="flat"
             startContent={
               <Icon className="hidden xs:block" icon="lucide:image-plus" />

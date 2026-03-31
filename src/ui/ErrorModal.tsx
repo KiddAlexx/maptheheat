@@ -84,7 +84,7 @@ function ErrorModal({
             </h2>
             <p className="max-w-md">{finalErrorMessage}</p>
           </div>
-          <Button
+          <Button radius="full"
             id="initialErrorFocus"
             className="bg-success-400"
             onPress={handleClearError}

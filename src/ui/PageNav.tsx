@@ -42,7 +42,7 @@ function PageNav() {
         <MobileMenu />
       </div>
       {/* Desktop menu */}
-      <div className=" flex sm:w-full items-center justify-between">
+      <div className=" flex items-center justify-between sm:w-full">
         <div className="hidden sm:block">
           <Link to="/" className={styles.logoWrap} aria-label="Home">
             <MainLogo />
@@ -65,6 +65,7 @@ function PageNav() {
         {!isAuthenticated ? (
           <Button
             size="sm"
+            radius="full"
             onPress={() => openModal('login')}
             className="h-9 min-w-28 bg-success-300 text-sm font-medium text-success-foreground"
           >
