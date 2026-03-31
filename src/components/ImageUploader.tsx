@@ -22,7 +22,7 @@ import { useUser } from '@/features/authentication/hooks/useUser';
 
 // Components
 import LoaderSpinner from '@/ui/LoaderSpinner';
-import { Button } from '@heroui/button';
+import ActionButton from '@/ui/ActionButton';
 
 // Type imports
 import type { Venue } from '@/types/venueTypes';
@@ -142,9 +142,8 @@ function ImageUploader({
       )}
 
       <div className="flex justify-end gap-1">
-        <Button
-          radius="full"
-          className="bg-danger-200"
+        <ActionButton
+          intent="cancel"
           onPress={handleClose}
           isDisabled={isUploading}
           aria-labelledby="cancel-accName"
@@ -153,10 +152,9 @@ function ImageUploader({
             Cancel upload
           </span>
           Not right now
-        </Button>
-        <Button
-          radius="full"
-          className="bg-success-400"
+        </ActionButton>
+        <ActionButton
+          intent="confirm"
           onPress={uploadFile}
           isDisabled={isUploading}
           aria-labelledby="upload-accName"
@@ -165,7 +163,7 @@ function ImageUploader({
             Upload Images
           </span>
           Upload
-        </Button>
+        </ActionButton>
       </div>
     </div>
   );

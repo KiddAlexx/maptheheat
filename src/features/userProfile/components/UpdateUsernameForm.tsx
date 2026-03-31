@@ -1,4 +1,5 @@
-import { Button, Input } from '@heroui/react';
+import ActionButton from '@/ui/ActionButton';
+import { Input } from '@heroui/react';
 import { Controller, useForm } from 'react-hook-form';
 import { useUpdateUsername } from '../hooks/useUpdateUsername';
 
@@ -58,9 +59,9 @@ function UpdateUsernameForm() {
         )}
       />
       <div className="mt-2 flex justify-end">
-        <Button radius="full" size="md" type="submit">
+        <ActionButton intent="confirm" size="md" type="submit">
           Update Username
-        </Button>
+        </ActionButton>
       </div>
     </form>
   );

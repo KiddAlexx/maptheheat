@@ -1,5 +1,6 @@
 import { useUpdateEmail } from '@/features/authentication/hooks/useUpdateEmail';
-import { Button, Input } from '@heroui/react';
+import ActionButton from '@/ui/ActionButton';
+import { Input } from '@heroui/react';
 import { Controller, useForm } from 'react-hook-form';
 
 function UpdateEmailForm() {
@@ -75,9 +76,9 @@ function UpdateEmailForm() {
       />
 
       <div className="mt-2 flex justify-end">
-        <Button radius="full" size="md" type="submit">
+        <ActionButton intent="confirm" size="md" type="submit">
           Update Email
-        </Button>
+        </ActionButton>
       </div>
     </form>
   );

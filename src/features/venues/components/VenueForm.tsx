@@ -17,12 +17,12 @@ import { useModalContext } from '@/context/ModalContext';
 import {
   Autocomplete,
   AutocompleteItem,
-  Button,
   Input,
   Select,
   SelectItem,
   Textarea,
 } from '@heroui/react';
+import ActionButton from '@/ui/ActionButton';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import ErrorModal from '@/ui/ErrorModal';
 import ImageUploader from '@/components/ImageUploader';
@@ -441,10 +441,9 @@ function VenueForm() {
                     <LoaderSpinner message="Adding venue" />
                   </div>
                 )}
-                <Button
-                  radius="full"
+                <ActionButton
+                  intent="cancel"
                   isDisabled={isCreatingVenue}
-                  className="h-9 min-w-28 bg-primary-500 text-sm font-semibold text-primary-50"
                   onPress={() =>
                     openDialog('Do you want to discard this venue?', () =>
                       navigate('/app/map')
@@ -453,15 +452,14 @@ function VenueForm() {
                   type="button"
                 >
                   Cancel
-                </Button>
-                <Button
-                  radius="full"
+                </ActionButton>
+                <ActionButton
+                  intent="confirm"
                   isDisabled={isCreatingVenue}
-                  className="h-9 min-w-28 bg-success-500 text-sm font-semibold text-success-900"
                   type="submit"
                 >
                   Submit
-                </Button>
+                </ActionButton>
               </div>
             </form>
           </div>

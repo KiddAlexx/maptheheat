@@ -21,7 +21,8 @@ import { useGlobalError } from '@/context/ErrorContext';
 import VenueRating from '../../venues/components/VenueRating';
 import ImageUploader from '@/components/ImageUploader';
 import LoaderSpinner from '@/ui/LoaderSpinner';
-import { Button, Input, Textarea } from '@heroui/react';
+import ActionButton from '@/ui/ActionButton';
+import { Input, Textarea } from '@heroui/react';
 
 // Type Imports
 import type { Review } from '@/types/reviewTypes';
@@ -256,7 +257,8 @@ function ReviewForm({ mode }: ReviewFormProps) {
                           id="reviewTitle"
                           type="text"
                           label="Review Title"
-                          labelPlacement="outside" radius="full"
+                          labelPlacement="outside"
+                          radius="full"
                           placeholder="Give your review a descriptive name!"
                           isInvalid={!!errors.reviewTitle}
                           errorMessage={errors.reviewTitle?.message}
@@ -294,7 +296,8 @@ function ReviewForm({ mode }: ReviewFormProps) {
                             type="text"
                             label="Hottest Sauce"
                             labelPlacement="outside"
-                            placeholder="Whats the hottest sauce available?" radius="full"
+                            placeholder="Whats the hottest sauce available?"
+                            radius="full"
                             isInvalid={!!errors.hottestSauce}
                             errorMessage={errors.hottestSauce?.message}
                           />
@@ -332,7 +335,8 @@ function ReviewForm({ mode }: ReviewFormProps) {
                             type="text"
                             label="Hottest Dish"
                             labelPlacement="outside"
-                            placeholder="Whats the hottest dish they serve?" radius="full"
+                            placeholder="Whats the hottest dish they serve?"
+                            radius="full"
                             isInvalid={!!errors.hottestDish}
                             errorMessage={errors.hottestDish?.message}
                           />
@@ -376,9 +380,9 @@ function ReviewForm({ mode }: ReviewFormProps) {
                     />
                   </div>
                   <div className="flex items-center justify-end gap-3">
-                    <Button
-                      color="primary"
-                      variant="flat" radius="full"
+                    <ActionButton
+                      intent="cancel"
+                      variant="flat"
                       /* startContent={<Icon icon="lucide:map-pinned" />} */
                       onPress={() =>
                         openDialog(
@@ -388,16 +392,16 @@ function ReviewForm({ mode }: ReviewFormProps) {
                       }
                     >
                       Cancel
-                    </Button>
+                    </ActionButton>
 
-                    <Button
-                      className="bg-success-400"
-                      disabled={isUpdating || isCreating} radius="full"
+                    <ActionButton
+                      intent="confirm"
+                      disabled={isUpdating || isCreating}
                       size="md"
                       type="submit"
                     >
                       {mode === 'creating' ? 'Submit' : 'Edit'}
-                    </Button>
+                    </ActionButton>
                   </div>
                 </form>
               </div>

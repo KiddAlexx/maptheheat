@@ -1,5 +1,5 @@
-import { Button } from '@heroui/react';
 import { useModalContext } from '../context/ModalContext';
+import ActionButton from '@/ui/ActionButton';
 
 function ConfirmationDialog() {
   const { closeModal, message, confirmAction } = useModalContext();
@@ -15,24 +15,24 @@ function ConfirmationDialog() {
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="flex w-full justify-end gap-2">
           {confirmAction && (
-            <Button radius="full"
-              className="bg-danger-300"
+            <ActionButton
+              intent="cancel"
               id="firstElementToFocus"
               type="button"
               onPress={closeModal}
               aria-label="cancel dialog action"
             >
               Cancel
-            </Button>
+            </ActionButton>
           )}
 
-          <Button radius="full"
+          <ActionButton
+            intent="confirm"
             aria-label="confirm dialog action"
-            className="bg-success-400"
             type="submit"
           >
             OK
-          </Button>
+          </ActionButton>
         </div>
       </form>
     </div>
