@@ -25,10 +25,12 @@ function AppLayout() {
   const navigate = useNavigate();
 
   const venueMatch = useMatch('/app/venue/:city/:country/:venue/:venueId');
+  const reviewMatch = useMatch('/app/venue/:city/:country/:venue/reviews/*');
+  const isReviewRoute = !!reviewMatch;
 
   // Assign visible pane for mobile view based on url
   const currentPane =
-    searchParams.get('pane') ?? (venueMatch ? 'venue' : 'list');
+    searchParams.get('pane') ?? (venueMatch || isReviewRoute ? 'venue' : 'list');
 
   // Helper function to to set current pane for mobile screen
   function setPane(pane: Pane) {
@@ -90,23 +92,25 @@ function AppLayout() {
         </Suspense>
       </section>
 
-      <Button
-        onPress={updatePane}
-        size="md"
-        className="absolute bottom-14 right-1/2 z-[1000] translate-x-1/2 gap-2 bg-success-300 lg:hidden"
-      >
-        {currentPane === 'list' ? (
-          <>
-            <Icon aria-hidden="true" icon="lucide:map-pin" width={16} />
-            <span>Map</span>
-          </>
-        ) : (
-          <>
-            <Icon aria-hidden="true" icon="mi:list" width={20} />
-            <span>List</span>
-          </>
-        )}
-      </Button>
+      {!isReviewRoute && (
+        <Button
+          onPress={updatePane}
+          size="md"
+          className="absolute bottom-14 right-1/2 z-[1000] translate-x-1/2 gap-2 bg-success-300 lg:hidden"
+        >
+          {currentPane === 'list' ? (
+            <>
+              <Icon aria-hidden="true" icon="lucide:map-pin" width={16} />
+              <span>Map</span>
+            </>
+          ) : (
+            <>
+              <Icon aria-hidden="true" icon="mi:list" width={20} />
+              <span>List</span>
+            </>
+          )}
+        </Button>
+      )}
     </main>
   );
 }
