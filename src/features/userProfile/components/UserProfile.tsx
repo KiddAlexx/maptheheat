@@ -62,6 +62,7 @@ function UserProfile() {
         selectedKey={selected}
         onSelectionChange={handleSelectionChange}
         fullWidth
+        radius="full"
       >
         <Tab key="reviews" title="My Reviews">
           <Suspense fallback={<LoaderSpinner />}>

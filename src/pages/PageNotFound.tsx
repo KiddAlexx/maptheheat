@@ -25,11 +25,11 @@ function PageNotFound() {
           The page may have been moved, deleted, or the link is incorrect.
         </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <Button variant="flat" color="primary" onPress={() => navigate(-1)}>
+          <Button radius="full" variant="flat" color="primary" onPress={() => navigate(-1)}>
             Go back
           </Button>
 
-          <Button
+          <Button radius="full"
             className="bg-success-400"
             onPress={() => navigate('/app/map')}
           >

@@ -23,7 +23,7 @@ function VenueSort({ useVenueContext }: VenueSortProps) {
     }
   }
   return (
-    <Select onChange={handleChange} label={'Sort by'} size="sm">
+    <Select onChange={handleChange} label={'Sort by'} size="sm" radius="full">
       <SelectItem key={'default'}>Default</SelectItem>
       <SelectItem
         endContent={<FaSortAmountUp />}

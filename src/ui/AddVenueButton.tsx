@@ -50,8 +50,7 @@ function AddVenueButton({ closeOtherModals, className }: AddVenueButtonProps) {
   return (
     <Button
       onPress={handleAddVenue}
-      size="sm"
-      radius="sm"
+      size="sm" radius="full"
       className={className}
       type="button"
     >

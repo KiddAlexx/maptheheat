@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 
 // Third Party Imports
 import { useMatch } from 'react-router';
-import toast from 'react-hot-toast';
 import { Card, CardBody, CardFooter, Image } from '@heroui/react';
 import { Icon } from '@iconify/react';
 
@@ -88,11 +87,6 @@ function VenueListCard({
           updateFavouriteVenue(
             { userId, venueId },
             {
-              onSuccess: () => {
-                nextFavourite
-                  ? toast.success(`${venueName} added to favourites!`)
-                  : toast.success(`${venueName} removed from favourites!`);
-              },
               onError: () => {
                 setOptimisticIsFavourite(previousFavourite);
               },
@@ -108,11 +102,6 @@ function VenueListCard({
       updateFavouriteVenue(
         { userId, venueId },
         {
-          onSuccess: () => {
-            nextFavourite
-              ? toast.success(`${venueName} added to favourites!`)
-              : toast.success(`${venueName} removed from favourites!`);
-          },
           onError: () => {
             setOptimisticIsFavourite(previousFavourite);
           },
