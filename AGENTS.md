@@ -40,6 +40,22 @@ npm run test:ui      # Vitest UI dashboard
 
 ---
 
+## Skills
+
+Detailed coding standards live in `.agents/skills/`. Apply the relevant skill whenever working in that area:
+
+| Task | Skill |
+| ---- | ----- |
+| Writing or modifying React components | `modern-best-practice-react-components` |
+| Writing HTML or JSX | `modern-accessible-html-jsx` |
+| Writing or reviewing TypeScript types | `clean-typescript` |
+| Writing or reviewing Tailwind CSS | `modern-tailwind` |
+| Writing or running tests | `vitest-rtl` |
+| Handling user input, auth, or sensitive data | `web-security` |
+| Using browser APIs | `modern-browser-apis` |
+
+---
+
 ## Layer Structure
 
 | Layer     | Location                     | Notes                                                       |
