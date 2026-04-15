@@ -30,7 +30,8 @@ function AppLayout() {
 
   // Assign visible pane for mobile view based on url
   const currentPane =
-    searchParams.get('pane') ?? (venueMatch || isReviewRoute ? 'venue' : 'list');
+    searchParams.get('pane') ??
+    (venueMatch || isReviewRoute ? 'venue' : 'list');
 
   // Helper function to to set current pane for mobile screen
   function setPane(pane: Pane) {
@@ -76,6 +77,7 @@ function AppLayout() {
         <VenueListContainer mode="venue" />
       </aside>
       <section
+        id="outlet-scroll-container"
         className={clsx(
           'flex-1 overflow-y-scroll bg-zinc-50 lg:block',
           currentPane === 'map' || currentPane === 'venue' ? 'block' : 'hidden'
@@ -94,6 +96,7 @@ function AppLayout() {
 
       {!isReviewRoute && (
         <Button
+          radius="full"
           onPress={updatePane}
           size="md"
           className="absolute bottom-14 right-1/2 z-[1000] translate-x-1/2 gap-2 bg-success-300 lg:hidden"
