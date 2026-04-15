@@ -76,6 +76,7 @@ function AppLayout() {
         <VenueListContainer mode="venue" />
       </aside>
       <section
+        id="outlet-scroll-container"
         className={clsx(
           'flex-1 overflow-y-scroll bg-zinc-50 lg:block',
           currentPane === 'map' || currentPane === 'venue' ? 'block' : 'hidden'

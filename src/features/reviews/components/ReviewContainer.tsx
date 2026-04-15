@@ -6,6 +6,7 @@ import { useGetReviews } from '../hooks/useGetReviews';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useReviewSortContext } from '@/context/ReviewSortContext';
 import { useUserReviewsContext } from '@/context/UserReviewsContext';
+import { useLayoutEffect } from 'react';
 
 // Components
 import PaginationControls from '@/ui/PaginationControls';
@@ -31,6 +32,12 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
   const { sort, pagination, updatePageNumber, updateSort, resetSort } =
     reviewContext();
   const { venueId } = useParams();
+
+  useLayoutEffect(() => {
+    document
+      .getElementById('outlet-scroll-container')
+      ?.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [pagination.pageNumber]);
 
   const { user, isPending: isPendingUser } = useUser();
   const userId = user?.id;
