@@ -14,7 +14,6 @@ export interface Review {
   reviewTitle: string;
   reviewType: 'shop' | 'restaurant';
   userId: string;
-  venueDetails?: Venue;
   venueId: string;
 }
 
