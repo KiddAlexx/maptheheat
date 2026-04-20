@@ -8,10 +8,9 @@
     "types": ["vite/client", "vitest/globals"],
 
     /* For Shadcn UI */
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "tests/*": ["tests/*"]
+      "tests/*": ["./tests/*"]
     },
 
     /* Bundler mode */

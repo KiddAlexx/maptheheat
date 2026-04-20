@@ -25,7 +25,7 @@ import ActionButton from '@/ui/ActionButton';
 import { Input, Textarea } from '@heroui/react';
 
 // Type Imports
-import type { Review } from '@/types/reviewTypes';
+import type { ReviewWithRelations } from '@/types/reviewTypes';
 
 interface ReviewFormProps {
   mode: 'creating' | 'editing';
@@ -44,7 +44,8 @@ export interface EditformData extends FormData {
 }
 
 function ReviewForm({ mode }: ReviewFormProps) {
-  const [createdReview, setCreatedReview] = useState<Review | null>(null);
+  const [createdReview, setCreatedReview] =
+    useState<ReviewWithRelations | null>(null);
   const createdReviewId = createdReview ? createdReview.reviewId : null;
 
   const [formIndex, setFormIndex] = useState(1);

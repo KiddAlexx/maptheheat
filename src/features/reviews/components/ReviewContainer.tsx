@@ -6,7 +6,7 @@ import { useGetReviews } from '../hooks/useGetReviews';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useReviewSortContext } from '@/context/ReviewSortContext';
 import { useUserReviewsContext } from '@/context/UserReviewsContext';
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 
 // Components
 import PaginationControls from '@/ui/PaginationControls';
@@ -33,10 +33,10 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
     reviewContext();
   const { venueId } = useParams();
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
   useLayoutEffect(() => {
-    document
-      .getElementById('outlet-scroll-container')
-      ?.scrollTo({ top: 0, behavior: 'smooth' });
+    containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [pagination.pageNumber]);
 
   const { user, isPending: isPendingUser } = useUser();
@@ -73,7 +73,7 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
   }
 
   return reviews && reviews.length > 0 ? (
-    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 @container ">
+    <div ref={containerRef} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 @container ">
       <h2 className="row-start-1 text-2xl font-semibold ">Reviews</h2>
       <div className="col-span-3 row-start-2 justify-self-center @2xl:col-span-1 @2xl:row-start-1">
         <PaginationControls
