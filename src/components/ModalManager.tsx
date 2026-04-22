@@ -18,10 +18,9 @@ const ImageUploader = lazy(() => import('./ImageUploader'));
 
 function ModalManager() {
   const { modalName, modalOpen } = useModalContext();
-  if (!modalOpen) return null;
 
   let Component = null;
-  switch (modalName) {
+  if (modalOpen) switch (modalName) {
     case 'login':
       Component = <LoginForm />;
       break;
@@ -52,7 +51,7 @@ function ModalManager() {
       break;
   }
 
-  return Component ? <Modal>{Component}</Modal> : null;
+  return <Modal>{Component}</Modal>;
 }
 
 export default ModalManager;

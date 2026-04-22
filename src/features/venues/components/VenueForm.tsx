@@ -160,12 +160,10 @@ function VenueForm() {
 
   return (
     <>
-      {localFormError && (
-        <ErrorModal
-          errorMessage={localFormError}
-          clearLocalError={() => setLocalFormError('')}
-        />
-      )}
+      <ErrorModal
+        errorMessage={localFormError}
+        clearLocalError={() => setLocalFormError('')}
+      />
 
       {formIndex === 1 && (
         <div className="z-10 w-full max-w-4xl">
