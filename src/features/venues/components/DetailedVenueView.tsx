@@ -83,7 +83,12 @@ function DetailedVenueView() {
             The venue you're looking for doesn't exist or may have been removed.
           </p>
           <div className="mt-4">
-            <Button radius="full" variant="flat" color="primary" onPress={() => navigate(-1)}>
+            <Button
+              radius="full"
+              variant="flat"
+              color="primary"
+              onPress={() => navigate(-1)}
+            >
               Go back
             </Button>
           </div>
@@ -97,6 +102,7 @@ function DetailedVenueView() {
     country,
     venueNameSlug,
     phoneNumber,
+    address,
     detailedAddress,
     website,
     description,
@@ -108,6 +114,8 @@ function DetailedVenueView() {
   } = venue;
 
   const { lat, lon } = coords;
+
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venueName} ${address} ${city}`)}`;
 
   const finalHeatRating =
     averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 0;
@@ -277,7 +285,8 @@ function DetailedVenueView() {
               </span>
             ))}
           </div>
-          <Button radius="full"
+          <Button
+            radius="full"
             className="hidden lg:flex"
             color="primary"
             variant="flat"
@@ -292,11 +301,28 @@ function DetailedVenueView() {
           </Button>
         </div>
 
-        <div className="mt-5 flex items-start gap-2  ">
-          <Icon aria-hidden="true" icon="lucide:clock" width={18} />
-          <span>Open</span>
+        <div className="mt-5 flex items-center gap-2">
+          <a
+            href={googleMapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 hover:opacity-80"
+          >
+            <Icon
+              aria-hidden="true"
+              icon="lucide:clock"
+              width={18}
+              className="shrink-0"
+            />
+            <span className="text-blue-500">View hours</span>
+            <Icon
+              aria-hidden="true"
+              icon="lucide:external-link"
+              width={14}
+              className="text-blue-500"
+            />
+          </a>
         </div>
-        {/* Calculate based on opening hours */}
         <div className="mt-3 flex items-start gap-2">
           <Icon
             aria-hidden="true"
@@ -335,7 +361,8 @@ function DetailedVenueView() {
           <p className="text-gray-700">{description}</p>
         </div>
         <div className="mb-3 flex gap-2 ">
-          <Button radius="full"
+          <Button
+            radius="full"
             as="a"
             href={mapsDirectionsUrl}
             target="_blank"
@@ -348,7 +375,8 @@ function DetailedVenueView() {
           >
             Get Directions
           </Button>
-          <Button radius="full"
+          <Button
+            radius="full"
             variant="flat"
             startContent={
               <Icon className="hidden xs:block" icon="lucide:message-circle" />
@@ -357,7 +385,8 @@ function DetailedVenueView() {
           >
             Leave a review
           </Button>
-          <Button radius="full"
+          <Button
+            radius="full"
             variant="flat"
             startContent={
               <Icon className="hidden xs:block" icon="lucide:image-plus" />

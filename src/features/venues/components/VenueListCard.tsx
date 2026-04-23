@@ -46,11 +46,15 @@ function VenueListCard({
     venueName,
     venueId,
     address,
+    city,
     thumbnailImage,
     averageHeatRating,
     averageQualityRating,
     totalReviews,
   } = venue;
+
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venueName} ${address} ${city}`)}`;
+
 
   const totalReviewCount = totalReviews ?? 0;
 
@@ -115,7 +119,7 @@ function VenueListCard({
       {/* <button className=" w-full" onClick={handleClick}> */}
 
       <Card
-        className="mb-2 h-48 w-full  bg-primary-50/50 shadow-md transition hover:bg-primary-50"
+        className="mb-2 h-48 w-full bg-primary-50/50 shadow-md transition [&:has(.venue-btn:hover)]:bg-primary-50"
         radius="sm"
       >
         <div className="flex">
@@ -133,7 +137,15 @@ function VenueListCard({
           </div>
           <CardBody className="relative w-2/3">
             <div className="mb-2 flex items-center justify-between">
-              <h3 className="text-lg font-medium">{venueName}</h3>
+              <h3>
+                <button
+                  type="button"
+                  className="venue-btn text-lg font-medium hover:underline"
+                  onClick={handleClick}
+                >
+                  {venueName}
+                </button>
+              </h3>
 
               <LikeButton
                 isFavourite={optimisticIsFavourite}
@@ -147,7 +159,7 @@ function VenueListCard({
             of react rating - ensures icons allign correctly */}
             <button
               type="button"
-              className=" w-full cursor-pointer"
+              className="venue-btn w-full cursor-pointer"
               onClick={handleClick}
               aria-labelledby={accMainButtonId}
             >
@@ -180,16 +192,6 @@ function VenueListCard({
               <div className="mb-2 flex items-start gap-1 text-sm">
                 <Icon
                   aria-hidden="true"
-                  icon="lucide:clock"
-                  width={16}
-                  className="shrink-0"
-                />
-                <span>Open</span>
-              </div>
-
-              <div className="mb-2 flex items-start gap-1 text-sm">
-                <Icon
-                  aria-hidden="true"
                   icon="lucide:map-pin"
                   width={16}
                   className="shrink-0"
@@ -197,6 +199,29 @@ function VenueListCard({
                 <span className="truncate">{address}</span>
               </div>
             </button>
+
+            <div className="mb-1 flex items-center gap-1 text-sm">
+              <Icon
+                aria-hidden="true"
+                icon="lucide:clock"
+                width={14}
+                className="shrink-0"
+              />
+              <a
+                href={googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-blue-500 hover:opacity-80"
+              >
+                <span>View hours</span>
+                <Icon
+                  aria-hidden="true"
+                  icon="lucide:external-link"
+                  width={12}
+                  className="text-blue-500"
+                />
+              </a>
+            </div>
 
             <CardFooter>
               <button
