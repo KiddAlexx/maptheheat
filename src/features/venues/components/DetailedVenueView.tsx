@@ -111,6 +111,9 @@ function DetailedVenueView() {
     venueImages,
     coords,
     totalReviews,
+    venueType,
+    cuisines,
+    dietaryOptions,
   } = venue;
 
   const { lat, lon } = coords;
@@ -275,15 +278,23 @@ function DetailedVenueView() {
 
         {/* Temp data to test layout + styles !!!!!!!!!!!TO BE REPLACED!!!!!*/}
         <div className=" mt-4 flex items-center justify-between">
-          <div className="flex gap-2">
-            {['Restaurant', 'Spanish', 'Mediterranean'].map((tag) => (
-              <span
-                key={tag}
-                className="flex h-6 items-center rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800"
-              >
-                {tag}
-              </span>
-            ))}
+          <div className="flex flex-wrap gap-2">
+            {[
+              venueType
+                ? venueType.charAt(0).toUpperCase() + venueType.slice(1)
+                : null,
+              ...(cuisines ?? []),
+              ...(dietaryOptions ?? []),
+            ]
+              .filter(Boolean)
+              .map((tag) => (
+                <span
+                  key={tag}
+                  className="flex h-6 items-center rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800"
+                >
+                  {tag}
+                </span>
+              ))}
           </div>
           <Button
             radius="full"

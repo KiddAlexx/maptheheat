@@ -22,6 +22,8 @@ export interface Venue {
   averageHeatRating?: number | null;
   averageQualityRating?: number | null;
   totalReviews?: number;
+  cuisines?: string[];
+  dietaryOptions?: string[];
 }
 
 // id not present at creation time, generate by Supbase
