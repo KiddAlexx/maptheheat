@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 
 // React imports
-import { useState, Fragment } from 'react';
+import { useState } from 'react';
 
 // Hooks
 import { useCreateVenue } from '../hooks/useCreateVenue';
@@ -22,8 +22,8 @@ import {
   SelectItem,
   Textarea,
 } from '@heroui/react';
-import { Icon } from '@iconify/react';
 import ActionButton from '@/ui/ActionButton';
+import StepIndicator from '@/ui/StepIndicator';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import ErrorModal from '@/ui/ErrorModal';
 import ImageUploader from '@/components/ImageUploader';
@@ -238,11 +238,7 @@ function VenueForm() {
     }
   }
 
-  const steps = [
-    { index: 1, label: 'Venue Details' },
-    { index: 2, label: 'About' },
-    { index: 3, label: 'Photos' },
-  ];
+  const VENUE_FORM_STEPS = ['Venue Details', 'About', 'Photos'];
 
   return (
     <>
@@ -252,46 +248,7 @@ function VenueForm() {
       />
 
       <div className="z-10 w-full max-w-4xl">
-        {/* Step indicator */}
-        <div className="mb-6 flex items-start">
-          {steps.map((step, i) => (
-            <Fragment key={step.index}>
-              <div className="flex flex-col items-center">
-                <div
-                  className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition ${
-                    formIndex > step.index
-                      ? 'bg-primary text-white'
-                      : formIndex === step.index
-                        ? 'bg-primary text-white ring-4 ring-primary/20'
-                        : 'border-2 border-gray-300 text-gray-400'
-                  }`}
-                >
-                  {formIndex > step.index ? (
-                    <Icon aria-hidden="true" icon="lucide:check" width={14} />
-                  ) : (
-                    step.index
-                  )}
-                </div>
-                <span
-                  className={`mt-1 text-xs ${
-                    formIndex === step.index
-                      ? 'font-medium text-primary'
-                      : 'text-gray-400'
-                  }`}
-                >
-                  {step.label}
-                </span>
-              </div>
-              {i < steps.length - 1 && (
-                <div
-                  className={`mx-2 mb-5 mt-4 h-0.5 flex-1 transition ${
-                    formIndex > step.index ? 'bg-primary' : 'bg-gray-200'
-                  }`}
-                />
-              )}
-            </Fragment>
-          ))}
-        </div>
+        <StepIndicator labels={VENUE_FORM_STEPS} currentStep={formIndex} />
 
         {formIndex === 1 && (
           <div>
