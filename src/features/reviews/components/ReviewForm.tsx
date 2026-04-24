@@ -22,6 +22,7 @@ import VenueRating from '../../venues/components/VenueRating';
 import ImageUploader from '@/components/ImageUploader';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import ActionButton from '@/ui/ActionButton';
+import StepIndicator from '@/ui/StepIndicator';
 import { Input, Textarea } from '@heroui/react';
 
 // Type Imports
@@ -198,27 +199,29 @@ function ReviewForm({ mode }: ReviewFormProps) {
         <LoaderSpinner message="Loading" />
       ) : (
         <div className="m-3">
+          <StepIndicator
+            labels={['Your Review', 'Add Photos']}
+            currentStep={formIndex}
+          />
           {formIndex === 1 && (
             <>
               <div className="mb-3 ml-1 flex items-center justify-between">
-                <h2 className=" text-2xl font-semibold">
+                <h2 className="text-2xl font-semibold">
                   {mode === 'creating' ? 'Leave a ' : 'Edit your'} review for{' '}
                   {venueName || venueNameReview}
                 </h2>
               </div>
               <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-md">
-                <div>
-                  <h3 className="text-lg font-medium">Heat Rating</h3>
+                <div className="mb-12 flex gap-8">
                   <div>
+                    <h3 className="ml-1 text-lg font-medium">Heat Rating</h3>
                     <VenueRating
                       initialRating={heatRating}
                       handleRatingChange={setHeatRating}
                     />
                   </div>
-                </div>
-                <div className="mb-10">
-                  <h3 className="text-lg font-medium">Quality Rating</h3>
                   <div>
+                    <h3 className="text-lg font-medium">Quality Rating</h3>
                     <VenueRating
                       initialRating={qualityRating}
                       handleRatingChange={setQualityRating}
@@ -252,7 +255,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                         <Input
                           {...field}
                           classNames={{
-                            label: 'text-lg font-medium ',
+                            label: 'text-lg font-medium ml-1',
                             base: 'mb-14',
                           }}
                           id="reviewTitle"
@@ -290,7 +293,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                           <Input
                             {...field}
                             classNames={{
-                              label: 'text-lg font-medium',
+                              label: 'text-lg font-medium ml-1',
                               base: 'mb-6',
                             }}
                             id="hottestSauce"
@@ -365,8 +368,8 @@ function ReviewForm({ mode }: ReviewFormProps) {
                         <Textarea
                           {...field}
                           classNames={{
-                            label: 'text-lg font-medium ',
-                            base: 'mb-2',
+                            label: 'text-lg font-medium ml-1 ',
+                            base: 'mb-2 mb-4',
                           }}
                           id="reviewContent"
                           label="Review Content"
@@ -413,7 +416,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
               <h2
                 tabIndex={-1}
                 ref={form2Headingref}
-                className=" mb-3 ml-1 text-2xl font-semibold focus:outline-none focus-visible:ring-2  focus-visible:ring-offset-2"
+                className="mb-3 ml-1 text-2xl font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
               >
                 Add photos to your review
               </h2>
