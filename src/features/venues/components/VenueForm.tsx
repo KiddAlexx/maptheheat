@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 
 // React imports
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 
 // Hooks
 import { useCreateVenue } from '../hooks/useCreateVenue';
@@ -22,6 +22,7 @@ import {
   SelectItem,
   Textarea,
 } from '@heroui/react';
+import { Icon } from '@iconify/react';
 import ActionButton from '@/ui/ActionButton';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import ErrorModal from '@/ui/ErrorModal';
@@ -237,6 +238,12 @@ function VenueForm() {
     }
   }
 
+  const steps = [
+    { index: 1, label: 'Venue Details' },
+    { index: 2, label: 'About' },
+    { index: 3, label: 'Photos' },
+  ];
+
   return (
     <>
       <ErrorModal
@@ -244,423 +251,473 @@ function VenueForm() {
         clearLocalError={() => setLocalFormError('')}
       />
 
-      {formIndex === 1 && (
-        <div className="z-10 w-full max-w-4xl">
-          <h2 className="text-2xl font-semibold">Add a New Venue</h2>
-
-          <div className="mt-3 rounded-xl border border-gray-200 bg-white p-3 shadow-md">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                goToStep2();
-              }}
-            >
-              <div>
-                <Controller
-                  name="venueType"
-                  control={control}
-                  rules={{
-                    required: ' This field is required',
-                  }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      classNames={{
-                        label: 'text-md font-normal ',
-                        base: 'mb-10',
-                      }}
-                      radius="full"
-                      id="venueType"
-                      label="Venue Type"
-                      labelPlacement="outside"
-                      placeholder="Choose Venue Type"
-                      isInvalid={!!errors.venueType}
-                      errorMessage={errors.venueType?.message}
-                    >
-                      <SelectItem key="restaurant">Restaurant</SelectItem>
-                      <SelectItem key="shop">Shop</SelectItem>
-                    </Select>
-                  )}
-                />
-              </div>
-              <div>
-                <Controller
-                  name="venueName"
-                  control={control}
-                  rules={{
-                    required: 'This field is required',
-                    maxLength: {
-                      value: 100,
-                      message: 'Venue name cannot be more than 100 characters',
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      classNames={{
-                        label: 'text-md font-normal ',
-                        base: 'mb-10',
-                      }}
-                      id="venueName"
-                      type="text"
-                      label="Venue Name"
-                      labelPlacement="outside"
-                      placeholder="Venue Name..."
-                      radius="full"
-                      isInvalid={!!errors.venueName}
-                      errorMessage={errors.venueName?.message}
-                    />
-                  )}
-                />
-              </div>
-              <div>
-                <Controller
-                  name="address"
-                  control={control}
-                  rules={{ required: 'This field is required' }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      classNames={{
-                        label: 'text-md font-normal ',
-                        base: 'mb-10',
-                      }}
-                      id="address"
-                      type="text"
-                      label="Address"
-                      labelPlacement="outside"
-                      placeholder="Number followed by street name..."
-                      radius="full"
-                      isInvalid={!!errors.address}
-                      errorMessage={errors.address?.message}
-                    />
-                  )}
-                />
-              </div>
-
-              <div>
-                <Controller
-                  name="postcode"
-                  control={control}
-                  rules={{ required: 'This field is required' }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      classNames={{
-                        label: 'text-md font-normal ',
-                        base: 'mb-10',
-                      }}
-                      id="postcode"
-                      type="text"
-                      label="Postcode"
-                      labelPlacement="outside"
-                      placeholder="Postcode..."
-                      radius="full"
-                      isInvalid={!!errors.postcode}
-                      errorMessage={errors.postcode?.message}
-                    />
-                  )}
-                />
-              </div>
-              <div>
-                <Controller
-                  name="city"
-                  control={control}
-                  rules={{ required: 'This field is required' }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      classNames={{
-                        label: 'text-md font-normal ',
-                        base: 'mb-4',
-                      }}
-                      id="city"
-                      type="text"
-                      label="City"
-                      labelPlacement="outside"
-                      placeholder="City..."
-                      radius="full"
-                      isInvalid={!!errors.city}
-                      errorMessage={errors.city?.message}
-                    />
-                  )}
-                />
-              </div>
-
-              <Controller
-                name="country"
-                control={control}
-                rules={{ required: 'This field is required' }}
-                render={({ field }) => (
-                  <div className="mb-10">
-                    <label htmlFor="country" className="text-md mb-1 block">
-                      Country
-                    </label>
-                    <Autocomplete
-                      {...field}
-                      id="country"
-                      placeholder="Select Country"
-                      radius="full"
-                      defaultItems={countries}
-                      isInvalid={!!errors.country}
-                      errorMessage={errors.country?.message}
-                      onSelectionChange={(key) => field.onChange(key)}
-                    >
-                      {(country) => (
-                        <AutocompleteItem key={country.name}>
-                          {country.name}
-                        </AutocompleteItem>
-                      )}
-                    </Autocomplete>
-                  </div>
-                )}
-              />
-
-              <div>
-                <Controller
-                  name="phoneNumber"
-                  control={control}
-                  rules={{
-                    required: 'This field is required',
-                    pattern: {
-                      value: /^\+?[0-9\s-]+$/,
-                      message: 'Invalid phone number',
-                    },
-                    minLength: {
-                      value: 9,
-                      message: 'Phone Number must be at least 9 digits long',
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      classNames={{
-                        label: 'text-md font-normal ',
-                        base: 'mb-10',
-                      }}
-                      id="phoneNumber"
-                      type="text"
-                      label="Phone Number"
-                      labelPlacement="outside"
-                      placeholder="Phone Number..."
-                      radius="full"
-                      isInvalid={!!errors.phoneNumber}
-                      errorMessage={errors.phoneNumber?.message}
-                    />
-                  )}
-                />
-              </div>
-
-              <div>
-                <Controller
-                  name="website"
-                  control={control}
-                  rules={{
-                    pattern: {
-                      value:
-                        /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
-                      message: 'Invalid web address',
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      classNames={{
-                        label: 'text-md font-normal ',
-                        base: 'mb-4',
-                      }}
-                      id="website"
-                      type="text"
-                      label="Website"
-                      labelPlacement="outside"
-                      placeholder="http://www.example.com..."
-                      radius="full"
-                      isInvalid={!!errors.website}
-                      errorMessage={errors.website?.message}
-                    />
-                  )}
-                />
-              </div>
-              <div className="flex items-center justify-end gap-3">
-                <ActionButton
-                  intent="cancel"
-                  onPress={() =>
-                    openDialog('Do you want to discard this venue?', () =>
-                      navigate('/app/map')
-                    )
-                  }
-                  type="button"
+      <div className="z-10 w-full max-w-4xl">
+        {/* Step indicator */}
+        <div className="mb-6 flex items-start">
+          {steps.map((step, i) => (
+            <Fragment key={step.index}>
+              <div className="flex flex-col items-center">
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition ${
+                    formIndex > step.index
+                      ? 'bg-primary text-white'
+                      : formIndex === step.index
+                        ? 'bg-primary text-white ring-4 ring-primary/20'
+                        : 'border-2 border-gray-300 text-gray-400'
+                  }`}
                 >
-                  Cancel
-                </ActionButton>
-                <ActionButton intent="confirm" type="submit">
-                  Next
-                </ActionButton>
+                  {formIndex > step.index ? (
+                    <Icon aria-hidden="true" icon="lucide:check" width={14} />
+                  ) : (
+                    step.index
+                  )}
+                </div>
+                <span
+                  className={`mt-1 text-xs ${
+                    formIndex === step.index
+                      ? 'font-medium text-primary'
+                      : 'text-gray-400'
+                  }`}
+                >
+                  {step.label}
+                </span>
               </div>
-            </form>
-          </div>
+              {i < steps.length - 1 && (
+                <div
+                  className={`mx-2 mb-5 mt-4 h-0.5 flex-1 transition ${
+                    formIndex > step.index ? 'bg-primary' : 'bg-gray-200'
+                  }`}
+                />
+              )}
+            </Fragment>
+          ))}
         </div>
-      )}
 
-      {formIndex === 2 && (
-        <div className="z-10 w-full max-w-4xl">
-          <h2 className="text-2xl font-semibold">About the Venue</h2>
+        {formIndex === 1 && (
+          <div>
+            <h2 className="text-2xl font-semibold">Add a New Venue</h2>
 
-          <div className="mt-3 rounded-xl border border-gray-200 bg-white p-3 shadow-md">
-            <form onSubmit={handleSubmit(formSubmit, toastFormError)}>
-              {/* Cuisine Types */}
-              <Controller
-                name="cuisines"
-                control={control}
-                rules={{
-                  validate: (v) =>
-                    v.length >= 1 || 'Please select at least one cuisine type',
+            <div className="mt-3 rounded-xl border border-gray-200 bg-white p-4 shadow-md">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  goToStep2();
                 }}
-                render={() => (
-                  <div className="mb-8">
-                    <div className="mb-1 flex items-baseline gap-2">
-                      <span className="text-md font-normal">Cuisine Type</span>
-                      <span className="text-xs text-gray-500">
-                        Select 1 or 2
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {CUISINE_TYPES.map((cuisine) => {
-                        const isSelected = selectedCuisines.includes(cuisine);
-                        const isDisabled =
-                          !isSelected && selectedCuisines.length >= 2;
-                        return (
-                          <button
-                            key={cuisine}
-                            type="button"
-                            disabled={isDisabled}
-                            onClick={() => toggleCuisine(cuisine)}
-                            className={`rounded-full px-3 py-1 text-sm transition ${
-                              isSelected
-                                ? 'bg-primary text-white'
-                                : isDisabled
-                                  ? 'cursor-not-allowed border border-gray-300 bg-white text-gray-400 opacity-40'
-                                  : 'border border-gray-300 bg-white text-gray-700 hover:border-primary hover:text-primary'
-                            }`}
-                          >
-                            {cuisine}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {errors.cuisines && (
-                      <p className="mt-2 text-xs text-danger">
-                        {errors.cuisines.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-              />
-
-              {/* Dietary Options */}
-              <div className="mb-8">
-                <div className="mb-1 flex items-baseline gap-2">
-                  <span className="text-md font-normal">Dietary Options</span>
-                  <span className="text-xs text-gray-500">Optional</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {DIETARY_OPTIONS.map((option) => {
-                    const isSelected = selectedDietary.includes(option);
-                    return (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() => toggleDietary(option)}
-                        className={`rounded-full px-3 py-1 text-sm transition ${
-                          isSelected
-                            ? 'bg-primary text-white'
-                            : 'border border-gray-300 bg-white text-gray-700 hover:border-primary hover:text-primary'
-                        }`}
+              >
+                <div>
+                  <Controller
+                    name="venueType"
+                    control={control}
+                    rules={{
+                      required: ' This field is required',
+                    }}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        classNames={{
+                          label: 'text-md font-normal ml-1',
+                          base: 'mb-12 ',
+                        }}
+                        radius="full"
+                        id="venueType"
+                        label="Venue Type"
+                        labelPlacement="outside"
+                        placeholder="Choose Venue Type"
+                        isInvalid={!!errors.venueType}
+                        errorMessage={errors.venueType?.message}
                       >
-                        {option}
-                      </button>
-                    );
-                  })}
+                        <SelectItem key="restaurant">Restaurant</SelectItem>
+                        <SelectItem key="shop">Shop</SelectItem>
+                      </Select>
+                    )}
+                  />
                 </div>
-              </div>
+                <div>
+                  <Controller
+                    name="venueName"
+                    control={control}
+                    rules={{
+                      required: 'This field is required',
+                      maxLength: {
+                        value: 100,
+                        message:
+                          'Venue name cannot be more than 100 characters',
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        classNames={{
+                          label: 'text-md font-normal ml-1',
+                          base: 'mb-12',
+                        }}
+                        id="venueName"
+                        type="text"
+                        label="Venue Name"
+                        labelPlacement="outside"
+                        placeholder="Venue Name..."
+                        radius="full"
+                        isInvalid={!!errors.venueName}
+                        errorMessage={errors.venueName?.message}
+                      />
+                    )}
+                  />
+                </div>
+                <div>
+                  <Controller
+                    name="address"
+                    control={control}
+                    rules={{ required: 'This field is required' }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        classNames={{
+                          label: 'text-md font-normal ml-1',
+                          base: 'mb-6',
+                        }}
+                        id="address"
+                        type="text"
+                        label="Address"
+                        labelPlacement="outside"
+                        placeholder="Number followed by street name..."
+                        radius="full"
+                        isInvalid={!!errors.address}
+                        errorMessage={errors.address?.message}
+                      />
+                    )}
+                  />
+                </div>
 
-              <div>
+                <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-2">
+                  <Controller
+                    name="postcode"
+                    control={control}
+                    rules={{ required: 'This field is required' }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        classNames={{
+                          label: 'text-md font-normal ml-1',
+                          base: 'mb-4',
+                        }}
+                        id="postcode"
+                        type="text"
+                        label="Postcode"
+                        labelPlacement="outside"
+                        placeholder="Postcode..."
+                        radius="full"
+                        isInvalid={!!errors.postcode}
+                        errorMessage={errors.postcode?.message}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="city"
+                    control={control}
+                    rules={{ required: 'This field is required' }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        classNames={{
+                          label: 'text-md font-normal ml-2',
+                          base: 'mb-4',
+                        }}
+                        id="city"
+                        type="text"
+                        label="City"
+                        labelPlacement="outside"
+                        placeholder="City..."
+                        radius="full"
+                        isInvalid={!!errors.city}
+                        errorMessage={errors.city?.message}
+                      />
+                    )}
+                  />
+                </div>
+
                 <Controller
-                  name="description"
+                  name="country"
                   control={control}
-                  rules={{
-                    required: 'This field is required',
-                    minLength: {
-                      value: 40,
-                      message:
-                        'Description must be at least 40 characters long',
-                    },
-                    maxLength: {
-                      value: 500,
-                      message:
-                        'Description can not be more than 500 characters long',
-                    },
-                  }}
+                  rules={{ required: 'This field is required' }}
                   render={({ field }) => (
-                    <Textarea
-                      {...field}
-                      classNames={{
-                        label: 'text-md font-normal ',
-                        base: 'mb-8',
-                      }}
-                      id="description"
-                      label="Description"
-                      labelPlacement="outside"
-                      placeholder="Please enter a detailed description of the venue..."
-                      radius="full"
-                      isInvalid={!!errors.description}
-                      errorMessage={errors.description?.message}
-                    />
+                    <div className="mb-12">
+                      <label
+                        htmlFor="country"
+                        className="text-md mb-1 ml-1 block"
+                      >
+                        Country
+                      </label>
+                      <Autocomplete
+                        {...field}
+                        id="country"
+                        placeholder="Select Country"
+                        radius="full"
+                        defaultItems={countries}
+                        isInvalid={!!errors.country}
+                        errorMessage={errors.country?.message}
+                        onSelectionChange={(key) => field.onChange(key)}
+                      >
+                        {(country) => (
+                          <AutocompleteItem key={country.name}>
+                            {country.name}
+                          </AutocompleteItem>
+                        )}
+                      </Autocomplete>
+                    </div>
                   )}
                 />
-              </div>
 
-              <div className="flex items-center justify-end gap-3">
-                {isCreatingVenue && (
-                  <div>
-                    <LoaderSpinner message="Adding venue" />
+                <div>
+                  <Controller
+                    name="phoneNumber"
+                    control={control}
+                    rules={{
+                      required: 'This field is required',
+                      pattern: {
+                        value: /^\+?[0-9\s-]+$/,
+                        message: 'Invalid phone number',
+                      },
+                      minLength: {
+                        value: 9,
+                        message: 'Phone Number must be at least 9 digits long',
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        classNames={{
+                          label: 'text-md font-normal ml-1',
+                          base: 'mb-12',
+                        }}
+                        id="phoneNumber"
+                        type="text"
+                        label="Phone Number"
+                        labelPlacement="outside"
+                        placeholder="Phone Number..."
+                        radius="full"
+                        isInvalid={!!errors.phoneNumber}
+                        errorMessage={errors.phoneNumber?.message}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <Controller
+                    name="website"
+                    control={control}
+                    rules={{
+                      pattern: {
+                        value:
+                          /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+                        message: 'Invalid web address',
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        classNames={{
+                          label: 'text-md font-normal ml-1',
+                          base: 'mb-4',
+                        }}
+                        id="website"
+                        type="text"
+                        label="Website"
+                        labelPlacement="outside"
+                        placeholder="http://www.example.com..."
+                        radius="full"
+                        isInvalid={!!errors.website}
+                        errorMessage={errors.website?.message}
+                      />
+                    )}
+                  />
+                </div>
+                <div className="flex items-center justify-end gap-3">
+                  <ActionButton
+                    intent="cancel"
+                    onPress={() =>
+                      openDialog('Do you want to discard this venue?', () =>
+                        navigate('/app/map')
+                      )
+                    }
+                    type="button"
+                  >
+                    Cancel
+                  </ActionButton>
+                  <ActionButton intent="confirm" type="submit">
+                    Next
+                  </ActionButton>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {formIndex === 2 && (
+          <div>
+            <h2 className="text-2xl font-semibold">About the Venue</h2>
+
+            <div className="mt-3 rounded-xl border border-gray-200 bg-white p-4 shadow-md">
+              <form onSubmit={handleSubmit(formSubmit, toastFormError)}>
+                {/* Cuisine Types */}
+                <Controller
+                  name="cuisines"
+                  control={control}
+                  rules={{
+                    validate: (v) =>
+                      v.length >= 1 ||
+                      'Please select at least one cuisine type',
+                  }}
+                  render={() => (
+                    <div className="mb-8">
+                      <div className="mb-2 flex items-baseline gap-2">
+                        <span className="text-md ml-1 font-normal">
+                          Cuisine Type
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          Select 1 or 2
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {CUISINE_TYPES.map((cuisine) => {
+                          const isSelected = selectedCuisines.includes(cuisine);
+                          const isDisabled =
+                            !isSelected && selectedCuisines.length >= 2;
+                          return (
+                            <button
+                              key={cuisine}
+                              type="button"
+                              disabled={isDisabled}
+                              onClick={() => toggleCuisine(cuisine)}
+                              className={`rounded-full px-3 py-1 text-sm transition ${
+                                isSelected
+                                  ? 'bg-primary text-white'
+                                  : isDisabled
+                                    ? 'cursor-not-allowed border border-gray-300 bg-white text-gray-400 opacity-40'
+                                    : 'border border-gray-300 bg-white text-gray-700 hover:border-primary hover:text-primary'
+                              }`}
+                            >
+                              {cuisine}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {errors.cuisines && (
+                        <p className="mt-2 text-xs text-danger">
+                          {errors.cuisines.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
+
+                {/* Dietary Options */}
+                <div className="mb-8">
+                  <div className="mb-2 flex items-baseline gap-2">
+                    <span className="text-md ml-1 font-normal">
+                      Dietary Options
+                    </span>
+                    <span className="text-xs text-gray-500">Optional</span>
                   </div>
-                )}
-                <ActionButton
-                  intent="cancel"
-                  isDisabled={isCreatingVenue}
-                  onPress={() => setFormIndex(1)}
-                  type="button"
-                >
-                  Back
-                </ActionButton>
-                <ActionButton
-                  intent="confirm"
-                  isDisabled={isCreatingVenue}
-                  type="submit"
-                >
-                  Submit
-                </ActionButton>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+                  <div className="flex flex-wrap gap-2">
+                    {DIETARY_OPTIONS.map((option) => {
+                      const isSelected = selectedDietary.includes(option);
+                      return (
+                        <button
+                          key={option}
+                          type="button"
+                          onClick={() => toggleDietary(option)}
+                          className={`rounded-full px-3 py-1 text-sm transition ${
+                            isSelected
+                              ? 'bg-primary text-white'
+                              : 'border border-gray-300 bg-white text-gray-700 hover:border-primary hover:text-primary'
+                          }`}
+                        >
+                          {option}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
 
-      {formIndex === 3 && (
-        <div>
-          <h2 className="text-2xl font-semibold">
-            Add photos for {createdVenue?.venueName ?? ''}
-          </h2>
-          <div className="mt-3 w-full max-w-4xl rounded-xl border border-gray-200 bg-white p-3 shadow-md">
-            <ImageUploader
-              venue={createdVenue ?? undefined}
-              mode="integrated"
-              imageType="venue"
-            />
+                <div>
+                  <Controller
+                    name="description"
+                    control={control}
+                    rules={{
+                      required: 'This field is required',
+                      minLength: {
+                        value: 40,
+                        message:
+                          'Description must be at least 40 characters long',
+                      },
+                      maxLength: {
+                        value: 500,
+                        message:
+                          'Description can not be more than 500 characters long',
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Textarea
+                        {...field}
+                        classNames={{
+                          label: 'text-md font-normal ml-1 ',
+                          base: 'mb-8',
+                        }}
+                        id="description"
+                        label="Description"
+                        labelPlacement="outside"
+                        placeholder="Please enter a detailed description of the venue..."
+                        radius="full"
+                        isInvalid={!!errors.description}
+                        errorMessage={errors.description?.message}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-3">
+                  {isCreatingVenue && (
+                    <div>
+                      <LoaderSpinner message="Adding venue" />
+                    </div>
+                  )}
+                  <ActionButton
+                    intent="cancel"
+                    isDisabled={isCreatingVenue}
+                    onPress={() => setFormIndex(1)}
+                    type="button"
+                  >
+                    Back
+                  </ActionButton>
+                  <ActionButton
+                    intent="confirm"
+                    isDisabled={isCreatingVenue}
+                    type="submit"
+                  >
+                    Submit
+                  </ActionButton>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {formIndex === 3 && (
+          <div>
+            <h2 className="text-2xl font-semibold">
+              Add photos for {createdVenue?.venueName ?? ''}
+            </h2>
+            <div className="mt-3 w-full max-w-4xl rounded-xl border border-gray-200 bg-white p-4 shadow-md">
+              <ImageUploader
+                venue={createdVenue ?? undefined}
+                mode="integrated"
+                imageType="venue"
+              />
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 }
