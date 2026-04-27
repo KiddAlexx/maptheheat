@@ -14,6 +14,7 @@ import Homepage from './pages/Homepage';
 import PageNotFound from './pages/PageNotFound';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import Contact from './pages/Contact';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorModal from './ui/ErrorModal';
 import ModalManager from './components/ModalManager';
@@ -83,6 +84,7 @@ function App() {
           </Route>
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>

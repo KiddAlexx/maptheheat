@@ -89,7 +89,7 @@ function VenueForm() {
   const { user } = useUser();
 
   const [localFormError, setLocalFormError] = useState('');
-  const [formIndex, setFormIndex] = useState(2);
+  const [formIndex, setFormIndex] = useState(1);
   const [createdVenue, setCreatedVenue] = useState<Venue | null>(null);
 
   const defaultFormValues: FormData = {

@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 function HomeFooter() {
   return (
     <footer className="flex h-14 items-center justify-between  bg-slate-950/80 px-4 sm:px-8">
@@ -6,9 +8,9 @@ function HomeFooter() {
         <span className="hidden xs:block">Built by the community 🔥</span>
 
         <div className="flex items-center gap-6">
-          <a href="/contact">Contact</a>
-          <a href="/terms">Terms</a>
-          <a href="/privacy">Privacy</a>
+          <Link to="/contact">Contact</Link>
+          <Link to="/terms">Terms</Link>
+          <Link to="/privacy">Privacy</Link>
         </div>
       </div>
     </footer>

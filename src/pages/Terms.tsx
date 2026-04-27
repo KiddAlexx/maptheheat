@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 function Terms() {
   return (
     <main className="flex w-full justify-center px-4 py-12 sm:px-6 lg:px-8">
@@ -67,9 +69,9 @@ function Terms() {
           <h2 className="mb-2 text-xl font-semibold text-gray-700">7. Privacy & Personal Data</h2>
           <p className="text-gray-600">
             Your use of MapTheHeat is also governed by our{' '}
-            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+            <Link to="/privacy" className="text-primary underline">
               Privacy Policy
-            </a>
+            </Link>
             , which explains what personal data we collect, why, and your rights under GDPR.
           </p>
         </section>
@@ -77,14 +79,10 @@ function Terms() {
         <section>
           <h2 className="mb-2 text-xl font-semibold text-gray-700">8. Contact</h2>
           <p className="text-gray-600">
-            If you have any questions about these terms or wish to report content, please contact us
-            at{' '}
-            <a
-              href="mailto:contact@maptheheat.com"
-              className="text-primary underline"
-            >
-              contact@maptheheat.com
-            </a>
+            If you have any questions about these terms or wish to report content, please use our{' '}
+            <Link to="/contact" className="text-primary underline">
+              contact form
+            </Link>
             .
           </p>
         </section>

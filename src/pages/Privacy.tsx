@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 function Privacy() {
   return (
     <main className="flex w-full justify-center px-4 py-12 sm:px-6 lg:px-8">
@@ -11,10 +13,10 @@ function Privacy() {
             MapTheHeat is a community-driven platform for discovering and reviewing venues that
             serve spicy food. For the purposes of the General Data Protection Regulation (GDPR),
             MapTheHeat is the data controller responsible for your personal data. If you have any
-            questions or requests regarding your data, contact us at{' '}
-            <a href="mailto:contact@maptheheat.com" className="text-primary underline">
-              contact@maptheheat.com
-            </a>
+            questions or requests regarding your data, please use our{' '}
+            <Link to="/contact" className="text-primary underline">
+              contact form
+            </Link>
             .
           </p>
         </section>
@@ -141,10 +143,10 @@ function Privacy() {
             <li><span className="font-medium">Objection</span> — object to processing based on legitimate interests.</li>
           </ul>
           <p className="mt-3 text-gray-600">
-            To exercise any of these rights, contact us at{' '}
-            <a href="mailto:contact@maptheheat.com" className="text-primary underline">
-              contact@maptheheat.com
-            </a>
+            To exercise any of these rights, please use our{' '}
+            <Link to="/contact" className="text-primary underline">
+              contact form
+            </Link>
             . We will respond within 30 days. You also have the right to lodge a complaint with
             the Spanish data protection authority,{' '}
             <a
