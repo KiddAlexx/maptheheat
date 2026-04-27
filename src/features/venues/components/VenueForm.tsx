@@ -88,7 +88,7 @@ function VenueForm() {
   const { user } = useUser();
 
   const [localFormError, setLocalFormError] = useState('');
-  const [formIndex, setFormIndex] = useState(1);
+  const [formIndex, setFormIndex] = useState(2);
   const [createdVenue, setCreatedVenue] = useState<Venue | null>(null);
 
   const defaultFormValues: FormData = {
@@ -633,6 +633,18 @@ function VenueForm() {
                   />
                 </div>
 
+                <p className="mb-2 text-center text-xs text-gray-400">
+                  By submitting you agree to our{' '}
+                  <a
+                    href="/terms"
+                    className="underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Terms of Service
+                  </a>
+                  .
+                </p>
                 <div className="flex items-center justify-end gap-3">
                   {isCreatingVenue && (
                     <div>
