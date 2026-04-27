@@ -43,6 +43,7 @@ const CUISINE_TYPES = [
   'Caribbean',
   'Ethiopian',
   'Middle Eastern',
+  'South African',
   'Pakistani',
   'Sri Lankan',
   'Vietnamese',
