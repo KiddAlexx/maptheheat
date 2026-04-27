@@ -67,10 +67,10 @@ function AppLayout() {
   }
 
   return (
-    <main className="relative flex h-full">
+    <main className="relative flex h-full overflow-hidden">
       <aside
         className={clsx(
-          'w-full shrink flex-col p-3 lg:flex lg:min-w-[32rem] lg:basis-1/3',
+          'w-full shrink flex-col overflow-hidden p-3 lg:flex lg:min-w-[32rem] lg:basis-1/3',
           currentPane === 'list' ? 'flex' : 'hidden'
         )}
       >

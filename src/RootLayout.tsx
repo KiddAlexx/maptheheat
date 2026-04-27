@@ -6,15 +6,16 @@ import HomeFooter from './components/HomeFooter';
 
 function RootLayout() {
   const { pathname } = useLocation();
-  const showFooter = !pathname.startsWith('/app');
+  const isAppRoute = pathname.startsWith('/app');
+  const showFooter = !isAppRoute;
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className={`flex flex-col ${isAppRoute ? 'h-dvh overflow-hidden' : 'min-h-dvh'}`}>
       <header>
         <PageNav />
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col">
+      <div className={`flex min-h-0 flex-1 flex-col${isAppRoute ? ' overflow-hidden' : ''}`}>
         <Suspense fallback={<LoaderSpinner />}>
           <Outlet />
         </Suspense>
