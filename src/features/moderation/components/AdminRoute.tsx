@@ -23,7 +23,7 @@ function AdminAccessMessage({
   return (
     <main className="flex min-h-0 flex-1 items-center justify-center bg-zinc-50 px-4 py-10">
       <section
-        className="w-full max-w-md rounded-lg border border-zinc-200 bg-white p-6 text-center shadow-sm"
+        className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 text-center text-sm shadow-md"
         aria-labelledby="admin-access-title"
       >
         <h1 id="admin-access-title" className="text-2xl font-semibold">
@@ -57,7 +57,12 @@ function AdminRoute({ children }: AdminRouteProps) {
         title="Sign in required"
         message="Use an admin account to access moderation tools."
         action={
-          <Button color="primary" onPress={handleSignIn}>
+          <Button
+            size="sm"
+            radius="full"
+            onPress={handleSignIn}
+            className="h-9 min-w-28 bg-success-300 text-sm font-medium text-success-foreground"
+          >
             Sign In
           </Button>
         }
