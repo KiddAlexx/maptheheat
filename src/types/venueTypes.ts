@@ -26,6 +26,23 @@ export interface Venue {
   dietaryOptions?: string[];
 }
 
+export type ModerationStatus = 'pending' | 'approved' | 'declined';
+
+export interface ModerationImage extends DetailedImage {
+  createdAt: string;
+  venueId: string;
+  reviewId: string | null;
+  userId: string;
+  imageType: 'venue' | 'review' | 'standalone' | null;
+  status: ModerationStatus;
+}
+
+export interface ModerationVenue extends Venue {
+  createdAt: string;
+  status: ModerationStatus;
+  venueImages?: ModerationImage[];
+}
+
 // id not present at creation time, generate by Supbase
 export type NewVenue = Omit<Venue, 'venueId'>;
 
