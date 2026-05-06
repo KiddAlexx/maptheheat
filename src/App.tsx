@@ -31,6 +31,12 @@ const ReviewForm = lazy(
 );
 const Profile = lazy(() => import('./pages/Profile'));
 const AddNewVenue = lazy(() => import('./pages/AddNewVenue'));
+const AdminLayout = lazy(
+  () => import('./features/moderation/components/AdminLayout')
+);
+const ModerationPlaceholder = lazy(
+  () => import('./features/moderation/components/ModerationPlaceholder')
+);
 
 function App() {
   return (
@@ -79,6 +85,36 @@ function App() {
                 <ProtectedRoute>
                   <ReviewForm mode="editing" />
                 </ProtectedRoute>
+              }
+            />
+          </Route>
+          <Route path="admin" element={<AdminLayout />}>
+            <Route index element={<Navigate replace to="moderation/venues" />} />
+            <Route
+              path="moderation/venues"
+              element={
+                <ModerationPlaceholder
+                  title="Venue moderation"
+                  description="Review pending venue submissions, inspect attached images, edit details, and approve or decline venues."
+                />
+              }
+            />
+            <Route
+              path="moderation/reviews"
+              element={
+                <ModerationPlaceholder
+                  title="Review moderation"
+                  description="Review moderation will be added after the venue workflow is stable."
+                />
+              }
+            />
+            <Route
+              path="moderation/images"
+              element={
+                <ModerationPlaceholder
+                  title="Image moderation"
+                  description="Standalone image moderation will be added after venue submissions and venue images are handled."
+                />
               }
             />
           </Route>
