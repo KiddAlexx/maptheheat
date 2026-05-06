@@ -19,6 +19,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ErrorModal from './ui/ErrorModal';
 import ModalManager from './components/ModalManager';
 import RootLayout from './RootLayout';
+import AdminRoute from './features/moderation/components/AdminRoute';
 
 // Lazy loaded pages + components
 const AppLayout = lazy(() => import('./pages/AppLayout'));
@@ -88,7 +89,14 @@ function App() {
               }
             />
           </Route>
-          <Route path="admin" element={<AdminLayout />}>
+          <Route
+            path="admin"
+            element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }
+          >
             <Route index element={<Navigate replace to="moderation/venues" />} />
             <Route
               path="moderation/venues"

@@ -2,6 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 import { deleteReviewMock, getReviewsMock } from './mocks/apiReviews';
 import { getCurrentUserMock } from './mocks/apiAuth';
+import { getIsAdminMock } from './mocks/apiModeration';
 import { getUserProfileMock } from './mocks/apiUserProfiles';
 import React from 'react';
 
@@ -17,6 +18,10 @@ vi.mock('@/services/apiReviews', () => ({
 
 vi.mock('@/services/apiAuth', () => ({
   getCurrentUser: getCurrentUserMock,
+}));
+
+vi.mock('@/services/apiModeration', () => ({
+  getIsAdmin: getIsAdminMock,
 }));
 
 vi.mock('@/services/apiUserProfiles', () => ({
