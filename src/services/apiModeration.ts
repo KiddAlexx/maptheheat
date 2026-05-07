@@ -55,6 +55,9 @@ export interface ModerationReviewsResponse {
   count: number | null;
 }
 
+// No `sort` field — the standalone grouping view is always ordered by
+// last_created_at (most recent first) since it has no other meaningful sort
+// dimension. Add a sort field here only if a caller needs alternate ordering.
 export interface ModerationStandaloneImagesRequestParams {
   status?: ModerationStatus;
   filters?: StandaloneImageModerationFilter[];

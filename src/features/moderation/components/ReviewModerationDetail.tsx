@@ -1,15 +1,16 @@
-import clsx from 'clsx';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoaderSpinner from '@/ui/LoaderSpinner';
-import ActionButton from '@/ui/ActionButton';
 import ImageModerationPanel, {
   ImageDecision,
   ImageStatusUpdatePayload,
 } from './ImageModerationPanel';
+import ModerationDetailItem from './ModerationDetailItem';
+import ModerationDetailMessage from './ModerationDetailMessage';
+import ModerationStatusActions from './ModerationStatusActions';
+import ModerationStatusBadge from './ModerationStatusBadge';
 import ModerationSubmitter from './ModerationSubmitter';
 import ReviewModerationEditForm from './ReviewModerationEditForm';
-import { STATUS_BADGE_CLASSES, STATUS_LABELS } from '../constants';
 import { useModerationReview } from '../hooks/useModerationReview';
 import { useUpdateModerationReview } from '../hooks/useUpdateModerationReview';
 import { useUpdateModerationReviewStatus } from '../hooks/useUpdateModerationReviewStatus';
@@ -20,7 +21,6 @@ import {
   hasImageStatusUpdates,
 } from '../utils/imageStatusPayload';
 import { ModerationReview } from '@/types/reviewTypes';
-import { ModerationStatus } from '@/types/venueTypes';
 
 function ReviewModerationDetail() {
   const { reviewId } = useParams();
@@ -134,7 +134,7 @@ function ReviewModerationDetail() {
             >
               {loadedReview.reviewTitle}
             </h2>
-            <StatusBadge status={loadedReview.status} />
+            <ModerationStatusBadge status={loadedReview.status} />
           </div>
           <p className="mt-1 max-w-3xl text-sm text-zinc-600">
             Review the submitted ratings and comments before making a
@@ -160,11 +160,12 @@ function ReviewModerationDetail() {
         </div>
 
         <aside className="space-y-5">
-          <ReviewStatusActions
+          <ModerationStatusActions
             hasPendingImageWithoutDecision={hasPendingImageWithoutDecision}
             isUpdating={isUpdatingReviewStatus || isUpdatingImages}
             onApprove={handleApproveReview}
             onDecline={handleDeclineReview}
+            resourceLabel="review"
             status={loadedReview.status}
           />
           <MetadataPanel review={loadedReview} />
@@ -183,85 +184,14 @@ function ReviewModerationDetail() {
   );
 }
 
-function ReviewStatusActions({
-  hasPendingImageWithoutDecision,
-  isUpdating,
-  onApprove,
-  onDecline,
-  status,
-}: {
-  hasPendingImageWithoutDecision: boolean;
-  isUpdating: boolean;
-  onApprove: () => void;
-  onDecline: () => void;
-  status: ModerationStatus;
-}) {
-  return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">Review decision</h3>
-      <p className="mt-1 text-sm text-zinc-600">
-        Set the final status for this review submission.
-      </p>
-      {hasPendingImageWithoutDecision ? (
-        <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
-          Resolve all pending image decisions before approving this review.
-        </p>
-      ) : null}
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-        <ActionButton
-          intent="confirm"
-          isDisabled={
-            status === 'approved' || isUpdating || hasPendingImageWithoutDecision
-          }
-          isLoading={isUpdating}
-          onPress={onApprove}
-        >
-          Approve review
-        </ActionButton>
-        <ActionButton
-          intent="cancel"
-          isDisabled={status === 'declined' || isUpdating}
-          isLoading={isUpdating}
-          onPress={onDecline}
-        >
-          Decline review
-        </ActionButton>
-      </div>
-    </section>
-  );
-}
-
 function DetailMessage({ title, message }: { title: string; message: string }) {
   return (
-    <section
-      role="alert"
-      className="rounded-xl border border-gray-200 bg-white p-6 text-center text-sm shadow-md"
-      aria-labelledby="review-detail-message-title"
-    >
-      <h2 id="review-detail-message-title" className="text-xl font-semibold">
-        {title}
-      </h2>
-      <p className="mt-2 text-zinc-600">{message}</p>
-      <Link
-        to="/admin/moderation/reviews"
-        className="mt-5 inline-flex min-h-10 items-center justify-center rounded-full bg-primary-100 px-4 text-sm font-medium text-primary-700 hover:bg-primary-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-      >
-        Back to review queue
-      </Link>
-    </section>
-  );
-}
-
-function StatusBadge({ status }: { status: ModerationStatus }) {
-  return (
-    <span
-      className={clsx(
-        'rounded-full border px-2.5 py-1 text-xs font-semibold',
-        STATUS_BADGE_CLASSES[status]
-      )}
-    >
-      {STATUS_LABELS[status]}
-    </span>
+    <ModerationDetailMessage
+      title={title}
+      message={message}
+      backHref="/admin/moderation/reviews"
+      backLabel="Back to review queue"
+    />
   );
 }
 
@@ -278,23 +208,23 @@ function ReviewFields({ review }: { review: ModerationReview }) {
   return (
     <div className="mt-4 space-y-5">
       <dl className="grid gap-4 md:grid-cols-2">
-        <DetailItem label="Review type">
+        <ModerationDetailItem label="Review type">
           <span className="capitalize">{reviewType}</span>
-        </DetailItem>
-        <DetailItem label="Ratings">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Ratings">
           Heat {heatRating} / Quality {qualityRating}
-        </DetailItem>
-        <DetailItem label="Hottest dish">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Hottest dish">
           {hottestDish || 'Not provided'}
-        </DetailItem>
-        <DetailItem label="Hottest sauce">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Hottest sauce">
           {hottestSauce || 'Not provided'}
-        </DetailItem>
+        </ModerationDetailItem>
       </dl>
 
-      <DetailItem label="Review content">
+      <ModerationDetailItem label="Review content">
         <p className="whitespace-pre-wrap text-gray-700">{reviewContent}</p>
-      </DetailItem>
+      </ModerationDetailItem>
     </div>
   );
 }
@@ -316,21 +246,21 @@ function MetadataPanel({ review }: { review: ModerationReview }) {
         Submission metadata
       </h3>
       <dl className="mt-4 space-y-4">
-        <DetailItem label="Submitted">
+        <ModerationDetailItem label="Submitted">
           <time dateTime={createdAt}>{formattedDate}</time>
-        </DetailItem>
-        <DetailItem label="Submitter">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Submitter">
           <ModerationSubmitter username={submitterUsername} userId={userId} />
-        </DetailItem>
-        <DetailItem label="Review id">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Review id">
           <span className="break-all font-mono text-xs">{reviewId}</span>
-        </DetailItem>
-        <DetailItem label="Venue id">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Venue id">
           <span className="break-all font-mono text-xs">{venueId}</span>
-        </DetailItem>
-        <DetailItem label="Attached images">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Attached images">
           {venueImages?.length ?? 0}
-        </DetailItem>
+        </ModerationDetailItem>
       </dl>
     </section>
   );
@@ -344,14 +274,14 @@ function VenueContextPanel({ review }: { review: ModerationReview }) {
       <h3 className="text-lg font-semibold text-gray-900">Venue context</h3>
       {venue ? (
         <dl className="mt-4 space-y-4">
-          <DetailItem label="Venue">{venue.venueName}</DetailItem>
-          <DetailItem label="Location">
+          <ModerationDetailItem label="Venue">{venue.venueName}</ModerationDetailItem>
+          <ModerationDetailItem label="Location">
             {venue.city}, {venue.country}
-          </DetailItem>
-          <DetailItem label="Slug">{venue.venueNameSlug}</DetailItem>
-          <DetailItem label="Type">
+          </ModerationDetailItem>
+          <ModerationDetailItem label="Slug">{venue.venueNameSlug}</ModerationDetailItem>
+          <ModerationDetailItem label="Type">
             <span className="capitalize">{venue.venueType}</span>
-          </DetailItem>
+          </ModerationDetailItem>
         </dl>
       ) : (
         <p className="mt-4 text-sm text-zinc-600">
@@ -362,21 +292,5 @@ function VenueContextPanel({ review }: { review: ModerationReview }) {
   );
 }
 
-function DetailItem({
-  children,
-  label,
-}: {
-  children: ReactNode;
-  label: string;
-}) {
-  return (
-    <div>
-      <dt className="text-xs font-semibold uppercase tracking-normal text-gray-500">
-        {label}
-      </dt>
-      <dd className="mt-1 text-gray-800">{children}</dd>
-    </div>
-  );
-}
 
 export default ReviewModerationDetail;

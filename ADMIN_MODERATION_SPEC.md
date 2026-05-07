@@ -43,6 +43,7 @@ plus the relevant tests.
 - [x] Step 17: Add standalone image grouping/detail screen.
 - [x] Step 18: Add standalone image status actions.
 - [x] Step 19: Cover admin standalone image flow with tests.
+- [x] Step 19.5: Post-standalone refactor pass.
 - [ ] Step 20: Add notification workflow after approve/decline.
 
 ## Completed Slices
@@ -307,6 +308,33 @@ plus the relevant tests.
 - Verified the standalone image coverage set across query hooks, queue
   rendering, group detail, grouping service reads, draft decisions, mark-all
   actions, and the queue-to-detail flow.
+
+### Step 19.5: Post-Standalone Refactor Pass
+
+- Extracted `ModerationDetailMessage`, `ModerationDetailItem`,
+  `ModerationStatusBadge`, and `ModerationStatusActions` to
+  `src/features/moderation/components/`. Removed the local copies from
+  `VenueModerationDetail`, `ReviewModerationDetail`, and
+  `StandaloneImageModerationGroup` (~150 lines of duplication).
+- `ModerationStatusActions` is parameterized by `resourceLabel` so venue
+  and review screens share the same approve/decline panel.
+- `ModerationDetailMessage` uses `useId` for the `aria-labelledby` coupling
+  so callers no longer need to invent unique ids.
+- Added prefetch (next/prev page) to `useModerationStandaloneImages`,
+  matching the pattern in `useModerationVenues` and `useModerationReviews`.
+- Made `isUpdating` optional on `ImageModerationPanel` (default `false`).
+  Selection-only callers like `StandaloneImageModerationGroup` no longer
+  need to pass `isUpdating={false}`.
+- Added a comment in `StandaloneImageModerationGroup` explaining why
+  `onUpdateStatuses` is deliberately omitted (decisions stay draft until
+  the Step 20 notification flow lands).
+- Added a comment in `apiModeration.ts` explaining why
+  `ModerationStandaloneImagesRequestParams` has no `sort` field (the
+  grouping view is always ordered by `last_created_at`).
+- Added service-level test coverage for `updateModerationImageStatuses`,
+  exercising the batched approve/decline payload and the empty-array
+  short-circuit path.
+- All 84 tests pass; no behavior changes.
 
 ## Architecture Rules
 

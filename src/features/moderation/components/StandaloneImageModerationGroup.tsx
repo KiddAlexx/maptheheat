@@ -1,8 +1,10 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import ActionButton from '@/ui/ActionButton';
 import ImageModerationPanel, { ImageDecision } from './ImageModerationPanel';
+import ModerationDetailItem from './ModerationDetailItem';
+import ModerationDetailMessage from './ModerationDetailMessage';
 import ModerationSubmitter from './ModerationSubmitter';
 import { useModerationStandaloneImageGroup } from '../hooks/useModerationStandaloneImageGroup';
 import { formatSubmittedDate } from '../utils/formatSubmittedDate';
@@ -125,9 +127,10 @@ function StandaloneImageModerationGroup() {
         </div>
       </div>
 
+      {/* No onUpdateStatuses: standalone decisions stay draft here until the */}
+      {/* Step 20 notification flow lands and submits them alongside a notification. */}
       <ImageModerationPanel
         images={loadedImageGroup.images}
-        isUpdating={false}
         onImageDecisionChange={handleImageDecisionChange}
         selectedStatuses={selectedImageStatuses}
         description="Choose per-image decisions here, then continue from the decision panel before saving changes."
@@ -183,11 +186,11 @@ function StandaloneImageStatusActions({
       </p>
 
       <dl className="mt-4 grid grid-cols-3 gap-3">
-        <DetailItem label="Approve">{draftCounts.approved}</DetailItem>
-        <DetailItem label="Decline">{draftCounts.declined}</DetailItem>
-        <DetailItem label="Pending">
+        <ModerationDetailItem label="Approve">{draftCounts.approved}</ModerationDetailItem>
+        <ModerationDetailItem label="Decline">{draftCounts.declined}</ModerationDetailItem>
+        <ModerationDetailItem label="Pending">
           {pendingImagesWithoutDecision}
-        </DetailItem>
+        </ModerationDetailItem>
       </dl>
 
       {pendingImagesWithoutDecision > 0 ? (
@@ -237,25 +240,12 @@ function StandaloneImageStatusActions({
 
 function DetailMessage({ title, message }: { title: string; message: string }) {
   return (
-    <section
-      role="alert"
-      className="rounded-xl border border-gray-200 bg-white p-6 text-center text-sm shadow-md"
-      aria-labelledby="image-group-detail-message-title"
-    >
-      <h2
-        id="image-group-detail-message-title"
-        className="text-xl font-semibold"
-      >
-        {title}
-      </h2>
-      <p className="mt-2 text-zinc-600">{message}</p>
-      <Link
-        to="/admin/moderation/images"
-        className="mt-5 inline-flex min-h-10 items-center justify-center rounded-full bg-primary-100 px-4 text-sm font-medium text-primary-700 hover:bg-primary-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-      >
-        Back to image queue
-      </Link>
-    </section>
+    <ModerationDetailMessage
+      title={title}
+      message={message}
+      backHref="/admin/moderation/images"
+      backLabel="Back to image queue"
+    />
   );
 }
 
@@ -266,9 +256,9 @@ function StatusSummaryPanel({ images }: { images: ModerationImage[] }) {
     <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
       <h3 className="text-lg font-semibold text-gray-900">Image statuses</h3>
       <dl className="mt-4 grid gap-4 sm:grid-cols-3">
-        <DetailItem label="Pending">{counts.pending}</DetailItem>
-        <DetailItem label="Approved">{counts.approved}</DetailItem>
-        <DetailItem label="Declined">{counts.declined}</DetailItem>
+        <ModerationDetailItem label="Pending">{counts.pending}</ModerationDetailItem>
+        <ModerationDetailItem label="Approved">{counts.approved}</ModerationDetailItem>
+        <ModerationDetailItem label="Declined">{counts.declined}</ModerationDetailItem>
       </dl>
     </section>
   );
@@ -300,43 +290,27 @@ function MetadataPanel({
         Submission metadata
       </h3>
       <dl className="mt-4 space-y-4">
-        <DetailItem label="Submitted">
+        <ModerationDetailItem label="Submitted">
           <time dateTime={lastCreatedAt}>{formattedDate}</time>
-        </DetailItem>
-        <DetailItem label="Submitter">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Submitter">
           <ModerationSubmitter username={username} userId={userId} />
-        </DetailItem>
-        <DetailItem label="Venue">{venueName ?? 'Unknown venue'}</DetailItem>
-        <DetailItem label="City">{city ?? 'Unknown city'}</DetailItem>
-        <DetailItem label="Slug">{venueNameSlug ?? 'Unknown slug'}</DetailItem>
-        <DetailItem label="Images">{imageCount}</DetailItem>
-        <DetailItem label="Group id">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Venue">{venueName ?? 'Unknown venue'}</ModerationDetailItem>
+        <ModerationDetailItem label="City">{city ?? 'Unknown city'}</ModerationDetailItem>
+        <ModerationDetailItem label="Slug">{venueNameSlug ?? 'Unknown slug'}</ModerationDetailItem>
+        <ModerationDetailItem label="Images">{imageCount}</ModerationDetailItem>
+        <ModerationDetailItem label="Group id">
           <span className="break-all font-mono text-xs">{groupId}</span>
-        </DetailItem>
-        <DetailItem label="Venue id">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Venue id">
           <span className="break-all font-mono text-xs">{venueId}</span>
-        </DetailItem>
+        </ModerationDetailItem>
       </dl>
     </section>
   );
 }
 
-function DetailItem({
-  children,
-  label,
-}: {
-  children: ReactNode;
-  label: string;
-}) {
-  return (
-    <div>
-      <dt className="text-xs font-semibold uppercase tracking-normal text-gray-500">
-        {label}
-      </dt>
-      <dd className="mt-1 text-gray-800">{children}</dd>
-    </div>
-  );
-}
 
 function getImageStatusCounts(
   images: ModerationImage[]

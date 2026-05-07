@@ -11,7 +11,7 @@ export type ImageDecision = Extract<ModerationStatus, 'approved' | 'declined'>;
 
 interface ImageModerationPanelProps {
   images?: ModerationImage[];
-  isUpdating: boolean;
+  isUpdating?: boolean;
   onImageDecisionChange: (
     imageId: string,
     decision: ImageDecision,
@@ -30,7 +30,7 @@ export interface ImageStatusUpdatePayload {
 
 function ImageModerationPanel({
   images = [],
-  isUpdating,
+  isUpdating = false,
   onImageDecisionChange,
   onUpdateStatuses,
   selectedStatuses,

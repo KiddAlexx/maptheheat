@@ -7,6 +7,7 @@ const {
   getModerationReviews,
   getModerationStandaloneImageGroup,
   getModerationStandaloneImages,
+  updateModerationImageStatuses,
 } = await vi.importActual<
   typeof import('@/services/apiModeration')
 >('@/services/apiModeration');
@@ -221,5 +222,42 @@ describe('apiModeration standalone image reads', () => {
 
     expect(group.venueName).toBe('Pepper Palace');
     expect(group.images).toHaveLength(1);
+  });
+});
+
+describe('apiModeration image status updates', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('batches approved and declined image ids on venue_images', async () => {
+    const query = createSupabaseQueryMock({ data: null });
+    supabaseMocks.state.query = query;
+
+    await updateModerationImageStatuses({
+      approvedImageIds: ['image-1', 'image-2'],
+      declinedImageIds: ['image-3'],
+    });
+
+    expect(supabaseMocks.from).toHaveBeenCalledWith('venue_images');
+    expect(query.update).toHaveBeenCalledWith({ status: 'approved' });
+    expect(query.update).toHaveBeenCalledWith({ status: 'declined' });
+    expect(query.in).toHaveBeenCalledWith('image_id', ['image-1', 'image-2']);
+    expect(query.in).toHaveBeenCalledWith('image_id', ['image-3']);
+  });
+
+  it('skips the update branch when no image ids are provided for a status', async () => {
+    const query = createSupabaseQueryMock({ data: null });
+    supabaseMocks.state.query = query;
+
+    await updateModerationImageStatuses({
+      approvedImageIds: ['image-1'],
+      declinedImageIds: [],
+    });
+
+    expect(query.update).toHaveBeenCalledTimes(1);
+    expect(query.update).toHaveBeenCalledWith({ status: 'approved' });
+    expect(query.in).toHaveBeenCalledTimes(1);
+    expect(query.in).toHaveBeenCalledWith('image_id', ['image-1']);
   });
 });

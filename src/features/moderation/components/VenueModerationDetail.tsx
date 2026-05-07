@@ -1,25 +1,26 @@
-import clsx from 'clsx';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoaderSpinner from '@/ui/LoaderSpinner';
-import ActionButton from '@/ui/ActionButton';
 import ImageModerationPanel, {
   ImageDecision,
   ImageStatusUpdatePayload,
 } from './ImageModerationPanel';
+import ModerationDetailItem from './ModerationDetailItem';
+import ModerationDetailMessage from './ModerationDetailMessage';
+import ModerationStatusActions from './ModerationStatusActions';
+import ModerationStatusBadge from './ModerationStatusBadge';
 import ModerationSubmitter from './ModerationSubmitter';
 import VenueModerationEditForm from './VenueModerationEditForm';
 import { useModerationVenue } from '../hooks/useModerationVenue';
 import { useUpdateVenueImageStatuses } from '../hooks/useUpdateVenueImageStatuses';
 import { useUpdateModerationVenue } from '../hooks/useUpdateModerationVenue';
 import { useUpdateModerationVenueStatus } from '../hooks/useUpdateModerationVenueStatus';
-import { STATUS_BADGE_CLASSES, STATUS_LABELS } from '../constants';
 import { formatSubmittedDate } from '../utils/formatSubmittedDate';
 import {
   getImageStatusUpdatePayload,
   hasImageStatusUpdates,
 } from '../utils/imageStatusPayload';
-import { ModerationStatus, ModerationVenue } from '@/types/venueTypes';
+import { ModerationVenue } from '@/types/venueTypes';
 
 function formatCoordinate(value: number | string) {
   return typeof value === 'number' ? value.toFixed(5) : value;
@@ -134,7 +135,7 @@ function VenueModerationDetail() {
             >
               {venue.venueName}
             </h2>
-            <StatusBadge status={venue.status} />
+            <ModerationStatusBadge status={venue.status} />
           </div>
           <p className="mt-1 max-w-3xl text-sm text-zinc-600">
             Review the submitted venue details before making a moderation
@@ -160,11 +161,12 @@ function VenueModerationDetail() {
         </div>
 
         <aside className="space-y-5">
-          <VenueStatusActions
+          <ModerationStatusActions
             hasPendingImageWithoutDecision={hasPendingImageWithoutDecision}
             isUpdating={isUpdatingVenueStatus || isUpdatingImages}
             onApprove={handleApproveVenue}
             onDecline={handleDeclineVenue}
+            resourceLabel="venue"
             status={venue.status}
           />
           <MetadataPanel venue={venue} />
@@ -183,85 +185,14 @@ function VenueModerationDetail() {
   );
 }
 
-function VenueStatusActions({
-  hasPendingImageWithoutDecision,
-  isUpdating,
-  onApprove,
-  onDecline,
-  status,
-}: {
-  hasPendingImageWithoutDecision: boolean;
-  isUpdating: boolean;
-  onApprove: () => void;
-  onDecline: () => void;
-  status: ModerationStatus;
-}) {
-  return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">Venue decision</h3>
-      <p className="mt-1 text-sm text-zinc-600">
-        Set the final status for this venue submission.
-      </p>
-      {hasPendingImageWithoutDecision ? (
-        <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
-          Resolve all pending image decisions before approving this venue.
-        </p>
-      ) : null}
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-        <ActionButton
-          intent="confirm"
-          isDisabled={
-            status === 'approved' || isUpdating || hasPendingImageWithoutDecision
-          }
-          isLoading={isUpdating}
-          onPress={onApprove}
-        >
-          Approve venue
-        </ActionButton>
-        <ActionButton
-          intent="cancel"
-          isDisabled={status === 'declined' || isUpdating}
-          isLoading={isUpdating}
-          onPress={onDecline}
-        >
-          Decline venue
-        </ActionButton>
-      </div>
-    </section>
-  );
-}
-
 function DetailMessage({ title, message }: { title: string; message: string }) {
   return (
-    <section
-      role="alert"
-      className="rounded-xl border border-gray-200 bg-white p-6 text-center text-sm shadow-md"
-      aria-labelledby="venue-detail-message-title"
-    >
-      <h2 id="venue-detail-message-title" className="text-xl font-semibold">
-        {title}
-      </h2>
-      <p className="mt-2 text-zinc-600">{message}</p>
-      <Link
-        to="/admin/moderation/venues"
-        className="mt-5 inline-flex min-h-10 items-center justify-center rounded-full bg-primary-100 px-4 text-sm font-medium text-primary-700 hover:bg-primary-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-      >
-        Back to venue queue
-      </Link>
-    </section>
-  );
-}
-
-function StatusBadge({ status }: { status: ModerationStatus }) {
-  return (
-    <span
-      className={clsx(
-        'rounded-full border px-2.5 py-1 text-xs font-semibold',
-        STATUS_BADGE_CLASSES[status]
-      )}
-    >
-      {STATUS_LABELS[status]}
-    </span>
+    <ModerationDetailMessage
+      title={title}
+      message={message}
+      backHref="/admin/moderation/venues"
+      backLabel="Back to venue queue"
+    />
   );
 }
 
@@ -283,23 +214,23 @@ function VenueFields({ venue }: { venue: ModerationVenue }) {
   return (
     <div className="mt-4 space-y-5">
       <dl className="grid gap-4 md:grid-cols-2">
-        <DetailItem label="Type">
+        <ModerationDetailItem label="Type">
           <span className="capitalize">{venueType}</span>
-        </DetailItem>
-        <DetailItem label="Slug">{venueNameSlug}</DetailItem>
-        <DetailItem label="City">{city}</DetailItem>
-        <DetailItem label="Country">{country}</DetailItem>
-        <DetailItem label="Address">{address}</DetailItem>
-        <DetailItem label="Postcode">{postcode || 'Not provided'}</DetailItem>
-        <DetailItem label="Phone">{phoneNumber || 'Not provided'}</DetailItem>
-        <DetailItem label="Coordinates">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Slug">{venueNameSlug}</ModerationDetailItem>
+        <ModerationDetailItem label="City">{city}</ModerationDetailItem>
+        <ModerationDetailItem label="Country">{country}</ModerationDetailItem>
+        <ModerationDetailItem label="Address">{address}</ModerationDetailItem>
+        <ModerationDetailItem label="Postcode">{postcode || 'Not provided'}</ModerationDetailItem>
+        <ModerationDetailItem label="Phone">{phoneNumber || 'Not provided'}</ModerationDetailItem>
+        <ModerationDetailItem label="Coordinates">
           {formatCoordinate(coords.lat)}, {formatCoordinate(coords.lon)}
-        </DetailItem>
+        </ModerationDetailItem>
       </dl>
 
-      <DetailItem label="Detailed address">{detailedAddress}</DetailItem>
+      <ModerationDetailItem label="Detailed address">{detailedAddress}</ModerationDetailItem>
 
-      <DetailItem label="Website">
+      <ModerationDetailItem label="Website">
         {website ? (
           <a
             href={website}
@@ -312,11 +243,11 @@ function VenueFields({ venue }: { venue: ModerationVenue }) {
         ) : (
           'Not provided'
         )}
-      </DetailItem>
+      </ModerationDetailItem>
 
-      <DetailItem label="Description">
+      <ModerationDetailItem label="Description">
         <p className="whitespace-pre-wrap text-gray-700">{description}</p>
-      </DetailItem>
+      </ModerationDetailItem>
     </div>
   );
 }
@@ -331,18 +262,18 @@ function MetadataPanel({ venue }: { venue: ModerationVenue }) {
         Submission metadata
       </h3>
       <dl className="mt-4 space-y-4">
-        <DetailItem label="Submitted">
+        <ModerationDetailItem label="Submitted">
           <time dateTime={createdAt}>{formattedDate}</time>
-        </DetailItem>
-        <DetailItem label="Submitter">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Submitter">
           <ModerationSubmitter username={submitterUsername} userId={userId} />
-        </DetailItem>
-        <DetailItem label="Venue id">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Venue id">
           <span className="break-all font-mono text-xs">{venueId}</span>
-        </DetailItem>
-        <DetailItem label="Attached images">
+        </ModerationDetailItem>
+        <ModerationDetailItem label="Attached images">
           {venueImages?.length ?? 0}
-        </DetailItem>
+        </ModerationDetailItem>
       </dl>
     </section>
   );
@@ -376,23 +307,6 @@ function ClassificationPanel({ venue }: { venue: ModerationVenue }) {
         <p className="mt-4 text-sm text-zinc-600">No attributes submitted.</p>
       )}
     </section>
-  );
-}
-
-function DetailItem({
-  children,
-  label,
-}: {
-  children: ReactNode;
-  label: string;
-}) {
-  return (
-    <div>
-      <dt className="text-xs font-semibold uppercase tracking-normal text-gray-500">
-        {label}
-      </dt>
-      <dd className="mt-1 text-gray-800">{children}</dd>
-    </div>
   );
 }
 
