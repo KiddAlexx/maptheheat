@@ -5,6 +5,7 @@ import { getCurrentUserMock } from './mocks/apiAuth';
 import {
   getIsAdminMock,
   getModerationCitiesMock,
+  getModerationReviewCitiesMock,
   getModerationReviewMock,
   getModerationReviewsMock,
   getModerationVenueMock,
@@ -38,6 +39,7 @@ vi.mock('@/services/apiModeration', () => ({
   getModerationVenue: getModerationVenueMock,
   getModerationReviews: getModerationReviewsMock,
   getModerationReview: getModerationReviewMock,
+  getModerationReviewCities: getModerationReviewCitiesMock,
   getModerationCities: getModerationCitiesMock,
   updateVenueModerationStatus: updateVenueModerationStatusMock,
   updateModerationVenue: updateModerationVenueMock,

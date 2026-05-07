@@ -33,7 +33,7 @@ plus the relevant tests.
 - [x] Step 8: Add admin venue edit form.
 - [x] Step 9: Cover admin venue flow with tests.
 - [x] Step 10: Add admin review query services and hooks.
-- [ ] Step 11: Add review moderation queue.
+- [x] Step 11: Add review moderation queue.
 - [ ] Step 12: Add review detail/edit screen.
 - [ ] Step 13: Add review status actions.
 - [ ] Step 14: Cover admin review flow with tests.
@@ -141,6 +141,32 @@ plus the relevant tests.
   `src/features/moderation/hooks/`.
 - Kept public `apiReviews.ts` unchanged and approved-only.
 - Added hook coverage for default pending review reads and review mutations.
+
+### Step 11: Review Moderation Queue
+
+- Replaced the review moderation placeholder with `ReviewModerationQueue`.
+- Added pending, approved, and declined status filters with pending as the
+  default.
+- Reused the moderation city dropdown for review city filtering. Pending uses
+  review-specific cities, while approved/declined use the approved venue city
+  list so admins can check cities with no reviews in that status.
+- Added search filters for venue, submitter username, and review text.
+- Rendered compact review rows with title, venue, submitter, ratings, created
+  date, current status, and ids.
+- Added links to `/admin/moderation/reviews/:reviewId` with a temporary detail
+  placeholder until Step 12.
+- Added component coverage for default pending rendering, status changes,
+  search filters, and detail route links.
+- Switched review reads to `profiles!inner(...)` and `venue_details!inner(...)`
+  joins so PostgREST applies city/username filters to the parent rows rather
+  than only to the embedded resources.
+- Normalized `venueDetails` in `mapModerationReview` to a single object because
+  PostgREST returns view-backed embedded resources as arrays, which was
+  causing "Unknown venue" labels in the queue.
+- Added next/prev page prefetching to `useModerationVenues` and
+  `useModerationReviews`, mirroring the public `useVenues` pattern.
+- Added `tests/services/apiModeration.test.ts` covering inner-join select and
+  `venueDetails` array normalization on list and detail reads.
 
 ## Architecture Rules
 

@@ -2,6 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useModerationCities } from '@/features/moderation/hooks/useModerationCities';
 import { useModerationReview } from '@/features/moderation/hooks/useModerationReview';
+import { useModerationReviewCities } from '@/features/moderation/hooks/useModerationReviewCities';
 import { useModerationReviews } from '@/features/moderation/hooks/useModerationReviews';
 import { useModerationVenues } from '@/features/moderation/hooks/useModerationVenues';
 import { useUpdateModerationReview } from '@/features/moderation/hooks/useUpdateModerationReview';
@@ -10,6 +11,7 @@ import { ModerationReview } from '@/types/reviewTypes';
 import AllProviders from 'tests/AllProviders';
 import {
   getModerationCitiesMock,
+  getModerationReviewCitiesMock,
   getModerationReviewMock,
   getModerationReviewsMock,
   getModerationVenuesMock,
@@ -51,6 +53,7 @@ describe('moderation query hooks', () => {
       count: 0,
     });
     getModerationReviewMock.mockResolvedValue(createModerationReview());
+    getModerationReviewCitiesMock.mockResolvedValue([]);
     updateReviewModerationStatusMock.mockResolvedValue();
     updateModerationReviewMock.mockResolvedValue(createModerationReview());
     getModerationCitiesMock.mockResolvedValue([]);
@@ -88,6 +91,16 @@ describe('moderation query hooks', () => {
         filters: [],
         sort: undefined,
         pagination: undefined,
+      });
+    });
+  });
+
+  it('requests pending review moderation cities by default', async () => {
+    renderHook(() => useModerationReviewCities(), { wrapper: AllProviders });
+
+    await waitFor(() => {
+      expect(getModerationReviewCitiesMock).toHaveBeenCalledWith({
+        status: 'pending',
       });
     });
   });

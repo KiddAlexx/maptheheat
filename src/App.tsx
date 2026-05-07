@@ -44,6 +44,9 @@ const VenueModerationQueue = lazy(
 const VenueModerationDetail = lazy(
   () => import('./features/moderation/components/VenueModerationDetail')
 );
+const ReviewModerationQueue = lazy(
+  () => import('./features/moderation/components/ReviewModerationQueue')
+);
 
 function App() {
   return (
@@ -114,10 +117,14 @@ function App() {
             />
             <Route
               path="moderation/reviews"
+              element={<ReviewModerationQueue />}
+            />
+            <Route
+              path="moderation/reviews/:reviewId"
               element={
                 <ModerationPlaceholder
-                  title="Review moderation"
-                  description="Review moderation will be added after the venue workflow is stable."
+                  title="Review detail"
+                  description="Review detail and edit controls will be added in the next moderation slice."
                 />
               }
             />

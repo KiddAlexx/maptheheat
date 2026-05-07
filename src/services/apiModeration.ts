@@ -35,6 +35,10 @@ export interface ModerationCitiesRequestParams {
   status?: ModerationStatus;
 }
 
+export interface ModerationReviewCitiesRequestParams {
+  status?: ModerationStatus;
+}
+
 export interface ModerationReviewsRequestParams {
   status?: ModerationStatus;
   filters?: ReviewModerationFilter[];
@@ -78,10 +82,18 @@ type ModerationVenueRow = ModerationVenue & {
   } | null;
 };
 
-type ModerationReviewRow = ModerationReview & {
+type ModerationReviewRow = Omit<ModerationReview, 'venueDetails'> & {
   profiles?: {
     username: string | null;
   } | null;
+  venueDetails?: ModerationReview['venueDetails'] | ModerationReview['venueDetails'][];
+};
+
+type ModerationReviewCityRow = {
+  venueDetails?:
+    | Omit<UniqueCity, 'cityId'>
+    | Omit<UniqueCity, 'cityId'>[]
+    | null;
 };
 
 function mapModerationVenue(row: ModerationVenueRow): ModerationVenue {
@@ -94,11 +106,15 @@ function mapModerationVenue(row: ModerationVenueRow): ModerationVenue {
 }
 
 function mapModerationReview(row: ModerationReviewRow): ModerationReview {
-  const { profiles, ...review } = row;
+  const { profiles, venueDetails, ...review } = row;
+  const normalizedVenueDetails = Array.isArray(venueDetails)
+    ? venueDetails[0] ?? null
+    : venueDetails ?? null;
 
   return {
     ...review,
     submitterUsername: profiles?.username ?? null,
+    venueDetails: normalizedVenueDetails,
     venueImages: addImagePaths(review.venueImages),
   };
 }
@@ -199,7 +215,7 @@ export async function getModerationReviews({
   let query = supabase
     .from('venue_reviews')
     .select(
-      '*, profiles(username), venue_details(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)',
+      '*, profiles!inner(username), venue_details!inner(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)',
       { count: 'exact' }
     )
     .eq('status', status);
@@ -247,7 +263,7 @@ export async function getModerationReview(
   const { data, error } = await supabase
     .from('venue_reviews')
     .select(
-      '*, profiles(username), venue_details(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)'
+      '*, profiles!inner(username), venue_details!inner(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)'
     )
     .eq('review_id', reviewId)
     .single();
@@ -308,6 +324,49 @@ export async function getModerationCities({
   });
 
   return [...uniqueCities.values()];
+}
+
+export async function getModerationReviewCities({
+  status = 'pending',
+}: ModerationReviewCitiesRequestParams = {}): Promise<UniqueCity[]> {
+  if (status !== 'pending') {
+    return getModerationCities({ status: 'approved' });
+  }
+
+  const { data, error } = await supabase
+    .from('venue_reviews')
+    .select('venue_details(coords, country, city)')
+    .eq('status', status);
+
+  if (error) {
+    throw new Error(
+      `Review moderation cities could not be loaded. Error: ${error.message}`
+    );
+  }
+
+  const uniqueCities = new Map<string, UniqueCity>();
+  const rows = camelcaseKeys(data, { deep: true }) as ModerationReviewCityRow[];
+
+  rows.forEach((row) => {
+    const city = Array.isArray(row.venueDetails)
+      ? row.venueDetails[0]
+      : row.venueDetails;
+
+    if (!city) return;
+
+    const key = `${city.city}|${city.country}`;
+
+    if (!uniqueCities.has(key)) {
+      uniqueCities.set(key, {
+        cityId: String(uniqueCities.size + 1),
+        ...city,
+      });
+    }
+  });
+
+  return [...uniqueCities.values()].sort((firstCity, secondCity) =>
+    firstCity.city.localeCompare(secondCity.city)
+  );
 }
 
 export async function updateVenueModerationStatus({
@@ -375,7 +434,7 @@ export async function updateModerationReview({
     .update(convertedReview)
     .eq('review_id', reviewId)
     .select(
-      '*, profiles(username), venue_details(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)'
+      '*, profiles!inner(username), venue_details!inner(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)'
     )
     .single();
 

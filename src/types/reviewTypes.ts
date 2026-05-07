@@ -58,6 +58,7 @@ export type ReviewModerationFilterField =
   | 'reviewContent'
   | 'venueId'
   | 'userId'
+  | 'venueDetails.country'
   | 'venueDetails.city'
   | 'venueDetails.venueName'
   | 'profiles.username';

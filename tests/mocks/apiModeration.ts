@@ -26,6 +26,9 @@ export const getModerationReviewsMock = vi.fn<
   count: 0,
 }));
 export const getModerationReviewMock = vi.fn<() => Promise<ModerationReview>>();
+export const getModerationReviewCitiesMock = vi.fn<
+  () => Promise<UniqueCity[]>
+>(async () => []);
 export const getModerationCitiesMock = vi.fn<() => Promise<UniqueCity[]>>(
   async () => []
 );
