@@ -166,6 +166,68 @@ describe('VenueModerationDetail', () => {
     });
   });
 
+  it('opens moderation images in the full-size carousel', async () => {
+    const user = userEvent.setup();
+    getModerationVenueMock.mockResolvedValue(
+      createModerationVenue({
+        venueImages: [
+          {
+            altText: 'Front of Pepper Palace',
+            createdAt: '2026-05-01T10:05:00.000Z',
+            imageId: 'image-1',
+            imagePath: {
+              lg: 'image-1-lg.jpg',
+              md: 'image-1-md.jpg',
+              sm: 'image-1-sm.jpg',
+            },
+            imageType: 'venue',
+            reviewId: null,
+            status: 'pending',
+            userId: 'submitter-user-id',
+            venueId: 'venue-test-id',
+          },
+          {
+            altText: 'Pepper Palace menu',
+            createdAt: '2026-05-01T10:06:00.000Z',
+            imageId: 'image-2',
+            imagePath: {
+              lg: 'image-2-lg.jpg',
+              md: 'image-2-md.jpg',
+              sm: 'image-2-sm.jpg',
+            },
+            imageType: 'venue',
+            reviewId: null,
+            status: 'pending',
+            userId: 'submitter-user-id',
+            venueId: 'venue-test-id',
+          },
+        ],
+      })
+    );
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: /open full-size image: pepper palace menu/i,
+      })
+    );
+
+    await waitFor(() => {
+      const fullSizeImages = screen
+        .getAllByRole('img', { name: /pepper palace menu/i })
+        .filter((image) =>
+          image.getAttribute('src')?.endsWith('image-2-lg.jpg')
+        );
+
+      expect(fullSizeImages).toHaveLength(1);
+    });
+  });
+
   it('approves a venue submission', async () => {
     const user = userEvent.setup();
     getModerationVenueMock.mockResolvedValue(

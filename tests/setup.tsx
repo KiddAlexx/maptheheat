@@ -56,6 +56,27 @@ vi.mock('@/services/apiUserProfiles', () => ({
 
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
+class MockIntersectionObserver implements IntersectionObserver {
+  readonly root = null;
+  readonly rootMargin = '';
+  readonly thresholds = [];
+
+  disconnect = vi.fn();
+  observe = vi.fn();
+  takeRecords = vi.fn(() => []);
+  unobserve = vi.fn();
+}
+
+window.IntersectionObserver = MockIntersectionObserver;
+
+class MockResizeObserver implements ResizeObserver {
+  disconnect = vi.fn();
+  observe = vi.fn();
+  unobserve = vi.fn();
+}
+
+window.ResizeObserver = MockResizeObserver;
+
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation((query) => ({

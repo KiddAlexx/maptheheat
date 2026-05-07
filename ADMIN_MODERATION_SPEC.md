@@ -39,7 +39,7 @@ plus the relevant tests.
 - [x] Step 13: Add review status actions.
 - [x] Step 14: Cover admin review flow with tests.
 - [x] Step 15: Add admin standalone image query services and hooks.
-- [ ] Step 16: Add standalone image moderation queue.
+- [x] Step 16: Add standalone image moderation queue.
 - [ ] Step 17: Add standalone image grouping/detail screen.
 - [ ] Step 18: Add standalone image status actions.
 - [ ] Step 19: Cover admin standalone image flow with tests.
@@ -249,6 +249,21 @@ plus the relevant tests.
   `applyImageStatusUpdate` helper for standalone image decisions.
 - Added hook and service coverage for default pending reads, group lookup, and
   standalone image status updates.
+
+### Step 16: Standalone Image Moderation Queue
+
+- Replaced the image moderation placeholder with
+  `StandaloneImageModerationQueue` for `/admin/moderation/images`.
+- Added pending, approved, and declined status filters with pending as the
+  default, plus venue-name and submitter username search filters.
+- Reused `ModerationQueueRow`, `ModerationSubmitter`, `formatSubmittedDate`,
+  and shared moderation status constants for compact standalone group rows.
+- Added thumbnail previews, image counts for the active status, submitter,
+  venue, submitted date, group id, and venue id metadata.
+- Added a temporary `/admin/moderation/images/:groupId` placeholder route so
+  queue row links can navigate until the Step 17 detail screen lands.
+- Updated `ImageModerationPanel` thumbnails to open the existing full-size
+  `ImageCarousel` modal, using large image URLs for moderation review.
 
 ## Architecture Rules
 

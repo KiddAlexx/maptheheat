@@ -50,6 +50,10 @@ const ReviewModerationQueue = lazy(
 const ReviewModerationDetail = lazy(
   () => import('./features/moderation/components/ReviewModerationDetail')
 );
+const StandaloneImageModerationQueue = lazy(
+  () =>
+    import('./features/moderation/components/StandaloneImageModerationQueue')
+);
 
 function App() {
   return (
@@ -128,10 +132,14 @@ function App() {
             />
             <Route
               path="moderation/images"
+              element={<StandaloneImageModerationQueue />}
+            />
+            <Route
+              path="moderation/images/:groupId"
               element={
                 <ModerationPlaceholder
-                  title="Image moderation"
-                  description="Standalone image moderation will be added after venue submissions and venue images are handled."
+                  title="Image group moderation"
+                  description="Standalone image group detail will be added in the next moderation slice."
                 />
               }
             />

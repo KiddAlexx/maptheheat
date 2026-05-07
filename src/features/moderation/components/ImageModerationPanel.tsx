@@ -2,6 +2,7 @@ import { Image } from '@heroui/react';
 import clsx from 'clsx';
 import type { ChangeEvent } from 'react';
 import ActionButton from '@/ui/ActionButton';
+import { useModalContext } from '@/context/ModalContext';
 import type { ModerationImage, ModerationStatus } from '@/types/venueTypes';
 import { STATUS_BADGE_CLASSES, STATUS_LABELS } from '../constants';
 import { getImageStatusUpdatePayload } from '../utils/imageStatusPayload';
@@ -32,9 +33,32 @@ function ImageModerationPanel({
   onUpdateStatuses,
   selectedStatuses,
 }: ImageModerationPanelProps) {
+  const { openModalImages } = useModalContext();
   const payload = getImageStatusUpdatePayload(selectedStatuses);
   const hasSelectedImages =
     payload.approvedImageIds.length + payload.declinedImageIds.length > 0;
+
+  function handleImageOpen(imageId: string) {
+    const clickedImageIndex = images.findIndex(
+      (image) => image.imageId === imageId
+    );
+    const orderedImages =
+      clickedImageIndex > -1
+        ? [
+            ...images.slice(clickedImageIndex),
+            ...images.slice(0, clickedImageIndex),
+          ]
+        : images;
+
+    openModalImages(
+      'image-carousel',
+      orderedImages.map((image) => ({
+        alt: image.altText,
+        id: image.imageId,
+        url: image.imagePath.lg,
+      }))
+    );
+  }
 
   function handleUpdateStatuses() {
     onUpdateStatuses(payload);
@@ -69,12 +93,9 @@ function ImageModerationPanel({
               className="overflow-hidden rounded-xl border border-gray-200 bg-gray-50"
             >
               <figure>
-                <Image
-                  alt={image.altText}
-                  className="h-48 w-full object-cover"
-                  radius="none"
-                  removeWrapper
-                  src={image.imagePath.md}
+                <ImagePreviewButton
+                  image={image}
+                  onOpen={handleImageOpen}
                 />
                 <figcaption className="space-y-4 p-4">
                   <div className="flex flex-col gap-2">
@@ -129,6 +150,35 @@ function ImageModerationPanel({
         </p>
       )}
     </section>
+  );
+}
+
+function ImagePreviewButton({
+  image,
+  onOpen,
+}: {
+  image: ModerationImage;
+  onOpen: (imageId: string) => void;
+}) {
+  function handleClick() {
+    onOpen(image.imageId);
+  }
+
+  return (
+    <button
+      aria-label={`Open full-size image: ${image.altText}`}
+      className="block w-full cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+      onClick={handleClick}
+      type="button"
+    >
+      <Image
+        alt={image.altText}
+        className="h-48 w-full object-cover"
+        radius="none"
+        removeWrapper
+        src={image.imagePath.md}
+      />
+    </button>
   );
 }
 
