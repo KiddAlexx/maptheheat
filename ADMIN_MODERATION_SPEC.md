@@ -34,6 +34,7 @@ plus the relevant tests.
 - [x] Step 9: Cover admin venue flow with tests.
 - [x] Step 10: Add admin review query services and hooks.
 - [x] Step 11: Add review moderation queue.
+- [x] Step 11.5: Moderation refactor pass.
 - [ ] Step 12: Add review detail/edit screen.
 - [ ] Step 13: Add review status actions.
 - [ ] Step 14: Cover admin review flow with tests.
@@ -167,6 +168,37 @@ plus the relevant tests.
   `useModerationReviews`, mirroring the public `useVenues` pattern.
 - Added `tests/services/apiModeration.test.ts` covering inner-join select and
   `venueDetails` array normalization on list and detail reads.
+
+### Step 11.5: Moderation Refactor Pass
+
+- Extracted `MODERATION_STATUSES`, `STATUS_LABELS`, `STATUS_BADGE_CLASSES` to
+  `src/features/moderation/constants.ts` and removed copies from the venue
+  queue, review queue, venue detail, and image moderation panel.
+- Added `formatSubmittedDate` (with optional `includeTime` flag) and
+  `getImageStatusUpdatePayload` / `hasImageStatusUpdates` helpers under
+  `src/features/moderation/utils/`.
+- Split `useUpdateModerationImageStatuses` into `useUpdateVenueImageStatuses`
+  and `useUpdateReviewImageStatuses` so each writes to its own detail cache
+  key. Shared image-cache update logic lives in `applyImageStatusUpdate`.
+  Step 17 will add the standalone variant.
+- Renamed `UpdateVenueModerationStatusArgs` /
+  `UpdateReviewModerationStatusArgs` to
+  `UpdateModerationVenueStatusArgs` / `UpdateModerationReviewStatusArgs`,
+  and `updateVenueModerationStatus` / `updateReviewModerationStatus` to
+  `updateModerationVenueStatus` / `updateModerationReviewStatus`. Hooks
+  follow: `useUpdateModerationVenueStatus`,
+  `useUpdateModerationReviewStatus`.
+- Merged `getModerationCities` and `getModerationReviewCities` into one
+  scoped service `getModerationCities({ scope: 'venue' | 'review', status })`.
+  Hook query key is now `['moderation', 'cities', scope, status]`.
+- Replaced `ModerationCitySelect`'s raw `<select>` with HeroUI `<Select>`.
+  Prop API is now `value: string` + `onChange: (value: string) => void`.
+  Tests query the trigger via `getByRole('button', { name: /city/i })`
+  and click it before clicking an option.
+- Extracted `ModerationQueueRow` and `ModerationSubmitter` to remove
+  duplication between venue and review queues; `VenueModerationDetail` also
+  uses the submitter component.
+- All 51 existing tests still pass; no behavior changes.
 
 ## Architecture Rules
 

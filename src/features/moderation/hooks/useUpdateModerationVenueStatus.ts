@@ -1,16 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import {
-  updateVenueModerationStatus,
-  UpdateVenueModerationStatusArgs,
+  updateModerationVenueStatus,
+  UpdateModerationVenueStatusArgs,
 } from '@/services/apiModeration';
 
-export function useUpdateVenueModerationStatus() {
+export function useUpdateModerationVenueStatus() {
   const queryClient = useQueryClient();
 
   const { isPending: isUpdating, mutate: updateStatus } = useMutation({
-    mutationFn: ({ venueId, status }: UpdateVenueModerationStatusArgs) =>
-      updateVenueModerationStatus({ venueId, status }),
+    mutationFn: ({ venueId, status }: UpdateModerationVenueStatusArgs) =>
+      updateModerationVenueStatus({ venueId, status }),
     onSuccess: (_data, { venueId }) => {
       toast.success('Venue status updated');
       queryClient.invalidateQueries({ queryKey: ['moderation', 'venues'] });

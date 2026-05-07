@@ -91,14 +91,18 @@ describe('VenueModerationQueue', () => {
     const user = userEvent.setup();
     renderQueue();
 
-    const citySelect = await screen.findByLabelText(/city/i);
+    const cityTrigger = await screen.findByRole('button', { name: /city/i });
 
-    expect(screen.getByRole('option', { name: /all cities/i })).toBeInTheDocument();
+    await user.click(cityTrigger);
+
     expect(
-      screen.getByRole('option', { name: /london - united kingdom/i })
+      await screen.findByRole('option', { name: /all cities/i })
     ).toBeInTheDocument();
+    const londonOption = await screen.findByRole('option', {
+      name: /london - united kingdom/i,
+    });
 
-    await user.selectOptions(citySelect, 'London|United Kingdom');
+    await user.click(londonOption);
 
     await waitFor(() => {
       expect(getModerationVenuesMock).toHaveBeenLastCalledWith({
@@ -143,6 +147,7 @@ describe('VenueModerationQueue', () => {
       });
     });
     expect(getModerationCitiesMock).toHaveBeenLastCalledWith({
+      scope: 'venue',
       status: 'approved',
     });
     expect(screen.getByRole('button', { name: /approved/i })).toHaveAttribute(

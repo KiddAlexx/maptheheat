@@ -1,13 +1,16 @@
-import { ChangeEvent } from 'react';
+import { Select, SelectItem } from '@heroui/react';
 import { UniqueCity } from '@/types/venueTypes';
 import { getModerationCityKey } from './moderationCityKey';
 
 interface ModerationCitySelectProps {
   cities?: UniqueCity[];
   label?: string;
-  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (value: string) => void;
   value: string;
 }
+
+const ALL_CITIES_KEY = 'all';
+const ALL_CITIES_LABEL = 'All cities';
 
 function ModerationCitySelect({
   cities,
@@ -15,25 +18,31 @@ function ModerationCitySelect({
   onChange,
   value,
 }: ModerationCitySelectProps) {
+  const items = [
+    { key: ALL_CITIES_KEY, label: ALL_CITIES_LABEL },
+    ...(cities ?? []).map((city) => ({
+      key: getModerationCityKey(city),
+      label: `${city.city} - ${city.country}`,
+    })),
+  ];
+
   return (
-    <label className="flex flex-col gap-1 font-medium text-gray-700">
-      {label}
-      <select
-        value={value}
-        onChange={onChange}
-        className="h-10 rounded-full border border-gray-200 bg-white px-4 text-sm font-normal text-gray-800 shadow-sm outline-none transition focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-primary-200"
-      >
-        <option value="all">All cities</option>
-        {cities?.map((city) => (
-          <option
-            key={getModerationCityKey(city)}
-            value={getModerationCityKey(city)}
-          >
-            {city.city} - {city.country}
-          </option>
-        ))}
-      </select>
-    </label>
+    <Select
+      label={label}
+      labelPlacement="outside"
+      radius="full"
+      variant="bordered"
+      selectedKeys={new Set([value])}
+      onSelectionChange={(keys) => {
+        const next = [...keys][0];
+        onChange(typeof next === 'string' ? next : ALL_CITIES_KEY);
+      }}
+      classNames={{ label: 'text-md font-normal ml-1' }}
+    >
+      {items.map((item) => (
+        <SelectItem key={item.key}>{item.label}</SelectItem>
+      ))}
+    </Select>
   );
 }
 

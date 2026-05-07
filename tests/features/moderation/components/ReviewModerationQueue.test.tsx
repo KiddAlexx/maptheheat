@@ -6,7 +6,7 @@ import ReviewModerationQueue from '@/features/moderation/components/ReviewModera
 import { ModerationReview } from '@/types/reviewTypes';
 import AllProviders from 'tests/AllProviders';
 import {
-  getModerationReviewCitiesMock,
+  getModerationCitiesMock,
   getModerationReviewsMock,
 } from 'tests/mocks/apiModeration';
 
@@ -60,7 +60,7 @@ function renderQueue() {
 describe('ReviewModerationQueue', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    getModerationReviewCitiesMock.mockResolvedValue([
+    getModerationCitiesMock.mockResolvedValue([
       {
         cityId: 'london',
         city: 'London',
@@ -92,9 +92,7 @@ describe('ReviewModerationQueue', () => {
     expect(screen.getByText(/pepper_admin/i)).toBeInTheDocument();
     expect(screen.getByText(/submitter-user-id/i)).toBeInTheDocument();
     expect(screen.getByText(/heat 4 \/ quality 5/i)).toBeInTheDocument();
-    expect(
-      screen.getByRole('option', { name: /london - united kingdom/i })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /city/i })).toBeInTheDocument();
 
     expect(getModerationReviewsMock).toHaveBeenCalledWith({
       status: 'pending',
@@ -102,7 +100,8 @@ describe('ReviewModerationQueue', () => {
       sort: undefined,
       pagination: { pageNumber: 1, maxResults: 8 },
     });
-    expect(getModerationReviewCitiesMock).toHaveBeenCalledWith({
+    expect(getModerationCitiesMock).toHaveBeenCalledWith({
+      scope: 'review',
       status: 'pending',
     });
   });
@@ -136,7 +135,8 @@ describe('ReviewModerationQueue', () => {
         pagination: { pageNumber: 1, maxResults: 8 },
       });
     });
-    expect(getModerationReviewCitiesMock).toHaveBeenLastCalledWith({
+    expect(getModerationCitiesMock).toHaveBeenLastCalledWith({
+      scope: 'venue',
       status: 'approved',
     });
     expect(screen.getByRole('button', { name: /approved/i })).toHaveAttribute(
@@ -152,9 +152,11 @@ describe('ReviewModerationQueue', () => {
     expect(await screen.findByText(/big heat, clean flavor/i)).toBeInTheDocument();
 
     await user.type(screen.getByLabelText(/venue/i), 'Pepper');
-    await user.selectOptions(
-      screen.getByLabelText(/city/i),
-      'London|United Kingdom'
+    await user.click(screen.getByRole('button', { name: /city/i }));
+    await user.click(
+      await screen.findByRole('option', {
+        name: /london - united kingdom/i,
+      })
     );
     await user.type(screen.getByLabelText(/submitter/i), 'pepper');
     await user.type(screen.getByLabelText(/review text/i), 'clean flavor');
@@ -192,11 +194,11 @@ describe('ReviewModerationQueue', () => {
     });
     renderQueue();
 
-    await screen.findByRole('option', { name: /london - united kingdom/i });
-
-    await user.selectOptions(
-      screen.getByLabelText(/city/i),
-      'London|United Kingdom'
+    await user.click(await screen.findByRole('button', { name: /city/i }));
+    await user.click(
+      await screen.findByRole('option', {
+        name: /london - united kingdom/i,
+      })
     );
 
     expect(

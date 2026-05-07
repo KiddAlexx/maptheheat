@@ -9,7 +9,7 @@ import {
   getModerationVenueMock,
   updateModerationImageStatusesMock,
   updateModerationVenueMock,
-  updateVenueModerationStatusMock,
+  updateModerationVenueStatusMock,
 } from 'tests/mocks/apiModeration';
 
 function createModerationVenue(
@@ -80,7 +80,7 @@ describe('VenueModerationDetail', () => {
     getModerationVenueMock.mockResolvedValue(createModerationVenue());
     updateModerationImageStatusesMock.mockResolvedValue();
     updateModerationVenueMock.mockResolvedValue(createModerationVenue());
-    updateVenueModerationStatusMock.mockResolvedValue();
+    updateModerationVenueStatusMock.mockResolvedValue();
   });
 
   it('loads the venue by route id and renders moderation detail metadata', async () => {
@@ -181,7 +181,7 @@ describe('VenueModerationDetail', () => {
     await user.click(screen.getByRole('button', { name: /approve venue/i }));
 
     await waitFor(() => {
-      expect(updateVenueModerationStatusMock).toHaveBeenCalledWith({
+      expect(updateModerationVenueStatusMock).toHaveBeenCalledWith({
         venueId: 'venue-test-id',
         status: 'approved',
       });
@@ -201,7 +201,7 @@ describe('VenueModerationDetail', () => {
     expect(
       screen.getByRole('button', { name: /approve venue/i })
     ).toBeDisabled();
-    expect(updateVenueModerationStatusMock).not.toHaveBeenCalled();
+    expect(updateModerationVenueStatusMock).not.toHaveBeenCalled();
   });
 
   it('updates pending image decisions before approving a venue submission', async () => {
@@ -223,7 +223,7 @@ describe('VenueModerationDetail', () => {
       });
     });
     await waitFor(() => {
-      expect(updateVenueModerationStatusMock).toHaveBeenCalledWith({
+      expect(updateModerationVenueStatusMock).toHaveBeenCalledWith({
         venueId: 'venue-test-id',
         status: 'approved',
       });
@@ -242,7 +242,7 @@ describe('VenueModerationDetail', () => {
     await user.click(screen.getByRole('button', { name: /decline venue/i }));
 
     await waitFor(() => {
-      expect(updateVenueModerationStatusMock).toHaveBeenCalledWith({
+      expect(updateModerationVenueStatusMock).toHaveBeenCalledWith({
         venueId: 'venue-test-id',
         status: 'declined',
       });

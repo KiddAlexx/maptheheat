@@ -4,9 +4,9 @@ import {
   ModerationVenuesResponse,
   UpdateModerationImageStatusesArgs,
   UpdateModerationReviewArgs,
+  UpdateModerationReviewStatusArgs,
   UpdateModerationVenueArgs,
-  UpdateReviewModerationStatusArgs,
-  UpdateVenueModerationStatusArgs,
+  UpdateModerationVenueStatusArgs,
 } from '@/services/apiModeration';
 import { ModerationReview } from '@/types/reviewTypes';
 import { ModerationVenue, UniqueCity } from '@/types/venueTypes';
@@ -26,20 +26,17 @@ export const getModerationReviewsMock = vi.fn<
   count: 0,
 }));
 export const getModerationReviewMock = vi.fn<() => Promise<ModerationReview>>();
-export const getModerationReviewCitiesMock = vi.fn<
-  () => Promise<UniqueCity[]>
->(async () => []);
 export const getModerationCitiesMock = vi.fn<() => Promise<UniqueCity[]>>(
   async () => []
 );
-export const updateVenueModerationStatusMock = vi.fn<
-  (args: UpdateVenueModerationStatusArgs) => Promise<void>
+export const updateModerationVenueStatusMock = vi.fn<
+  (args: UpdateModerationVenueStatusArgs) => Promise<void>
 >();
 export const updateModerationVenueMock = vi.fn<
   (args: UpdateModerationVenueArgs) => Promise<ModerationVenue>
 >();
-export const updateReviewModerationStatusMock = vi.fn<
-  (args: UpdateReviewModerationStatusArgs) => Promise<void>
+export const updateModerationReviewStatusMock = vi.fn<
+  (args: UpdateModerationReviewStatusArgs) => Promise<void>
 >();
 export const updateModerationReviewMock = vi.fn<
   (args: UpdateModerationReviewArgs) => Promise<ModerationReview>

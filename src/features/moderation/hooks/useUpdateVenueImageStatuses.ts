@@ -4,9 +4,10 @@ import {
   updateModerationImageStatuses,
   UpdateModerationImageStatusesArgs,
 } from '@/services/apiModeration';
-import { ModerationImage, ModerationVenue } from '@/types/venueTypes';
+import { ModerationVenue } from '@/types/venueTypes';
+import { applyImageStatusUpdate } from '../utils/applyImageStatusUpdate';
 
-export function useUpdateModerationImageStatuses(venueId?: string) {
+export function useUpdateVenueImageStatuses(venueId?: string) {
   const queryClient = useQueryClient();
 
   const { isPending: isUpdating, mutate: updateImageStatuses } = useMutation({
@@ -26,14 +27,11 @@ export function useUpdateModerationImageStatuses(venueId?: string) {
               declinedImageIds,
             })
         );
-      }
-      queryClient.invalidateQueries({ queryKey: ['moderation', 'venues'] });
-
-      if (venueId) {
         queryClient.invalidateQueries({
           queryKey: ['moderation', 'venue', venueId],
         });
       }
+      queryClient.invalidateQueries({ queryKey: ['moderation', 'venues'] });
     },
     onError: (err) => {
       toast.error(err.message);
@@ -45,29 +43,14 @@ export function useUpdateModerationImageStatuses(venueId?: string) {
 
 function updateCachedImageStatuses(
   currentVenue: ModerationVenue | undefined,
-  { approvedImageIds, declinedImageIds }: UpdateModerationImageStatusesArgs
+  args: UpdateModerationImageStatusesArgs
 ): ModerationVenue | undefined {
   if (!currentVenue?.venueImages) return currentVenue;
 
   return {
     ...currentVenue,
     venueImages: currentVenue.venueImages.map((image) =>
-      updateCachedImageStatus(image, { approvedImageIds, declinedImageIds })
+      applyImageStatusUpdate(image, args)
     ),
   };
-}
-
-function updateCachedImageStatus(
-  image: ModerationImage,
-  { approvedImageIds, declinedImageIds }: UpdateModerationImageStatusesArgs
-): ModerationImage {
-  if (approvedImageIds.includes(image.imageId)) {
-    return { ...image, status: 'approved' };
-  }
-
-  if (declinedImageIds.includes(image.imageId)) {
-    return { ...image, status: 'declined' };
-  }
-
-  return image;
 }

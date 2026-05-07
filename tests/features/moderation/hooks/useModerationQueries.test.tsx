@@ -6,17 +6,16 @@ import { useModerationReviewCities } from '@/features/moderation/hooks/useModera
 import { useModerationReviews } from '@/features/moderation/hooks/useModerationReviews';
 import { useModerationVenues } from '@/features/moderation/hooks/useModerationVenues';
 import { useUpdateModerationReview } from '@/features/moderation/hooks/useUpdateModerationReview';
-import { useUpdateReviewModerationStatus } from '@/features/moderation/hooks/useUpdateReviewModerationStatus';
+import { useUpdateModerationReviewStatus } from '@/features/moderation/hooks/useUpdateModerationReviewStatus';
 import { ModerationReview } from '@/types/reviewTypes';
 import AllProviders from 'tests/AllProviders';
 import {
   getModerationCitiesMock,
-  getModerationReviewCitiesMock,
   getModerationReviewMock,
   getModerationReviewsMock,
   getModerationVenuesMock,
   updateModerationReviewMock,
-  updateReviewModerationStatusMock,
+  updateModerationReviewStatusMock,
 } from 'tests/mocks/apiModeration';
 
 function createModerationReview(
@@ -53,8 +52,7 @@ describe('moderation query hooks', () => {
       count: 0,
     });
     getModerationReviewMock.mockResolvedValue(createModerationReview());
-    getModerationReviewCitiesMock.mockResolvedValue([]);
-    updateReviewModerationStatusMock.mockResolvedValue();
+    updateModerationReviewStatusMock.mockResolvedValue();
     updateModerationReviewMock.mockResolvedValue(createModerationReview());
     getModerationCitiesMock.mockResolvedValue([]);
   });
@@ -77,6 +75,7 @@ describe('moderation query hooks', () => {
 
     await waitFor(() => {
       expect(getModerationCitiesMock).toHaveBeenCalledWith({
+        scope: 'venue',
         status: 'pending',
       });
     });
@@ -99,7 +98,8 @@ describe('moderation query hooks', () => {
     renderHook(() => useModerationReviewCities(), { wrapper: AllProviders });
 
     await waitFor(() => {
-      expect(getModerationReviewCitiesMock).toHaveBeenCalledWith({
+      expect(getModerationCitiesMock).toHaveBeenCalledWith({
+        scope: 'review',
         status: 'pending',
       });
     });
@@ -116,7 +116,7 @@ describe('moderation query hooks', () => {
   });
 
   it('updates a review moderation status', async () => {
-    const { result } = renderHook(() => useUpdateReviewModerationStatus(), {
+    const { result } = renderHook(() => useUpdateModerationReviewStatus(), {
       wrapper: AllProviders,
     });
 
@@ -128,7 +128,7 @@ describe('moderation query hooks', () => {
     });
 
     await waitFor(() => {
-      expect(updateReviewModerationStatusMock).toHaveBeenCalledWith({
+      expect(updateModerationReviewStatusMock).toHaveBeenCalledWith({
         reviewId: 'review-test-id',
         status: 'approved',
       });

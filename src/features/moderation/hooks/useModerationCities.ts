@@ -5,6 +5,7 @@ import {
 } from '@/services/apiModeration';
 
 export function useModerationCities({
+  scope = 'venue',
   status = 'pending',
 }: ModerationCitiesRequestParams = {}) {
   const {
@@ -12,8 +13,8 @@ export function useModerationCities({
     error,
     isPending,
   } = useQuery({
-    queryKey: ['moderation', 'cities', status],
-    queryFn: () => getModerationCities({ status }),
+    queryKey: ['moderation', 'cities', scope, status],
+    queryFn: () => getModerationCities({ scope, status }),
     staleTime: 60_000,
   });
 

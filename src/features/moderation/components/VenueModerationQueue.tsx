@@ -1,15 +1,16 @@
 import { FormEvent, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, ButtonGroup, Input } from '@heroui/react';
-import clsx from 'clsx';
-import { format, parseISO } from 'date-fns';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import PaginationControls, {
   PaginationControlsParams,
 } from '@/ui/PaginationControls';
 import { useModerationCities } from '../hooks/useModerationCities';
 import { useModerationVenues } from '../hooks/useModerationVenues';
+import { MODERATION_STATUSES, STATUS_LABELS } from '../constants';
+import { formatSubmittedDate } from '../utils/formatSubmittedDate';
 import ModerationCitySelect from './ModerationCitySelect';
+import ModerationQueueRow from './ModerationQueueRow';
+import ModerationSubmitter from './ModerationSubmitter';
 import { getModerationCityKey } from './moderationCityKey';
 import {
   ModerationStatus,
@@ -17,32 +18,10 @@ import {
   VenueFilter,
 } from '@/types/venueTypes';
 
-const MODERATION_STATUSES: ModerationStatus[] = [
-  'pending',
-  'approved',
-  'declined',
-];
-
 const DEFAULT_PAGINATION = {
   pageNumber: 1,
   maxResults: 8,
 } satisfies PaginationControlsParams;
-
-const STATUS_LABELS: Record<ModerationStatus, string> = {
-  pending: 'Pending',
-  approved: 'Approved',
-  declined: 'Declined',
-};
-
-const STATUS_BADGE_CLASSES: Record<ModerationStatus, string> = {
-  pending: 'border-amber-200 bg-amber-50 text-amber-700',
-  approved: 'border-success-200 bg-success-50 text-success-700',
-  declined: 'border-danger-200 bg-danger-50 text-danger-700',
-};
-
-function formatSubmittedDate(createdAt: string) {
-  return format(parseISO(createdAt), 'dd MMM yyyy');
-}
 
 function VenueModerationQueue() {
   const [status, setStatus] = useState<ModerationStatus>('pending');
@@ -106,8 +85,8 @@ function VenueModerationQueue() {
     resetPagination();
   }
 
-  function handleCityChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    setSelectedCityKey(event.target.value);
+  function handleCityChange(nextCityKey: string) {
+    setSelectedCityKey(nextCityKey);
     resetPagination();
   }
 
@@ -251,73 +230,37 @@ function VenueModerationQueueItem({ venue }: { venue: ModerationVenue }) {
   const formattedDate = formatSubmittedDate(createdAt);
 
   return (
-    <li>
-      <article className="rounded-xl border border-gray-200 bg-white p-4 text-sm shadow-md transition hover:border-primary-200 hover:bg-primary-50/30">
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div className="min-w-0">
-            <div className="mb-2 flex flex-wrap items-center gap-2">
-              <h3 className="text-lg font-semibold text-gray-900">
-                <Link
-                  to={`/admin/moderation/venues/${venueId}`}
-                  className="rounded-sm hover:text-primary-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-                >
-                  {venueName}
-                </Link>
-              </h3>
-              <span
-                className={clsx(
-                  'rounded-full border px-2.5 py-1 text-xs font-semibold',
-                  STATUS_BADGE_CLASSES[status]
-                )}
-              >
-                {STATUS_LABELS[status]}
-              </span>
-            </div>
-
-            <dl className="grid gap-2 text-gray-600 sm:grid-cols-2">
-              <div>
-                <dt className="font-medium text-gray-800">Location</dt>
-                <dd>
-                  {city}, {country}
-                </dd>
-              </div>
-              <div>
-                <dt className="font-medium text-gray-800">Type</dt>
-                <dd className="capitalize">{venueType}</dd>
-              </div>
-              <div>
-                <dt className="font-medium text-gray-800">Submitted</dt>
-                <dd>
-                  <time dateTime={createdAt}>{formattedDate}</time>
-                </dd>
-              </div>
-              <div>
-                <dt className="font-medium text-gray-800">Submitter</dt>
-                <dd>
-                  <span>{submitterUsername || userId}</span>
-                  {submitterUsername && (
-                    <span className="mt-0.5 block break-all font-mono text-xs text-gray-500">
-                      {userId}
-                    </span>
-                  )}
-                </dd>
-              </div>
-            </dl>
+    <ModerationQueueRow
+      detailHref={`/admin/moderation/venues/${venueId}`}
+      status={status}
+      title={venueName}
+      metadata={
+        <dl className="grid gap-2 text-gray-600 sm:grid-cols-2">
+          <div>
+            <dt className="font-medium text-gray-800">Location</dt>
+            <dd>
+              {city}, {country}
+            </dd>
           </div>
-
-          <Button
-            as={Link}
-            to={`/admin/moderation/venues/${venueId}`}
-            radius="full"
-            color="primary"
-            variant="flat"
-            className="shrink-0"
-          >
-            Review
-          </Button>
-        </div>
-      </article>
-    </li>
+          <div>
+            <dt className="font-medium text-gray-800">Type</dt>
+            <dd className="capitalize">{venueType}</dd>
+          </div>
+          <div>
+            <dt className="font-medium text-gray-800">Submitted</dt>
+            <dd>
+              <time dateTime={createdAt}>{formattedDate}</time>
+            </dd>
+          </div>
+          <div>
+            <dt className="font-medium text-gray-800">Submitter</dt>
+            <dd>
+              <ModerationSubmitter username={submitterUsername} userId={userId} />
+            </dd>
+          </div>
+        </dl>
+      }
+    />
   );
 }
 

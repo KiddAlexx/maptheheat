@@ -31,11 +31,10 @@ export interface ModerationVenuesResponse {
   count: number | null;
 }
 
-export interface ModerationCitiesRequestParams {
-  status?: ModerationStatus;
-}
+export type ModerationCityScope = 'venue' | 'review';
 
-export interface ModerationReviewCitiesRequestParams {
+export interface ModerationCitiesRequestParams {
+  scope?: ModerationCityScope;
   status?: ModerationStatus;
 }
 
@@ -61,12 +60,12 @@ export interface UpdateModerationReviewArgs {
   reviewUpdate: Partial<ModerationReview>;
 }
 
-export interface UpdateVenueModerationStatusArgs {
+export interface UpdateModerationVenueStatusArgs {
   venueId: string;
   status: ModerationStatus;
 }
 
-export interface UpdateReviewModerationStatusArgs {
+export interface UpdateModerationReviewStatusArgs {
   reviewId: string;
   status: ModerationStatus;
 }
@@ -280,23 +279,38 @@ export async function getModerationReview(
 }
 
 export async function getModerationCities({
+  scope = 'venue',
   status = 'pending',
 }: ModerationCitiesRequestParams = {}): Promise<UniqueCity[]> {
-  if (status === 'pending') {
-    const { data, error } = await supabase.rpc('get_pending_cities');
-
-    if (error) {
-      throw new Error(
-        `Pending moderation cities could not be loaded. Error: ${error.message}`
-      );
-    }
-
-    return data.map((cityObj: UniqueUserCity, index: number) => ({
-      cityId: String(index + 1),
-      ...cityObj,
-    }));
+  if (scope === 'review' && status === 'pending') {
+    return getPendingReviewCities();
   }
 
+  if (status === 'pending') {
+    return getPendingVenueCities();
+  }
+
+  return getVenueCitiesByStatus(status);
+}
+
+async function getPendingVenueCities(): Promise<UniqueCity[]> {
+  const { data, error } = await supabase.rpc('get_pending_cities');
+
+  if (error) {
+    throw new Error(
+      `Pending moderation cities could not be loaded. Error: ${error.message}`
+    );
+  }
+
+  return data.map((cityObj: UniqueUserCity, index: number) => ({
+    cityId: String(index + 1),
+    ...cityObj,
+  }));
+}
+
+async function getVenueCitiesByStatus(
+  status: ModerationStatus
+): Promise<UniqueCity[]> {
   const { data, error } = await supabase
     .from('venue_details')
     .select('coords, country, city')
@@ -326,17 +340,11 @@ export async function getModerationCities({
   return [...uniqueCities.values()];
 }
 
-export async function getModerationReviewCities({
-  status = 'pending',
-}: ModerationReviewCitiesRequestParams = {}): Promise<UniqueCity[]> {
-  if (status !== 'pending') {
-    return getModerationCities({ status: 'approved' });
-  }
-
+async function getPendingReviewCities(): Promise<UniqueCity[]> {
   const { data, error } = await supabase
     .from('venue_reviews')
     .select('venue_details(coords, country, city)')
-    .eq('status', status);
+    .eq('status', 'pending');
 
   if (error) {
     throw new Error(
@@ -369,10 +377,10 @@ export async function getModerationReviewCities({
   );
 }
 
-export async function updateVenueModerationStatus({
+export async function updateModerationVenueStatus({
   venueId,
   status,
-}: UpdateVenueModerationStatusArgs): Promise<void> {
+}: UpdateModerationVenueStatusArgs): Promise<void> {
   const { error } = await supabase
     .from('venue_details')
     .update({ status })
@@ -385,10 +393,10 @@ export async function updateVenueModerationStatus({
   }
 }
 
-export async function updateReviewModerationStatus({
+export async function updateModerationReviewStatus({
   reviewId,
   status,
-}: UpdateReviewModerationStatusArgs): Promise<void> {
+}: UpdateModerationReviewStatusArgs): Promise<void> {
   const { error } = await supabase
     .from('venue_reviews')
     .update({ status })

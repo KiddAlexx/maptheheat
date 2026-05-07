@@ -1,21 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
-import {
-  getModerationReviewCities,
-  ModerationReviewCitiesRequestParams,
-} from '@/services/apiModeration';
+import { useModerationCities } from './useModerationCities';
+import { ModerationStatus } from '@/types/venueTypes';
+
+interface UseModerationReviewCitiesParams {
+  status?: ModerationStatus;
+}
 
 export function useModerationReviewCities({
   status = 'pending',
-}: ModerationReviewCitiesRequestParams = {}) {
-  const {
-    data: cities,
-    error,
-    isPending,
-  } = useQuery({
-    queryKey: ['moderation', 'review-cities', status],
-    queryFn: () => getModerationReviewCities({ status }),
-    staleTime: 60_000,
+}: UseModerationReviewCitiesParams = {}) {
+  return useModerationCities({
+    scope: status === 'pending' ? 'review' : 'venue',
+    status: status === 'pending' ? 'pending' : 'approved',
   });
-
-  return { cities, error, isPending };
 }

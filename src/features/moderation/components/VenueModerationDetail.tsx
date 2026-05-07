@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { format, parseISO } from 'date-fns';
 import { ReactNode, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoaderSpinner from '@/ui/LoaderSpinner';
@@ -8,28 +7,19 @@ import ImageModerationPanel, {
   ImageDecision,
   ImageStatusUpdatePayload,
 } from './ImageModerationPanel';
+import ModerationSubmitter from './ModerationSubmitter';
 import VenueModerationEditForm from './VenueModerationEditForm';
 import { useModerationVenue } from '../hooks/useModerationVenue';
-import { useUpdateModerationImageStatuses } from '../hooks/useUpdateModerationImageStatuses';
+import { useUpdateVenueImageStatuses } from '../hooks/useUpdateVenueImageStatuses';
 import { useUpdateModerationVenue } from '../hooks/useUpdateModerationVenue';
-import { useUpdateVenueModerationStatus } from '../hooks/useUpdateVenueModerationStatus';
+import { useUpdateModerationVenueStatus } from '../hooks/useUpdateModerationVenueStatus';
+import { STATUS_BADGE_CLASSES, STATUS_LABELS } from '../constants';
+import { formatSubmittedDate } from '../utils/formatSubmittedDate';
+import {
+  getImageStatusUpdatePayload,
+  hasImageStatusUpdates,
+} from '../utils/imageStatusPayload';
 import { ModerationStatus, ModerationVenue } from '@/types/venueTypes';
-
-const STATUS_LABELS: Record<ModerationStatus, string> = {
-  pending: 'Pending',
-  approved: 'Approved',
-  declined: 'Declined',
-};
-
-const STATUS_BADGE_CLASSES: Record<ModerationStatus, string> = {
-  pending: 'border-amber-200 bg-amber-50 text-amber-700',
-  approved: 'border-success-200 bg-success-50 text-success-700',
-  declined: 'border-danger-200 bg-danger-50 text-danger-700',
-};
-
-function formatSubmittedDate(createdAt: string) {
-  return format(parseISO(createdAt), 'dd MMM yyyy HH:mm');
-}
 
 function formatCoordinate(value: number | string) {
   return typeof value === 'number' ? value.toFixed(5) : value;
@@ -42,11 +32,11 @@ function VenueModerationDetail() {
   >({});
   const { error, isPending, venue } = useModerationVenue(venueId);
   const { isUpdating: isUpdatingImages, updateImageStatuses } =
-    useUpdateModerationImageStatuses(venueId);
+    useUpdateVenueImageStatuses(venueId);
   const { isUpdating: isUpdatingVenue, updateVenue } =
     useUpdateModerationVenue();
   const { isUpdating: isUpdatingVenueStatus, updateStatus } =
-    useUpdateVenueModerationStatus();
+    useUpdateModerationVenueStatus();
 
   if (!venueId) {
     return (
@@ -241,30 +231,6 @@ function VenueStatusActions({
   );
 }
 
-function getImageStatusUpdatePayload(
-  selectedStatuses: Record<string, ImageDecision | undefined>
-): ImageStatusUpdatePayload {
-  const selectedEntries = Object.entries(selectedStatuses).filter(
-    (entry): entry is [string, ImageDecision] => Boolean(entry[1])
-  );
-
-  return {
-    approvedImageIds: selectedEntries
-      .filter(([, status]) => status === 'approved')
-      .map(([imageId]) => imageId),
-    declinedImageIds: selectedEntries
-      .filter(([, status]) => status === 'declined')
-      .map(([imageId]) => imageId),
-  };
-}
-
-function hasImageStatusUpdates({
-  approvedImageIds,
-  declinedImageIds,
-}: ImageStatusUpdatePayload): boolean {
-  return approvedImageIds.length > 0 || declinedImageIds.length > 0;
-}
-
 function DetailMessage({ title, message }: { title: string; message: string }) {
   return (
     <section
@@ -357,7 +323,7 @@ function VenueFields({ venue }: { venue: ModerationVenue }) {
 
 function MetadataPanel({ venue }: { venue: ModerationVenue }) {
   const { createdAt, submitterUsername, userId, venueId, venueImages } = venue;
-  const formattedDate = formatSubmittedDate(createdAt);
+  const formattedDate = formatSubmittedDate(createdAt, { includeTime: true });
 
   return (
     <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
@@ -369,12 +335,7 @@ function MetadataPanel({ venue }: { venue: ModerationVenue }) {
           <time dateTime={createdAt}>{formattedDate}</time>
         </DetailItem>
         <DetailItem label="Submitter">
-          <span>{submitterUsername || userId}</span>
-          {submitterUsername && (
-            <span className="mt-1 block break-all font-mono text-xs text-gray-500">
-              {userId}
-            </span>
-          )}
+          <ModerationSubmitter username={submitterUsername} userId={userId} />
         </DetailItem>
         <DetailItem label="Venue id">
           <span className="break-all font-mono text-xs">{venueId}</span>

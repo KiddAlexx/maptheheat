@@ -3,18 +3,8 @@ import clsx from 'clsx';
 import type { ChangeEvent } from 'react';
 import ActionButton from '@/ui/ActionButton';
 import type { ModerationImage, ModerationStatus } from '@/types/venueTypes';
-
-const STATUS_LABELS: Record<ModerationStatus, string> = {
-  pending: 'Pending',
-  approved: 'Approved',
-  declined: 'Declined',
-};
-
-const STATUS_BADGE_CLASSES: Record<ModerationStatus, string> = {
-  pending: 'border-amber-200 bg-amber-50 text-amber-700',
-  approved: 'border-success-200 bg-success-50 text-success-700',
-  declined: 'border-danger-200 bg-danger-50 text-danger-700',
-};
+import { STATUS_BADGE_CLASSES, STATUS_LABELS } from '../constants';
+import { getImageStatusUpdatePayload } from '../utils/imageStatusPayload';
 
 export type ImageDecision = Extract<ModerationStatus, 'approved' | 'declined'>;
 
@@ -42,20 +32,12 @@ function ImageModerationPanel({
   onUpdateStatuses,
   selectedStatuses,
 }: ImageModerationPanelProps) {
-  const selectedEntries = Object.entries(selectedStatuses).filter(
-    (entry): entry is [string, ImageDecision] => Boolean(entry[1])
-  );
-  const hasSelectedImages = selectedEntries.length > 0;
+  const payload = getImageStatusUpdatePayload(selectedStatuses);
+  const hasSelectedImages =
+    payload.approvedImageIds.length + payload.declinedImageIds.length > 0;
 
   function handleUpdateStatuses() {
-    const approvedImageIds = selectedEntries
-      .filter(([, status]) => status === 'approved')
-      .map(([imageId]) => imageId);
-    const declinedImageIds = selectedEntries
-      .filter(([, status]) => status === 'declined')
-      .map(([imageId]) => imageId);
-
-    onUpdateStatuses({ approvedImageIds, declinedImageIds });
+    onUpdateStatuses(payload);
   }
 
   return (
