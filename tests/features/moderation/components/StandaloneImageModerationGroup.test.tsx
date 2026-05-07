@@ -112,7 +112,7 @@ describe('StandaloneImageModerationGroup', () => {
     ).toBeInTheDocument();
   });
 
-  it('submits selected standalone image status decisions', async () => {
+  it('prepares selected standalone image status decisions before notification', async () => {
     const user = userEvent.setup();
     renderGroup();
 
@@ -122,14 +122,50 @@ describe('StandaloneImageModerationGroup', () => {
 
     await user.click(screen.getAllByLabelText(/approve image/i)[0]);
     await user.click(screen.getAllByLabelText(/decline image/i)[1]);
-    await user.click(screen.getByRole('button', { name: /update images/i }));
+    await user.click(screen.getByRole('button', { name: /proceed with decisions/i }));
 
-    await waitFor(() => {
-      expect(updateModerationImageStatusesMock).toHaveBeenCalledWith({
-        approvedImageIds: ['image-1'],
-        declinedImageIds: ['image-2'],
-      });
-    });
+    expect(screen.getByRole('status')).toHaveTextContent(
+      /decisions are ready/i
+    );
+    expect(updateModerationImageStatusesMock).not.toHaveBeenCalled();
+  });
+
+  it('marks every image in the standalone group as approved without saving', async () => {
+    const user = userEvent.setup();
+    renderGroup();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: /mark all approved/i })
+    );
+    await user.click(screen.getByRole('button', { name: /proceed with decisions/i }));
+
+    expect(screen.getByRole('status')).toHaveTextContent(
+      /decisions are ready/i
+    );
+    expect(updateModerationImageStatusesMock).not.toHaveBeenCalled();
+  });
+
+  it('marks every image in the standalone group as declined without saving', async () => {
+    const user = userEvent.setup();
+    renderGroup();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: /mark all declined/i })
+    );
+    await user.click(screen.getByRole('button', { name: /proceed with decisions/i }));
+
+    expect(screen.getByRole('status')).toHaveTextContent(
+      /decisions are ready/i
+    );
+    expect(updateModerationImageStatusesMock).not.toHaveBeenCalled();
   });
 
   it('renders an error state when the image group cannot be loaded', async () => {

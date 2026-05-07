@@ -1,14 +1,12 @@
 import { ReactNode, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoaderSpinner from '@/ui/LoaderSpinner';
-import ImageModerationPanel, {
-  ImageDecision,
-  ImageStatusUpdatePayload,
-} from './ImageModerationPanel';
+import ActionButton from '@/ui/ActionButton';
+import ImageModerationPanel, { ImageDecision } from './ImageModerationPanel';
 import ModerationSubmitter from './ModerationSubmitter';
 import { useModerationStandaloneImageGroup } from '../hooks/useModerationStandaloneImageGroup';
-import { useUpdateStandaloneImageStatuses } from '../hooks/useUpdateStandaloneImageStatuses';
 import { formatSubmittedDate } from '../utils/formatSubmittedDate';
+import { getImageStatusUpdatePayload } from '../utils/imageStatusPayload';
 import {
   ModerationImage,
   ModerationStandaloneImageGroup,
@@ -20,10 +18,9 @@ function StandaloneImageModerationGroup() {
   const [selectedImageStatuses, setSelectedImageStatuses] = useState<
     Record<string, ImageDecision | undefined>
   >({});
+  const [isDecisionReady, setIsDecisionReady] = useState(false);
   const { error, imageGroup, isPending } =
     useModerationStandaloneImageGroup(groupId);
-  const { isUpdating, updateImageStatuses } =
-    useUpdateStandaloneImageStatuses(groupId);
 
   if (!groupId) {
     return (
@@ -56,23 +53,37 @@ function StandaloneImageModerationGroup() {
     );
   }
 
+  const loadedImageGroup = imageGroup;
+  const imageStatusUpdatePayload =
+    getImageStatusUpdatePayload(selectedImageStatuses);
+  const pendingImagesWithoutDecision = loadedImageGroup.images.filter(
+    (image) =>
+      image.status === 'pending' && !selectedImageStatuses[image.imageId]
+  ).length;
+
   function handleImageDecisionChange(
     imageId: string,
     decision: ImageDecision,
     isChecked: boolean
   ) {
+    setIsDecisionReady(false);
     setSelectedImageStatuses((currentStatuses) => ({
       ...currentStatuses,
       [imageId]: isChecked ? decision : undefined,
     }));
   }
 
-  function handleUpdateImageStatuses(payload: ImageStatusUpdatePayload) {
-    updateImageStatuses(payload, {
-      onSuccess: () => {
-        setSelectedImageStatuses({});
-      },
-    });
+  function handleMarkAllImages(decision: ImageDecision) {
+    setIsDecisionReady(false);
+    setSelectedImageStatuses(
+      Object.fromEntries(
+        loadedImageGroup.images.map((image) => [image.imageId, decision])
+      )
+    );
+  }
+
+  function handleProceedWithDecisions() {
+    setIsDecisionReady(true);
   }
 
   return (
@@ -89,7 +100,7 @@ function StandaloneImageModerationGroup() {
             id="image-group-detail-title"
             className="text-2xl font-semibold text-gray-900"
           >
-            {imageGroup.venueName ?? 'Standalone image group'}
+            {loadedImageGroup.venueName ?? 'Standalone image group'}
           </h2>
           <p className="mt-1 max-w-3xl text-sm text-zinc-600">
             Review each submitted standalone image before updating image
@@ -99,18 +110,127 @@ function StandaloneImageModerationGroup() {
       </header>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(20rem,1fr)]">
-        <StatusSummaryPanel images={imageGroup.images} />
-        <MetadataPanel imageGroup={imageGroup} />
+        <StatusSummaryPanel images={loadedImageGroup.images} />
+        <div className="space-y-5">
+          <StandaloneImageStatusActions
+            images={loadedImageGroup.images}
+            isDecisionReady={isDecisionReady}
+            onMarkAll={handleMarkAllImages}
+            onProceed={handleProceedWithDecisions}
+            pendingImagesWithoutDecision={pendingImagesWithoutDecision}
+            selectedStatuses={selectedImageStatuses}
+            statusUpdatePayload={imageStatusUpdatePayload}
+          />
+          <MetadataPanel imageGroup={loadedImageGroup} />
+        </div>
       </div>
 
       <ImageModerationPanel
-        images={imageGroup.images}
-        isUpdating={isUpdating}
+        images={loadedImageGroup.images}
+        isUpdating={false}
         onImageDecisionChange={handleImageDecisionChange}
-        onUpdateStatuses={handleUpdateImageStatuses}
         selectedStatuses={selectedImageStatuses}
+        description="Choose per-image decisions here, then continue from the decision panel before saving changes."
         title="Submitted images"
       />
+    </section>
+  );
+}
+
+function StandaloneImageStatusActions({
+  images,
+  isDecisionReady,
+  onMarkAll,
+  onProceed,
+  pendingImagesWithoutDecision,
+  selectedStatuses,
+  statusUpdatePayload,
+}: {
+  images: ModerationImage[];
+  isDecisionReady: boolean;
+  onMarkAll: (decision: ImageDecision) => void;
+  onProceed: () => void;
+  pendingImagesWithoutDecision: number;
+  selectedStatuses: Record<string, ImageDecision | undefined>;
+  statusUpdatePayload: {
+    approvedImageIds: string[];
+    declinedImageIds: string[];
+  };
+}) {
+  const hasImages = images.length > 0;
+  const draftCounts = getDraftImageStatusCounts(images, selectedStatuses);
+  const hasSelectedDecisions =
+    statusUpdatePayload.approvedImageIds.length +
+      statusUpdatePayload.declinedImageIds.length >
+    0;
+  const canProceed =
+    hasSelectedDecisions && pendingImagesWithoutDecision === 0;
+
+  function handleMarkAllApproved() {
+    onMarkAll('approved');
+  }
+
+  function handleMarkAllDeclined() {
+    onMarkAll('declined');
+  }
+
+  return (
+    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold text-gray-900">Decision workflow</h3>
+      <p className="mt-1 text-sm text-zinc-600">
+        Review the draft image decisions, then proceed to the notification
+        step before saving status changes.
+      </p>
+
+      <dl className="mt-4 grid grid-cols-3 gap-3">
+        <DetailItem label="Approve">{draftCounts.approved}</DetailItem>
+        <DetailItem label="Decline">{draftCounts.declined}</DetailItem>
+        <DetailItem label="Pending">
+          {pendingImagesWithoutDecision}
+        </DetailItem>
+      </dl>
+
+      {pendingImagesWithoutDecision > 0 ? (
+        <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          Resolve every pending image before proceeding.
+        </p>
+      ) : null}
+
+      {isDecisionReady ? (
+        <p
+          role="status"
+          className="mt-3 rounded-lg border border-success-200 bg-success-50 px-3 py-2 text-sm text-success-700"
+        >
+          Decisions are ready for the notification step. Image statuses have not
+          been changed yet.
+        </p>
+      ) : null}
+
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
+        <ActionButton
+          intent="confirm"
+          isDisabled={!hasImages}
+          onPress={handleMarkAllApproved}
+        >
+          Mark all approved
+        </ActionButton>
+        <ActionButton
+          intent="cancel"
+          isDisabled={!hasImages}
+          onPress={handleMarkAllDeclined}
+        >
+          Mark all declined
+        </ActionButton>
+      </div>
+
+      <ActionButton
+        className="mt-3 w-full"
+        intent="confirm"
+        isDisabled={!canProceed}
+        onPress={onProceed}
+      >
+        Proceed with decisions
+      </ActionButton>
     </section>
   );
 }
@@ -226,6 +346,27 @@ function getImageStatusCounts(
       ...counts,
       [image.status]: counts[image.status] + 1,
     }),
+    {
+      approved: 0,
+      declined: 0,
+      pending: 0,
+    }
+  );
+}
+
+function getDraftImageStatusCounts(
+  images: ModerationImage[],
+  selectedStatuses: Record<string, ImageDecision | undefined>
+): Record<ModerationStatus, number> {
+  return images.reduce<Record<ModerationStatus, number>>(
+    (counts, image) => {
+      const status = selectedStatuses[image.imageId] ?? image.status;
+
+      return {
+        ...counts,
+        [status]: counts[status] + 1,
+      };
+    },
     {
       approved: 0,
       declined: 0,

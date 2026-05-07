@@ -41,7 +41,7 @@ plus the relevant tests.
 - [x] Step 15: Add admin standalone image query services and hooks.
 - [x] Step 16: Add standalone image moderation queue.
 - [x] Step 17: Add standalone image grouping/detail screen.
-- [ ] Step 18: Add standalone image status actions.
+- [x] Step 18: Add standalone image status actions.
 - [ ] Step 19: Cover admin standalone image flow with tests.
 - [ ] Step 20: Add notification workflow after approve/decline.
 
@@ -281,6 +281,22 @@ plus the relevant tests.
 - Wired per-image approve/decline decisions through
   `useUpdateStandaloneImageStatuses`, clearing selected decisions after a
   successful update.
+
+### Step 18: Standalone Image Status Actions
+
+- Added a draft decision panel to
+  `StandaloneImageModerationGroup`.
+- Kept standalone image writes reserved for the existing
+  `useUpdateStandaloneImageStatuses` hook so Step 20 can submit decisions after
+  notification review.
+- Standalone image choices are now draft decisions; selecting individual images
+  or marking all images approved/declined does not update Supabase yet.
+- Admins proceed from the side panel only after every pending image has a
+  decision, keeping the screen available for the future notification step.
+- `ImageModerationPanel` now supports selection-only usage while venue/review
+  image panels keep the default "Update images" mutation button.
+- Added component coverage for mixed decisions, mark-all approved, and
+  mark-all declined without saving image statuses early.
 
 ## Architecture Rules
 

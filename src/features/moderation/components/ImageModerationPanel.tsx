@@ -17,8 +17,9 @@ interface ImageModerationPanelProps {
     decision: ImageDecision,
     isChecked: boolean
   ) => void;
-  onUpdateStatuses: (payload: ImageStatusUpdatePayload) => void;
+  onUpdateStatuses?: (payload: ImageStatusUpdatePayload) => void;
   selectedStatuses: Record<string, ImageDecision | undefined>;
+  description?: string;
   title?: string;
 }
 
@@ -33,6 +34,7 @@ function ImageModerationPanel({
   onImageDecisionChange,
   onUpdateStatuses,
   selectedStatuses,
+  description = 'Select image moderation decisions before updating their statuses.',
   title = 'Attached images',
 }: ImageModerationPanelProps) {
   const { openModalImages } = useModalContext();
@@ -63,6 +65,8 @@ function ImageModerationPanel({
   }
 
   function handleUpdateStatuses() {
+    if (!onUpdateStatuses) return;
+
     onUpdateStatuses(payload);
   }
 
@@ -74,17 +78,19 @@ function ImageModerationPanel({
             {title}
           </h3>
           <p className="mt-1 text-sm text-zinc-600">
-            Select image moderation decisions before updating their statuses.
+            {description}
           </p>
         </div>
-        <ActionButton
-          intent="confirm"
-          isDisabled={!hasSelectedImages || isUpdating}
-          isLoading={isUpdating}
-          onPress={handleUpdateStatuses}
-        >
-          Update images
-        </ActionButton>
+        {onUpdateStatuses ? (
+          <ActionButton
+            intent="confirm"
+            isDisabled={!hasSelectedImages || isUpdating}
+            isLoading={isUpdating}
+            onPress={handleUpdateStatuses}
+          >
+            Update images
+          </ActionButton>
+        ) : null}
       </div>
 
       {images.length > 0 ? (
