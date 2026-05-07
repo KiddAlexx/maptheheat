@@ -36,7 +36,7 @@ plus the relevant tests.
 - [x] Step 11: Add review moderation queue.
 - [x] Step 11.5: Moderation refactor pass.
 - [x] Step 12: Add review detail/edit screen.
-- [ ] Step 13: Add review status actions.
+- [x] Step 13: Add review status actions.
 - [ ] Step 14: Cover admin review flow with tests.
 - [ ] Step 15: Add admin standalone image query services and hooks.
 - [ ] Step 16: Add standalone image moderation queue.
@@ -210,6 +210,18 @@ plus the relevant tests.
 - Kept review status approve/decline actions deferred to Step 13.
 - Added component coverage for detail rendering, review image decisions, edit
   payloads, load failure, and missing route id states.
+
+### Step 13: Review Status Actions
+
+- Added approve and decline controls to `ReviewModerationDetail`.
+- Reused `useUpdateModerationReviewStatus`, preserving the moderation service
+  and React Query hook boundary.
+- Disabled the action matching the review's current status while allowing
+  changes between approved and declined.
+- Requires review-attached pending image decisions before approval, and updates
+  selected image statuses before approving when decisions are selected.
+- Added component coverage for approve, decline, and image-before-approval
+  mutation payloads.
 
 ## Architecture Rules
 

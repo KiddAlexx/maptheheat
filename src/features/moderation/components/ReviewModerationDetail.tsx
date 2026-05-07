@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { ReactNode, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoaderSpinner from '@/ui/LoaderSpinner';
+import ActionButton from '@/ui/ActionButton';
 import ImageModerationPanel, {
   ImageDecision,
   ImageStatusUpdatePayload,
@@ -11,8 +12,13 @@ import ReviewModerationEditForm from './ReviewModerationEditForm';
 import { STATUS_BADGE_CLASSES, STATUS_LABELS } from '../constants';
 import { useModerationReview } from '../hooks/useModerationReview';
 import { useUpdateModerationReview } from '../hooks/useUpdateModerationReview';
+import { useUpdateModerationReviewStatus } from '../hooks/useUpdateModerationReviewStatus';
 import { useUpdateReviewImageStatuses } from '../hooks/useUpdateReviewImageStatuses';
 import { formatSubmittedDate } from '../utils/formatSubmittedDate';
+import {
+  getImageStatusUpdatePayload,
+  hasImageStatusUpdates,
+} from '../utils/imageStatusPayload';
 import { ModerationReview } from '@/types/reviewTypes';
 import { ModerationStatus } from '@/types/venueTypes';
 
@@ -26,6 +32,8 @@ function ReviewModerationDetail() {
     useUpdateReviewImageStatuses(reviewId);
   const { isUpdating: isUpdatingReview, updateReview } =
     useUpdateModerationReview();
+  const { isUpdating: isUpdatingReviewStatus, updateStatus } =
+    useUpdateModerationReviewStatus();
 
   if (!reviewId) {
     return (
@@ -58,7 +66,14 @@ function ReviewModerationDetail() {
     );
   }
 
-  const reviewImages = review.venueImages ?? [];
+  const loadedReview = review;
+  const reviewImages = loadedReview.venueImages ?? [];
+  const imageStatusUpdatePayload =
+    getImageStatusUpdatePayload(selectedImageStatuses);
+  const hasPendingImageWithoutDecision = reviewImages.some(
+    (image) =>
+      image.status === 'pending' && !selectedImageStatuses[image.imageId]
+  );
 
   function handleImageDecisionChange(
     imageId: string,
@@ -79,6 +94,29 @@ function ReviewModerationDetail() {
     });
   }
 
+  function handleApproveReview() {
+    if (hasPendingImageWithoutDecision) return;
+
+    if (hasImageStatusUpdates(imageStatusUpdatePayload)) {
+      updateImageStatuses(imageStatusUpdatePayload, {
+        onSuccess: () => {
+          setSelectedImageStatuses({});
+          updateStatus({
+            reviewId: loadedReview.reviewId,
+            status: 'approved',
+          });
+        },
+      });
+      return;
+    }
+
+    updateStatus({ reviewId: loadedReview.reviewId, status: 'approved' });
+  }
+
+  function handleDeclineReview() {
+    updateStatus({ reviewId: loadedReview.reviewId, status: 'declined' });
+  }
+
   return (
     <section aria-labelledby="review-detail-title" className="space-y-5">
       <header className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -94,9 +132,9 @@ function ReviewModerationDetail() {
               id="review-detail-title"
               className="text-2xl font-semibold text-gray-900"
             >
-              {review.reviewTitle}
+              {loadedReview.reviewTitle}
             </h2>
-            <StatusBadge status={review.status} />
+            <StatusBadge status={loadedReview.status} />
           </div>
           <p className="mt-1 max-w-3xl text-sm text-zinc-600">
             Review the submitted ratings and comments before making a
@@ -111,19 +149,26 @@ function ReviewModerationDetail() {
             <h3 className="text-lg font-semibold text-gray-900">
               Review details
             </h3>
-            <ReviewFields review={review} />
+            <ReviewFields review={loadedReview} />
           </article>
           <ReviewModerationEditForm
             isUpdating={isUpdatingReview}
-            key={review.reviewId}
+            key={loadedReview.reviewId}
             onUpdateReview={updateReview}
-            review={review}
+            review={loadedReview}
           />
         </div>
 
         <aside className="space-y-5">
-          <MetadataPanel review={review} />
-          <VenueContextPanel review={review} />
+          <ReviewStatusActions
+            hasPendingImageWithoutDecision={hasPendingImageWithoutDecision}
+            isUpdating={isUpdatingReviewStatus || isUpdatingImages}
+            onApprove={handleApproveReview}
+            onDecline={handleDeclineReview}
+            status={loadedReview.status}
+          />
+          <MetadataPanel review={loadedReview} />
+          <VenueContextPanel review={loadedReview} />
         </aside>
       </div>
 
@@ -134,6 +179,54 @@ function ReviewModerationDetail() {
         onUpdateStatuses={handleUpdateImageStatuses}
         selectedStatuses={selectedImageStatuses}
       />
+    </section>
+  );
+}
+
+function ReviewStatusActions({
+  hasPendingImageWithoutDecision,
+  isUpdating,
+  onApprove,
+  onDecline,
+  status,
+}: {
+  hasPendingImageWithoutDecision: boolean;
+  isUpdating: boolean;
+  onApprove: () => void;
+  onDecline: () => void;
+  status: ModerationStatus;
+}) {
+  return (
+    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold text-gray-900">Review decision</h3>
+      <p className="mt-1 text-sm text-zinc-600">
+        Set the final status for this review submission.
+      </p>
+      {hasPendingImageWithoutDecision ? (
+        <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          Resolve all pending image decisions before approving this review.
+        </p>
+      ) : null}
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+        <ActionButton
+          intent="confirm"
+          isDisabled={
+            status === 'approved' || isUpdating || hasPendingImageWithoutDecision
+          }
+          isLoading={isUpdating}
+          onPress={onApprove}
+        >
+          Approve review
+        </ActionButton>
+        <ActionButton
+          intent="cancel"
+          isDisabled={status === 'declined' || isUpdating}
+          isLoading={isUpdating}
+          onPress={onDecline}
+        >
+          Decline review
+        </ActionButton>
+      </div>
     </section>
   );
 }

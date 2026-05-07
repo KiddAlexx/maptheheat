@@ -9,6 +9,7 @@ import {
   getModerationReviewMock,
   updateModerationImageStatusesMock,
   updateModerationReviewMock,
+  updateModerationReviewStatusMock,
 } from 'tests/mocks/apiModeration';
 
 function createModerationReview(
@@ -89,6 +90,7 @@ describe('ReviewModerationDetail', () => {
     getModerationReviewMock.mockResolvedValue(createModerationReview());
     updateModerationImageStatusesMock.mockResolvedValue();
     updateModerationReviewMock.mockResolvedValue(createModerationReview());
+    updateModerationReviewStatusMock.mockResolvedValue();
   });
 
   it('loads the review by route id and renders moderation detail metadata', async () => {
@@ -211,6 +213,108 @@ describe('ReviewModerationDetail', () => {
         }),
       });
     });
+  });
+
+  it('approves a review submission', async () => {
+    const user = userEvent.setup();
+    getModerationReviewMock.mockResolvedValue(
+      createModerationReview({ venueImages: [] })
+    );
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /big heat, clean flavor/i })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /approve review/i }));
+
+    await waitFor(() => {
+      expect(updateModerationReviewStatusMock).toHaveBeenCalledWith({
+        reviewId: 'review-test-id',
+        status: 'approved',
+      });
+    });
+  });
+
+  it('does not approve a pending review until pending images have decisions', async () => {
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /big heat, clean flavor/i })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/resolve all pending image decisions/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /approve review/i })
+    ).toBeDisabled();
+    expect(updateModerationReviewStatusMock).not.toHaveBeenCalled();
+  });
+
+  it('updates pending image decisions before approving a review submission', async () => {
+    const user = userEvent.setup();
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /big heat, clean flavor/i })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByLabelText(/approve image/i));
+    await user.click(screen.getByRole('button', { name: /approve review/i }));
+
+    await waitFor(() => {
+      expect(updateModerationImageStatusesMock).toHaveBeenCalledWith({
+        approvedImageIds: ['image-1'],
+        declinedImageIds: [],
+      });
+    });
+    await waitFor(() => {
+      expect(updateModerationReviewStatusMock).toHaveBeenCalledWith({
+        reviewId: 'review-test-id',
+        status: 'approved',
+      });
+    });
+  });
+
+  it('declines a review submission', async () => {
+    const user = userEvent.setup();
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /big heat, clean flavor/i })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /decline review/i }));
+
+    await waitFor(() => {
+      expect(updateModerationReviewStatusMock).toHaveBeenCalledWith({
+        reviewId: 'review-test-id',
+        status: 'declined',
+      });
+    });
+  });
+
+  it('disables the review action matching the current status', async () => {
+    getModerationReviewMock.mockResolvedValue(
+      createModerationReview({ status: 'approved' })
+    );
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /big heat, clean flavor/i })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', { name: /approve review/i })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: /decline review/i })
+    ).toBeEnabled();
   });
 
   it('renders an error state when the review cannot be loaded', async () => {
