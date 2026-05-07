@@ -1,10 +1,13 @@
 import clsx from 'clsx';
 import { format, parseISO } from 'date-fns';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import ActionButton from '@/ui/ActionButton';
-import ImageModerationPanel from './ImageModerationPanel';
+import ImageModerationPanel, {
+  ImageDecision,
+  ImageStatusUpdatePayload,
+} from './ImageModerationPanel';
 import VenueModerationEditForm from './VenueModerationEditForm';
 import { useModerationVenue } from '../hooks/useModerationVenue';
 import { useUpdateModerationImageStatuses } from '../hooks/useUpdateModerationImageStatuses';
@@ -34,6 +37,9 @@ function formatCoordinate(value: number | string) {
 
 function VenueModerationDetail() {
   const { venueId } = useParams();
+  const [selectedImageStatuses, setSelectedImageStatuses] = useState<
+    Record<string, ImageDecision | undefined>
+  >({});
   const { error, isPending, venue } = useModerationVenue(venueId);
   const { isUpdating: isUpdatingImages, updateImageStatuses } =
     useUpdateModerationImageStatuses(venueId);
@@ -71,6 +77,54 @@ function VenueModerationDetail() {
         message="This moderation item may have been removed."
       />
     );
+  }
+
+  const loadedVenue = venue;
+  const venueImages = loadedVenue.venueImages ?? [];
+  const imageStatusUpdatePayload =
+    getImageStatusUpdatePayload(selectedImageStatuses);
+  const hasPendingImageWithoutDecision = venueImages.some(
+    (image) =>
+      image.status === 'pending' && !selectedImageStatuses[image.imageId]
+  );
+
+  function handleImageDecisionChange(
+    imageId: string,
+    decision: ImageDecision,
+    isChecked: boolean
+  ) {
+    setSelectedImageStatuses((currentStatuses) => ({
+      ...currentStatuses,
+      [imageId]: isChecked ? decision : undefined,
+    }));
+  }
+
+  function handleUpdateImageStatuses(payload: ImageStatusUpdatePayload) {
+    updateImageStatuses(payload, {
+      onSuccess: () => {
+        setSelectedImageStatuses({});
+      },
+    });
+  }
+
+  function handleApproveVenue() {
+    if (hasPendingImageWithoutDecision) return;
+
+    if (hasImageStatusUpdates(imageStatusUpdatePayload)) {
+      updateImageStatuses(imageStatusUpdatePayload, {
+        onSuccess: () => {
+          setSelectedImageStatuses({});
+          updateStatus({ venueId: loadedVenue.venueId, status: 'approved' });
+        },
+      });
+      return;
+    }
+
+    updateStatus({ venueId: loadedVenue.venueId, status: 'approved' });
+  }
+
+  function handleDeclineVenue() {
+    updateStatus({ venueId: loadedVenue.venueId, status: 'declined' });
   }
 
   return (
@@ -117,10 +171,11 @@ function VenueModerationDetail() {
 
         <aside className="space-y-5">
           <VenueStatusActions
-            isUpdating={isUpdatingVenueStatus}
-            onUpdateStatus={updateStatus}
+            hasPendingImageWithoutDecision={hasPendingImageWithoutDecision}
+            isUpdating={isUpdatingVenueStatus || isUpdatingImages}
+            onApprove={handleApproveVenue}
+            onDecline={handleDeclineVenue}
             status={venue.status}
-            venueId={venue.venueId}
           />
           <MetadataPanel venue={venue} />
           <ClassificationPanel venue={venue} />
@@ -128,45 +183,48 @@ function VenueModerationDetail() {
       </div>
 
       <ImageModerationPanel
-        images={venue.venueImages}
+        images={venueImages}
         isUpdating={isUpdatingImages}
-        onUpdateStatuses={updateImageStatuses}
+        onImageDecisionChange={handleImageDecisionChange}
+        onUpdateStatuses={handleUpdateImageStatuses}
+        selectedStatuses={selectedImageStatuses}
       />
     </section>
   );
 }
 
 function VenueStatusActions({
+  hasPendingImageWithoutDecision,
   isUpdating,
-  onUpdateStatus,
+  onApprove,
+  onDecline,
   status,
-  venueId,
 }: {
+  hasPendingImageWithoutDecision: boolean;
   isUpdating: boolean;
-  onUpdateStatus: (payload: { venueId: string; status: ModerationStatus }) => void;
+  onApprove: () => void;
+  onDecline: () => void;
   status: ModerationStatus;
-  venueId: string;
 }) {
-  function handleApprove() {
-    onUpdateStatus({ venueId, status: 'approved' });
-  }
-
-  function handleDecline() {
-    onUpdateStatus({ venueId, status: 'declined' });
-  }
-
   return (
     <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
       <h3 className="text-lg font-semibold text-gray-900">Venue decision</h3>
       <p className="mt-1 text-sm text-zinc-600">
         Set the final status for this venue submission.
       </p>
+      {hasPendingImageWithoutDecision ? (
+        <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          Resolve all pending image decisions before approving this venue.
+        </p>
+      ) : null}
       <div className="mt-4 flex flex-col gap-3 sm:flex-row">
         <ActionButton
           intent="confirm"
-          isDisabled={status === 'approved' || isUpdating}
+          isDisabled={
+            status === 'approved' || isUpdating || hasPendingImageWithoutDecision
+          }
           isLoading={isUpdating}
-          onPress={handleApprove}
+          onPress={onApprove}
         >
           Approve venue
         </ActionButton>
@@ -174,13 +232,37 @@ function VenueStatusActions({
           intent="cancel"
           isDisabled={status === 'declined' || isUpdating}
           isLoading={isUpdating}
-          onPress={handleDecline}
+          onPress={onDecline}
         >
           Decline venue
         </ActionButton>
       </div>
     </section>
   );
+}
+
+function getImageStatusUpdatePayload(
+  selectedStatuses: Record<string, ImageDecision | undefined>
+): ImageStatusUpdatePayload {
+  const selectedEntries = Object.entries(selectedStatuses).filter(
+    (entry): entry is [string, ImageDecision] => Boolean(entry[1])
+  );
+
+  return {
+    approvedImageIds: selectedEntries
+      .filter(([, status]) => status === 'approved')
+      .map(([imageId]) => imageId),
+    declinedImageIds: selectedEntries
+      .filter(([, status]) => status === 'declined')
+      .map(([imageId]) => imageId),
+  };
+}
+
+function hasImageStatusUpdates({
+  approvedImageIds,
+  declinedImageIds,
+}: ImageStatusUpdatePayload): boolean {
+  return approvedImageIds.length > 0 || declinedImageIds.length > 0;
 }
 
 function DetailMessage({ title, message }: { title: string; message: string }) {

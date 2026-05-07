@@ -125,4 +125,48 @@ describe('VenueModerationQueue', () => {
       '/admin/moderation/venues/venue-test-id'
     );
   });
+
+  it('requests approved venues when the approved status filter is selected', async () => {
+    const user = userEvent.setup();
+    renderQueue();
+
+    expect(await screen.findByText(/pepper palace/i)).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /approved/i }));
+
+    await waitFor(() => {
+      expect(getModerationVenuesMock).toHaveBeenLastCalledWith({
+        status: 'approved',
+        filters: [],
+        sort: undefined,
+        pagination: { pageNumber: 1, maxResults: 8 },
+      });
+    });
+    expect(getModerationCitiesMock).toHaveBeenLastCalledWith({
+      status: 'approved',
+    });
+    expect(screen.getByRole('button', { name: /approved/i })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+  });
+
+  it('adds a venue name search filter after submitting search', async () => {
+    const user = userEvent.setup();
+    renderQueue();
+
+    expect(await screen.findByText(/pepper palace/i)).toBeInTheDocument();
+
+    await user.type(screen.getByLabelText(/search/i), 'Pepper');
+    await user.click(screen.getByRole('button', { name: /search/i }));
+
+    await waitFor(() => {
+      expect(getModerationVenuesMock).toHaveBeenLastCalledWith({
+        status: 'pending',
+        filters: [{ field: 'venueName', value: '%Pepper%', method: 'ilike' }],
+        sort: undefined,
+        pagination: { pageNumber: 1, maxResults: 8 },
+      });
+    });
+  });
 });

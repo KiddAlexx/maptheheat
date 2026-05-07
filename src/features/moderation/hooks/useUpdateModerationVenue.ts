@@ -4,6 +4,7 @@ import {
   updateModerationVenue,
   UpdateModerationVenueArgs,
 } from '@/services/apiModeration';
+import { ModerationVenue } from '@/types/venueTypes';
 
 export function useUpdateModerationVenue() {
   const queryClient = useQueryClient();
@@ -11,8 +12,12 @@ export function useUpdateModerationVenue() {
   const { isPending: isUpdating, mutate: updateVenue } = useMutation({
     mutationFn: ({ venueId, venueUpdate }: UpdateModerationVenueArgs) =>
       updateModerationVenue({ venueId, venueUpdate }),
-    onSuccess: (_data, { venueId }) => {
+    onSuccess: (updatedVenue, { venueId }) => {
       toast.success('Venue updated');
+      queryClient.setQueryData<ModerationVenue>(
+        ['moderation', 'venue', venueId],
+        (currentVenue) => mergeModerationVenue(currentVenue, updatedVenue)
+      );
       queryClient.invalidateQueries({ queryKey: ['moderation', 'venues'] });
       queryClient.invalidateQueries({
         queryKey: ['moderation', 'venue', venueId],
@@ -24,4 +29,19 @@ export function useUpdateModerationVenue() {
   });
 
   return { isUpdating, updateVenue };
+}
+
+function mergeModerationVenue(
+  currentVenue: ModerationVenue | undefined,
+  updatedVenue: ModerationVenue
+): ModerationVenue {
+  if (!currentVenue) return updatedVenue;
+
+  return {
+    ...currentVenue,
+    ...updatedVenue,
+    submitterUsername:
+      updatedVenue.submitterUsername ?? currentVenue.submitterUsername,
+    venueImages: updatedVenue.venueImages ?? currentVenue.venueImages,
+  };
 }

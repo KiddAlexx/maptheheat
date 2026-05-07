@@ -168,6 +168,9 @@ describe('VenueModerationDetail', () => {
 
   it('approves a venue submission', async () => {
     const user = userEvent.setup();
+    getModerationVenueMock.mockResolvedValue(
+      createModerationVenue({ venueImages: [] })
+    );
 
     renderDetail();
 
@@ -177,6 +180,48 @@ describe('VenueModerationDetail', () => {
 
     await user.click(screen.getByRole('button', { name: /approve venue/i }));
 
+    await waitFor(() => {
+      expect(updateVenueModerationStatusMock).toHaveBeenCalledWith({
+        venueId: 'venue-test-id',
+        status: 'approved',
+      });
+    });
+  });
+
+  it('does not approve a pending venue until pending images have decisions', async () => {
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/resolve all pending image decisions/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /approve venue/i })
+    ).toBeDisabled();
+    expect(updateVenueModerationStatusMock).not.toHaveBeenCalled();
+  });
+
+  it('updates pending image decisions before approving a venue submission', async () => {
+    const user = userEvent.setup();
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByLabelText(/approve image/i));
+    await user.click(screen.getByRole('button', { name: /approve venue/i }));
+
+    await waitFor(() => {
+      expect(updateModerationImageStatusesMock).toHaveBeenCalledWith({
+        approvedImageIds: ['image-1'],
+        declinedImageIds: [],
+      });
+    });
     await waitFor(() => {
       expect(updateVenueModerationStatusMock).toHaveBeenCalledWith({
         venueId: 'venue-test-id',
@@ -206,6 +251,18 @@ describe('VenueModerationDetail', () => {
 
   it('submits corrected venue fields', async () => {
     const user = userEvent.setup();
+    const originalVenue = createModerationVenue();
+    const updatedVenue = createModerationVenue({
+      cuisines: ['Thai', 'Korean'],
+      phoneNumber: '+449999888777',
+      venueName: 'Pepper House',
+      venueNameSlug: 'pepper-house',
+    });
+
+    getModerationVenueMock
+      .mockResolvedValueOnce(originalVenue)
+      .mockResolvedValue(updatedVenue);
+    updateModerationVenueMock.mockResolvedValue(updatedVenue);
 
     renderDetail();
 
@@ -233,6 +290,38 @@ describe('VenueModerationDetail', () => {
           phoneNumber: '+449999888777',
           venueName: 'Pepper House',
           venueNameSlug: 'pepper-house',
+        }),
+      });
+    });
+    expect(
+      await screen.findByRole('heading', { name: /pepper house/i })
+    ).toBeInTheDocument();
+  });
+
+  it('submits edited venue fields when the website does not include a protocol', async () => {
+    const user = userEvent.setup();
+    getModerationVenueMock.mockResolvedValue(
+      createModerationVenue({ website: 'example.com' })
+    );
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.clear(screen.getByLabelText(/^venue name$/i));
+    await user.type(screen.getByLabelText(/^venue name$/i), 'Pepper Rooms');
+    await user.click(
+      screen.getByRole('button', { name: /save venue changes/i })
+    );
+
+    await waitFor(() => {
+      expect(updateModerationVenueMock).toHaveBeenCalledWith({
+        venueId: 'venue-test-id',
+        venueUpdate: expect.objectContaining({
+          venueName: 'Pepper Rooms',
+          website: 'example.com',
         }),
       });
     });

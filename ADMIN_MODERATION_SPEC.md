@@ -31,7 +31,7 @@ plus the relevant tests.
 - [x] Step 6: Add venue image moderation.
 - [x] Step 7: Add venue status actions.
 - [x] Step 8: Add admin venue edit form.
-- [ ] Step 9: Cover admin venue flow with tests.
+- [x] Step 9: Cover admin venue flow with tests.
 - [ ] Step 10: Add admin review query services and hooks.
 - [ ] Step 11: Add review moderation queue.
 - [ ] Step 12: Add review detail/edit screen.
@@ -123,6 +123,14 @@ plus the relevant tests.
 - Normalizes phone numbers, trims string fields, parses comma-separated
   attribute lists, and validates required fields before mutation.
 - Added component coverage for corrected venue update payloads.
+
+### Step 9: Admin Venue Flow Tests
+
+- Added coverage for the admin moderation layout tabs and tab navigation.
+- Expanded venue queue tests for status filter and venue-name search behavior.
+- Added public venue service regression coverage for approved-only venue and
+  image reads.
+- Kept admin reads and writes covered through moderation hooks and service mocks.
 
 ## Architecture Rules
 

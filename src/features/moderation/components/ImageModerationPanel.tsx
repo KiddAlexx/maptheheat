@@ -1,6 +1,5 @@
 import { Image } from '@heroui/react';
 import clsx from 'clsx';
-import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import ActionButton from '@/ui/ActionButton';
 import type { ModerationImage, ModerationStatus } from '@/types/venueTypes';
@@ -17,15 +16,21 @@ const STATUS_BADGE_CLASSES: Record<ModerationStatus, string> = {
   declined: 'border-danger-200 bg-danger-50 text-danger-700',
 };
 
-type ImageDecision = Extract<ModerationStatus, 'approved' | 'declined'>;
+export type ImageDecision = Extract<ModerationStatus, 'approved' | 'declined'>;
 
 interface ImageModerationPanelProps {
   images?: ModerationImage[];
   isUpdating: boolean;
+  onImageDecisionChange: (
+    imageId: string,
+    decision: ImageDecision,
+    isChecked: boolean
+  ) => void;
   onUpdateStatuses: (payload: ImageStatusUpdatePayload) => void;
+  selectedStatuses: Record<string, ImageDecision | undefined>;
 }
 
-interface ImageStatusUpdatePayload {
+export interface ImageStatusUpdatePayload {
   approvedImageIds: string[];
   declinedImageIds: string[];
 }
@@ -33,27 +38,14 @@ interface ImageStatusUpdatePayload {
 function ImageModerationPanel({
   images = [],
   isUpdating,
+  onImageDecisionChange,
   onUpdateStatuses,
+  selectedStatuses,
 }: ImageModerationPanelProps) {
-  const [selectedStatuses, setSelectedStatuses] = useState<
-    Record<string, ImageDecision | undefined>
-  >({});
-
   const selectedEntries = Object.entries(selectedStatuses).filter(
     (entry): entry is [string, ImageDecision] => Boolean(entry[1])
   );
   const hasSelectedImages = selectedEntries.length > 0;
-
-  function handleImageDecisionChange(
-    imageId: string,
-    decision: ImageDecision,
-    isChecked: boolean
-  ) {
-    setSelectedStatuses((currentStatuses) => ({
-      ...currentStatuses,
-      [imageId]: isChecked ? decision : undefined,
-    }));
-  }
 
   function handleUpdateStatuses() {
     const approvedImageIds = selectedEntries
@@ -122,19 +114,25 @@ function ImageModerationPanel({
                       Moderation decision
                     </legend>
                     <ImageDecisionCheckbox
-                      checked={selectedStatuses[image.imageId] === 'approved'}
+                      checked={
+                        getSelectedImageDecision(image, selectedStatuses) ===
+                        'approved'
+                      }
                       imageId={image.imageId}
                       label="Approve image"
                       name={`approve-${image.imageId}`}
-                      onChange={handleImageDecisionChange}
+                      onChange={onImageDecisionChange}
                       status="approved"
                     />
                     <ImageDecisionCheckbox
-                      checked={selectedStatuses[image.imageId] === 'declined'}
+                      checked={
+                        getSelectedImageDecision(image, selectedStatuses) ===
+                        'declined'
+                      }
                       imageId={image.imageId}
                       label="Decline image"
                       name={`decline-${image.imageId}`}
-                      onChange={handleImageDecisionChange}
+                      onChange={onImageDecisionChange}
                       status="declined"
                     />
                   </fieldset>
@@ -150,6 +148,19 @@ function ImageModerationPanel({
       )}
     </section>
   );
+}
+
+function getSelectedImageDecision(
+  image: ModerationImage,
+  selectedStatuses: Record<string, ImageDecision | undefined>
+): ImageDecision | undefined {
+  return selectedStatuses[image.imageId] ?? getExistingImageDecision(image);
+}
+
+function getExistingImageDecision(
+  image: ModerationImage
+): ImageDecision | undefined {
+  return image.status === 'pending' ? undefined : image.status;
 }
 
 function ImageDecisionCheckbox({

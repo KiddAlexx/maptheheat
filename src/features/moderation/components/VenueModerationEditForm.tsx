@@ -1,5 +1,6 @@
 import { Input, Select, SelectItem, Textarea } from '@heroui/react';
 import { Controller, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import ActionButton from '@/ui/ActionButton';
 import { ModerationVenue } from '@/types/venueTypes';
 
@@ -79,11 +80,18 @@ function VenueModerationEditForm({
     });
   }
 
+  function handleInvalidSubmit() {
+    toast.error('Please fix the errors in the form');
+  }
+
   return (
     <article className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
       <h3 className="text-lg font-semibold text-gray-900">Edit venue</h3>
 
-      <form className="mt-4 space-y-5" onSubmit={handleSubmit(handleUpdateVenue)}>
+      <form
+        className="mt-4 space-y-5"
+        onSubmit={handleSubmit(handleUpdateVenue, handleInvalidSubmit)}
+      >
         <div className="grid gap-4 md:grid-cols-2">
           <Controller
             control={control}
@@ -329,11 +337,12 @@ function VenueModerationEditForm({
               {...field}
               errorMessage={errors.website?.message}
               id="moderation-website"
+              inputMode="url"
               isInvalid={!!errors.website}
               label="Website"
               labelPlacement="outside"
               radius="full"
-              type="url"
+              type="text"
             />
           )}
         />
