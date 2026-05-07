@@ -44,7 +44,10 @@ plus the relevant tests.
 - [x] Step 18: Add standalone image status actions.
 - [x] Step 19: Cover admin standalone image flow with tests.
 - [x] Step 19.5: Post-standalone refactor pass.
-- [ ] Step 20: Add notification workflow after approve/decline.
+- [ ] Step 20a: Notification services, hooks, and shared composer.
+- [ ] Step 20b: Manual notifications tab.
+- [ ] Step 20c: Inline composer in venue and review detail.
+- [ ] Step 20d: Inline composer in standalone image group.
 
 ## Completed Slices
 
@@ -597,19 +600,157 @@ plus the relevant tests.
 
 ## Notification Plan
 
-### Step 20: Moderation Notifications
+Step 20 is split into four small slices. Each is independently shippable
+with its own tests. Moderation status updates always save first; the
+notification is a separate second step. No combined RPC in this slice.
 
-- Add notification workflow after venue, review, and image moderation basics are
-  stable.
-- After approve/decline, allow admin to send or update a notification to the
-  submitting user.
-- Use existing `user_notifications` table and admin notification RPCs:
-  - `admin_insert_notification`.
-  - `admin_update_notification`.
-  - `admin_delete_notification` if needed.
-- Prefer a single RPC for combined moderation status update plus notification
-  if consistency becomes important.
-- Add tests for notification payload creation and mutation calls.
+Shared design notes (apply to all four slices):
+
+- Reuse the existing `admin_insert_notification(p JSONB)` RPC defined in
+  `supabase/schema.sql`. No DB work.
+- `request_status` mapping: `'confirmed'` for approved or partial,
+  `'declined'` for full decline. `notification_status` defaults to
+  `'unread'`.
+- Templates auto-derive on mount and re-derive when decision, related type,
+  or any of the four checkboxes change. Both title and message remain
+  editable plain inputs.
+- Four checkboxes:
+  - `Include venue link`
+  - `Mention edits/changes`
+  - `Mention some images were declined`
+  - `Mention the item can now be found publicly`
+  Manual tab starts unchecked. Inline (moderation-flow) composer
+  pre-checks based on context (e.g. venue approved with edits → include
+  link + mention edits; images partial → include link + mention images
+  declined).
+- Composer shape: `mode: 'manual' | 'moderation'`. In moderation mode the
+  recipient, related type, venue id, venue name, and decision render as
+  read-only summary rows; only title/message/checkboxes are editable. In
+  manual mode every field is an input.
+- Link URLs are absolute and use a shared
+  `buildVenueShareUrl(venue)` helper (new) that
+  `DetailedVenueView.tsx:251` adopts at the same time so we don't have two
+  copies. Shape: `${window.location.origin}/app/venue/{city}/{country}/{slug}/{id}`.
+- Snapshot pattern in detail flows: on click of approve/decline, snapshot
+  `{ userId, venueId, venueName, venueNameSlug, decision, linkUrl }` into
+  local state **before** firing the status mutation. The composer reads
+  only from the snapshot, never the live query, so it survives the row
+  leaving the pending view.
+- Failure mode: if the moderation status update succeeds but the
+  notification RPC fails, keep the composer mounted with an error and a
+  retry button. Never roll back the moderation status.
+
+### Step 20a: Notification Services, Hooks, and Shared Composer
+
+- Add to `src/services/apiModeration.ts`:
+  - `searchModerationNotificationRecipients(query)` — `profiles` query,
+    `ilike` on `username`, or `eq` on `user_id` if `query` matches a UUID
+    regex. Returns `{ userId, username }[]`. Debounced upstream in the
+    hook.
+  - `insertModerationNotification(payload)` — wraps
+    `supabase.rpc('admin_insert_notification', { p: decamelizeKeys(payload) })`.
+- Add `AdminNotificationPayload` type in `src/types/userTypes.ts` and fix
+  the existing leading-space typo on `UserNotification.requestStatus`
+  (`' declined'` → `'declined'`).
+- Add hooks under `src/features/moderation/hooks/`:
+  - `useSearchModerationNotificationRecipients` — React Query,
+    `staleTime: 60_000`, `enabled: query.length >= 2`, debounced 250ms in
+    consumer.
+  - `useInsertModerationNotification` — mutation, success toast
+    `Notification sent`. No moderation cache invalidation needed.
+- Add `src/features/moderation/components/ModerationNotificationComposer.tsx`
+  (shared, modes `'manual' | 'moderation'`).
+- Add `src/features/moderation/components/notificationTemplates.ts` — pure
+  function `buildModerationNotificationTemplate({ relatedType, decision, venueName, linkUrl, includeLink, mentionEdits, mentionImagesDeclined, mentionPublic })`
+  returning `{ title, message }`. Test in isolation — most logic lives
+  here.
+- Add `src/utils/buildVenueShareUrl.ts` and refactor
+  `DetailedVenueView.tsx:251` to use it.
+- Tests: service test for the recipient search query shape (UUID branch
+  vs username branch), service test for the RPC payload shape, hook
+  tests for default disabled / enabled-on-2-chars behaviour, isolated
+  template tests for each `(relatedType, decision, checkboxes)` combo.
+- No UI integration in this slice. The composer is exported and tested
+  but not mounted yet.
+
+### Step 20b: Manual Notifications Tab
+
+- Add `AdminNotificationCenter.tsx` page component for
+  `/admin/moderation/notifications`. Hosts `<ModerationNotificationComposer mode="manual" />`
+  plus the recipient picker.
+- Add a fourth tab `Notifications` to `AdminLayout.tsx`.
+- Add the route under `<AdminRoute>` in `src/App.tsx`.
+- Recipient picker UX: input with debounce (250ms), fires on ≥ 2 chars,
+  shows a result list with username + user id, click to select. Direct
+  paste of a UUID short-circuits the search and selects that user
+  immediately.
+- Tests: route renders, recipient search calls the hook with the right
+  query, picking a result fills `userId`, picking decision/checkbox
+  flips templates, send fires `useInsertModerationNotification` with the
+  expected payload, send button disables while in flight. **Negative
+  test:** the manual tab does not call any moderation status mutation
+  under any input.
+
+### Step 20c: Inline Composer in Venue and Review Detail
+
+- Add `notificationDraft` snapshot state to both
+  `VenueModerationDetail.tsx` and `ReviewModerationDetail.tsx`.
+- On approve/decline button click, snapshot the relevant fields, fire
+  the existing status mutation, and on success render the composer
+  inline below the decision panel in `mode="moderation"`.
+- Composer reads only from the snapshot. Pre-check checkboxes:
+  - Approved with edits → `Include venue link` + `Mention edits`
+  - Approved no edits → `Include venue link`
+  - Declined → none
+- Edits-detection: track whether the admin edited the venue/review via
+  `useUpdateModerationVenue` / `useUpdateModerationReview` during this
+  detail session. If yes, the snapshot's decision is stored as
+  `'partial'`.
+- The existing toast on status mutation stays unchanged.
+- Tests: approve a pending venue snapshots the right fields, composer
+  renders prefilled, send fires the RPC with the expected payload.
+  Decline a venue produces the declined template with no link. Review
+  with edits → partial template + mention-edits pre-checked. Failure
+  mode: RPC mocked to reject, composer stays mounted with retry.
+
+### Step 20d: Inline Composer in Standalone Image Group
+
+- Convert the existing `Proceed with decisions` CTA in
+  `StandaloneImageModerationGroup.tsx` to
+  `Save decisions and prepare notification`.
+- On click: snapshot
+  `{ userId, venueId, venueName, venueNameSlug, decision, linkUrl, imageCounts }`,
+  call `useUpdateStandaloneImageStatuses` with the draft decisions, and
+  on success render the composer in `mode="moderation"`.
+- `decision` is derived from the draft: all approved → `'approved'`,
+  all declined → `'declined'`, mixed → `'partial'`.
+- Pre-check checkboxes:
+  - All approved → `Include venue link` + `Mention public`
+  - Partial → `Include venue link` + `Mention some images declined`
+  - All declined → none
+- The composer reads from the snapshot, so it stays mounted even though
+  the saved images leave the pending standalone group view.
+- Update the existing comment in
+  `StandaloneImageModerationGroup.tsx` (placed in Step 19.5) to reflect
+  that the deferral is now resolved.
+- Tests: all-approved decisions → all-approved template payload;
+  all-declined → declined template; mixed → partial template; image
+  status update and notification send are separate calls; on
+  notification RPC failure the composer stays mounted while the image
+  statuses remain saved.
+
+### Verification expectations across 20a–d
+
+- `npm.cmd run checks` clean after each slice.
+- Targeted vitest after each slice; full `npm.cmd test -- --run` after
+  20d.
+- Manual smoke after 20b: search a username on the Notifications tab,
+  send to a second account, confirm receipt on the public side.
+- Manual smoke after 20c: approve a pending venue, confirm composer
+  prefills, send. Decline a pending review, confirm declined template.
+- Manual smoke after 20d: in a standalone group, mark some
+  approved/some declined, save decisions, confirm partial template loads
+  and image statuses are updated.
 
 ## Future Notes
 
