@@ -3,9 +3,11 @@ import { format, parseISO } from 'date-fns';
 import { ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoaderSpinner from '@/ui/LoaderSpinner';
+import ActionButton from '@/ui/ActionButton';
 import ImageModerationPanel from './ImageModerationPanel';
 import { useModerationVenue } from '../hooks/useModerationVenue';
 import { useUpdateModerationImageStatuses } from '../hooks/useUpdateModerationImageStatuses';
+import { useUpdateVenueModerationStatus } from '../hooks/useUpdateVenueModerationStatus';
 import { ModerationStatus, ModerationVenue } from '@/types/venueTypes';
 
 const STATUS_LABELS: Record<ModerationStatus, string> = {
@@ -31,8 +33,10 @@ function formatCoordinate(value: number | string) {
 function VenueModerationDetail() {
   const { venueId } = useParams();
   const { error, isPending, venue } = useModerationVenue(venueId);
-  const { isUpdating, updateImageStatuses } =
+  const { isUpdating: isUpdatingImages, updateImageStatuses } =
     useUpdateModerationImageStatuses(venueId);
+  const { isUpdating: isUpdatingVenueStatus, updateStatus } =
+    useUpdateVenueModerationStatus();
 
   if (!venueId) {
     return (
@@ -85,8 +89,8 @@ function VenueModerationDetail() {
             <StatusBadge status={venue.status} />
           </div>
           <p className="mt-1 max-w-3xl text-sm text-zinc-600">
-            Review the submitted venue details before approving, declining, or
-            editing in the next moderation steps.
+            Review the submitted venue details before making a moderation
+            decision.
           </p>
         </div>
       </header>
@@ -98,6 +102,12 @@ function VenueModerationDetail() {
         </article>
 
         <aside className="space-y-5">
+          <VenueStatusActions
+            isUpdating={isUpdatingVenueStatus}
+            onUpdateStatus={updateStatus}
+            status={venue.status}
+            venueId={venue.venueId}
+          />
           <MetadataPanel venue={venue} />
           <ClassificationPanel venue={venue} />
         </aside>
@@ -105,9 +115,56 @@ function VenueModerationDetail() {
 
       <ImageModerationPanel
         images={venue.venueImages}
-        isUpdating={isUpdating}
+        isUpdating={isUpdatingImages}
         onUpdateStatuses={updateImageStatuses}
       />
+    </section>
+  );
+}
+
+function VenueStatusActions({
+  isUpdating,
+  onUpdateStatus,
+  status,
+  venueId,
+}: {
+  isUpdating: boolean;
+  onUpdateStatus: (payload: { venueId: string; status: ModerationStatus }) => void;
+  status: ModerationStatus;
+  venueId: string;
+}) {
+  function handleApprove() {
+    onUpdateStatus({ venueId, status: 'approved' });
+  }
+
+  function handleDecline() {
+    onUpdateStatus({ venueId, status: 'declined' });
+  }
+
+  return (
+    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold text-gray-900">Venue decision</h3>
+      <p className="mt-1 text-sm text-zinc-600">
+        Set the final status for this venue submission.
+      </p>
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+        <ActionButton
+          intent="confirm"
+          isDisabled={status === 'approved' || isUpdating}
+          isLoading={isUpdating}
+          onPress={handleApprove}
+        >
+          Approve venue
+        </ActionButton>
+        <ActionButton
+          intent="cancel"
+          isDisabled={status === 'declined' || isUpdating}
+          isLoading={isUpdating}
+          onPress={handleDecline}
+        >
+          Decline venue
+        </ActionButton>
+      </div>
     </section>
   );
 }

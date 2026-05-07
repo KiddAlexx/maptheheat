@@ -8,6 +8,7 @@ import AllProviders from 'tests/AllProviders';
 import {
   getModerationVenueMock,
   updateModerationImageStatusesMock,
+  updateVenueModerationStatusMock,
 } from 'tests/mocks/apiModeration';
 
 function createModerationVenue(
@@ -77,6 +78,7 @@ describe('VenueModerationDetail', () => {
     vi.clearAllMocks();
     getModerationVenueMock.mockResolvedValue(createModerationVenue());
     updateModerationImageStatusesMock.mockResolvedValue();
+    updateVenueModerationStatusMock.mockResolvedValue();
   });
 
   it('loads the venue by route id and renders moderation detail metadata', async () => {
@@ -156,6 +158,44 @@ describe('VenueModerationDetail', () => {
       expect(updateModerationImageStatusesMock).toHaveBeenCalledWith({
         approvedImageIds: ['image-1'],
         declinedImageIds: ['image-2'],
+      });
+    });
+  });
+
+  it('approves a venue submission', async () => {
+    const user = userEvent.setup();
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /approve venue/i }));
+
+    await waitFor(() => {
+      expect(updateVenueModerationStatusMock).toHaveBeenCalledWith({
+        venueId: 'venue-test-id',
+        status: 'approved',
+      });
+    });
+  });
+
+  it('declines a venue submission', async () => {
+    const user = userEvent.setup();
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /decline venue/i }));
+
+    await waitFor(() => {
+      expect(updateVenueModerationStatusMock).toHaveBeenCalledWith({
+        venueId: 'venue-test-id',
+        status: 'declined',
       });
     });
   });

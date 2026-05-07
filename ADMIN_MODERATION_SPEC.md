@@ -29,7 +29,7 @@ plus the relevant tests.
 - [x] Step 4: Add venue moderation queue.
 - [x] Step 5: Add venue detail review screen.
 - [x] Step 6: Add venue image moderation.
-- [ ] Step 7: Add venue status actions.
+- [x] Step 7: Add venue status actions.
 - [ ] Step 8: Add admin venue edit form.
 - [ ] Step 9: Cover admin venue flow with tests.
 - [ ] Step 10: Add admin review query services and hooks.
@@ -102,6 +102,15 @@ plus the relevant tests.
   checkboxes and submit `{ approvedImageIds, declinedImageIds }`.
 - Wired venue detail image decisions through `useUpdateModerationImageStatuses`.
 - Added component coverage for venue image status selection payloads.
+
+### Step 7: Venue Status Actions
+
+- Added venue approve and decline controls to `VenueModerationDetail`.
+- Reused `useUpdateVenueModerationStatus`, which invalidates the venue detail
+  and moderation venue queue queries after mutation.
+- Disabled the action that matches the venue's current status while still
+  allowing status changes between approved and declined.
+- Added component tests for approve and decline mutation payloads.
 
 ## Architecture Rules
 
