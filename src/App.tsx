@@ -35,9 +35,6 @@ const AddNewVenue = lazy(() => import('./pages/AddNewVenue'));
 const AdminLayout = lazy(
   () => import('./features/moderation/components/AdminLayout')
 );
-const ModerationPlaceholder = lazy(
-  () => import('./features/moderation/components/ModerationPlaceholder')
-);
 const VenueModerationQueue = lazy(
   () => import('./features/moderation/components/VenueModerationQueue')
 );
@@ -53,6 +50,10 @@ const ReviewModerationDetail = lazy(
 const StandaloneImageModerationQueue = lazy(
   () =>
     import('./features/moderation/components/StandaloneImageModerationQueue')
+);
+const StandaloneImageModerationGroup = lazy(
+  () =>
+    import('./features/moderation/components/StandaloneImageModerationGroup')
 );
 
 function App() {
@@ -136,12 +137,7 @@ function App() {
             />
             <Route
               path="moderation/images/:groupId"
-              element={
-                <ModerationPlaceholder
-                  title="Image group moderation"
-                  description="Standalone image group detail will be added in the next moderation slice."
-                />
-              }
+              element={<StandaloneImageModerationGroup />}
             />
           </Route>
           <Route path="/terms" element={<Terms />} />

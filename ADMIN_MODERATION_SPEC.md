@@ -40,7 +40,7 @@ plus the relevant tests.
 - [x] Step 14: Cover admin review flow with tests.
 - [x] Step 15: Add admin standalone image query services and hooks.
 - [x] Step 16: Add standalone image moderation queue.
-- [ ] Step 17: Add standalone image grouping/detail screen.
+- [x] Step 17: Add standalone image grouping/detail screen.
 - [ ] Step 18: Add standalone image status actions.
 - [ ] Step 19: Cover admin standalone image flow with tests.
 - [ ] Step 20: Add notification workflow after approve/decline.
@@ -264,6 +264,23 @@ plus the relevant tests.
   queue row links can navigate until the Step 17 detail screen lands.
 - Updated `ImageModerationPanel` thumbnails to open the existing full-size
   `ImageCarousel` modal, using large image URLs for moderation review.
+
+### Step 17: Standalone Image Group Detail
+
+- Added `StandaloneImageModerationGroup` for
+  `/admin/moderation/images/:groupId`, using the derived `venueId:userId`
+  group id from the queue route.
+- Fetches standalone image group data through
+  `useModerationStandaloneImageGroup` and keeps admin reads under moderation
+  hooks/services.
+- Shows image status counts, submitter metadata, related venue fields, group id,
+  venue id, submitted date, and all images in the group.
+- Reused `ImageModerationPanel` with a new optional `title` prop so this screen
+  labels the panel "Submitted images" while venue/review screens still default
+  to "Attached images".
+- Wired per-image approve/decline decisions through
+  `useUpdateStandaloneImageStatuses`, clearing selected decisions after a
+  successful update.
 
 ## Architecture Rules
 

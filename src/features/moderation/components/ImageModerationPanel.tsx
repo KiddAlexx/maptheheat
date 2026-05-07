@@ -19,6 +19,7 @@ interface ImageModerationPanelProps {
   ) => void;
   onUpdateStatuses: (payload: ImageStatusUpdatePayload) => void;
   selectedStatuses: Record<string, ImageDecision | undefined>;
+  title?: string;
 }
 
 export interface ImageStatusUpdatePayload {
@@ -32,6 +33,7 @@ function ImageModerationPanel({
   onImageDecisionChange,
   onUpdateStatuses,
   selectedStatuses,
+  title = 'Attached images',
 }: ImageModerationPanelProps) {
   const { openModalImages } = useModalContext();
   const payload = getImageStatusUpdatePayload(selectedStatuses);
@@ -69,7 +71,7 @@ function ImageModerationPanel({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-900">
-            Attached images
+            {title}
           </h3>
           <p className="mt-1 text-sm text-zinc-600">
             Select image moderation decisions before updating their statuses.
