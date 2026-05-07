@@ -204,13 +204,20 @@ plus the relevant tests.
 
 - Do not make public components admin-aware with `isAdmin` flags.
 - Do not modify public services to include pending/declined data.
+- Frontend separation (public vs moderation services, route guards, hooks) is
+  for clarity and reviewability. The database (RLS + `is_admin()`) is the
+  actual security boundary; never rely on the frontend split to keep
+  unmoderated data away from anonymous users.
+- Moderation types extend public types, not the other way around.
+  `ModerationVenue extends Venue`, never `Venue` accreting `status` /
+  `submitterUsername` / image moderation fields.
 - Public service examples:
   - `getVenues()` returns approved venues only.
   - `getVenue()` returns one approved venue only.
 - Admin service examples:
   - `getModerationVenues()` can read by moderation status.
   - `getModerationVenue()` can read a venue regardless of status.
-  - `updateVenueModerationStatus()` updates venue moderation status.
+  - `updateModerationVenueStatus()` updates venue moderation status.
 - Components never call Supabase directly.
 - Admin UI must use React Query hooks backed by moderation services.
 - Server state stays in React Query; client-only UI state can use component state
@@ -225,10 +232,15 @@ plus the relevant tests.
   - `src/features/moderation/hooks/`
 - Admin services:
   - `src/services/apiModeration.ts`
-- Shared venue types:
-  - `src/types/venueTypes.ts`
+- Admin shared constants and helpers:
+  - `src/features/moderation/constants.ts`
+  - `src/features/moderation/utils/`
+- Moderation types:
+  - `src/types/venueTypes.ts` (venue, image, status)
+  - `src/types/reviewTypes.ts` (review)
 - Tests:
   - `tests/features/moderation/`
+  - `tests/services/` (public/admin service boundary regressions)
 
 ## Step Plan
 
@@ -323,21 +335,28 @@ plus the relevant tests.
 ### Step 12: Review Detail/Edit Screen
 
 - Add `/admin/moderation/reviews/:reviewId`.
+- New components mirror the venue pattern: `ReviewModerationDetail.tsx` and
+  `ReviewModerationEditForm.tsx` under
+  `src/features/moderation/components/`.
 - Fetch with `useModerationReview`.
 - Show review content, ratings, venue context, submitter metadata, and status.
-- Show review-attached pending images with the shared admin image moderation
-  component.
+- Show review-attached pending images with `ImageModerationPanel`.
+- Wire image decisions through `useUpdateReviewImageStatuses` (added in
+  Step 11.5) so the review detail cache stays correct.
 - Allow approving or declining review-attached images before or alongside review
   approval.
 - Add an admin-only edit form for correcting review fields before approval.
 - Reuse form validation patterns where practical.
-- Do not make public `ReviewForm` admin-aware with flags unless extracting a
-  smaller shared field component first.
+- Do not make public `ReviewForm` admin-aware with flags. If shared field
+  markup is worth reusing, extract a presentational sub-component first.
+- Reuse Step 11.5 shared pieces where they fit:
+  `ModerationSubmitter`, `formatSubmittedDate`, and the constants in
+  `src/features/moderation/constants.ts`.
 
 ### Step 13: Review Status Actions
 
 - Add approve and decline controls.
-- Use `useUpdateReviewModerationStatus`.
+- Use `useUpdateModerationReviewStatus` (renamed in Step 11.5).
 - Invalidate moderation review and review queue queries after mutation.
 - Keep notification sending deferred to Step 20.
 
@@ -366,7 +385,8 @@ plus the relevant tests.
   - `useModerationStandaloneImages`.
   - `useModerationStandaloneImageGroup` if grouping by upload batch or venue is
     useful.
-  - `useUpdateStandaloneImageModerationStatus`.
+  - `useUpdateStandaloneImageStatuses` — name aligned with the venue/review
+    image hooks split in Step 11.5.
 - Default image status filter to `pending`.
 - Query only standalone images for this slice, not venue-attached images already
   handled in the venue flow.
@@ -394,23 +414,40 @@ plus the relevant tests.
   - related venue when available.
   - created date.
   - current status.
+- Search filters: venue name and submitter username. Skip the city dropdown
+  here — groups are already venue-scoped, and venue-name search is more
+  useful than a city filter. `ModerationCityScope` does not need a
+  `'standalone'` value.
+- Reuse `ModerationQueueRow`, `ModerationSubmitter`, `formatSubmittedDate`,
+  and the constants in `src/features/moderation/constants.ts`. The metadata
+  slot can hold a small image-preview cluster and the standalone-specific
+  fields.
 - Selecting a group should navigate to an image detail/group screen.
 
 ### Step 17: Standalone Image Group/Detail Screen
 
 - Add a route such as `/admin/moderation/images/:groupId` once the grouping
   key is decided.
+- New component `StandaloneImageModerationGroup.tsx` under
+  `src/features/moderation/components/` to mirror the venue/review detail
+  pattern.
 - Show all images in the selected group.
 - Show submitter metadata and related venue/review context where available.
-- Reuse the shared admin image moderation component from the venue/review flows.
+- Reuse `ImageModerationPanel` for image decisions. Add an optional `title`
+  prop to the panel here so the standalone screen can render
+  e.g. "Submitted images" instead of "Attached images". Default stays
+  unchanged so venue and review consumers do not need updates.
+- Wire image decisions through `useUpdateStandaloneImageStatuses` (Step 15)
+  so the group cache stays correct.
 - Allow per-image selection for approval or decline because groups can contain
   mixed-quality images.
 - Keep image previews accessible with useful alt text and clear labels.
+- Reuse `ModerationSubmitter` and `formatSubmittedDate` for metadata.
 
 ### Step 18: Standalone Image Status Actions
 
 - Add approve and decline controls for individual images or the selected group.
-- Use the standalone image status mutation hook.
+- Use `useUpdateStandaloneImageStatuses` from Step 15.
 - Invalidate image queue/detail queries after mutation.
 - Keep notification sending deferred to Step 20.
 
