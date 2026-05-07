@@ -1,10 +1,14 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import VenueModerationDetail from '@/features/moderation/components/VenueModerationDetail';
 import { ModerationVenue } from '@/types/venueTypes';
 import AllProviders from 'tests/AllProviders';
-import { getModerationVenueMock } from 'tests/mocks/apiModeration';
+import {
+  getModerationVenueMock,
+  updateModerationImageStatusesMock,
+} from 'tests/mocks/apiModeration';
 
 function createModerationVenue(
   overrides: Partial<ModerationVenue> = {}
@@ -72,6 +76,7 @@ describe('VenueModerationDetail', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     getModerationVenueMock.mockResolvedValue(createModerationVenue());
+    updateModerationImageStatusesMock.mockResolvedValue();
   });
 
   it('loads the venue by route id and renders moderation detail metadata', async () => {
@@ -82,7 +87,7 @@ describe('VenueModerationDetail', () => {
     ).toBeInTheDocument();
 
     expect(getModerationVenueMock).toHaveBeenCalledWith('venue-test-id');
-    expect(screen.getByText('Pending')).toBeInTheDocument();
+    expect(screen.getAllByText('Pending').length).toBeGreaterThan(0);
     expect(screen.getByText('pepper_admin')).toBeInTheDocument();
     expect(screen.getByText('submitter-user-id')).toBeInTheDocument();
     expect(screen.getByText(/01 May 2026/)).toBeInTheDocument();
@@ -96,6 +101,63 @@ describe('VenueModerationDetail', () => {
     expect(screen.getByText('Mexican')).toBeInTheDocument();
     expect(screen.getByText('Vegan options')).toBeInTheDocument();
     expect(screen.getByText('1')).toBeInTheDocument();
+  });
+
+  it('submits selected venue image status decisions', async () => {
+    const user = userEvent.setup();
+    getModerationVenueMock.mockResolvedValue(
+      createModerationVenue({
+        venueImages: [
+          {
+            altText: 'Front of Pepper Palace',
+            createdAt: '2026-05-01T10:05:00.000Z',
+            imageId: 'image-1',
+            imagePath: {
+              lg: 'image-1-lg.jpg',
+              md: 'image-1-md.jpg',
+              sm: 'image-1-sm.jpg',
+            },
+            imageType: 'venue',
+            reviewId: null,
+            status: 'pending',
+            userId: 'submitter-user-id',
+            venueId: 'venue-test-id',
+          },
+          {
+            altText: 'Pepper Palace menu',
+            createdAt: '2026-05-01T10:06:00.000Z',
+            imageId: 'image-2',
+            imagePath: {
+              lg: 'image-2-lg.jpg',
+              md: 'image-2-md.jpg',
+              sm: 'image-2-sm.jpg',
+            },
+            imageType: 'venue',
+            reviewId: null,
+            status: 'pending',
+            userId: 'submitter-user-id',
+            venueId: 'venue-test-id',
+          },
+        ],
+      })
+    );
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getAllByLabelText(/approve image/i)[0]);
+    await user.click(screen.getAllByLabelText(/decline image/i)[1]);
+    await user.click(screen.getByRole('button', { name: /update images/i }));
+
+    await waitFor(() => {
+      expect(updateModerationImageStatusesMock).toHaveBeenCalledWith({
+        approvedImageIds: ['image-1'],
+        declinedImageIds: ['image-2'],
+      });
+    });
   });
 
   it('renders an error state when the venue cannot be loaded', async () => {

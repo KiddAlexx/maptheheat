@@ -4,6 +4,14 @@ Living spec for building the MapTheHeat admin moderation workflow in small,
 reviewable slices. Update the checkboxes after each completed step so future
 chats can resume without needing the full conversation history.
 
+## Resume Instructions
+
+For a new chat, read `AGENTS.md` and this file, then continue from the first
+unchecked item in `Current Status`. Keep each slice scoped to that step, preserve
+public services as approved-only, put admin data access in moderation
+services/hooks, update this spec after the slice, and run `npm.cmd run checks`
+plus the relevant tests.
+
 ## Goals
 
 - Add a local/dev-only admin moderation area to the main app.
@@ -20,7 +28,7 @@ chats can resume without needing the full conversation history.
 - [x] Step 3: Add admin venue query services and hooks.
 - [x] Step 4: Add venue moderation queue.
 - [x] Step 5: Add venue detail review screen.
-- [ ] Step 6: Add venue image moderation.
+- [x] Step 6: Add venue image moderation.
 - [ ] Step 7: Add venue status actions.
 - [ ] Step 8: Add admin venue edit form.
 - [ ] Step 9: Cover admin venue flow with tests.
@@ -85,6 +93,15 @@ chats can resume without needing the full conversation history.
 - Keeps status actions and image moderation controls deferred to Steps 6 and 7.
 - Added component tests for detail rendering, load failure, and empty-result
   states.
+
+### Step 6: Venue Image Moderation
+
+- Added reusable `ImageModerationPanel` under moderation components.
+- Shows attached moderation images with current image status badges.
+- Allows admins to select approve or decline decisions with accessible
+  checkboxes and submit `{ approvedImageIds, declinedImageIds }`.
+- Wired venue detail image decisions through `useUpdateModerationImageStatuses`.
+- Added component coverage for venue image status selection payloads.
 
 ## Architecture Rules
 

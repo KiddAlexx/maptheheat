@@ -3,7 +3,9 @@ import { format, parseISO } from 'date-fns';
 import { ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoaderSpinner from '@/ui/LoaderSpinner';
+import ImageModerationPanel from './ImageModerationPanel';
 import { useModerationVenue } from '../hooks/useModerationVenue';
+import { useUpdateModerationImageStatuses } from '../hooks/useUpdateModerationImageStatuses';
 import { ModerationStatus, ModerationVenue } from '@/types/venueTypes';
 
 const STATUS_LABELS: Record<ModerationStatus, string> = {
@@ -29,6 +31,8 @@ function formatCoordinate(value: number | string) {
 function VenueModerationDetail() {
   const { venueId } = useParams();
   const { error, isPending, venue } = useModerationVenue(venueId);
+  const { isUpdating, updateImageStatuses } =
+    useUpdateModerationImageStatuses(venueId);
 
   if (!venueId) {
     return (
@@ -98,6 +102,12 @@ function VenueModerationDetail() {
           <ClassificationPanel venue={venue} />
         </aside>
       </div>
+
+      <ImageModerationPanel
+        images={venue.venueImages}
+        isUpdating={isUpdating}
+        onUpdateStatuses={updateImageStatuses}
+      />
     </section>
   );
 }
