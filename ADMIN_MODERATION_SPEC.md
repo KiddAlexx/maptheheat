@@ -30,7 +30,7 @@ plus the relevant tests.
 - [x] Step 5: Add venue detail review screen.
 - [x] Step 6: Add venue image moderation.
 - [x] Step 7: Add venue status actions.
-- [ ] Step 8: Add admin venue edit form.
+- [x] Step 8: Add admin venue edit form.
 - [ ] Step 9: Cover admin venue flow with tests.
 - [ ] Step 10: Add admin review query services and hooks.
 - [ ] Step 11: Add review moderation queue.
@@ -111,6 +111,18 @@ plus the relevant tests.
 - Disabled the action that matches the venue's current status while still
   allowing status changes between approved and declined.
 - Added component tests for approve and decline mutation payloads.
+
+### Step 8: Admin Venue Edit Form
+
+- Added `VenueModerationEditForm` as an admin-only form separate from public
+  `VenueForm`.
+- Wired venue updates through `useUpdateModerationVenue`, preserving the
+  admin service and React Query hook boundary.
+- Supports correcting venue identity, slug, contact, address, coordinates,
+  description, and submitted attribute lists.
+- Normalizes phone numbers, trims string fields, parses comma-separated
+  attribute lists, and validates required fields before mutation.
+- Added component coverage for corrected venue update payloads.
 
 ## Architecture Rules
 

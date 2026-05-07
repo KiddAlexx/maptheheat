@@ -5,8 +5,10 @@ import { Link, useParams } from 'react-router-dom';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import ActionButton from '@/ui/ActionButton';
 import ImageModerationPanel from './ImageModerationPanel';
+import VenueModerationEditForm from './VenueModerationEditForm';
 import { useModerationVenue } from '../hooks/useModerationVenue';
 import { useUpdateModerationImageStatuses } from '../hooks/useUpdateModerationImageStatuses';
+import { useUpdateModerationVenue } from '../hooks/useUpdateModerationVenue';
 import { useUpdateVenueModerationStatus } from '../hooks/useUpdateVenueModerationStatus';
 import { ModerationStatus, ModerationVenue } from '@/types/venueTypes';
 
@@ -35,6 +37,8 @@ function VenueModerationDetail() {
   const { error, isPending, venue } = useModerationVenue(venueId);
   const { isUpdating: isUpdatingImages, updateImageStatuses } =
     useUpdateModerationImageStatuses(venueId);
+  const { isUpdating: isUpdatingVenue, updateVenue } =
+    useUpdateModerationVenue();
   const { isUpdating: isUpdatingVenueStatus, updateStatus } =
     useUpdateVenueModerationStatus();
 
@@ -96,10 +100,20 @@ function VenueModerationDetail() {
       </header>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(20rem,1fr)]">
-        <article className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-          <h3 className="text-lg font-semibold text-gray-900">Venue details</h3>
-          <VenueFields venue={venue} />
-        </article>
+        <div className="space-y-5">
+          <article className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Venue details
+            </h3>
+            <VenueFields venue={venue} />
+          </article>
+          <VenueModerationEditForm
+            isUpdating={isUpdatingVenue}
+            key={venue.venueId}
+            onUpdateVenue={updateVenue}
+            venue={venue}
+          />
+        </div>
 
         <aside className="space-y-5">
           <VenueStatusActions

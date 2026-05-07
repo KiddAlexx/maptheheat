@@ -8,6 +8,7 @@ import AllProviders from 'tests/AllProviders';
 import {
   getModerationVenueMock,
   updateModerationImageStatusesMock,
+  updateModerationVenueMock,
   updateVenueModerationStatusMock,
 } from 'tests/mocks/apiModeration';
 
@@ -78,6 +79,7 @@ describe('VenueModerationDetail', () => {
     vi.clearAllMocks();
     getModerationVenueMock.mockResolvedValue(createModerationVenue());
     updateModerationImageStatusesMock.mockResolvedValue();
+    updateModerationVenueMock.mockResolvedValue(createModerationVenue());
     updateVenueModerationStatusMock.mockResolvedValue();
   });
 
@@ -99,7 +101,9 @@ describe('VenueModerationDetail', () => {
       'href',
       'https://example.com'
     );
-    expect(screen.getByText(/submitted venue waiting/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/submitted venue waiting/i).length).toBeGreaterThan(
+      0
+    );
     expect(screen.getByText('Mexican')).toBeInTheDocument();
     expect(screen.getByText('Vegan options')).toBeInTheDocument();
     expect(screen.getByText('1')).toBeInTheDocument();
@@ -196,6 +200,40 @@ describe('VenueModerationDetail', () => {
       expect(updateVenueModerationStatusMock).toHaveBeenCalledWith({
         venueId: 'venue-test-id',
         status: 'declined',
+      });
+    });
+  });
+
+  it('submits corrected venue fields', async () => {
+    const user = userEvent.setup();
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.clear(screen.getByLabelText(/^venue name$/i));
+    await user.type(screen.getByLabelText(/^venue name$/i), 'Pepper House');
+    await user.clear(screen.getByLabelText(/^venue slug$/i));
+    await user.type(screen.getByLabelText(/^venue slug$/i), 'pepper-house');
+    await user.clear(screen.getByLabelText(/^phone number$/i));
+    await user.type(screen.getByLabelText(/^phone number$/i), '+44 9999 888777');
+    await user.clear(screen.getByLabelText(/^cuisines$/i));
+    await user.type(screen.getByLabelText(/^cuisines$/i), 'Thai, Korean');
+    await user.click(
+      screen.getByRole('button', { name: /save venue changes/i })
+    );
+
+    await waitFor(() => {
+      expect(updateModerationVenueMock).toHaveBeenCalledWith({
+        venueId: 'venue-test-id',
+        venueUpdate: expect.objectContaining({
+          cuisines: ['Thai', 'Korean'],
+          phoneNumber: '+449999888777',
+          venueName: 'Pepper House',
+          venueNameSlug: 'pepper-house',
+        }),
       });
     });
   });
