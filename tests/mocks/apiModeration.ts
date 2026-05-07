@@ -1,5 +1,6 @@
 import { vi } from 'vitest';
 import {
+  ModerationStandaloneImagesResponse,
   ModerationReviewsResponse,
   ModerationVenuesResponse,
   UpdateModerationImageStatusesArgs,
@@ -9,7 +10,11 @@ import {
   UpdateModerationVenueStatusArgs,
 } from '@/services/apiModeration';
 import { ModerationReview } from '@/types/reviewTypes';
-import { ModerationVenue, UniqueCity } from '@/types/venueTypes';
+import {
+  ModerationStandaloneImageGroup,
+  ModerationVenue,
+  UniqueCity,
+} from '@/types/venueTypes';
 
 export const getIsAdminMock = vi.fn(async () => false);
 export const getModerationVenuesMock = vi.fn<
@@ -26,6 +31,15 @@ export const getModerationReviewsMock = vi.fn<
   count: 0,
 }));
 export const getModerationReviewMock = vi.fn<() => Promise<ModerationReview>>();
+export const getModerationStandaloneImagesMock = vi.fn<
+  () => Promise<ModerationStandaloneImagesResponse>
+>(async () => ({
+  data: [],
+  count: 0,
+}));
+export const getModerationStandaloneImageGroupMock = vi.fn<
+  () => Promise<ModerationStandaloneImageGroup>
+>();
 export const getModerationCitiesMock = vi.fn<() => Promise<UniqueCity[]>>(
   async () => []
 );

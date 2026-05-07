@@ -9,8 +9,13 @@ import {
   ReviewSort,
 } from '@/types/reviewTypes';
 import {
+  DetailedImage,
+  ImageUploadParams,
+  ModerationImage,
   ModerationStatus,
+  ModerationStandaloneImageGroup,
   ModerationVenue,
+  StandaloneImageModerationFilter,
   UniqueCity,
   UniqueUserCity,
   VenueFilter,
@@ -47,6 +52,17 @@ export interface ModerationReviewsRequestParams {
 
 export interface ModerationReviewsResponse {
   data: ModerationReview[];
+  count: number | null;
+}
+
+export interface ModerationStandaloneImagesRequestParams {
+  status?: ModerationStatus;
+  filters?: StandaloneImageModerationFilter[];
+  pagination?: VenuePagination;
+}
+
+export interface ModerationStandaloneImagesResponse {
+  data: ModerationStandaloneImageGroup[];
   count: number | null;
 }
 
@@ -95,6 +111,19 @@ type ModerationReviewCityRow = {
     | null;
 };
 
+type ModerationStandaloneImageRow = DetailedImage &
+  Partial<Pick<ModerationImage, 'createdAt' | 'reviewId' | 'userId' | 'venueId'>> & {
+    imageType?: ImageUploadParams['imageType'] | string | null;
+    status?: ModerationStatus;
+  };
+
+type ModerationStandaloneImageGroupRow = Omit<
+  ModerationStandaloneImageGroup,
+  'groupId' | 'images'
+> & {
+  images?: ModerationStandaloneImageRow[] | null;
+};
+
 function mapModerationVenue(row: ModerationVenueRow): ModerationVenue {
   const { profiles, ...venue } = row;
 
@@ -115,6 +144,51 @@ function mapModerationReview(row: ModerationReviewRow): ModerationReview {
     submitterUsername: profiles?.username ?? null,
     venueDetails: normalizedVenueDetails,
     venueImages: addImagePaths(review.venueImages),
+  };
+}
+
+function getStandaloneImageGroupId({
+  userId,
+  venueId,
+}: {
+  userId: string;
+  venueId: string;
+}): string {
+  return `${venueId}:${userId}`;
+}
+
+function mapStandaloneImage(
+  image: ModerationStandaloneImageRow,
+  group: Pick<ModerationStandaloneImageGroupRow, 'userId' | 'venueId'>
+): ModerationImage {
+  const imageType =
+    image.imageType === 'venue' ||
+    image.imageType === 'review' ||
+    image.imageType === 'standalone'
+      ? image.imageType
+      : null;
+
+  return {
+    ...image,
+    altText: image.altText ?? 'Submitted standalone image',
+    createdAt: image.createdAt ?? '',
+    imageType,
+    reviewId: image.reviewId ?? null,
+    status: image.status ?? 'pending',
+    userId: image.userId ?? group.userId,
+    venueId: image.venueId ?? group.venueId,
+  };
+}
+
+function mapStandaloneImageGroup(
+  row: ModerationStandaloneImageGroupRow
+): ModerationStandaloneImageGroup {
+  const images = row.images?.map((image) => mapStandaloneImage(image, row));
+
+  return {
+    ...row,
+    groupId: getStandaloneImageGroupId(row),
+    images: addImagePaths(images),
   };
 }
 
@@ -276,6 +350,65 @@ export async function getModerationReview(
   return mapModerationReview(
     camelcaseKeys(data, { deep: true }) as ModerationReviewRow
   );
+}
+
+export async function getModerationStandaloneImages({
+  status = 'pending',
+  filters = [],
+  pagination,
+}: ModerationStandaloneImagesRequestParams = {}): Promise<ModerationStandaloneImagesResponse> {
+  let query = supabase
+    .from('pending_standalone_image_groups')
+    .select('*', { count: 'exact' })
+    .order('last_created_at', { ascending: false });
+
+  if (filters.length > 0) {
+    filters.forEach((filter) => {
+      const convertedField = decamelize(filter.field);
+      // @ts-expect-error: Dynamic method call is constrained by StandaloneImageModerationFilter.method.
+      query = query[filter.method](convertedField, filter.value);
+    });
+  }
+
+  if (pagination) {
+    const { pageNumber, maxResults } = pagination;
+    const from = (pageNumber - 1) * maxResults;
+    const to = from + maxResults - 1;
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    throw new Error(
+      `Standalone image moderation groups could not be loaded. Error: ${error.message}`
+    );
+  }
+
+  const groups = (
+    camelcaseKeys(data, { deep: true }) as ModerationStandaloneImageGroupRow[]
+  ).map(mapStandaloneImageGroup);
+  const groupsMatchingStatus = groups.filter((group) =>
+    group.images.some((image) => image.status === status)
+  );
+
+  return {
+    data: groupsMatchingStatus,
+    count: status === 'pending' ? count : groupsMatchingStatus.length,
+  };
+}
+
+export async function getModerationStandaloneImageGroup(
+  groupId: string
+): Promise<ModerationStandaloneImageGroup> {
+  const { data } = await getModerationStandaloneImages();
+  const group = data.find((imageGroup) => imageGroup.groupId === groupId);
+
+  if (!group) {
+    throw new Error('Standalone image moderation group could not be found.');
+  }
+
+  return group;
 }
 
 export async function getModerationCities({

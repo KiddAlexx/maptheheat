@@ -44,6 +44,29 @@ export interface ModerationVenue extends Venue {
   venueImages?: ModerationImage[];
 }
 
+export interface ModerationStandaloneImageGroup {
+  groupId: string;
+  venueId: string;
+  venueName: string | null;
+  city: string | null;
+  venueNameSlug: string | null;
+  userId: string;
+  username: string | null;
+  imageCount: number;
+  lastCreatedAt: string;
+  images: ModerationImage[];
+}
+
+export type StandaloneImageModerationFilterField =
+  | 'venueName'
+  | 'username';
+
+export interface StandaloneImageModerationFilter {
+  field: StandaloneImageModerationFilterField;
+  value: string;
+  method: SupabaseQueryMethod;
+}
+
 // id not present at creation time, generate by Supbase
 export type NewVenue = Omit<Venue, 'venueId'>;
 

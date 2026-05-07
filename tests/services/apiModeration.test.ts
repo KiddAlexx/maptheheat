@@ -2,7 +2,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.unmock('@/services/apiModeration');
 
-const { getModerationReview, getModerationReviews } = await vi.importActual<
+const {
+  getModerationReview,
+  getModerationReviews,
+  getModerationStandaloneImageGroup,
+  getModerationStandaloneImages,
+} = await vi.importActual<
   typeof import('@/services/apiModeration')
 >('@/services/apiModeration');
 
@@ -34,6 +39,7 @@ const supabaseMocks = vi.hoisted(() => {
 });
 
 vi.mock('@/services/supabase', () => ({
+  supabaseUrl: 'https://example.supabase.co',
   default: {
     from: supabaseMocks.from,
   },
@@ -88,6 +94,32 @@ const moderationReviewRow = {
   venue_images: [],
 };
 
+const standaloneImageGroupRow = {
+  venue_id: 'venue-test-id',
+  venue_name: 'Pepper Palace',
+  city: 'London',
+  venue_name_slug: 'pepper-palace',
+  user_id: 'submitter-user-id',
+  username: 'pepper_admin',
+  image_count: 1,
+  last_created_at: '2026-05-01T10:00:00.000Z',
+  images: [
+    {
+      image_id: 'image-test-id',
+      created_at: '2026-05-01T10:00:00.000Z',
+      review_id: null,
+      alt_text: 'Standalone image',
+      status: 'pending',
+      image_type: 'standalone',
+      image_path: {
+        lg: 'image-lg.jpg',
+        md: 'image-md.jpg',
+        sm: 'image-sm.jpg',
+      },
+    },
+  ],
+};
+
 describe('apiModeration review reads', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -133,5 +165,61 @@ describe('apiModeration review reads', () => {
       venueName: 'Pepper Palace',
     });
     expect(Array.isArray(review.venueDetails)).toBe(false);
+  });
+});
+
+describe('apiModeration standalone image reads', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('reads standalone image groups from the pending grouping view', async () => {
+    const query = createSupabaseQueryMock({
+      count: 1,
+      data: [standaloneImageGroupRow],
+    });
+    supabaseMocks.state.query = query;
+
+    const { data, count } = await getModerationStandaloneImages();
+
+    expect(supabaseMocks.from).toHaveBeenCalledWith(
+      'pending_standalone_image_groups'
+    );
+    expect(query.select).toHaveBeenCalledWith('*', { count: 'exact' });
+    expect(query.order).toHaveBeenCalledWith('last_created_at', {
+      ascending: false,
+    });
+    expect(count).toBe(1);
+    expect(data[0]).toMatchObject({
+      groupId: 'venue-test-id:submitter-user-id',
+      imageCount: 1,
+      username: 'pepper_admin',
+      venueName: 'Pepper Palace',
+    });
+    expect(data[0].images[0]).toMatchObject({
+      imageId: 'image-test-id',
+      imageType: 'standalone',
+      status: 'pending',
+      userId: 'submitter-user-id',
+      venueId: 'venue-test-id',
+    });
+    expect(data[0].images[0].imagePath.md).toBe(
+      'https://example.supabase.co/storage/v1/object/public/venue-images/image-md.jpg'
+    );
+  });
+
+  it('loads one standalone image group by derived group id', async () => {
+    const query = createSupabaseQueryMock({
+      count: 1,
+      data: [standaloneImageGroupRow],
+    });
+    supabaseMocks.state.query = query;
+
+    const group = await getModerationStandaloneImageGroup(
+      'venue-test-id:submitter-user-id'
+    );
+
+    expect(group.venueName).toBe('Pepper Palace');
+    expect(group.images).toHaveLength(1);
   });
 });

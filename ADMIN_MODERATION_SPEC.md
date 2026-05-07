@@ -38,7 +38,7 @@ plus the relevant tests.
 - [x] Step 12: Add review detail/edit screen.
 - [x] Step 13: Add review status actions.
 - [x] Step 14: Cover admin review flow with tests.
-- [ ] Step 15: Add admin standalone image query services and hooks.
+- [x] Step 15: Add admin standalone image query services and hooks.
 - [ ] Step 16: Add standalone image moderation queue.
 - [ ] Step 17: Add standalone image grouping/detail screen.
 - [ ] Step 18: Add standalone image status actions.
@@ -233,6 +233,22 @@ plus the relevant tests.
   tests do not pull the public review form into runtime.
 - Verified the review moderation test set across hooks, layout, queue, detail,
   flow, moderation services, and public review service boundaries.
+
+### Step 15: Admin Standalone Image Services And Hooks
+
+- Added `ModerationStandaloneImageGroup` and standalone image moderation
+  filter types in `src/types/venueTypes.ts`.
+- Added `getModerationStandaloneImages()` backed by the existing
+  `pending_standalone_image_groups` view, plus
+  `getModerationStandaloneImageGroup()` using derived `venueId:userId` group
+  ids for the future detail route.
+- Added `useModerationStandaloneImages`,
+  `useModerationStandaloneImageGroup`, and
+  `useUpdateStandaloneImageStatuses` under moderation hooks.
+- Reused the shared `updateModerationImageStatuses` service and
+  `applyImageStatusUpdate` helper for standalone image decisions.
+- Added hook and service coverage for default pending reads, group lookup, and
+  standalone image status updates.
 
 ## Architecture Rules
 

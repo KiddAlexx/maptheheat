@@ -4,16 +4,23 @@ import { useModerationCities } from '@/features/moderation/hooks/useModerationCi
 import { useModerationReview } from '@/features/moderation/hooks/useModerationReview';
 import { useModerationReviewCities } from '@/features/moderation/hooks/useModerationReviewCities';
 import { useModerationReviews } from '@/features/moderation/hooks/useModerationReviews';
+import { useModerationStandaloneImageGroup } from '@/features/moderation/hooks/useModerationStandaloneImageGroup';
+import { useModerationStandaloneImages } from '@/features/moderation/hooks/useModerationStandaloneImages';
 import { useModerationVenues } from '@/features/moderation/hooks/useModerationVenues';
 import { useUpdateModerationReview } from '@/features/moderation/hooks/useUpdateModerationReview';
 import { useUpdateModerationReviewStatus } from '@/features/moderation/hooks/useUpdateModerationReviewStatus';
+import { useUpdateStandaloneImageStatuses } from '@/features/moderation/hooks/useUpdateStandaloneImageStatuses';
 import { ModerationReview } from '@/types/reviewTypes';
+import { ModerationStandaloneImageGroup } from '@/types/venueTypes';
 import AllProviders from 'tests/AllProviders';
 import {
   getModerationCitiesMock,
   getModerationReviewMock,
   getModerationReviewsMock,
+  getModerationStandaloneImageGroupMock,
+  getModerationStandaloneImagesMock,
   getModerationVenuesMock,
+  updateModerationImageStatusesMock,
   updateModerationReviewMock,
   updateModerationReviewStatusMock,
 } from 'tests/mocks/apiModeration';
@@ -40,6 +47,40 @@ function createModerationReview(
   };
 }
 
+function createStandaloneImageGroup(
+  overrides: Partial<ModerationStandaloneImageGroup> = {}
+): ModerationStandaloneImageGroup {
+  return {
+    city: 'London',
+    groupId: 'venue-test-id:user-test-id',
+    imageCount: 1,
+    images: [
+      {
+        altText: 'Standalone image',
+        createdAt: '2026-01-01T12:00:00.000Z',
+        imageId: 'image-test-id',
+        imagePath: {
+          lg: 'image-lg.jpg',
+          md: 'image-md.jpg',
+          sm: 'image-sm.jpg',
+        },
+        imageType: 'standalone',
+        reviewId: null,
+        status: 'pending',
+        userId: 'user-test-id',
+        venueId: 'venue-test-id',
+      },
+    ],
+    lastCreatedAt: '2026-01-01T12:00:00.000Z',
+    userId: 'user-test-id',
+    username: 'pepperfan',
+    venueId: 'venue-test-id',
+    venueName: 'Pepper Palace',
+    venueNameSlug: 'pepper-palace',
+    ...overrides,
+  };
+}
+
 describe('moderation query hooks', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -51,9 +92,17 @@ describe('moderation query hooks', () => {
       data: [],
       count: 0,
     });
+    getModerationStandaloneImagesMock.mockResolvedValue({
+      data: [],
+      count: 0,
+    });
+    getModerationStandaloneImageGroupMock.mockResolvedValue(
+      createStandaloneImageGroup()
+    );
     getModerationReviewMock.mockResolvedValue(createModerationReview());
     updateModerationReviewStatusMock.mockResolvedValue();
     updateModerationReviewMock.mockResolvedValue(createModerationReview());
+    updateModerationImageStatusesMock.mockResolvedValue();
     getModerationCitiesMock.mockResolvedValue([]);
   });
 
@@ -94,6 +143,20 @@ describe('moderation query hooks', () => {
     });
   });
 
+  it('requests pending standalone image groups by default', async () => {
+    renderHook(() => useModerationStandaloneImages(), {
+      wrapper: AllProviders,
+    });
+
+    await waitFor(() => {
+      expect(getModerationStandaloneImagesMock).toHaveBeenCalledWith({
+        status: 'pending',
+        filters: [],
+        pagination: undefined,
+      });
+    });
+  });
+
   it('requests pending review moderation cities by default', async () => {
     renderHook(() => useModerationReviewCities(), { wrapper: AllProviders });
 
@@ -112,6 +175,21 @@ describe('moderation query hooks', () => {
 
     await waitFor(() => {
       expect(getModerationReviewMock).toHaveBeenCalledWith('review-test-id');
+    });
+  });
+
+  it('loads a single standalone image moderation group by id', async () => {
+    renderHook(
+      () => useModerationStandaloneImageGroup('venue-test-id:user-test-id'),
+      {
+        wrapper: AllProviders,
+      }
+    );
+
+    await waitFor(() => {
+      expect(getModerationStandaloneImageGroupMock).toHaveBeenCalledWith(
+        'venue-test-id:user-test-id'
+      );
     });
   });
 
@@ -160,6 +238,29 @@ describe('moderation query hooks', () => {
         reviewUpdate: {
           reviewTitle: 'Corrected title',
         },
+      });
+    });
+  });
+
+  it('updates standalone image moderation statuses', async () => {
+    const { result } = renderHook(
+      () => useUpdateStandaloneImageStatuses('venue-test-id:user-test-id'),
+      {
+        wrapper: AllProviders,
+      }
+    );
+
+    act(() => {
+      result.current.updateImageStatuses({
+        approvedImageIds: ['image-test-id'],
+        declinedImageIds: [],
+      });
+    });
+
+    await waitFor(() => {
+      expect(updateModerationImageStatusesMock).toHaveBeenCalledWith({
+        approvedImageIds: ['image-test-id'],
+        declinedImageIds: [],
       });
     });
   });
