@@ -130,6 +130,29 @@ describe('StandaloneImageModerationGroup', () => {
     expect(updateModerationImageStatusesMock).not.toHaveBeenCalled();
   });
 
+  it('requires every pending image to have a decision before proceeding', async () => {
+    const user = userEvent.setup();
+    renderGroup();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    const proceedButton = screen.getByRole('button', {
+      name: /proceed with decisions/i,
+    });
+
+    expect(proceedButton).toBeDisabled();
+
+    await user.click(screen.getAllByLabelText(/approve image/i)[0]);
+
+    expect(
+      screen.getByText(/resolve every pending image before proceeding/i)
+    ).toBeInTheDocument();
+    expect(proceedButton).toBeDisabled();
+    expect(updateModerationImageStatusesMock).not.toHaveBeenCalled();
+  });
+
   it('marks every image in the standalone group as approved without saving', async () => {
     const user = userEvent.setup();
     renderGroup();

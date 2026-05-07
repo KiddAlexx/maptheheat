@@ -42,7 +42,7 @@ plus the relevant tests.
 - [x] Step 16: Add standalone image moderation queue.
 - [x] Step 17: Add standalone image grouping/detail screen.
 - [x] Step 18: Add standalone image status actions.
-- [ ] Step 19: Cover admin standalone image flow with tests.
+- [x] Step 19: Cover admin standalone image flow with tests.
 - [ ] Step 20: Add notification workflow after approve/decline.
 
 ## Completed Slices
@@ -297,6 +297,16 @@ plus the relevant tests.
   image panels keep the default "Update images" mutation button.
 - Added component coverage for mixed decisions, mark-all approved, and
   mark-all declined without saving image statuses early.
+
+### Step 19: Standalone Image Tests
+
+- Added route-level coverage for opening a standalone image group detail screen
+  from the image moderation queue.
+- Expanded standalone group coverage to ensure admins cannot proceed while
+  pending images are missing draft decisions.
+- Verified the standalone image coverage set across query hooks, queue
+  rendering, group detail, grouping service reads, draft decisions, mark-all
+  actions, and the queue-to-detail flow.
 
 ## Architecture Rules
 
