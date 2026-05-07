@@ -37,7 +37,7 @@ plus the relevant tests.
 - [x] Step 11.5: Moderation refactor pass.
 - [x] Step 12: Add review detail/edit screen.
 - [x] Step 13: Add review status actions.
-- [ ] Step 14: Cover admin review flow with tests.
+- [x] Step 14: Cover admin review flow with tests.
 - [ ] Step 15: Add admin standalone image query services and hooks.
 - [ ] Step 16: Add standalone image moderation queue.
 - [ ] Step 17: Add standalone image grouping/detail screen.
@@ -222,6 +222,17 @@ plus the relevant tests.
   selected image statuses before approving when decisions are selected.
 - Added component coverage for approve, decline, and image-before-approval
   mutation payloads.
+
+### Step 14: Review Tests
+
+- Added route-level coverage that opens a review detail screen from the review
+  moderation queue.
+- Added public `apiReviews` regression coverage for approved-only review reads
+  and approved-only review image embeds.
+- Switched `apiReviews`'s `EditformData` import to `import type` so service
+  tests do not pull the public review form into runtime.
+- Verified the review moderation test set across hooks, layout, queue, detail,
+  flow, moderation services, and public review service boundaries.
 
 ## Architecture Rules
 
