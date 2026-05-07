@@ -35,7 +35,7 @@ plus the relevant tests.
 - [x] Step 10: Add admin review query services and hooks.
 - [x] Step 11: Add review moderation queue.
 - [x] Step 11.5: Moderation refactor pass.
-- [ ] Step 12: Add review detail/edit screen.
+- [x] Step 12: Add review detail/edit screen.
 - [ ] Step 13: Add review status actions.
 - [ ] Step 14: Cover admin review flow with tests.
 - [ ] Step 15: Add admin standalone image query services and hooks.
@@ -199,6 +199,17 @@ plus the relevant tests.
   duplication between venue and review queues; `VenueModerationDetail` also
   uses the submitter component.
 - All 51 existing tests still pass; no behavior changes.
+
+### Step 12: Review Detail/Edit Screen
+
+- Added `ReviewModerationDetail` for `/admin/moderation/reviews/:reviewId`.
+- Added `ReviewModerationEditForm` for admin corrections to review title,
+  content, heat/quality ratings, and venue-type-specific hottest item fields.
+- Reused `ImageModerationPanel`, `useUpdateReviewImageStatuses`,
+  `ModerationSubmitter`, `formatSubmittedDate`, and shared status constants.
+- Kept review status approve/decline actions deferred to Step 13.
+- Added component coverage for detail rendering, review image decisions, edit
+  payloads, load failure, and missing route id states.
 
 ## Architecture Rules
 

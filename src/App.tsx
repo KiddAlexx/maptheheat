@@ -47,6 +47,9 @@ const VenueModerationDetail = lazy(
 const ReviewModerationQueue = lazy(
   () => import('./features/moderation/components/ReviewModerationQueue')
 );
+const ReviewModerationDetail = lazy(
+  () => import('./features/moderation/components/ReviewModerationDetail')
+);
 
 function App() {
   return (
@@ -121,12 +124,7 @@ function App() {
             />
             <Route
               path="moderation/reviews/:reviewId"
-              element={
-                <ModerationPlaceholder
-                  title="Review detail"
-                  description="Review detail and edit controls will be added in the next moderation slice."
-                />
-              }
+              element={<ReviewModerationDetail />}
             />
             <Route
               path="moderation/images"
