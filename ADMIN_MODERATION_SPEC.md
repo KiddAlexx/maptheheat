@@ -19,7 +19,7 @@ chats can resume without needing the full conversation history.
 - [x] Step 2: Protect moderation routes.
 - [x] Step 3: Add admin venue query services and hooks.
 - [x] Step 4: Add venue moderation queue.
-- [ ] Step 5: Add venue detail review screen.
+- [x] Step 5: Add venue detail review screen.
 - [ ] Step 6: Add venue image moderation.
 - [ ] Step 7: Add venue status actions.
 - [ ] Step 8: Add admin venue edit form.
@@ -74,6 +74,17 @@ chats can resume without needing the full conversation history.
   placeholder until Step 5.
 - Added component tests for default pending rendering, city filtering, and
   detail route links.
+
+### Step 5: Venue Detail Review Screen
+
+- Added `VenueModerationDetail` for `/admin/moderation/venues/:venueId`.
+- Fetches venue submissions with `useModerationVenue`, keeping admin reads in
+  moderation hooks/services.
+- Shows admin-specific venue fields, status, submitter username/user id,
+  submitted date, venue id, image count, and submitted attributes.
+- Keeps status actions and image moderation controls deferred to Steps 6 and 7.
+- Added component tests for detail rendering, load failure, and empty-result
+  states.
 
 ## Architecture Rules
 
