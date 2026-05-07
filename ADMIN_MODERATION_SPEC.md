@@ -32,7 +32,7 @@ plus the relevant tests.
 - [x] Step 7: Add venue status actions.
 - [x] Step 8: Add admin venue edit form.
 - [x] Step 9: Cover admin venue flow with tests.
-- [ ] Step 10: Add admin review query services and hooks.
+- [x] Step 10: Add admin review query services and hooks.
 - [ ] Step 11: Add review moderation queue.
 - [ ] Step 12: Add review detail/edit screen.
 - [ ] Step 13: Add review status actions.
@@ -131,6 +131,16 @@ plus the relevant tests.
 - Added public venue service regression coverage for approved-only venue and
   image reads.
 - Kept admin reads and writes covered through moderation hooks and service mocks.
+
+### Step 10: Admin Review Services And Hooks
+
+- Added moderation review types with status, submitter username, venue context,
+  and review-attached moderation images.
+- Added admin review list/detail/update/status services to `apiModeration.ts`.
+- Added React Query hooks for review moderation reads and writes under
+  `src/features/moderation/hooks/`.
+- Kept public `apiReviews.ts` unchanged and approved-only.
+- Added hook coverage for default pending review reads and review mutations.
 
 ## Architecture Rules
 

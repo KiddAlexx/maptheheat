@@ -1,12 +1,43 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useModerationCities } from '@/features/moderation/hooks/useModerationCities';
+import { useModerationReview } from '@/features/moderation/hooks/useModerationReview';
+import { useModerationReviews } from '@/features/moderation/hooks/useModerationReviews';
 import { useModerationVenues } from '@/features/moderation/hooks/useModerationVenues';
+import { useUpdateModerationReview } from '@/features/moderation/hooks/useUpdateModerationReview';
+import { useUpdateReviewModerationStatus } from '@/features/moderation/hooks/useUpdateReviewModerationStatus';
+import { ModerationReview } from '@/types/reviewTypes';
 import AllProviders from 'tests/AllProviders';
 import {
   getModerationCitiesMock,
+  getModerationReviewMock,
+  getModerationReviewsMock,
   getModerationVenuesMock,
+  updateModerationReviewMock,
+  updateReviewModerationStatusMock,
 } from 'tests/mocks/apiModeration';
+
+function createModerationReview(
+  overrides: Partial<ModerationReview> = {}
+): ModerationReview {
+  return {
+    createdAt: '2026-01-01T12:00:00.000Z',
+    heatRating: 4,
+    hottestDish: 'Fire noodles',
+    hottestSauce: 'Ghost sauce',
+    qualityRating: 5,
+    reviewContent: 'A submitted review waiting for moderation.',
+    reviewId: 'review-test-id',
+    reviewTitle: 'Great heat',
+    reviewType: 'restaurant',
+    status: 'pending',
+    submitterUsername: 'pepperfan',
+    userId: 'user-test-id',
+    venueId: 'venue-test-id',
+    venueImages: [],
+    ...overrides,
+  };
+}
 
 describe('moderation query hooks', () => {
   beforeEach(() => {
@@ -15,6 +46,13 @@ describe('moderation query hooks', () => {
       data: [],
       count: 0,
     });
+    getModerationReviewsMock.mockResolvedValue({
+      data: [],
+      count: 0,
+    });
+    getModerationReviewMock.mockResolvedValue(createModerationReview());
+    updateReviewModerationStatusMock.mockResolvedValue();
+    updateModerationReviewMock.mockResolvedValue(createModerationReview());
     getModerationCitiesMock.mockResolvedValue([]);
   });
 
@@ -37,6 +75,78 @@ describe('moderation query hooks', () => {
     await waitFor(() => {
       expect(getModerationCitiesMock).toHaveBeenCalledWith({
         status: 'pending',
+      });
+    });
+  });
+
+  it('requests pending reviews by default', async () => {
+    renderHook(() => useModerationReviews(), { wrapper: AllProviders });
+
+    await waitFor(() => {
+      expect(getModerationReviewsMock).toHaveBeenCalledWith({
+        status: 'pending',
+        filters: [],
+        sort: undefined,
+        pagination: undefined,
+      });
+    });
+  });
+
+  it('loads a single moderation review by id', async () => {
+    renderHook(() => useModerationReview('review-test-id'), {
+      wrapper: AllProviders,
+    });
+
+    await waitFor(() => {
+      expect(getModerationReviewMock).toHaveBeenCalledWith('review-test-id');
+    });
+  });
+
+  it('updates a review moderation status', async () => {
+    const { result } = renderHook(() => useUpdateReviewModerationStatus(), {
+      wrapper: AllProviders,
+    });
+
+    act(() => {
+      result.current.updateStatus({
+        reviewId: 'review-test-id',
+        status: 'approved',
+      });
+    });
+
+    await waitFor(() => {
+      expect(updateReviewModerationStatusMock).toHaveBeenCalledWith({
+        reviewId: 'review-test-id',
+        status: 'approved',
+      });
+    });
+  });
+
+  it('updates moderation review fields', async () => {
+    const updatedReview = createModerationReview({
+      reviewTitle: 'Corrected title',
+    });
+    updateModerationReviewMock.mockResolvedValue(updatedReview);
+
+    const { result } = renderHook(() => useUpdateModerationReview(), {
+      wrapper: AllProviders,
+    });
+
+    act(() => {
+      result.current.updateReview({
+        reviewId: 'review-test-id',
+        reviewUpdate: {
+          reviewTitle: 'Corrected title',
+        },
+      });
+    });
+
+    await waitFor(() => {
+      expect(updateModerationReviewMock).toHaveBeenCalledWith({
+        reviewId: 'review-test-id',
+        reviewUpdate: {
+          reviewTitle: 'Corrected title',
+        },
       });
     });
   });

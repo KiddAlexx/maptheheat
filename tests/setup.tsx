@@ -5,10 +5,14 @@ import { getCurrentUserMock } from './mocks/apiAuth';
 import {
   getIsAdminMock,
   getModerationCitiesMock,
+  getModerationReviewMock,
+  getModerationReviewsMock,
   getModerationVenueMock,
   getModerationVenuesMock,
   updateModerationImageStatusesMock,
+  updateModerationReviewMock,
   updateModerationVenueMock,
+  updateReviewModerationStatusMock,
   updateVenueModerationStatusMock,
 } from './mocks/apiModeration';
 import { getUserProfileMock } from './mocks/apiUserProfiles';
@@ -32,9 +36,13 @@ vi.mock('@/services/apiModeration', () => ({
   getIsAdmin: getIsAdminMock,
   getModerationVenues: getModerationVenuesMock,
   getModerationVenue: getModerationVenueMock,
+  getModerationReviews: getModerationReviewsMock,
+  getModerationReview: getModerationReviewMock,
   getModerationCities: getModerationCitiesMock,
   updateVenueModerationStatus: updateVenueModerationStatusMock,
   updateModerationVenue: updateModerationVenueMock,
+  updateReviewModerationStatus: updateReviewModerationStatusMock,
+  updateModerationReview: updateModerationReviewMock,
   updateModerationImageStatuses: updateModerationImageStatusesMock,
 }));
 

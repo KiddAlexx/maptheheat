@@ -3,6 +3,12 @@ import decamelize from 'decamelize';
 import decamelizeKeys from 'decamelize-keys';
 import { addImagePaths } from '@/utils/addImagePaths';
 import {
+  ModerationReview,
+  ReviewModerationFilter,
+  ReviewPagination,
+  ReviewSort,
+} from '@/types/reviewTypes';
+import {
   ModerationStatus,
   ModerationVenue,
   UniqueCity,
@@ -29,13 +35,35 @@ export interface ModerationCitiesRequestParams {
   status?: ModerationStatus;
 }
 
+export interface ModerationReviewsRequestParams {
+  status?: ModerationStatus;
+  filters?: ReviewModerationFilter[];
+  sort?: ReviewSort | null;
+  pagination?: ReviewPagination;
+}
+
+export interface ModerationReviewsResponse {
+  data: ModerationReview[];
+  count: number | null;
+}
+
 export interface UpdateModerationVenueArgs {
   venueId: string;
   venueUpdate: Partial<ModerationVenue>;
 }
 
+export interface UpdateModerationReviewArgs {
+  reviewId: string;
+  reviewUpdate: Partial<ModerationReview>;
+}
+
 export interface UpdateVenueModerationStatusArgs {
   venueId: string;
+  status: ModerationStatus;
+}
+
+export interface UpdateReviewModerationStatusArgs {
+  reviewId: string;
   status: ModerationStatus;
 }
 
@@ -50,12 +78,28 @@ type ModerationVenueRow = ModerationVenue & {
   } | null;
 };
 
+type ModerationReviewRow = ModerationReview & {
+  profiles?: {
+    username: string | null;
+  } | null;
+};
+
 function mapModerationVenue(row: ModerationVenueRow): ModerationVenue {
   const { profiles, ...venue } = row;
 
   return {
     ...venue,
     submitterUsername: profiles?.username ?? null,
+  };
+}
+
+function mapModerationReview(row: ModerationReviewRow): ModerationReview {
+  const { profiles, ...review } = row;
+
+  return {
+    ...review,
+    submitterUsername: profiles?.username ?? null,
+    venueImages: addImagePaths(review.venueImages),
   };
 }
 
@@ -146,6 +190,79 @@ export async function getModerationVenue(
   };
 }
 
+export async function getModerationReviews({
+  status = 'pending',
+  filters = [],
+  sort,
+  pagination,
+}: ModerationReviewsRequestParams = {}): Promise<ModerationReviewsResponse> {
+  let query = supabase
+    .from('venue_reviews')
+    .select(
+      '*, profiles(username), venue_details(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)',
+      { count: 'exact' }
+    )
+    .eq('status', status);
+
+  if (filters.length > 0) {
+    filters.forEach((filter) => {
+      const convertedField = decamelize(filter.field);
+      // @ts-expect-error: Dynamic method call is constrained by ReviewModerationFilter.method.
+      query = query[filter.method](convertedField, filter.value);
+    });
+  }
+
+  if (sort) {
+    const convertedSortField = decamelize(sort.field);
+    query = query.order(convertedSortField, {
+      ascending: sort.direction === 'asc',
+    });
+  } else {
+    query = query.order('created_at', { ascending: false });
+  }
+
+  if (pagination) {
+    const { pageNumber, maxResults } = pagination;
+    const from = (pageNumber - 1) * maxResults;
+    const to = from + maxResults - 1;
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    throw new Error(
+      `Moderation reviews could not be loaded. Error: ${error.message}`
+    );
+  }
+
+  const reviews = camelcaseKeys(data, { deep: true }) as ModerationReviewRow[];
+
+  return { data: reviews.map(mapModerationReview), count };
+}
+
+export async function getModerationReview(
+  reviewId: string
+): Promise<ModerationReview> {
+  const { data, error } = await supabase
+    .from('venue_reviews')
+    .select(
+      '*, profiles(username), venue_details(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)'
+    )
+    .eq('review_id', reviewId)
+    .single();
+
+  if (error) {
+    throw new Error(
+      `Moderation review could not be loaded. Error: ${error.message}`
+    );
+  }
+
+  return mapModerationReview(
+    camelcaseKeys(data, { deep: true }) as ModerationReviewRow
+  );
+}
+
 export async function getModerationCities({
   status = 'pending',
 }: ModerationCitiesRequestParams = {}): Promise<UniqueCity[]> {
@@ -209,6 +326,22 @@ export async function updateVenueModerationStatus({
   }
 }
 
+export async function updateReviewModerationStatus({
+  reviewId,
+  status,
+}: UpdateReviewModerationStatusArgs): Promise<void> {
+  const { error } = await supabase
+    .from('venue_reviews')
+    .update({ status })
+    .eq('review_id', reviewId);
+
+  if (error) {
+    throw new Error(
+      `Review moderation status could not be updated. Error: ${error.message}`
+    );
+  }
+}
+
 export async function updateModerationVenue({
   venueId,
   venueUpdate,
@@ -229,6 +362,32 @@ export async function updateModerationVenue({
   }
 
   return camelcaseKeys(data, { deep: true }) as ModerationVenue;
+}
+
+export async function updateModerationReview({
+  reviewId,
+  reviewUpdate,
+}: UpdateModerationReviewArgs): Promise<ModerationReview> {
+  const convertedReview = decamelizeKeys(reviewUpdate);
+
+  const { data, error } = await supabase
+    .from('venue_reviews')
+    .update(convertedReview)
+    .eq('review_id', reviewId)
+    .select(
+      '*, profiles(username), venue_details(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)'
+    )
+    .single();
+
+  if (error) {
+    throw new Error(
+      `Moderation review could not be updated. Error: ${error.message}`
+    );
+  }
+
+  return mapModerationReview(
+    camelcaseKeys(data, { deep: true }) as ModerationReviewRow
+  );
 }
 
 export async function updateModerationImageStatuses({

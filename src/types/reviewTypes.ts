@@ -1,6 +1,12 @@
-import { Direction } from './commonTypes';
+import { Direction, SupabaseQueryMethod } from './commonTypes';
 import { Profile } from './userTypes';
-import { DetailedImage, Image, Venue } from './venueTypes';
+import {
+  DetailedImage,
+  Image,
+  ModerationImage,
+  ModerationStatus,
+  Venue,
+} from './venueTypes';
 
 export interface Review {
   createdAt: string;
@@ -24,6 +30,13 @@ export interface ReviewWithRelations extends Review {
   venueImages: DetailedImage[];
 }
 
+export interface ModerationReview extends Review {
+  status: ModerationStatus;
+  submitterUsername?: string | null;
+  venueDetails?: Venue | null;
+  venueImages?: ModerationImage[];
+}
+
 // id not present at creation time, generate by Supabase
 export type NewReview = Omit<Review, 'reviewId' | 'createdAt' | 'userId'>;
 
@@ -33,6 +46,26 @@ export type ReviewSortField = 'heatRating' | 'qualityRating' | 'createdAt';
 export interface ReviewSort {
   field: ReviewSortField;
   direction: Direction;
+}
+
+export interface ReviewPagination {
+  pageNumber: number;
+  maxResults: number;
+}
+
+export type ReviewModerationFilterField =
+  | 'reviewTitle'
+  | 'reviewContent'
+  | 'venueId'
+  | 'userId'
+  | 'venueDetails.city'
+  | 'venueDetails.venueName'
+  | 'profiles.username';
+
+export interface ReviewModerationFilter {
+  field: ReviewModerationFilterField;
+  value: string;
+  method: SupabaseQueryMethod;
 }
 
 // Define individual function types
