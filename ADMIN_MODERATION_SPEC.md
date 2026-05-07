@@ -18,7 +18,7 @@ chats can resume without needing the full conversation history.
 - [x] Step 1: Add moderation route shell.
 - [x] Step 2: Protect moderation routes.
 - [x] Step 3: Add admin venue query services and hooks.
-- [ ] Step 4: Add venue moderation queue.
+- [x] Step 4: Add venue moderation queue.
 - [ ] Step 5: Add venue detail review screen.
 - [ ] Step 6: Add venue image moderation.
 - [ ] Step 7: Add venue status actions.
@@ -63,6 +63,17 @@ chats can resume without needing the full conversation history.
 - Added pending city query through `get_pending_cities`.
 - Kept public `src/services/apiVenues.ts` approved-only.
 - Added hook tests for default pending venue/city behavior.
+
+### Step 4: Venue Moderation Queue
+
+- Added `VenueModerationQueue` for `/admin/moderation/venues`.
+- Added status filtering for pending, approved, and declined venues.
+- Added moderation city filtering, venue-name search, pagination, and queue
+  rows with submitter/status/date metadata.
+- Added links to `/admin/moderation/venues/:venueId` with a temporary detail
+  placeholder until Step 5.
+- Added component tests for default pending rendering, city filtering, and
+  detail route links.
 
 ## Architecture Rules
 
@@ -335,6 +346,20 @@ Before calling each slice complete:
 - Run `npm.cmd test -- --run` before larger milestones.
 - Note that Vitest may need elevated execution on this machine because sandboxed
   `esbuild` spawn can fail with `EPERM`.
+
+## Updating This Spec
+
+After each completed slice:
+
+- Check off the completed step in `Current Status`.
+- Add a short completion note under `Completed Slices` for meaningful
+  implementation steps.
+- Keep completion notes to 3-6 bullets.
+- Capture important decisions, file locations, and deviations from the plan.
+- Note any gotchas future chats need, such as missing RPCs, test setup changes,
+  or public/admin boundary decisions.
+- Tiny docs/style-only steps can be recorded with just a checkbox if no future
+  implementation context is needed.
 
 ## Commit Style
 

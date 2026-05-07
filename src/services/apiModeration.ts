@@ -44,6 +44,21 @@ export interface UpdateModerationImageStatusesArgs {
   declinedImageIds: string[];
 }
 
+type ModerationVenueRow = ModerationVenue & {
+  profiles?: {
+    username: string | null;
+  } | null;
+};
+
+function mapModerationVenue(row: ModerationVenueRow): ModerationVenue {
+  const { profiles, ...venue } = row;
+
+  return {
+    ...venue,
+    submitterUsername: profiles?.username ?? null,
+  };
+}
+
 export async function getIsAdmin(): Promise<boolean> {
   const { data, error } = await supabase.rpc('is_admin');
 
@@ -64,7 +79,7 @@ export async function getModerationVenues({
 }: ModerationVenuesRequestParams = {}): Promise<ModerationVenuesResponse> {
   let query = supabase
     .from('venue_details')
-    .select('*', { count: 'exact' })
+    .select('*, profiles(username)', { count: 'exact' })
     .eq('status', status);
 
   if (filters.length > 0) {
@@ -99,7 +114,9 @@ export async function getModerationVenues({
     );
   }
 
-  return { data: camelcaseKeys(data), count };
+  const venues = camelcaseKeys(data, { deep: true }) as ModerationVenueRow[];
+
+  return { data: venues.map(mapModerationVenue), count };
 }
 
 export async function getModerationVenue(
@@ -108,7 +125,7 @@ export async function getModerationVenue(
   const { data, error } = await supabase
     .from('venue_details')
     .select(
-      '*, venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)'
+      '*, profiles(username), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)'
     )
     .eq('venue_id', venueId)
     .single();
@@ -119,7 +136,9 @@ export async function getModerationVenue(
     );
   }
 
-  const venueData = camelcaseKeys(data, { deep: true }) as ModerationVenue;
+  const venueData = mapModerationVenue(
+    camelcaseKeys(data, { deep: true }) as ModerationVenueRow
+  );
 
   return {
     ...venueData,

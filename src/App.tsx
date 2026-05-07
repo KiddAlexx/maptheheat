@@ -38,6 +38,9 @@ const AdminLayout = lazy(
 const ModerationPlaceholder = lazy(
   () => import('./features/moderation/components/ModerationPlaceholder')
 );
+const VenueModerationQueue = lazy(
+  () => import('./features/moderation/components/VenueModerationQueue')
+);
 
 function App() {
   return (
@@ -100,10 +103,14 @@ function App() {
             <Route index element={<Navigate replace to="moderation/venues" />} />
             <Route
               path="moderation/venues"
+              element={<VenueModerationQueue />}
+            />
+            <Route
+              path="moderation/venues/:venueId"
               element={
                 <ModerationPlaceholder
-                  title="Venue moderation"
-                  description="Review pending venue submissions, inspect attached images, edit details, and approve or decline venues."
+                  title="Venue review screen"
+                  description="Venue detail moderation will be added in the next slice."
                 />
               }
             />

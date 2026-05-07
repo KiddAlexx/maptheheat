@@ -40,6 +40,7 @@ export interface ModerationImage extends DetailedImage {
 export interface ModerationVenue extends Venue {
   createdAt: string;
   status: ModerationStatus;
+  submitterUsername?: string | null;
   venueImages?: ModerationImage[];
 }
 
