@@ -45,7 +45,7 @@ plus the relevant tests.
 - [x] Step 19: Cover admin standalone image flow with tests.
 - [x] Step 19.5: Post-standalone refactor pass.
 - [x] Step 20a: Notification services, hooks, and shared composer.
-- [ ] Step 20b: Manual notifications tab.
+- [x] Step 20b: Manual notifications tab.
 - [ ] Step 20c: Inline composer in venue and review detail.
 - [ ] Step 20d: Inline composer in standalone image group.
 
@@ -357,6 +357,20 @@ plus the relevant tests.
   `Reset template` is clicked.
 - Verified with `npm.cmd run checks` and targeted Vitest coverage for
   moderation services, hooks, templates, and composer behavior.
+
+### Step 20b: Manual Notifications Tab
+
+- Added `AdminNotificationCenter` at `/admin/moderation/notifications` and
+  wired it under the existing `AdminRoute` / `AdminLayout` tree.
+- Added the fourth `Notifications` admin tab.
+- Added a manual recipient picker that debounces username/user-id search by
+  250ms, searches at 2+ chars, and immediately selects pasted UUIDs without
+  running a search.
+- The manual page hosts the shared `ModerationNotificationComposer` in manual
+  mode; notification sending remains separate from moderation status updates.
+- Covered route rendering, recipient search/selection, template regeneration
+  rules, notification send payloads, in-flight disabled state, and the negative
+  no-status-mutation case.
 
 ## Architecture Rules
 

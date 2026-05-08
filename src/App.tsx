@@ -55,6 +55,9 @@ const StandaloneImageModerationGroup = lazy(
   () =>
     import('./features/moderation/components/StandaloneImageModerationGroup')
 );
+const AdminNotificationCenter = lazy(
+  () => import('./features/moderation/components/AdminNotificationCenter')
+);
 
 function App() {
   return (
@@ -138,6 +141,10 @@ function App() {
             <Route
               path="moderation/images/:groupId"
               element={<StandaloneImageModerationGroup />}
+            />
+            <Route
+              path="moderation/notifications"
+              element={<AdminNotificationCenter />}
             />
           </Route>
           <Route path="/terms" element={<Terms />} />

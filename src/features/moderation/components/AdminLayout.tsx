@@ -6,6 +6,7 @@ const MODERATION_TABS = [
   { label: 'Venues', to: '/admin/moderation/venues' },
   { label: 'Reviews', to: '/admin/moderation/reviews' },
   { label: 'Images', to: '/admin/moderation/images' },
+  { label: 'Notifications', to: '/admin/moderation/notifications' },
 ];
 
 function AdminLayout() {

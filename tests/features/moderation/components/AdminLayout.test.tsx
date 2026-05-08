@@ -13,6 +13,7 @@ function renderAdminLayout(initialPath = '/admin/moderation/reviews') {
           <Route path="venues" element={<h2>Venue queue</h2>} />
           <Route path="reviews" element={<h2>Review queue</h2>} />
           <Route path="images" element={<h2>Image queue</h2>} />
+          <Route path="notifications" element={<h2>Notification center</h2>} />
         </Route>
       </Routes>
     </MemoryRouter>,
@@ -44,6 +45,9 @@ describe('AdminLayout', () => {
       '/admin/moderation/images'
     );
     expect(
+      screen.getByRole('link', { name: /notifications/i })
+    ).toHaveAttribute('href', '/admin/moderation/notifications');
+    expect(
       screen.getByRole('heading', { name: /review queue/i })
     ).toBeInTheDocument();
   });
@@ -61,5 +65,19 @@ describe('AdminLayout', () => {
       'aria-current',
       'page'
     );
+  });
+
+  it('navigates to the manual notification center', async () => {
+    const user = userEvent.setup();
+    renderAdminLayout();
+
+    await user.click(screen.getByRole('link', { name: /notifications/i }));
+
+    expect(
+      screen.getByRole('heading', { name: /notification center/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /notifications/i })
+    ).toHaveAttribute('aria-current', 'page');
   });
 });
