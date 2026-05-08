@@ -1,5 +1,10 @@
 import { vi } from 'vitest';
 import {
+  AdminNotificationPayload,
+  ModerationNotificationRecipient,
+  UserNotification,
+} from '@/types/userTypes';
+import {
   ModerationStandaloneImagesResponse,
   ModerationReviewsResponse,
   ModerationVenuesResponse,
@@ -43,6 +48,12 @@ export const getModerationStandaloneImageGroupMock = vi.fn<
 export const getModerationCitiesMock = vi.fn<() => Promise<UniqueCity[]>>(
   async () => []
 );
+export const searchModerationNotificationRecipientsMock = vi.fn<
+  (query: string) => Promise<ModerationNotificationRecipient[]>
+>(async () => []);
+export const insertModerationNotificationMock = vi.fn<
+  (payload: AdminNotificationPayload) => Promise<UserNotification>
+>();
 export const updateModerationVenueStatusMock = vi.fn<
   (args: UpdateModerationVenueStatusArgs) => Promise<void>
 >();

@@ -44,7 +44,7 @@ plus the relevant tests.
 - [x] Step 18: Add standalone image status actions.
 - [x] Step 19: Cover admin standalone image flow with tests.
 - [x] Step 19.5: Post-standalone refactor pass.
-- [ ] Step 20a: Notification services, hooks, and shared composer.
+- [x] Step 20a: Notification services, hooks, and shared composer.
 - [ ] Step 20b: Manual notifications tab.
 - [ ] Step 20c: Inline composer in venue and review detail.
 - [ ] Step 20d: Inline composer in standalone image group.
@@ -339,6 +339,25 @@ plus the relevant tests.
   short-circuit path.
 - All 84 tests pass; no behavior changes.
 
+### Step 20a: Notification Services, Hooks, And Shared Composer
+
+- Added moderation notification recipient search and
+  `admin_insert_notification` RPC wrappers to `src/services/apiModeration.ts`,
+  keeping admin notification access out of public services.
+- Added `AdminNotificationPayload`, recipient types, and fixed
+  `UserNotification.requestStatus` to use `'declined'` without the leading
+  space.
+- Added `useSearchModerationNotificationRecipients`,
+  `useInsertModerationNotification`, `ModerationNotificationComposer`, and
+  the pure `buildModerationNotificationTemplate` helper.
+- Added `buildVenueShareUrl()` and refactored `DetailedVenueView` to use the
+  shared URL builder.
+- Composer title/message fields are editable starting points; checkbox or
+  field changes do not overwrite admin text unless `Generate message` or
+  `Reset template` is clicked.
+- Verified with `npm.cmd run checks` and targeted Vitest coverage for
+  moderation services, hooks, templates, and composer behavior.
+
 ## Architecture Rules
 
 - Do not make public components admin-aware with `isAdmin` flags.
@@ -612,12 +631,17 @@ Shared design notes (apply to all four slices):
   `'declined'` for full decline. `notification_status` defaults to
   `'unread'`.
 - Templates auto-derive on mount and re-derive when decision, related type,
-  or any of the four checkboxes change. Both title and message remain
-  editable plain inputs.
+  or any of the four checkboxes change. Both title and message are always
+  editable text fields, so admins can add custom context before sending.
+  Regenerating a template replaces the current title/message with the selected
+  template output; sending always uses the text currently in the fields.
 - Four checkboxes:
   - `Include venue link`
   - `Mention edits/changes`
   - `Mention some images were declined`
+  - `Mention unsuitable photos were removed`
+  - `Mention not spicy enough / not a spicy venue`
+  - `Mention explicit content`
   - `Mention the item can now be found publicly`
   Manual tab starts unchecked. Inline (moderation-flow) composer
   pre-checks based on context (e.g. venue approved with edits → include
@@ -639,6 +663,64 @@ Shared design notes (apply to all four slices):
 - Failure mode: if the moderation status update succeeds but the
   notification RPC fails, keep the composer mounted with an error and a
   retry button. Never roll back the moderation status.
+
+Default template catalogue:
+
+- Venue approved:
+  - Title: `Yay, {venueName} is live!`
+  - Message: `Good news - your venue {venueName} has been approved and can now be found on MapTheHeat. You can check it out here: {linkUrl}`
+- Venue declined:
+  - Title: `Update on {venueName}`
+  - Message: `Thanks for submitting {venueName}. We could not approve it this time, but you can make changes and try again.`
+- Venue partial/edited:
+  - Title: `{venueName} has been approved with a few tidy-ups`
+  - Message: `Yay, {venueName} is live. We made a few small edits before approving it, and it can now be found here: {linkUrl}`
+- Venue partial/photos removed:
+  - Title: `{venueName} is live with a few photo changes`
+  - Message: `Yay, {venueName} has been approved and is now live. We removed a few photos that were not suitable, but the venue can now be found here: {linkUrl}`
+- Review approved:
+  - Title: `Your review for {venueName} is live`
+  - Message: `Yay, your review for {venueName} has been approved and is now visible on MapTheHeat. You can find it here: {linkUrl}`
+- Review declined:
+  - Title: `Update on your review for {venueName}`
+  - Message: `Thanks for sending your review for {venueName}. We could not approve it this time, but you can edit it and try again.`
+- Review partial/edited:
+  - Title: `Your review for {venueName} is live with a few edits`
+  - Message: `Yay, your review for {venueName} has been approved. We made a few small edits before publishing it, and it can now be found here: {linkUrl}`
+- Images all approved:
+  - Title: `Your images for {venueName} were approved`
+  - Message: `Yay, your images for {venueName} have been approved and can now appear on MapTheHeat.`
+- Images all declined:
+  - Title: `Update on your images for {venueName}`
+  - Message: `Thanks for adding images for {venueName}. We could not approve those images this time, but you can upload different ones whenever you are ready.`
+- Images partial:
+  - Title: `Some of your images for {venueName} were approved`
+  - Message: `Thanks for adding images for {venueName}. We approved some of them, but a few were not quite right for MapTheHeat this time.`
+
+Decline/edit reason snippets:
+
+- Not spicy enough / not a spicy venue:
+  - `MapTheHeat is focused on places with a clear spicy food angle, and this one does not seem like the right fit for us right now.`
+- Explicit content:
+  - `Some submitted content included explicit material, so we could not approve it.`
+- Unsuitable photos:
+  - `Some photos were not suitable for the venue page, so we removed or declined those images.`
+- Low quality or unclear images:
+  - `A few images were too unclear or low quality to publish.`
+
+Manual editing rules:
+
+- Template text is a starting point only. Admin edits must never be overwritten
+  while typing unless the admin explicitly clicks `Generate message` or
+  `Reset template`.
+- Empty optional placeholders are omitted cleanly. For example, if
+  `Include venue link` is unchecked, the generated copy should not contain an
+  empty `here: ` fragment.
+- Manual tab sends exactly what is in the editable fields, even if it differs
+  from the generated template.
+- Inline moderation composers preload from the saved moderation decision, but
+  the admin can still change title, message, and checkbox choices before
+  sending the notification.
 
 ### Step 20a: Notification Services, Hooks, and Shared Composer
 
@@ -664,6 +746,9 @@ Shared design notes (apply to all four slices):
   function `buildModerationNotificationTemplate({ relatedType, decision, venueName, linkUrl, includeLink, mentionEdits, mentionImagesDeclined, mentionPublic })`
   returning `{ title, message }`. Test in isolation — most logic lives
   here.
+- Composer fields: recipient, related type, decision, venue name, link URL,
+  checkboxes, editable title, editable message, `Generate message`,
+  `Reset template`, and `Send notification`.
 - Add `src/utils/buildVenueShareUrl.ts` and refactor
   `DetailedVenueView.tsx:251` to use it.
 - Tests: service test for the recipient search query shape (UUID branch

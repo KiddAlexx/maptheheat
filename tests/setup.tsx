@@ -11,6 +11,8 @@ import {
   getModerationStandaloneImagesMock,
   getModerationVenueMock,
   getModerationVenuesMock,
+  insertModerationNotificationMock,
+  searchModerationNotificationRecipientsMock,
   updateModerationImageStatusesMock,
   updateModerationReviewMock,
   updateModerationReviewStatusMock,
@@ -43,6 +45,9 @@ vi.mock('@/services/apiModeration', () => ({
   getModerationStandaloneImages: getModerationStandaloneImagesMock,
   getModerationStandaloneImageGroup: getModerationStandaloneImageGroupMock,
   getModerationCities: getModerationCitiesMock,
+  searchModerationNotificationRecipients:
+    searchModerationNotificationRecipientsMock,
+  insertModerationNotification: insertModerationNotificationMock,
   updateModerationVenueStatus: updateModerationVenueStatusMock,
   updateModerationVenue: updateModerationVenueMock,
   updateModerationReviewStatus: updateModerationReviewStatusMock,

@@ -7,6 +7,8 @@ import { useModerationReviews } from '@/features/moderation/hooks/useModerationR
 import { useModerationStandaloneImageGroup } from '@/features/moderation/hooks/useModerationStandaloneImageGroup';
 import { useModerationStandaloneImages } from '@/features/moderation/hooks/useModerationStandaloneImages';
 import { useModerationVenues } from '@/features/moderation/hooks/useModerationVenues';
+import { useInsertModerationNotification } from '@/features/moderation/hooks/useInsertModerationNotification';
+import { useSearchModerationNotificationRecipients } from '@/features/moderation/hooks/useSearchModerationNotificationRecipients';
 import { useUpdateModerationReview } from '@/features/moderation/hooks/useUpdateModerationReview';
 import { useUpdateModerationReviewStatus } from '@/features/moderation/hooks/useUpdateModerationReviewStatus';
 import { useUpdateStandaloneImageStatuses } from '@/features/moderation/hooks/useUpdateStandaloneImageStatuses';
@@ -20,6 +22,8 @@ import {
   getModerationStandaloneImageGroupMock,
   getModerationStandaloneImagesMock,
   getModerationVenuesMock,
+  insertModerationNotificationMock,
+  searchModerationNotificationRecipientsMock,
   updateModerationImageStatusesMock,
   updateModerationReviewMock,
   updateModerationReviewStatusMock,
@@ -103,6 +107,19 @@ describe('moderation query hooks', () => {
     updateModerationReviewStatusMock.mockResolvedValue();
     updateModerationReviewMock.mockResolvedValue(createModerationReview());
     updateModerationImageStatusesMock.mockResolvedValue();
+    insertModerationNotificationMock.mockResolvedValue({
+      createdAt: '2026-01-01T12:00:00.000Z',
+      linkUrl: null,
+      message: 'Your venue is live',
+      notificationId: 'notification-test-id',
+      notificationStatus: 'unread',
+      relatedType: 'venue',
+      requestStatus: 'confirmed',
+      title: 'Venue approved',
+      userId: 'user-test-id',
+      venueId: 'venue-test-id',
+    });
+    searchModerationNotificationRecipientsMock.mockResolvedValue([]);
     getModerationCitiesMock.mockResolvedValue([]);
   });
 
@@ -193,6 +210,26 @@ describe('moderation query hooks', () => {
     });
   });
 
+  it('does not search notification recipients for fewer than two characters', () => {
+    renderHook(() => useSearchModerationNotificationRecipients('p'), {
+      wrapper: AllProviders,
+    });
+
+    expect(searchModerationNotificationRecipientsMock).not.toHaveBeenCalled();
+  });
+
+  it('searches notification recipients when the query has at least two characters', async () => {
+    renderHook(() => useSearchModerationNotificationRecipients('pe'), {
+      wrapper: AllProviders,
+    });
+
+    await waitFor(() => {
+      expect(searchModerationNotificationRecipientsMock).toHaveBeenCalledWith(
+        'pe'
+      );
+    });
+  });
+
   it('updates a review moderation status', async () => {
     const { result } = renderHook(() => useUpdateModerationReviewStatus(), {
       wrapper: AllProviders,
@@ -261,6 +298,34 @@ describe('moderation query hooks', () => {
       expect(updateModerationImageStatusesMock).toHaveBeenCalledWith({
         approvedImageIds: ['image-test-id'],
         declinedImageIds: [],
+      });
+    });
+  });
+
+  it('inserts a moderation notification', async () => {
+    const { result } = renderHook(() => useInsertModerationNotification(), {
+      wrapper: AllProviders,
+    });
+
+    act(() => {
+      result.current.insertNotification({
+        userId: 'user-test-id',
+        venueId: 'venue-test-id',
+        relatedType: 'venue',
+        title: 'Venue approved',
+        message: 'Your venue is live',
+        requestStatus: 'confirmed',
+      });
+    });
+
+    await waitFor(() => {
+      expect(insertModerationNotificationMock).toHaveBeenCalledWith({
+        userId: 'user-test-id',
+        venueId: 'venue-test-id',
+        relatedType: 'venue',
+        title: 'Venue approved',
+        message: 'Your venue is live',
+        requestStatus: 'confirmed',
       });
     });
   });

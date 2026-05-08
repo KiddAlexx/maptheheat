@@ -7,6 +7,8 @@ const {
   getModerationReviews,
   getModerationStandaloneImageGroup,
   getModerationStandaloneImages,
+  insertModerationNotification,
+  searchModerationNotificationRecipients,
   updateModerationImageStatuses,
 } = await vi.importActual<
   typeof import('@/services/apiModeration')
@@ -21,8 +23,10 @@ interface SupabaseQueryMock {
   eq: QueryMethod;
   filter: QueryMethod;
   from: QueryMethod;
+  ilike: QueryMethod;
   in: QueryMethod;
   insert: QueryMethod;
+  limit: QueryMethod;
   order: QueryMethod;
   range: QueryMethod;
   select: QueryMethod;
@@ -31,10 +35,11 @@ interface SupabaseQueryMock {
 }
 
 const supabaseMocks = vi.hoisted(() => {
-  const state: { query?: unknown } = {};
+  const state: { query?: unknown; rpcResult?: unknown } = {};
 
   return {
     from: vi.fn(() => state.query),
+    rpc: vi.fn(() => state.rpcResult),
     state,
   };
 });
@@ -43,6 +48,7 @@ vi.mock('@/services/supabase', () => ({
   supabaseUrl: 'https://example.supabase.co',
   default: {
     from: supabaseMocks.from,
+    rpc: supabaseMocks.rpc,
   },
 }));
 
@@ -60,8 +66,10 @@ function createSupabaseQueryMock({
     eq: vi.fn(() => query),
     filter: vi.fn(() => query),
     from: vi.fn(() => query),
+    ilike: vi.fn(() => query),
     in: vi.fn(() => query),
     insert: vi.fn(() => query),
+    limit: vi.fn(() => query),
     order: vi.fn(() => query),
     range: vi.fn(() => query),
     select: vi.fn(() => query),
@@ -120,6 +128,97 @@ const standaloneImageGroupRow = {
     },
   ],
 };
+
+describe('apiModeration notification services', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('searches notification recipients by exact user id for UUID queries', async () => {
+    const query = createSupabaseQueryMock({
+      data: [{ user_id: '11111111-1111-4111-8111-111111111111', username: 'admin_user' }],
+    });
+    supabaseMocks.state.query = query;
+
+    const recipients = await searchModerationNotificationRecipients(
+      '11111111-1111-4111-8111-111111111111'
+    );
+
+    expect(supabaseMocks.from).toHaveBeenCalledWith('profiles');
+    expect(query.select).toHaveBeenCalledWith('user_id, username');
+    expect(query.eq).toHaveBeenCalledWith(
+      'user_id',
+      '11111111-1111-4111-8111-111111111111'
+    );
+    expect(query.ilike).not.toHaveBeenCalled();
+    expect(recipients).toEqual([
+      {
+        userId: '11111111-1111-4111-8111-111111111111',
+        username: 'admin_user',
+      },
+    ]);
+  });
+
+  it('searches notification recipients by username for non-UUID queries', async () => {
+    const query = createSupabaseQueryMock({
+      data: [{ user_id: 'user-test-id', username: 'pepper_admin' }],
+    });
+    supabaseMocks.state.query = query;
+
+    await searchModerationNotificationRecipients('pepper');
+
+    expect(supabaseMocks.from).toHaveBeenCalledWith('profiles');
+    expect(query.ilike).toHaveBeenCalledWith('username', '%pepper%');
+    expect(query.eq).not.toHaveBeenCalled();
+  });
+
+  it('sends notification payloads through the admin RPC with snake case keys', async () => {
+    supabaseMocks.state.rpcResult = {
+      data: {
+        notification_id: 'notification-test-id',
+        created_at: '2026-05-01T10:00:00.000Z',
+        related_type: 'venue',
+        title: 'Venue approved',
+        message: 'Your venue is live',
+        link_url: 'https://example.com/venue',
+        venue_id: 'venue-test-id',
+        user_id: 'user-test-id',
+        notification_status: 'unread',
+        request_status: 'confirmed',
+      },
+      error: null,
+    };
+
+    const notification = await insertModerationNotification({
+      userId: 'user-test-id',
+      venueId: 'venue-test-id',
+      relatedType: 'venue',
+      title: 'Venue approved',
+      message: 'Your venue is live',
+      linkUrl: 'https://example.com/venue',
+      requestStatus: 'confirmed',
+    });
+
+    expect(supabaseMocks.rpc).toHaveBeenCalledWith(
+      'admin_insert_notification',
+      {
+        p: {
+          user_id: 'user-test-id',
+          venue_id: 'venue-test-id',
+          related_type: 'venue',
+          title: 'Venue approved',
+          message: 'Your venue is live',
+          link_url: 'https://example.com/venue',
+          request_status: 'confirmed',
+        },
+      }
+    );
+    expect(notification).toMatchObject({
+      notificationId: 'notification-test-id',
+      requestStatus: 'confirmed',
+    });
+  });
+});
 
 describe('apiModeration review reads', () => {
   beforeEach(() => {

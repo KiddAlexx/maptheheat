@@ -9,6 +9,11 @@ import {
   ReviewSort,
 } from '@/types/reviewTypes';
 import {
+  AdminNotificationPayload,
+  ModerationNotificationRecipient,
+  UserNotification,
+} from '@/types/userTypes';
+import {
   DetailedImage,
   ImageUploadParams,
   ModerationImage,
@@ -93,6 +98,9 @@ export interface UpdateModerationImageStatusesArgs {
   approvedImageIds: string[];
   declinedImageIds: string[];
 }
+
+const UUID_PATTERN =
+  /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
 type ModerationVenueRow = ModerationVenue & {
   profiles?: {
@@ -205,6 +213,52 @@ export async function getIsAdmin(): Promise<boolean> {
   }
 
   return Boolean(data);
+}
+
+export async function searchModerationNotificationRecipients(
+  query: string
+): Promise<ModerationNotificationRecipient[]> {
+  const trimmedQuery = query.trim();
+
+  if (!trimmedQuery) return [];
+
+  let request = supabase
+    .from('profiles')
+    .select('user_id, username')
+    .order('username', { ascending: true })
+    .limit(10);
+
+  if (UUID_PATTERN.test(trimmedQuery)) {
+    request = request.eq('user_id', trimmedQuery);
+  } else {
+    request = request.ilike('username', `%${trimmedQuery}%`);
+  }
+
+  const { data, error } = await request;
+
+  if (error) {
+    throw new Error(
+      `Notification recipients could not be searched. Error: ${error.message}`
+    );
+  }
+
+  return camelcaseKeys(data, { deep: true }) as ModerationNotificationRecipient[];
+}
+
+export async function insertModerationNotification(
+  payload: AdminNotificationPayload
+): Promise<UserNotification> {
+  const { data, error } = await supabase.rpc('admin_insert_notification', {
+    p: decamelizeKeys(payload),
+  });
+
+  if (error) {
+    throw new Error(
+      `Notification could not be sent. Error: ${error.message}`
+    );
+  }
+
+  return camelcaseKeys(data, { deep: true }) as UserNotification;
 }
 
 export async function getModerationVenues({
