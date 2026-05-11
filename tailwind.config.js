@@ -3,6 +3,29 @@ import { heroui } from '@heroui/react';
 import containerQueries from '@tailwindcss/container-queries';
 import tailwindcssAnimate from 'tailwindcss-animate';
 
+// Brand colour palettes — shared across light and dark HeroUI themes
+const brandColors = {
+  focus: 'rgba(246, 138, 81, 1)',
+  primary: {
+    50: '#fef5ee', 100: '#fee9d6', 200: '#fbcfad', 300: '#f9ac78',
+    400: '#f68a51', 500: '#f25e1d', 600: '#e34413', 700: '#bc3112',
+    800: '#962916', 900: '#792515', 950: '#410f09',
+    DEFAULT: '#f68a51', foreground: '#410f09',
+  },
+  danger: {
+    50: '#fff1f1', 100: '#FFE8E1', 200: '#FFCDC3', 300: '#FFACA4',
+    400: '#FF8E8F', 500: '#FF6978', 600: '#DB4C68', 700: '#B73459',
+    800: '#93214C', 900: '#7A1443', 950: '#4e0315',
+    DEFAULT: '#FF6978', foreground: '#4e0315',
+  },
+  success: {
+    50: '#f1fcf1', 100: '#EDFDE6', 200: '#D7FCCD', 300: '#BAF7B2',
+    400: '#9FEF9C', 500: '#7BE581', 600: '#59C469', 700: '#3DA456',
+    800: '#278445', 900: '#176D3B', 950: '#184f1d',
+    DEFAULT: '#7BE581', foreground: '#184f1d',
+  },
+};
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -83,106 +106,8 @@ export default {
     heroui({
       addCommonColors: true,
       themes: {
-        light: {
-          colors: {
-            focus: 'rgba(246, 138, 81, 1  )',
-            primary: {
-              50: '#fef5ee',
-              100: '#fee9d6',
-              200: '#fbcfad',
-              300: '#f9ac78',
-              400: '#f68a51',
-              500: '#f25e1d',
-              600: '#e34413',
-              700: '#bc3112',
-              800: '#962916',
-              900: '#792515',
-              950: '#410f09',
-              DEFAULT: '#f68a51',
-              foreground: '#410f09',
-            },
-            danger: {
-              50: '#fff1f1',
-              100: '#FFE8E1',
-              200: '#FFCDC3',
-              300: '#FFACA4',
-              400: '#FF8E8F',
-              500: '#FF6978',
-              600: '#DB4C68',
-              700: '#B73459',
-              800: '#93214C',
-              900: '#7A1443',
-              950: '#4e0315',
-              DEFAULT: '#FF6978',
-              foreground: '#4e0315',
-            },
-            success: {
-              50: '#f1fcf1',
-              100: '#EDFDE6',
-              200: '#D7FCCD',
-              300: '#BAF7B2',
-              400: '#9FEF9C',
-              500: '#7BE581',
-              600: '#59C469',
-              700: '#3DA456',
-              800: '#278445',
-              900: '#176D3B',
-              950: '#184f1d',
-              DEFAULT: '#7BE581',
-              foreground: '#184f1d',
-            },
-          },
-        },
-        dark: {
-          colors: {
-            focus: 'rgba(246, 138, 81, 1)',
-            primary: {
-              50: '#fef5ee',
-              100: '#fee9d6',
-              200: '#fbcfad',
-              300: '#f9ac78',
-              400: '#f68a51',
-              500: '#f25e1d',
-              600: '#e34413',
-              700: '#bc3112',
-              800: '#962916',
-              900: '#792515',
-              950: '#410f09',
-              DEFAULT: '#f68a51',
-              foreground: '#410f09',
-            },
-            danger: {
-              50: '#fff1f1',
-              100: '#FFE8E1',
-              200: '#FFCDC3',
-              300: '#FFACA4',
-              400: '#FF8E8F',
-              500: '#FF6978',
-              600: '#DB4C68',
-              700: '#B73459',
-              800: '#93214C',
-              900: '#7A1443',
-              950: '#4e0315',
-              DEFAULT: '#FF6978',
-              foreground: '#4e0315',
-            },
-            success: {
-              50: '#f1fcf1',
-              100: '#EDFDE6',
-              200: '#D7FCCD',
-              300: '#BAF7B2',
-              400: '#9FEF9C',
-              500: '#7BE581',
-              600: '#59C469',
-              700: '#3DA456',
-              800: '#278445',
-              900: '#176D3B',
-              950: '#184f1d',
-              DEFAULT: '#7BE581',
-              foreground: '#184f1d',
-            },
-          },
-        },
+        light: { colors: brandColors },
+        dark:  { colors: brandColors },
       },
     }),
     tailwindcssAnimate,

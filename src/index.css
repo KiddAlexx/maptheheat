@@ -71,6 +71,14 @@
 
 } */
 
+/*
+  Theming convention:
+  - `app-*` classes (bg-app-card, border-app-border, bg-app-surface, text-app-muted)
+    are OUR custom tokens — defined below, switch on .dark via CSS variables.
+  - `text-foreground` and `bg-background` are HeroUI's tokens — managed by the
+    heroui() Tailwind plugin and auto-switch via HeroUI's dark theme config.
+  Both auto-switch on the `.dark` class applied by next-themes.
+*/
 @layer base {
   :root {
     --app-card:       255 255 255;  /* white */
@@ -95,13 +103,21 @@
   }
 }
 
-/* Override default focus state for heroui bordered inputs */
+/*
+  HeroUI input overrides — !important is required here because HeroUI generates
+  its own inline-style-level specificity for these data-slot attributes.
+  Raising selector specificity alone is not sufficient to override them.
+  If HeroUI is updated and these visually break, check whether their internal
+  CSS variable names have changed (--heroui-primary, --heroui-danger).
+*/
 @layer utilities {
+  /* Focused bordered input: apply our primary colour to the border */
   [data-slot='input-wrapper'][data-focus='true'] {
     border-color: hsl(var(--heroui-primary)) !important;
   }
 
-  /* Fix error state for inputs in dark mode — danger-50 is too light */
+  /* Dark mode error state: HeroUI's default uses danger-50 (#fff1f1) which is
+     far too light on dark backgrounds — override with a subtle danger tint */
   .dark [data-slot='input-wrapper'][data-invalid='true'] {
     background-color: rgb(var(--heroui-danger) / 0.22) !important;
   }

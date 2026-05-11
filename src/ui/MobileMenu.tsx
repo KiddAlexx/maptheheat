@@ -16,6 +16,9 @@ import MainLogo from './MainLogo';
 function MobileMenu() {
   const { isOpen, onClose, onOpenChange } = useDisclosure();
 
+  // 300ms matches HeroUI Drawer's default spring close animation duration.
+  // If the drawer animation is ever changed, this value must be updated too.
+  // Sequences drawer close → callback to prevent two focus traps competing.
   function closeAndThen(callback: () => void) {
     onClose();
     setTimeout(callback, 300);
