@@ -68,7 +68,7 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
             onClick={() => {
               setParamsAndNavigate(venue, 'venue');
             }}
-            className="my-1 text-xl font-medium"
+            className="my-1 text-xl font-medium text-foreground"
             aria-labelledby={accMapButtonId}
           >
             {venueName}

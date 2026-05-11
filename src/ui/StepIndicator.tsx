@@ -22,7 +22,7 @@ function StepIndicator({ labels, currentStep }: StepIndicatorProps) {
                     ? 'bg-primary text-white'
                     : isActive
                       ? 'bg-primary text-white ring-4 ring-primary/20'
-                      : 'border-2 border-gray-300 text-gray-400'
+                      : 'border-2 border-app-border text-app-muted'
                 }`}
               >
                 {isCompleted ? (
@@ -33,7 +33,7 @@ function StepIndicator({ labels, currentStep }: StepIndicatorProps) {
               </div>
               <span
                 className={`mt-1 text-xs ${
-                  isActive ? 'font-medium text-primary' : 'text-gray-400'
+                  isActive ? 'font-medium text-primary' : 'text-app-muted'
                 }`}
               >
                 {label}
@@ -42,7 +42,7 @@ function StepIndicator({ labels, currentStep }: StepIndicatorProps) {
             {i < labels.length - 1 && (
               <div
                 className={`mx-2 mb-5 mt-4 h-0.5 flex-1 transition ${
-                  isCompleted ? 'bg-primary' : 'bg-gray-200'
+                  isCompleted ? 'bg-primary' : 'bg-app-border'
                 }`}
               />
             )}

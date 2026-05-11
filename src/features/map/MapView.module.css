@@ -5,3 +5,7 @@
 .map {
   height: 100%;
 }
+
+:global(.dark) .map :global(.leaflet-tile-pane) {
+  filter: invert(100%) hue-rotate(180deg) brightness(0.9) saturate(1.2);
+}

@@ -1,5 +1,10 @@
 // Third Party Imports
-import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
+import {
+  Link,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 
 // React imports
 
@@ -15,6 +20,7 @@ import { Button } from '@heroui/button';
 import UserMenu from '@/ui/UserMenu';
 import AddVenueButton from './AddVenueButton';
 import MobileMenu from './MobileMenu';
+import ThemeToggle from './ThemeToggle';
 
 // Style imports
 import styles from './MainLogo.module.css';
@@ -37,20 +43,18 @@ function PageNav() {
   return (
     <nav
       aria-label="Main navigation"
-      className="flex h-16 items-center justify-between bg-slate-950/80 px-4 sm:px-8"
+      className="flex h-16 items-center justify-between border-b border-app-border bg-zinc-950/90 px-4 sm:px-8"
     >
-      {/* Mobile menu */}
-      <div className="sm:hidden">
-        <MobileMenu />
-      </div>
-      {/* Desktop menu */}
-      <div className=" flex items-center justify-between sm:w-full">
+      {/* Left: hamburger (mobile) / logo + links (desktop) */}
+      <div className="flex items-center gap-5">
+        <div className="sm:hidden">
+          <MobileMenu />
+        </div>
         <div className="hidden sm:block">
           <Link to="/" className={styles.logoWrap} aria-label="Home">
             <MainLogo variant={isAdminRoute ? 'admin' : 'public'} />
           </Link>
         </div>
-
         <div className="hidden items-center gap-5 sm:flex">
           <Link
             to={mapHref}
@@ -58,12 +62,20 @@ function PageNav() {
           >
             Map
           </Link>
-
           <AddVenueButton className="h-auto bg-transparent p-1 px-0 text-xl font-medium text-primary-50 hover:text-primary-300 data-[hover=true]:bg-transparent" />
         </div>
+      </div>
 
-        {/* Checks user login state
-            Displays Login & Signup or Logout button */}
+      {/* Center: logo visible on mobile — non-interactive to avoid misclicks */}
+      <div className="flex flex-1 justify-center sm:hidden">
+        <span className={styles.logoWrap} aria-hidden="true">
+          <MainLogo variant={isAdminRoute ? 'admin' : 'public'} />
+        </span>
+      </div>
+
+      {/* Right: theme toggle + auth */}
+      <div className="flex gap-2">
+        <ThemeToggle />
         {!isAuthenticated ? (
           <Button
             size="sm"

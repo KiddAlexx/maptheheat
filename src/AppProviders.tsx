@@ -1,6 +1,7 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { GlobalErrorProvider } from './context/ErrorContext';
 import { HeroUIProvider } from '@heroui/system';
+import { ThemeProvider } from 'next-themes';
 import { VenueFilterProvider } from './context/VenueFilterContext';
 import { ReviewSortProvider } from './context/ReviewSortContext';
 import { UserReviewsProvider } from './context/UserReviewsContext';
@@ -26,6 +27,7 @@ interface AppProviderProps {
 function AppProviders({ children }: AppProviderProps) {
   const navigate = useNavigate();
   return (
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
     <HeroUIProvider navigate={navigate}>
       <GlobalErrorProvider>
         <VenueFilterProvider>
@@ -46,6 +48,7 @@ function AppProviders({ children }: AppProviderProps) {
         </VenueFilterProvider>
       </GlobalErrorProvider>
     </HeroUIProvider>
+    </ThemeProvider>
   );
 }
 

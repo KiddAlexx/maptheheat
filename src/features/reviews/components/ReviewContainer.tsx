@@ -63,9 +63,9 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
     return (
       <div
         role="alert"
-        className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-md"
+        className="rounded-xl border border-app-border bg-app-card p-6 text-center shadow-md"
       >
-        <p className="mb-2 text-xl font-semibold text-gray-600">
+        <p className="mb-2 text-xl font-semibold text-app-muted">
           Error loading reviews - Please try refreshing
         </p>
       </div>

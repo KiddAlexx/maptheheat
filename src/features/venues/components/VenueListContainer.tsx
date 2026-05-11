@@ -31,12 +31,10 @@ function VenueListContainer({
       ref={venueScrollRef}
       className="h-full overflow-y-scroll  [-ms-overflow-style:none]  [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
-      <div className="mb-2 rounded-xl bg-zinc-200 p-3">
-        <SearchAndFilterPanel
-          useVenueContext={useVenueContext}
-          favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
-        />
-      </div>
+      <SearchAndFilterPanel
+        useVenueContext={useVenueContext}
+        favouriteVenues={mode === 'user' ? favouriteVenues : undefined}
+      />
 
       <ListView
         useVenueContext={useVenueContext}

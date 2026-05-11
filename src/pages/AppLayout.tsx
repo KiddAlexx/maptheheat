@@ -70,7 +70,7 @@ function AppLayout() {
     <main className="relative flex h-full overflow-hidden">
       <aside
         className={clsx(
-          'w-full shrink flex-col overflow-hidden p-3 lg:flex lg:min-w-[32rem] lg:basis-1/3',
+          'w-full shrink flex-col overflow-hidden p-3 lg:flex lg:min-w-[32rem] lg:basis-1/3 bg-app-card dark:bg-zinc-950',
           currentPane === 'list' ? 'flex' : 'hidden'
         )}
       >
@@ -78,7 +78,7 @@ function AppLayout() {
       </aside>
       <section
         className={clsx(
-          'flex-1 overflow-y-scroll bg-zinc-50 lg:block',
+          'flex-1 overflow-y-scroll bg-zinc-50 dark:bg-zinc-950 lg:block',
           currentPane === 'map' || currentPane === 'venue' ? 'block' : 'hidden'
         )}
       >
@@ -98,7 +98,7 @@ function AppLayout() {
           radius="full"
           onPress={updatePane}
           size="md"
-          className="absolute bottom-14 right-1/2 z-[1000] translate-x-1/2 gap-2 bg-success-300 lg:hidden"
+          className="absolute bottom-14 right-1/2 z-[1000] translate-x-1/2 gap-2 bg-success-300 text-success-foreground lg:hidden"
         >
           {currentPane === 'list' ? (
             <>

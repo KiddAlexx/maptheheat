@@ -28,6 +28,7 @@ function VenueTypeFilter({ useVenueContext }: VenueTypeFilterProps) {
     <ButtonGroup radius="full" size="md" fullWidth>
       <Button
         color={activeType === 'all' ? 'primary' : 'default'}
+        variant={activeType === 'all' ? 'solid' : 'flat'}
         aria-pressed={activeType === 'all'}
         onPress={() => handleFilterClick('all')}
       >
@@ -35,6 +36,7 @@ function VenueTypeFilter({ useVenueContext }: VenueTypeFilterProps) {
       </Button>
       <Button
         color={activeType === 'restaurant' ? 'primary' : 'default'}
+        variant={activeType === 'restaurant' ? 'solid' : 'flat'}
         aria-pressed={activeType === 'restaurant'}
         onPress={() => handleFilterClick('restaurant')}
       >
@@ -42,6 +44,7 @@ function VenueTypeFilter({ useVenueContext }: VenueTypeFilterProps) {
       </Button>
       <Button
         color={activeType === 'shop' ? 'primary' : 'default'}
+        variant={activeType === 'shop' ? 'solid' : 'flat'}
         aria-pressed={activeType === 'shop'}
         onPress={() => handleFilterClick('shop')}
       >

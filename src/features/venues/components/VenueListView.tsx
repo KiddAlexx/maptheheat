@@ -90,9 +90,9 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
         <div
           role="alert"
           aria-live="polite"
-          className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-md"
+          className="rounded-xl border border-app-border bg-app-card p-6 text-center shadow-md"
         >
-          <p className="mb-2 text-xl font-semibold text-gray-600">
+          <p className="mb-2 text-xl font-semibold text-app-muted">
             No venues found, please adjust filters
           </p>
         </div>

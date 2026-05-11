@@ -71,7 +71,27 @@
 
 } */
 
+/*
+  Theming convention:
+  - `app-*` classes (bg-app-card, border-app-border, bg-app-surface, text-app-muted)
+    are OUR custom tokens — defined below, switch on .dark via CSS variables.
+  - `text-foreground` and `bg-background` are HeroUI's tokens — managed by the
+    heroui() Tailwind plugin and auto-switch via HeroUI's dark theme config.
+  Both auto-switch on the `.dark` class applied by next-themes.
+*/
 @layer base {
+  :root {
+    --app-card:       255 255 255;  /* white */
+    --app-border:     229 231 235;  /* gray-200 */
+    --app-surface:    243 244 246;  /* gray-100 */
+    --app-muted:       75  85  99;  /* gray-600 */
+  }
+  .dark {
+    --app-card:       24  24  27;   /* zinc-900 */
+    --app-border:     50  50  57;   /* between zinc-700 and zinc-800 */
+    --app-surface:    39  39  42;   /* zinc-800 */
+    --app-muted:     161 161 170;   /* zinc-400 */
+  }
   body {
     @apply bg-background font-sans text-foreground;
 
@@ -83,10 +103,27 @@
   }
 }
 
-/* Override default focus state for heroui bordered inputs */
+/*
+  HeroUI input overrides — !important is required here because HeroUI generates
+  its own inline-style-level specificity for these data-slot attributes.
+  Raising selector specificity alone is not sufficient to override them.
+  If HeroUI is updated and these visually break, check whether their internal
+  CSS variable names have changed (--heroui-primary, --heroui-danger).
+*/
 @layer utilities {
+  /* Focused bordered input: apply our primary colour to the border */
   [data-slot='input-wrapper'][data-focus='true'] {
     border-color: hsl(var(--heroui-primary)) !important;
+  }
+
+  /* Dark mode error state: HeroUI's default uses danger-50 (#fff1f1) which is
+     far too light on dark backgrounds — override with a subtle danger tint */
+  .dark [data-slot='input-wrapper'][data-invalid='true'] {
+    background-color: rgb(var(--heroui-danger) / 0.22) !important;
+  }
+  .dark [data-slot='input-wrapper'][data-invalid='true'] input::placeholder,
+  .dark [data-slot='input-wrapper'][data-invalid='true'] textarea::placeholder {
+    color: rgba(255, 255, 255, 0.55) !important;
   }
 }
 

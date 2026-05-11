@@ -16,28 +16,31 @@ import MainLogo from './MainLogo';
 function MobileMenu() {
   const { isOpen, onClose, onOpenChange } = useDisclosure();
 
+  // 300ms matches HeroUI Drawer's default spring close animation duration.
+  // If the drawer animation is ever changed, this value must be updated too.
+  // Sequences drawer close → callback to prevent two focus traps competing.
+  function closeAndThen(callback: () => void) {
+    onClose();
+    setTimeout(callback, 300);
+  }
+
   return (
     <>
       {/* Hamburger button */}
       <Hamburger color="#fee9d6" toggled={isOpen} toggle={onOpenChange} />
 
-      {/* isOpen used to skip close animation
-      when user clicks Add Venue + not logged in, login modal focus trap fights
-      with heroui focus trap ---- temp fix... */}
-
-      {isOpen && (
-        <Drawer
+      <Drawer
           isOpen={isOpen}
           onClose={onClose}
           placement="left"
           radius="none"
           classNames={{
-            closeButton: 'text-primary-900 text-2xl bg-primary-50 p-1 m-2',
+            closeButton: 'text-primary-100 text-2xl bg-zinc-950/90 p-1 m-2 hover:bg-zinc-800',
             wrapper: 'z-[9999]',
           }}
         >
           <DrawerContent>
-            <DrawerHeader className=" h-16 bg-slate-950/80 ">
+            <DrawerHeader className="h-16 border-b border-app-border bg-zinc-950/90">
               <MainLogo />
             </DrawerHeader>
 
@@ -45,7 +48,7 @@ function MobileMenu() {
             <ul className="flex flex-col space-y-4 px-6 py-6 text-lg">
               <li onClick={onClose}>
                 <NavLink
-                  className="text-2xl font-medium text-primary-950 transition-colors hover:text-primary-300"
+                  className="text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
                   to="/"
                 >
                   Home
@@ -55,15 +58,15 @@ function MobileMenu() {
                 <NavLink
                   onClick={onClose}
                   to="/app/map"
-                  className="text-2xl font-medium text-primary-950 transition-colors hover:text-primary-300"
+                  className="text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
                 >
                   Map
                 </NavLink>
               </li>
               <li>
                 <AddVenueButton
-                  closeOtherModals={onClose}
-                  className="bg-transparent px-0 text-2xl font-medium text-primary-950 transition-colors hover:text-primary-300"
+                  closeOtherModals={closeAndThen}
+                  className="bg-transparent px-0 text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
                 />
               </li>
             </ul>
@@ -71,7 +74,6 @@ function MobileMenu() {
             <DrawerFooter />
           </DrawerContent>
         </Drawer>
-      )}
     </>
   );
 }

@@ -14,7 +14,7 @@ import { canUserAddVenue } from '@/services/apiVenues';
 
 interface AddVenueButtonProps {
   className: string;
-  closeOtherModals?: () => void;
+  closeOtherModals?: (then: () => void) => void;
 }
 
 function AddVenueButton({ closeOtherModals, className }: AddVenueButtonProps) {
@@ -23,11 +23,7 @@ function AddVenueButton({ closeOtherModals, className }: AddVenueButtonProps) {
   const navigate = useNavigate();
   const { isAuthenticated } = useUser();
 
-  // Check if user has 2 or more pending venues
-  async function handleAddVenue() {
-    // Currently used to close modal menu when VenueButton is used within it
-    closeOtherModals?.();
-
+  async function proceed() {
     if (!isAuthenticated) {
       openModal('login');
       return;
@@ -43,7 +39,14 @@ function AddVenueButton({ closeOtherModals, className }: AddVenueButtonProps) {
       }
     } catch (err) {
       setGlobalError(`${err}`);
-      return;
+    }
+  }
+
+  function handleAddVenue() {
+    if (closeOtherModals) {
+      closeOtherModals(proceed);
+    } else {
+      proceed();
     }
   }
 

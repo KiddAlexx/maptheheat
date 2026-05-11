@@ -75,12 +75,12 @@ function DetailedVenueView() {
       <div className="mx-auto mt-8 max-w-[70rem] p-3">
         <div
           role="alert"
-          className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-md"
+          className="rounded-xl border border-app-border bg-app-card p-6 text-center shadow-md"
         >
-          <h1 className="mb-2 text-xl font-semibold text-gray-800">
+          <h1 className="mb-2 text-xl font-semibold text-foreground">
             Venue not found
           </h1>
-          <p className="text-gray-600">
+          <p className="text-app-muted">
             The venue you're looking for doesn't exist or may have been removed.
           </p>
           <div className="mt-4">
@@ -219,48 +219,39 @@ function DetailedVenueView() {
   }
 
   return (
-    <div className="hyphens-auto p-3 text-gray-800">
-      <div className="mb-3 ml-1 flex items-end justify-between">
-        <div>
-          <h2
-            ref={venueHeadingRef}
-            tabIndex={-1}
-            className="mb-1 text-2xl font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-          >
-            {venueName}
-          </h2>
-          <div className="flex gap-2">
-            {/* display flex is forced to override default display inline block
-              of react rating - ensures icons allign correctly */}
-            <div className="flex items-center gap-1 [&>span]:!flex">
-              <VenueRating initialRating={finalHeatRating} readonly />
-
-              <span className="text-sm">
-                ({totalReviewCount}{' '}
-                {totalReviewCount === 1 ? 'review' : 'reviews'})
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Icon className="text-yellow-600" icon="lucide:star" width={22} />
-              <span className="text-small">({finalQualityRating})</span>
+    <div className="hyphens-auto p-3">
+      <article className="mb-5 rounded-xl border border-app-border bg-app-card p-3 text-sm shadow-md">
+        <div className="mb-3 ml-1 flex items-end justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+            <h2
+              ref={venueHeadingRef}
+              tabIndex={-1}
+              className="mb-1 text-2xl font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:mb-0"
+            >
+              {venueName}
+            </h2>
+            {/* Ratings grouped so they stay together when stacked on small screens */}
+            <div className="flex items-center gap-2">
+              {/* display flex is forced to override default display inline block
+                of react rating - ensures icons allign correctly */}
+              <div className="flex items-center gap-1 [&>span]:!flex">
+                <VenueRating initialRating={finalHeatRating} readonly />
+                <span className="text-sm">
+                  ({totalReviewCount}{' '}
+                  {totalReviewCount === 1 ? 'review' : 'reviews'})
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Icon
+                  className="text-yellow-600"
+                  icon="lucide:star"
+                  width={22}
+                />
+                <span className="text-small">({finalQualityRating})</span>
+              </div>
             </div>
           </div>
         </div>
-        <div className="mr-2 flex -translate-y-[2px] gap-2">
-          <ShareButton
-            title="Check out this place I found on Map The Heat!"
-            body={`Hey, \n\nI thought you’d like this venue I found on Map The Heat. \n\nCheck it out here:`}
-            shareUrl={shareUrl}
-          />
-          <LikeButton
-            isFavourite={optimisticIsFavourite}
-            isAuthenticated={isAuthenticated}
-            handleClick={toggleFavourite}
-            isDisabled={isUpdating}
-          />
-        </div>
-      </div>
-      <article className="mb-5 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
         {venueImages && venueImages.length > 0 ? (
           <ResponsiveImageGrid images={venueImages} />
         ) : (
@@ -279,7 +270,7 @@ function DetailedVenueView() {
         )}
 
         {/* Temp data to test layout + styles !!!!!!!!!!!TO BE REPLACED!!!!!*/}
-        <div className=" mt-4 flex items-center justify-between">
+        <div className=" mt-4 flex items-start justify-between">
           <div className="flex flex-wrap gap-2">
             {[
               venueType
@@ -292,26 +283,40 @@ function DetailedVenueView() {
               .map((tag) => (
                 <span
                   key={tag}
-                  className="flex h-6 items-center rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800"
+                  className="flex h-6 items-center rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800 dark:bg-zinc-800 dark:text-zinc-300"
                 >
                   {tag}
                 </span>
               ))}
           </div>
-          <Button
-            radius="full"
-            className="hidden lg:flex"
-            color="primary"
-            variant="flat"
-            startContent={<Icon icon="lucide:map-pinned" />}
-            onPress={() => {
-              navigate(
-                `/app/map/${city}/${country}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`
-              );
-            }}
-          >
-            Back to Map
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              aria-label="Back to map"
+              radius="full"
+              color="primary"
+              variant="bordered"
+              isIconOnly
+              onPress={() => {
+                navigate(
+                  `/app/map/${city}/${country}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`
+                );
+              }}
+            >
+              <Icon icon="lucide:map-pinned" width="18" />
+            </Button>
+            <ShareButton
+              title="Check out this place I found on Map The Heat!"
+              body={`Hey, \n\nI thought you'd like this venue I found on Map The Heat. \n\nCheck it out here:`}
+              shareUrl={shareUrl}
+            />
+            <LikeButton
+              isFavourite={optimisticIsFavourite}
+              isAuthenticated={isAuthenticated}
+              handleClick={toggleFavourite}
+              isDisabled={isUpdating}
+            />
+          </div>
         </div>
 
         <div className="mt-5 flex items-center gap-2">
@@ -327,12 +332,12 @@ function DetailedVenueView() {
               width={18}
               className="shrink-0"
             />
-            <span className="text-blue-500">View hours</span>
+            <span className="text-primary-600">View hours</span>
             <Icon
               aria-hidden="true"
               icon="lucide:external-link"
               width={14}
-              className="text-blue-500"
+              className="text-primary-600 "
             />
           </a>
         </div>
@@ -358,7 +363,7 @@ function DetailedVenueView() {
             className="shrink-0"
           />
           <a
-            className="break-all text-blue-500 hover:text-blue-400"
+            className="break-all text-primary-600  hover:opacity-80"
             href={website}
             target="_blank"
             rel="noopener noreferrer"
@@ -371,7 +376,7 @@ function DetailedVenueView() {
 
         <div className="mb-4">
           <h2 className="mb-2 text-lg font-medium">About</h2>
-          <p className="text-gray-700">{description}</p>
+          <p className="text-foreground">{description}</p>
         </div>
         <div className="mb-3 flex gap-2 ">
           <Button

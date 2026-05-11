@@ -96,7 +96,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
   return isDeleting ? (
     <LoaderSpinner message="deleting review" />
   ) : (
-    <article className="relative mt-2 flex flex-col hyphens-auto rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md sm:flex-row">
+    <article className="relative mt-2 flex flex-col hyphens-auto rounded-xl border border-app-border bg-app-card p-3 text-sm shadow-md sm:flex-row">
       <header className="flex justify-between gap-2">
         <div className="flex  items-center gap-2 sm:w-44">
           {isUserMode ? (
