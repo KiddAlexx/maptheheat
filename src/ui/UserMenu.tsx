@@ -55,30 +55,35 @@ function UserMenu() {
         </button>
       </DropdownTrigger>
       <DropdownMenu>
-        {isAdmin ? (
-          <DropdownItem
-            key="admin"
-            onPress={() => navigate('/admin/moderation/venues')}
-          >
-            Admin
-          </DropdownItem>
-        ) : (null as never)}
-        <DropdownItem key="profile" onPress={() => navigate('/profile')}>
-          Profile
-        </DropdownItem>
-
-        <DropdownItem
-          key="notifications"
-          onPress={() => navigate('/profile/notifications')}
-          endContent={
-            !isLoadingNotifications && notificationCount > 0 && notificationIcon
-          }
-        >
-          Notifications
-        </DropdownItem>
-        <DropdownItem key="logout" onPress={() => logout()} color="danger">
-          Logout
-        </DropdownItem>
+        {(
+          [
+            isAdmin ? (
+              <DropdownItem
+                key="admin"
+                onPress={() => navigate('/admin/moderation/venues')}
+              >
+                Admin
+              </DropdownItem>
+            ) : null,
+            <DropdownItem key="profile" onPress={() => navigate('/profile')}>
+              Profile
+            </DropdownItem>,
+            <DropdownItem
+              key="notifications"
+              onPress={() => navigate('/profile/notifications')}
+              endContent={
+                !isLoadingNotifications &&
+                notificationCount > 0 &&
+                notificationIcon
+              }
+            >
+              Notifications
+            </DropdownItem>,
+            <DropdownItem key="logout" onPress={() => logout()} color="danger">
+              Logout
+            </DropdownItem>,
+          ] as JSX.Element[]
+        ).filter(Boolean)}
       </DropdownMenu>
     </Dropdown>
   );

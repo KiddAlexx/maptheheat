@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 import { deleteReviewMock, getReviewsMock } from './mocks/apiReviews';
-import { getCurrentUserMock } from './mocks/apiAuth';
+import { getCurrentUserMock, logoutApiMock } from './mocks/apiAuth';
 import {
   getIsAdminMock,
   getModerationCitiesMock,
@@ -19,7 +19,10 @@ import {
   updateModerationVenueMock,
   updateModerationVenueStatusMock,
 } from './mocks/apiModeration';
-import { getUserProfileMock } from './mocks/apiUserProfiles';
+import {
+  getUnreadNotificationsCountMock,
+  getUserProfileMock,
+} from './mocks/apiUserProfiles';
 import React from 'react';
 
 // mock supabase api functions
@@ -34,6 +37,7 @@ vi.mock('@/services/apiReviews', () => ({
 
 vi.mock('@/services/apiAuth', () => ({
   getCurrentUser: getCurrentUserMock,
+  logoutApi: logoutApiMock,
 }));
 
 vi.mock('@/services/apiModeration', () => ({
@@ -57,6 +61,7 @@ vi.mock('@/services/apiModeration', () => ({
 
 vi.mock('@/services/apiUserProfiles', () => ({
   getUserProfile: getUserProfileMock,
+  getUnreadNotificationsCount: getUnreadNotificationsCountMock,
 }));
 
 window.HTMLElement.prototype.scrollIntoView = vi.fn();

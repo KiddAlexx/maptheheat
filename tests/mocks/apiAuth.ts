@@ -18,6 +18,8 @@ last_sign_in_at: "2026-02-11T15:47:46.616081Z"
 role: "authenticated"
 updated_at: "2026-02-13T08:06:32.564859Z"  */
 
+export const logoutApiMock = vi.fn(async () => {});
+
 export const getCurrentUserMock = vi.fn<() => Promise<MockAuthUser | null>>(
   async () => {
   const user = {
