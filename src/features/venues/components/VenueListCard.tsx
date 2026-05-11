@@ -119,8 +119,8 @@ function VenueListCard({
       {/* <button className=" w-full" onClick={handleClick}> */}
 
       <Card
-        className="mb-2 h-48 w-full bg-primary-50/50 shadow-md transition [&:has(.venue-btn:hover)]:bg-primary-50"
-        radius="sm"
+        className="mb-2 h-48 w-full border border-gray-200 bg-white shadow-md transition [&:has(.venue-btn:hover)]:border-primary-200 [&:has(.venue-btn:hover)]:bg-primary-50/30"
+        radius="lg"
       >
         <div className="flex">
           <div className="relative h-48 w-1/3 ">
