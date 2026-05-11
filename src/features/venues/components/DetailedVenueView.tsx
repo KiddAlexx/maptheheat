@@ -327,12 +327,12 @@ function DetailedVenueView() {
               width={18}
               className="shrink-0"
             />
-            <span className="text-blue-500">View hours</span>
+            <span className="text-primary-600">View hours</span>
             <Icon
               aria-hidden="true"
               icon="lucide:external-link"
               width={14}
-              className="text-blue-500"
+              className="text-primary-600 "
             />
           </a>
         </div>
@@ -358,7 +358,7 @@ function DetailedVenueView() {
             className="shrink-0"
           />
           <a
-            className="break-all text-blue-500 hover:text-blue-400"
+            className="break-all text-primary-600  hover:opacity-80"
             href={website}
             target="_blank"
             rel="noopener noreferrer"
