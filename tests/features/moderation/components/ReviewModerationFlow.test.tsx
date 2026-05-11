@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -91,22 +91,24 @@ describe('ReviewModerationFlow', () => {
   it('opens a review detail screen from the moderation queue', async () => {
     const user = userEvent.setup();
 
-    renderReviewModeration();
+    const { findByRole, getByRole } = renderReviewModeration();
 
     await user.click(
-      await screen.findByRole('link', {
+      await findByRole('link', {
         name: /big heat, clean flavor/i,
       })
     );
 
-    expect(
-      await screen.findByRole('heading', { name: /review details/i })
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        getByRole('heading', { name: /review details/i })
+      ).toBeInTheDocument();
+    });
     await waitFor(() => {
       expect(getModerationReviewMock).toHaveBeenCalledWith('review-test-id');
     });
     expect(
-      screen.getByRole('link', { name: /back to review queue/i })
+      getByRole('link', { name: /back to review queue/i })
     ).toHaveAttribute('href', '/admin/moderation/reviews');
   });
 });

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -100,22 +100,24 @@ describe('StandaloneImageModerationFlow', () => {
   it('opens a standalone image group detail screen from the image queue', async () => {
     const user = userEvent.setup();
 
-    renderStandaloneImageModeration();
+    const { findByRole, getByRole } = renderStandaloneImageModeration();
 
     await user.click(
-      await screen.findByRole('link', { name: /pepper palace/i })
+      await findByRole('link', { name: /pepper palace/i })
     );
 
-    expect(
-      await screen.findByRole('heading', { name: /submitted images/i })
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        getByRole('heading', { name: /submitted images/i })
+      ).toBeInTheDocument();
+    });
     await waitFor(() => {
       expect(getModerationStandaloneImageGroupMock).toHaveBeenCalledWith(
         'venue-test-id:submitter-user-id'
       );
     });
     expect(
-      screen.getByRole('link', { name: /back to image queue/i })
+      getByRole('link', { name: /back to image queue/i })
     ).toHaveAttribute('href', '/admin/moderation/images');
   });
 });

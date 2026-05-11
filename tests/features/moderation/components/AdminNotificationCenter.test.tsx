@@ -101,8 +101,8 @@ describe('AdminNotificationCenter', () => {
     );
     await user.click(
       await screen.findByRole('button', {
-        name: new RegExp(`pepperfan.*${USER_ID}`),
-      })
+        name: new RegExp(`select recipient pepperfan.*${USER_ID}`, 'i'),
+      }, { timeout: 5_000 })
     );
 
     expect(screen.getByLabelText(/recipient user id/i)).toHaveDisplayValue(

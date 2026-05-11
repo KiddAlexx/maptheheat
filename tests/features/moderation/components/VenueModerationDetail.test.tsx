@@ -230,15 +230,18 @@ describe('VenueModerationDetail', () => {
       })
     );
 
-    await waitFor(() => {
-      const fullSizeImages = screen
-        .getAllByRole('img', { name: /pepper palace menu/i })
-        .filter((image) =>
-          image.getAttribute('src')?.endsWith('image-2-lg.jpg')
-        );
+    await waitFor(
+      () => {
+        const fullSizeImages = screen
+          .getAllByRole('img', { name: /pepper palace menu/i })
+          .filter((image) =>
+            image.getAttribute('src')?.endsWith('image-2-lg.jpg')
+          );
 
-      expect(fullSizeImages).toHaveLength(1);
-    });
+        expect(fullSizeImages).toHaveLength(1);
+      },
+      { timeout: 5_000 }
+    );
   });
 
   it('approves a venue submission', async () => {

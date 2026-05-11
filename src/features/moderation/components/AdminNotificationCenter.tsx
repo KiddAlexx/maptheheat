@@ -159,6 +159,7 @@ function RecipientPicker({
             {recipients.map((recipient) => (
               <li key={recipient.userId}>
                 <Button
+                  aria-label={`Select recipient ${formatRecipientLabel(recipient)}`}
                   className="h-auto w-full justify-start rounded-lg border border-gray-200 bg-white px-3 py-2 text-left text-sm"
                   onPress={() => onRecipientSelect(recipient)}
                   variant="flat"
