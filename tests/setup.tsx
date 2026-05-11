@@ -1,8 +1,28 @@
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 import { deleteReviewMock, getReviewsMock } from './mocks/apiReviews';
-import { getCurrentUserMock } from './mocks/apiAuth';
-import { getUserProfileMock } from './mocks/apiUserProfiles';
+import { getCurrentUserMock, logoutApiMock } from './mocks/apiAuth';
+import {
+  getIsAdminMock,
+  getModerationCitiesMock,
+  getModerationReviewMock,
+  getModerationReviewsMock,
+  getModerationStandaloneImageGroupMock,
+  getModerationStandaloneImagesMock,
+  getModerationVenueMock,
+  getModerationVenuesMock,
+  insertModerationNotificationMock,
+  searchModerationNotificationRecipientsMock,
+  updateModerationImageStatusesMock,
+  updateModerationReviewMock,
+  updateModerationReviewStatusMock,
+  updateModerationVenueMock,
+  updateModerationVenueStatusMock,
+} from './mocks/apiModeration';
+import {
+  getUnreadNotificationsCountMock,
+  getUserProfileMock,
+} from './mocks/apiUserProfiles';
 import React from 'react';
 
 // mock supabase api functions
@@ -17,13 +37,55 @@ vi.mock('@/services/apiReviews', () => ({
 
 vi.mock('@/services/apiAuth', () => ({
   getCurrentUser: getCurrentUserMock,
+  logoutApi: logoutApiMock,
+}));
+
+vi.mock('@/services/apiModeration', () => ({
+  getIsAdmin: getIsAdminMock,
+  getModerationVenues: getModerationVenuesMock,
+  getModerationVenue: getModerationVenueMock,
+  getModerationReviews: getModerationReviewsMock,
+  getModerationReview: getModerationReviewMock,
+  getModerationStandaloneImages: getModerationStandaloneImagesMock,
+  getModerationStandaloneImageGroup: getModerationStandaloneImageGroupMock,
+  getModerationCities: getModerationCitiesMock,
+  searchModerationNotificationRecipients:
+    searchModerationNotificationRecipientsMock,
+  insertModerationNotification: insertModerationNotificationMock,
+  updateModerationVenueStatus: updateModerationVenueStatusMock,
+  updateModerationVenue: updateModerationVenueMock,
+  updateModerationReviewStatus: updateModerationReviewStatusMock,
+  updateModerationReview: updateModerationReviewMock,
+  updateModerationImageStatuses: updateModerationImageStatusesMock,
 }));
 
 vi.mock('@/services/apiUserProfiles', () => ({
   getUserProfile: getUserProfileMock,
+  getUnreadNotificationsCount: getUnreadNotificationsCountMock,
 }));
 
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
+
+class MockIntersectionObserver implements IntersectionObserver {
+  readonly root = null;
+  readonly rootMargin = '';
+  readonly thresholds = [];
+
+  disconnect = vi.fn();
+  observe = vi.fn();
+  takeRecords = vi.fn(() => []);
+  unobserve = vi.fn();
+}
+
+window.IntersectionObserver = MockIntersectionObserver;
+
+class MockResizeObserver implements ResizeObserver {
+  disconnect = vi.fn();
+  observe = vi.fn();
+  unobserve = vi.fn();
+}
+
+window.ResizeObserver = MockResizeObserver;
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

@@ -1,5 +1,5 @@
 // Third Party Imports
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 
 // React imports
 
@@ -22,10 +22,12 @@ import styles from './MainLogo.module.css';
 function PageNav() {
   const { isAuthenticated } = useUser();
   const { openModal } = useModalContext();
+  const { pathname } = useLocation();
   const { city, country } = useParams();
   const [searchParams] = useSearchParams();
   const lat = searchParams.get('lat');
   const lon = searchParams.get('lon');
+  const isAdminRoute = pathname.startsWith('/admin');
 
   const mapHref =
     city && country && lat && lon
@@ -45,7 +47,7 @@ function PageNav() {
       <div className=" flex items-center justify-between sm:w-full">
         <div className="hidden sm:block">
           <Link to="/" className={styles.logoWrap} aria-label="Home">
-            <MainLogo />
+            <MainLogo variant={isAdminRoute ? 'admin' : 'public'} />
           </Link>
         </div>
 

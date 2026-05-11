@@ -4,7 +4,7 @@ import camelcaseKeys from 'camelcase-keys';
 import decamelize from 'decamelize';
 import supabase from './supabase';
 
-import { EditformData } from '../features/reviews/components/ReviewForm';
+import type { EditformData } from '../features/reviews/components/ReviewForm';
 
 //Type Imports
 import {

@@ -37,6 +37,7 @@ npm run test:ui      # Vitest UI dashboard
 - Do not refactor unrelated code
 - Keep changes scoped to a single feature
 - Ask before making **architectural changes**
+- **Never remove existing code comments** when editing or rewriting files — comments, commented-out code, and JSX comment blocks belong to the developer and must be preserved
 
 ---
 
@@ -44,15 +45,15 @@ npm run test:ui      # Vitest UI dashboard
 
 Detailed coding standards live in `.agents/skills/`. Apply the relevant skill whenever working in that area:
 
-| Task | Skill |
-| ---- | ----- |
-| Writing or modifying React components | `modern-best-practice-react-components` |
-| Writing HTML or JSX | `modern-accessible-html-jsx` |
-| Writing or reviewing TypeScript types | `clean-typescript` |
-| Writing or reviewing Tailwind CSS | `modern-tailwind` |
-| Writing or running tests | `vitest-rtl` |
-| Handling user input, auth, or sensitive data | `web-security` |
-| Using browser APIs | `modern-browser-apis` |
+| Task                                         | Skill                                   |
+| -------------------------------------------- | --------------------------------------- |
+| Writing or modifying React components        | `modern-best-practice-react-components` |
+| Writing HTML or JSX                          | `modern-accessible-html-jsx`            |
+| Writing or reviewing TypeScript types        | `clean-typescript`                      |
+| Writing or reviewing Tailwind CSS            | `modern-tailwind`                       |
+| Writing or running tests                     | `vitest-rtl`                            |
+| Handling user input, auth, or sensitive data | `web-security`                          |
+| Using browser APIs                           | `modern-browser-apis`                   |
 
 ---
 

@@ -30,6 +30,7 @@ import ResponsiveImageGrid from '@/ui/ResponsiveImageGrid';
 // Utils
 import { canUserReview, checkPendingReviews } from '@/services/apiReviews';
 import { canUserAddImage } from '@/services/apiVenues';
+import { buildVenueShareUrl } from '@/utils/buildVenueShareUrl';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
@@ -131,6 +132,7 @@ function DetailedVenueView() {
   const totalReviewCount = totalReviews ?? 0;
 
   const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
+  const shareUrl = buildVenueShareUrl(venue) ?? '';
 
   async function handleReview() {
     if (!venueId) return null;
@@ -248,7 +250,7 @@ function DetailedVenueView() {
           <ShareButton
             title="Check out this place I found on Map The Heat!"
             body={`Hey, \n\nI thought you’d like this venue I found on Map The Heat. \n\nCheck it out here:`}
-            shareUrl={`https://www.maptheheat.com/app/venue/${city}/${country}/${venueNameSlug}/${venueId}`}
+            shareUrl={shareUrl}
           />
           <LikeButton
             isFavourite={optimisticIsFavourite}

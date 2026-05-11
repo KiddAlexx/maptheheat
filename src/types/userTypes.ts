@@ -8,15 +8,37 @@ export interface Profile {
   favouriteVenues: string[] | null;
 }
 
+export type NotificationRelatedType = 'review' | 'venue' | 'image';
+
+export type NotificationRequestStatus = 'pending' | 'confirmed' | 'declined';
+
+export type NotificationStatus = 'read' | 'unread' | 'deleted';
+
 export interface UserNotification {
   notificationId: string;
   createdAt: string;
-  relatedType: 'review' | 'venue' | 'image';
+  relatedType: NotificationRelatedType;
   title: string;
   message: string;
-  linkUrl: string;
-  venueId: string;
+  linkUrl: string | null;
+  venueId: string | null;
   userId: string;
-  notificationStatus: 'read' | 'unread' | 'deleted';
-  requestStatus: 'pending' | 'confirmed' | ' declined';
+  notificationStatus: NotificationStatus;
+  requestStatus: NotificationRequestStatus;
+}
+
+export interface AdminNotificationPayload {
+  userId: string;
+  relatedType: NotificationRelatedType;
+  title: string;
+  message: string;
+  linkUrl?: string | null;
+  venueId?: string | null;
+  notificationStatus?: Extract<NotificationStatus, 'read' | 'unread'>;
+  requestStatus?: NotificationRequestStatus;
+}
+
+export interface ModerationNotificationRecipient {
+  userId: string;
+  username: string | null;
 }

@@ -10,6 +10,7 @@ import {
 import { useLogout } from '@/features/authentication/hooks/useLogout';
 import { useNavigate } from 'react-router';
 import { useGetNotificationCount } from '@/features/userProfile/hooks/useGetNotificationCount';
+import { useIsAdmin } from '@/features/moderation/hooks/useIsAdmin';
 import { useState } from 'react';
 
 function UserMenu() {
@@ -17,6 +18,7 @@ function UserMenu() {
   const userId = user?.id;
   const { isPending: isLoadingNotifications, notificationCount } =
     useGetNotificationCount({ userId });
+  const { isAdmin } = useIsAdmin(!!userId);
 
   const { logout } = useLogout();
   const navigate = useNavigate();
@@ -53,22 +55,35 @@ function UserMenu() {
         </button>
       </DropdownTrigger>
       <DropdownMenu>
-        <DropdownItem key="profile" onPress={() => navigate('/profile')}>
-          Profile
-        </DropdownItem>
-
-        <DropdownItem
-          key="notifications"
-          onPress={() => navigate('/profile/notifications')}
-          endContent={
-            !isLoadingNotifications && notificationCount > 0 && notificationIcon
-          }
-        >
-          Notifications
-        </DropdownItem>
-        <DropdownItem key="logout" onPress={() => logout()} color="danger">
-          Logout
-        </DropdownItem>
+        {(
+          [
+            isAdmin ? (
+              <DropdownItem
+                key="admin"
+                onPress={() => navigate('/admin/moderation/venues')}
+              >
+                Admin
+              </DropdownItem>
+            ) : null,
+            <DropdownItem key="profile" onPress={() => navigate('/profile')}>
+              Profile
+            </DropdownItem>,
+            <DropdownItem
+              key="notifications"
+              onPress={() => navigate('/profile/notifications')}
+              endContent={
+                !isLoadingNotifications &&
+                notificationCount > 0 &&
+                notificationIcon
+              }
+            >
+              Notifications
+            </DropdownItem>,
+            <DropdownItem key="logout" onPress={() => logout()} color="danger">
+              Logout
+            </DropdownItem>,
+          ] as JSX.Element[]
+        ).filter(Boolean)}
       </DropdownMenu>
     </Dropdown>
   );

@@ -2,7 +2,9 @@ import { supabaseUrl } from '@/services/supabase';
 import { DetailedImage } from '@/types/venueTypes';
 
 // Function to map over venue images + add path
-export function addImagePaths(images?: DetailedImage[] | null) {
+export function addImagePaths<TImage extends DetailedImage>(
+  images?: TImage[] | null
+) {
   if (!images || images.length === 0) return [];
   return images.map((img) => ({
     ...img,

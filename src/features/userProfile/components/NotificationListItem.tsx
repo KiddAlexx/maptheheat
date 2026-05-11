@@ -19,8 +19,14 @@ interface NotificationListItemProps {
 }
 
 function NotificationListItem({ notification }: NotificationListItemProps) {
-  const { title, message, createdAt, notificationId, notificationStatus } =
-    notification;
+  const {
+    title,
+    message,
+    createdAt,
+    linkUrl,
+    notificationId,
+    notificationStatus,
+  } = notification;
 
   const date = parseISO(createdAt);
   const formattedDate = format(date, 'dd MMM yyyy, HH:mm');
@@ -71,13 +77,45 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
           )}
         </div>
       </header>
-      <p className="mt-1">{message}</p>
+      <p className="mt-1">
+        <NotificationMessage message={message} linkUrl={linkUrl} />
+      </p>
       <footer className="mt-2">
         <time className="text-xs text-gray-400" dateTime={createdAt}>
           {formattedDate}
         </time>
       </footer>
     </article>
+  );
+}
+
+function NotificationMessage({
+  linkUrl,
+  message,
+}: {
+  linkUrl: string | null;
+  message: string;
+}) {
+  if (!linkUrl || !message.includes(linkUrl)) return <>{message}</>;
+
+  const messageParts = message.split(linkUrl);
+
+  return (
+    <>
+      {messageParts.map((messagePart, index) => (
+        <span key={`${messagePart}-${index}`}>
+          {messagePart}
+          {index < messageParts.length - 1 ? (
+            <a
+              href={linkUrl}
+              className="break-all text-primary-700 underline underline-offset-2 hover:text-primary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+            >
+              {linkUrl}
+            </a>
+          ) : null}
+        </span>
+      ))}
+    </>
   );
 }
 

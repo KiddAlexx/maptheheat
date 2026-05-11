@@ -19,6 +19,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ErrorModal from './ui/ErrorModal';
 import ModalManager from './components/ModalManager';
 import RootLayout from './RootLayout';
+import AdminRoute from './features/moderation/components/AdminRoute';
 
 // Lazy loaded pages + components
 const AppLayout = lazy(() => import('./pages/AppLayout'));
@@ -31,6 +32,32 @@ const ReviewForm = lazy(
 );
 const Profile = lazy(() => import('./pages/Profile'));
 const AddNewVenue = lazy(() => import('./pages/AddNewVenue'));
+const AdminLayout = lazy(
+  () => import('./features/moderation/components/AdminLayout')
+);
+const VenueModerationQueue = lazy(
+  () => import('./features/moderation/components/VenueModerationQueue')
+);
+const VenueModerationDetail = lazy(
+  () => import('./features/moderation/components/VenueModerationDetail')
+);
+const ReviewModerationQueue = lazy(
+  () => import('./features/moderation/components/ReviewModerationQueue')
+);
+const ReviewModerationDetail = lazy(
+  () => import('./features/moderation/components/ReviewModerationDetail')
+);
+const StandaloneImageModerationQueue = lazy(
+  () =>
+    import('./features/moderation/components/StandaloneImageModerationQueue')
+);
+const StandaloneImageModerationGroup = lazy(
+  () =>
+    import('./features/moderation/components/StandaloneImageModerationGroup')
+);
+const AdminNotificationCenter = lazy(
+  () => import('./features/moderation/components/AdminNotificationCenter')
+);
 
 function App() {
   return (
@@ -80,6 +107,44 @@ function App() {
                   <ReviewForm mode="editing" />
                 </ProtectedRoute>
               }
+            />
+          </Route>
+          <Route
+            path="admin"
+            element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }
+          >
+            <Route index element={<Navigate replace to="moderation/venues" />} />
+            <Route
+              path="moderation/venues"
+              element={<VenueModerationQueue />}
+            />
+            <Route
+              path="moderation/venues/:venueId"
+              element={<VenueModerationDetail />}
+            />
+            <Route
+              path="moderation/reviews"
+              element={<ReviewModerationQueue />}
+            />
+            <Route
+              path="moderation/reviews/:reviewId"
+              element={<ReviewModerationDetail />}
+            />
+            <Route
+              path="moderation/images"
+              element={<StandaloneImageModerationQueue />}
+            />
+            <Route
+              path="moderation/images/:groupId"
+              element={<StandaloneImageModerationGroup />}
+            />
+            <Route
+              path="moderation/notifications"
+              element={<AdminNotificationCenter />}
             />
           </Route>
           <Route path="/terms" element={<Terms />} />

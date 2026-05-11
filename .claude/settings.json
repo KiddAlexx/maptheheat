@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm.cmd run checks)",
+      "Bash(npm.cmd run typecheck)",
+      "Bash(npm.cmd run lint)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run lint)",
+      "Bash(npm.cmd test -- --run)",
+      "Bash(npm.cmd test -- --run *)"
+    ]
+  }
+}
