@@ -1,7 +1,11 @@
+.global {
+  /* Scoping class for this component's content */
+}
+
 :global(.leaflet-popup .leaflet-popup-content) {
   width: 15rem;
   height: 100%;
-  margin: 0; /* Reset default margin */
+  margin: 0;
 }
 
 :global(.leaflet-popup-content p) {
@@ -10,9 +14,36 @@
 
 :global(.leaflet-popup-close-button) {
   z-index: 1000;
-  color: #f68a51 !important;
+  color: white !important;
+  background-color: rgba(0, 0, 0, 0.45) !important;
+  border-radius: 50% !important;
+  width: 22px !important;
+  height: 22px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  top: 6px !important;
+  right: 6px !important;
+  padding: 0 0 2px 0 !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
 }
 
 :global(.leaflet-container) {
   font-family: inherit !important;
+}
+
+/* Dark mode — override Leaflet's hardcoded white popup background */
+:global(.dark .leaflet-popup-content-wrapper) {
+  background-color: #18181b; /* zinc-900 */
+  color: #f4f4f5; /* zinc-100 */
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.5);
+}
+
+:global(.dark .leaflet-popup-tip) {
+  background-color: #18181b; /* zinc-900 — matches wrapper */
+}
+
+:global(.leaflet-popup-close-button:hover) {
+  background-color: rgba(0, 0, 0, 0.65) !important;
 }
