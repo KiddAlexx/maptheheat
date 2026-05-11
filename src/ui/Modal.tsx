@@ -94,7 +94,7 @@ function Modal({ children }: ModalProps) {
             }}
           >
             <motion.div
-              className="relative flex max-h-[90dvh] max-w-[90dvw] items-center  justify-center gap-5 rounded-xl bg-white p-5 shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)]"
+              className="relative flex max-h-[90dvh] max-w-[90dvw] items-center justify-center gap-5 rounded-xl bg-app-card p-5 shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)]"
               ref={modalRef}
               variants={activePanelVariants}
               initial="hidden"

@@ -211,7 +211,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                   {venueName || venueNameReview}
                 </h2>
               </div>
-              <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-md">
+              <div className="rounded-xl border border-app-border bg-app-card p-3 shadow-md">
                 <div className="mb-12 flex gap-8">
                   <div>
                     <h3 className="ml-1 text-lg font-medium">Heat Rating</h3>
@@ -383,7 +383,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                       )}
                     />
                   </div>
-                  <p className="mb-2 text-center text-xs text-gray-400">
+                  <p className="mb-2 text-center text-xs text-app-muted">
                     By submitting you agree to our{' '}
                     <a href="/terms" className="underline" target="_blank" rel="noopener noreferrer">
                       Terms of Service
@@ -427,7 +427,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
               >
                 Add photos to your review
               </h2>
-              <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-md">
+              <div className="rounded-xl border border-app-border bg-app-card p-3 shadow-md">
                 <ImageUploader
                   venue={venue || venueDetails}
                   reviewId={createdReviewId || reviewId}

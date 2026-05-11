@@ -72,6 +72,18 @@
 } */
 
 @layer base {
+  :root {
+    --app-card:       255 255 255;  /* white */
+    --app-border:     229 231 235;  /* gray-200 */
+    --app-surface:    243 244 246;  /* gray-100 */
+    --app-muted:       75  85  99;  /* gray-600 */
+  }
+  .dark {
+    --app-card:       24  24  27;   /* zinc-900 */
+    --app-border:     50  50  57;   /* between zinc-700 and zinc-800 */
+    --app-surface:    39  39  42;   /* zinc-800 */
+    --app-muted:     161 161 170;   /* zinc-400 */
+  }
   body {
     @apply bg-background font-sans text-foreground;
 
@@ -87,6 +99,15 @@
 @layer utilities {
   [data-slot='input-wrapper'][data-focus='true'] {
     border-color: hsl(var(--heroui-primary)) !important;
+  }
+
+  /* Fix error state for inputs in dark mode — danger-50 is too light */
+  .dark [data-slot='input-wrapper'][data-invalid='true'] {
+    background-color: rgb(var(--heroui-danger) / 0.22) !important;
+  }
+  .dark [data-slot='input-wrapper'][data-invalid='true'] input::placeholder,
+  .dark [data-slot='input-wrapper'][data-invalid='true'] textarea::placeholder {
+    color: rgba(255, 255, 255, 0.55) !important;
   }
 }
 

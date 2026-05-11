@@ -255,7 +255,7 @@ function VenueForm() {
           <div>
             <h2 className="text-2xl font-semibold">Add a New Venue</h2>
 
-            <div className="mt-3 rounded-xl border border-gray-200 bg-white p-4 shadow-md">
+            <div className="mt-3 rounded-xl border border-app-border bg-app-card p-4 shadow-md">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -515,7 +515,7 @@ function VenueForm() {
           <div>
             <h2 className="text-2xl font-semibold">About the Venue</h2>
 
-            <div className="mt-3 rounded-xl border border-gray-200 bg-white p-4 shadow-md">
+            <div className="mt-3 rounded-xl border border-app-border bg-app-card p-4 shadow-md">
               <form onSubmit={handleSubmit(formSubmit, toastFormError)}>
                 {/* Cuisine Types */}
                 <Controller
@@ -532,7 +532,7 @@ function VenueForm() {
                         <span className="text-md ml-1 font-normal">
                           Cuisine Type
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-app-muted">
                           Select 1 or 2
                         </span>
                       </div>
@@ -551,8 +551,8 @@ function VenueForm() {
                                 isSelected
                                   ? 'bg-primary text-white'
                                   : isDisabled
-                                    ? 'cursor-not-allowed border border-gray-300 bg-white text-gray-400 opacity-40'
-                                    : 'border border-gray-300 bg-white text-gray-700 hover:border-primary hover:text-primary'
+                                    ? 'cursor-not-allowed border border-app-border bg-app-card text-app-muted opacity-40'
+                                    : 'border border-app-border bg-app-card text-foreground hover:border-primary hover:text-primary'
                               }`}
                             >
                               {cuisine}
@@ -575,7 +575,7 @@ function VenueForm() {
                     <span className="text-md ml-1 font-normal">
                       Dietary Options
                     </span>
-                    <span className="text-xs text-gray-500">Optional</span>
+                    <span className="text-xs text-app-muted">Optional</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {DIETARY_OPTIONS.map((option) => {
@@ -588,7 +588,7 @@ function VenueForm() {
                           className={`rounded-full px-3 py-1 text-sm transition ${
                             isSelected
                               ? 'bg-primary text-white'
-                              : 'border border-gray-300 bg-white text-gray-700 hover:border-primary hover:text-primary'
+                              : 'border border-app-border bg-app-card text-foreground hover:border-primary hover:text-primary'
                           }`}
                         >
                           {option}
@@ -634,7 +634,7 @@ function VenueForm() {
                   />
                 </div>
 
-                <p className="mb-2 text-center text-xs text-gray-400">
+                <p className="mb-2 text-center text-xs text-app-muted">
                   By submitting you agree to our{' '}
                   <a
                     href="/terms"
@@ -678,7 +678,7 @@ function VenueForm() {
             <h2 className="text-2xl font-semibold">
               Add photos for {createdVenue?.venueName ?? ''}
             </h2>
-            <div className="mt-3 w-full max-w-4xl rounded-xl border border-gray-200 bg-white p-4 shadow-md">
+            <div className="mt-3 w-full max-w-4xl rounded-xl border border-app-border bg-app-card p-4 shadow-md">
               <ImageUploader
                 venue={createdVenue ?? undefined}
                 mode="integrated"

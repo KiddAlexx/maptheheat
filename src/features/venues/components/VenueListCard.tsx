@@ -117,7 +117,7 @@ function VenueListCard({
   return (
     <li>
       <Card
-        className="mb-2 h-48 w-full border border-gray-200 bg-white shadow-md transition [&:has(.venue-btn:hover)]:border-primary-200 [&:has(.venue-btn:hover)]:bg-primary-50/30"
+        className="mb-2 h-48 w-full border border-app-border bg-app-card shadow-md transition [&:has(.venue-btn:hover)]:border-primary-200 [&:has(.venue-btn:hover)]:bg-primary-50/30 dark:[&:has(.venue-btn:hover)]:border-primary-400 dark:[&:has(.venue-btn:hover)]:bg-primary-900/20"
         radius="lg"
       >
         <div className="flex">

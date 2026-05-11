@@ -17,7 +17,7 @@ function SearchAndFilterPanel({
   const isUserMode = useMatch('/profile/venues');
 
   return (
-    <div className="mb-5 rounded-xl border border-gray-200 bg-white p-4 shadow-md">
+    <div className="mb-5 rounded-xl border border-app-border bg-app-card p-4 shadow-md">
       {!isUserMode && <VenueSearchBar useVenueContext={useVenueContext} />}
       <CitySelect
         useVenueContext={useVenueContext}

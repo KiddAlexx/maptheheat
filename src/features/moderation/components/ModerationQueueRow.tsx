@@ -22,7 +22,7 @@ function ModerationQueueRow({
 }: ModerationQueueRowProps) {
   return (
     <li>
-      <article className="rounded-xl border border-gray-200 bg-white p-4 text-sm shadow-md transition hover:border-primary-200 hover:bg-primary-50/30">
+      <article className="rounded-xl border border-app-border bg-app-card p-4 text-sm shadow-md transition hover:border-primary-200 hover:bg-primary-50/30 dark:hover:border-primary-400 dark:hover:bg-primary-900/20">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="min-w-0">
             <div className="mb-2 flex flex-wrap items-center gap-2">

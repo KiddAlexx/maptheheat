@@ -98,7 +98,7 @@ function ErrorModal({
               role="alertdialog"
               aria-labelledby="error-title"
               aria-modal="true"
-              className="relative flex flex-col items-center justify-center gap-5 rounded-xl bg-white p-5 shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)] sm:flex-row sm:gap-3"
+              className="relative flex flex-col items-center justify-center gap-5 rounded-xl bg-app-card p-5 shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)] sm:flex-row sm:gap-3"
               ref={modalRef}
               variants={activePanelVariants}
               initial="hidden"

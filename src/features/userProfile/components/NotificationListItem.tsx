@@ -35,7 +35,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
   const { isDeleting, deleteUserNotification } = useDeleteUserNotification();
 
   return (
-    <article className="mb-3 mt-2 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
+    <article className="mb-3 mt-2 rounded-xl border border-app-border bg-app-card p-3 text-sm shadow-md">
       <header className="flex justify-between">
         <h3 className="font-semibold">{title}</h3>
         <div>
@@ -81,7 +81,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
         <NotificationMessage message={message} linkUrl={linkUrl} />
       </p>
       <footer className="mt-2">
-        <time className="text-xs text-gray-400" dateTime={createdAt}>
+        <time className="text-xs text-app-muted" dateTime={createdAt}>
           {formattedDate}
         </time>
       </footer>

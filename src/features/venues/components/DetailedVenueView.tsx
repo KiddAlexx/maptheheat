@@ -75,12 +75,12 @@ function DetailedVenueView() {
       <div className="mx-auto mt-8 max-w-[70rem] p-3">
         <div
           role="alert"
-          className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-md"
+          className="rounded-xl border border-app-border bg-app-card p-6 text-center shadow-md"
         >
-          <h1 className="mb-2 text-xl font-semibold text-gray-800">
+          <h1 className="mb-2 text-xl font-semibold text-foreground">
             Venue not found
           </h1>
-          <p className="text-gray-600">
+          <p className="text-app-muted">
             The venue you're looking for doesn't exist or may have been removed.
           </p>
           <div className="mt-4">
@@ -219,8 +219,8 @@ function DetailedVenueView() {
   }
 
   return (
-    <div className="hyphens-auto p-3 text-gray-800">
-      <article className="mb-5 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
+    <div className="hyphens-auto p-3">
+      <article className="mb-5 rounded-xl border border-app-border bg-app-card p-3 text-sm shadow-md">
         <div className="mb-3 ml-1 flex items-end justify-between">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
             <h2
@@ -283,7 +283,7 @@ function DetailedVenueView() {
               .map((tag) => (
                 <span
                   key={tag}
-                  className="flex h-6 items-center rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800"
+                  className="flex h-6 items-center rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800 dark:bg-zinc-800 dark:text-zinc-300"
                 >
                   {tag}
                 </span>
@@ -295,7 +295,7 @@ function DetailedVenueView() {
               aria-label="Back to map"
               radius="full"
               color="primary"
-              variant="flat"
+              variant="bordered"
               isIconOnly
               onPress={() => {
                 navigate(
@@ -376,7 +376,7 @@ function DetailedVenueView() {
 
         <div className="mb-4">
           <h2 className="mb-2 text-lg font-medium">About</h2>
-          <p className="text-gray-700">{description}</p>
+          <p className="text-foreground">{description}</p>
         </div>
         <div className="mb-3 flex gap-2 ">
           <Button

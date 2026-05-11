@@ -12,10 +12,10 @@ function VenuePreviewContainer() {
   });
 
   return (
-    <div className="  w-full rounded-2xl border border-primary-100/80 bg-white/90 p-5 shadow-[0_20px_50px_-30px_rgba(122,37,21,0.45)] backdrop-blur-sm ">
+    <div className="w-full rounded-2xl border border-primary-100/80 bg-app-card/90 p-5 shadow-[0_20px_50px_-30px_rgba(122,37,21,0.45)] backdrop-blur-sm">
       <div className="mb-4 flex items-center gap-2">
         <Icon icon="tdesign:chili" width={18} className="text-primary-500" />
-        <p className="text-base font-semibold text-slate-800">
+        <p className="text-base font-semibold text-foreground">
           Latest additions!
         </p>
       </div>

@@ -1,5 +1,10 @@
 // Third Party Imports
-import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
+import {
+  Link,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 
 // React imports
 
@@ -15,6 +20,7 @@ import { Button } from '@heroui/button';
 import UserMenu from '@/ui/UserMenu';
 import AddVenueButton from './AddVenueButton';
 import MobileMenu from './MobileMenu';
+import ThemeToggle from './ThemeToggle';
 
 // Style imports
 import styles from './MainLogo.module.css';
@@ -37,7 +43,7 @@ function PageNav() {
   return (
     <nav
       aria-label="Main navigation"
-      className="flex h-16 items-center justify-between bg-slate-950/80 px-4 sm:px-8"
+      className="flex h-16 items-center justify-between border-b border-app-border bg-zinc-950/90 px-4 sm:px-8"
     >
       {/* Mobile menu */}
       <div className="sm:hidden">
@@ -64,20 +70,24 @@ function PageNav() {
 
         {/* Checks user login state
             Displays Login & Signup or Logout button */}
-        {!isAuthenticated ? (
-          <Button
-            size="sm"
-            radius="full"
-            onPress={() => openModal('login')}
-            className="h-9 min-w-28 bg-success-300 text-sm font-medium text-success-foreground"
-          >
-            Sign In
-          </Button>
-        ) : (
-          <div className="flex items-center">
-            <UserMenu />
-          </div>
-        )}
+        <div className="flex gap-2">
+          <ThemeToggle />
+
+          {!isAuthenticated ? (
+            <Button
+              size="sm"
+              radius="full"
+              onPress={() => openModal('login')}
+              className="h-9 min-w-28 bg-success-300 text-sm font-medium text-success-foreground"
+            >
+              Sign In
+            </Button>
+          ) : (
+            <div className="flex items-center">
+              <UserMenu />
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );

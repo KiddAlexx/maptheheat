@@ -47,7 +47,7 @@ function ShareButton({ shareUrl, title, body }: ShareButtonProps) {
           disableAnimation
         >
           <Icon
-            className="text-slate-700"
+            className="text-slate-700 dark:text-zinc-200"
             icon="ri:share-fill"
             width="20"
             height="20"

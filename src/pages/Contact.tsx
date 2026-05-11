@@ -59,16 +59,16 @@ function Contact() {
 
   return (
     <main className="flex w-full justify-center px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-2xl rounded-xl border border-gray-200 bg-white p-6 shadow-md sm:p-10">
-        <h1 className="mb-2 text-3xl font-bold text-gray-800">Contact Us</h1>
-        <p className="mb-8 text-sm text-gray-500">
+      <div className="w-full max-w-2xl rounded-xl border border-app-border bg-app-card p-6 shadow-md sm:p-10">
+        <h1 className="mb-2 text-3xl font-bold text-foreground">Contact Us</h1>
+        <p className="mb-8 text-sm text-app-muted">
           Have a question, spotted an issue, or want to suggest something? We'd love to hear from you.
         </p>
 
         {status === 'success' ? (
-          <div className="rounded-xl border border-green-100 bg-green-50 p-6 text-center">
-            <p className="text-lg font-semibold text-green-700">Message sent!</p>
-            <p className="mt-1 text-sm text-green-600">
+          <div className="rounded-xl border border-success-200 bg-success-50 p-6 text-center dark:border-success-800 dark:bg-success-950/20">
+            <p className="text-lg font-semibold text-success-700 dark:text-success-400">Message sent!</p>
+            <p className="mt-1 text-sm text-success-600 dark:text-success-400">
               Thanks for getting in touch — we'll get back to you as soon as we can.
             </p>
             <div className="mt-5">
@@ -153,9 +153,10 @@ function Contact() {
                       errorMessage={errors.message?.message}
                       classNames={{ label: 'text-md font-normal ml-1' }}
                     />
-                    <p className={`mt-1 text-right text-xs ${messageValue.length > MESSAGE_MAX ? 'text-danger' : 'text-gray-400'}`}>
+                    <p className={`mt-1 text-right text-xs ${messageValue.length > MESSAGE_MAX ? 'text-danger' : 'text-app-muted'}`}>
                       {messageValue.length} / {MESSAGE_MAX}
                     </p>
+
                   </div>
                 )}
               />
