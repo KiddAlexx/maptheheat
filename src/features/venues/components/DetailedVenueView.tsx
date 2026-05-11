@@ -222,20 +222,20 @@ function DetailedVenueView() {
     <div className="hyphens-auto p-3 text-gray-800">
       <article className="mb-5 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
         <div className="mb-3 ml-1 flex items-end justify-between">
-          <div>
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
             <h2
               ref={venueHeadingRef}
               tabIndex={-1}
-              className="mb-1 text-2xl font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              className="mb-1 text-2xl font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:mb-0"
             >
               {venueName}
             </h2>
-            <div className="flex gap-2">
+            {/* Ratings grouped so they stay together when stacked on small screens */}
+            <div className="flex items-center gap-2">
               {/* display flex is forced to override default display inline block
-              of react rating - ensures icons allign correctly */}
+                of react rating - ensures icons allign correctly */}
               <div className="flex items-center gap-1 [&>span]:!flex">
                 <VenueRating initialRating={finalHeatRating} readonly />
-
                 <span className="text-sm">
                   ({totalReviewCount}{' '}
                   {totalReviewCount === 1 ? 'review' : 'reviews'})
@@ -270,7 +270,7 @@ function DetailedVenueView() {
         )}
 
         {/* Temp data to test layout + styles !!!!!!!!!!!TO BE REPLACED!!!!!*/}
-        <div className=" mt-4 flex items-center justify-between">
+        <div className=" mt-4 flex items-start justify-between">
           <div className="flex flex-wrap gap-2">
             {[
               venueType
