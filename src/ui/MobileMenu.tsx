@@ -16,17 +16,17 @@ import MainLogo from './MainLogo';
 function MobileMenu() {
   const { isOpen, onClose, onOpenChange } = useDisclosure();
 
+  function closeAndThen(callback: () => void) {
+    onClose();
+    setTimeout(callback, 300);
+  }
+
   return (
     <>
       {/* Hamburger button */}
       <Hamburger color="#fee9d6" toggled={isOpen} toggle={onOpenChange} />
 
-      {/* isOpen used to skip close animation
-      when user clicks Add Venue + not logged in, login modal focus trap fights
-      with heroui focus trap ---- temp fix... */}
-
-      {isOpen && (
-        <Drawer
+      <Drawer
           isOpen={isOpen}
           onClose={onClose}
           placement="left"
@@ -62,7 +62,7 @@ function MobileMenu() {
               </li>
               <li>
                 <AddVenueButton
-                  closeOtherModals={onClose}
+                  closeOtherModals={closeAndThen}
                   className="bg-transparent px-0 text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
                 />
               </li>
@@ -71,7 +71,6 @@ function MobileMenu() {
             <DrawerFooter />
           </DrawerContent>
         </Drawer>
-      )}
     </>
   );
 }
