@@ -50,8 +50,16 @@ plus the relevant tests.
 - [x] Step 20d: Inline composer in standalone image group.
 - [x] Step 20.5: Post-notifications refactor pass.
 - [x] Step 21: Add notification reason checkboxes.
+- [x] Step 22: Add admin nav link for admin users.
 
 ## Completed Slices
+
+### Step 22: Admin Nav Link
+
+- Added `useIsAdmin(!!userId)` to `UserMenu` so the `is_admin()` RPC result is shared with `AdminRoute` via the `['admin', 'isAdmin']` query cache — no extra DB call.
+- Conditionally renders an "Admin" `DropdownItem` at the top of the user dropdown that navigates to `/admin/moderation/venues`.
+- Non-admin users see no change; the item is not rendered in the DOM when `isAdmin` is false.
+- `MobileMenu` needs no change — `UserMenu` avatar dropdown is visible on both mobile and desktop.
 
 ### Step 1: Route Shell
 
