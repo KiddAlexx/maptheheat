@@ -220,47 +220,38 @@ function DetailedVenueView() {
 
   return (
     <div className="hyphens-auto p-3 text-gray-800">
-      <div className="mb-3 ml-1 flex items-end justify-between">
-        <div>
-          <h2
-            ref={venueHeadingRef}
-            tabIndex={-1}
-            className="mb-1 text-2xl font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-          >
-            {venueName}
-          </h2>
-          <div className="flex gap-2">
-            {/* display flex is forced to override default display inline block
+      <article className="mb-5 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
+        <div className="mb-3 ml-1 flex items-end justify-between">
+          <div>
+            <h2
+              ref={venueHeadingRef}
+              tabIndex={-1}
+              className="mb-1 text-2xl font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            >
+              {venueName}
+            </h2>
+            <div className="flex gap-2">
+              {/* display flex is forced to override default display inline block
               of react rating - ensures icons allign correctly */}
-            <div className="flex items-center gap-1 [&>span]:!flex">
-              <VenueRating initialRating={finalHeatRating} readonly />
+              <div className="flex items-center gap-1 [&>span]:!flex">
+                <VenueRating initialRating={finalHeatRating} readonly />
 
-              <span className="text-sm">
-                ({totalReviewCount}{' '}
-                {totalReviewCount === 1 ? 'review' : 'reviews'})
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Icon className="text-yellow-600" icon="lucide:star" width={22} />
-              <span className="text-small">({finalQualityRating})</span>
+                <span className="text-sm">
+                  ({totalReviewCount}{' '}
+                  {totalReviewCount === 1 ? 'review' : 'reviews'})
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Icon
+                  className="text-yellow-600"
+                  icon="lucide:star"
+                  width={22}
+                />
+                <span className="text-small">({finalQualityRating})</span>
+              </div>
             </div>
           </div>
         </div>
-        <div className="mr-2 flex -translate-y-[2px] gap-2">
-          <ShareButton
-            title="Check out this place I found on Map The Heat!"
-            body={`Hey, \n\nI thought you’d like this venue I found on Map The Heat. \n\nCheck it out here:`}
-            shareUrl={shareUrl}
-          />
-          <LikeButton
-            isFavourite={optimisticIsFavourite}
-            isAuthenticated={isAuthenticated}
-            handleClick={toggleFavourite}
-            isDisabled={isUpdating}
-          />
-        </div>
-      </div>
-      <article className="mb-5 rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-md">
         {venueImages && venueImages.length > 0 ? (
           <ResponsiveImageGrid images={venueImages} />
         ) : (
@@ -298,20 +289,34 @@ function DetailedVenueView() {
                 </span>
               ))}
           </div>
-          <Button
-            radius="full"
-            className="hidden lg:flex"
-            color="primary"
-            variant="flat"
-            startContent={<Icon icon="lucide:map-pinned" />}
-            onPress={() => {
-              navigate(
-                `/app/map/${city}/${country}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`
-              );
-            }}
-          >
-            Back to Map
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              aria-label="Back to map"
+              radius="full"
+              color="primary"
+              variant="flat"
+              isIconOnly
+              onPress={() => {
+                navigate(
+                  `/app/map/${city}/${country}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`
+                );
+              }}
+            >
+              <Icon icon="lucide:map-pinned" width="18" />
+            </Button>
+            <ShareButton
+              title="Check out this place I found on Map The Heat!"
+              body={`Hey, \n\nI thought you'd like this venue I found on Map The Heat. \n\nCheck it out here:`}
+              shareUrl={shareUrl}
+            />
+            <LikeButton
+              isFavourite={optimisticIsFavourite}
+              isAuthenticated={isAuthenticated}
+              handleClick={toggleFavourite}
+              isDisabled={isUpdating}
+            />
+          </div>
         </div>
 
         <div className="mt-5 flex items-center gap-2">
