@@ -66,11 +66,11 @@ function PageNav() {
         </div>
       </div>
 
-      {/* Center: logo visible on mobile */}
+      {/* Center: logo visible on mobile — non-interactive to avoid misclicks */}
       <div className="flex flex-1 justify-center sm:hidden">
-        <Link to="/" className={styles.logoWrap} aria-label="Home">
+        <span className={styles.logoWrap} aria-hidden="true">
           <MainLogo variant={isAdminRoute ? 'admin' : 'public'} />
-        </Link>
+        </span>
       </div>
 
       {/* Right: theme toggle + auth */}

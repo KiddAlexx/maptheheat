@@ -9,7 +9,6 @@
   font-weight: 700;
 }
 
-/* wrapper class */
 .logoWrap:hover .logoMain,
 .logoWrap:focus-visible .logoMain {
   animation: logoGradientShift 1.2s linear infinite;
