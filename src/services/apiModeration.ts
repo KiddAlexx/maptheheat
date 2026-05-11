@@ -135,6 +135,11 @@ type ModerationStandaloneImageGroupRow = Omit<
   images?: ModerationStandaloneImageRow[] | null;
 };
 
+type StandaloneImageVenueRow = Pick<
+  ModerationStandaloneImageGroup,
+  'city' | 'country' | 'venueId' | 'venueName' | 'venueNameSlug'
+>;
+
 function mapModerationVenue(row: ModerationVenueRow): ModerationVenue {
   const { profiles, ...venue } = row;
 
@@ -201,6 +206,51 @@ function mapStandaloneImageGroup(
     groupId: getStandaloneImageGroupId(row),
     images: addImagePaths(images),
   };
+}
+
+async function fillStandaloneImageVenueDetails(
+  groups: ModerationStandaloneImageGroup[]
+): Promise<ModerationStandaloneImageGroup[]> {
+  const groupsMissingVenueDetails = groups.filter(
+    (group) =>
+      !group.city || !group.country || !group.venueName || !group.venueNameSlug
+  );
+
+  if (groupsMissingVenueDetails.length === 0) return groups;
+
+  const venueIds = [
+    ...new Set(groupsMissingVenueDetails.map((group) => group.venueId)),
+  ];
+  const { data, error } = await supabase
+    .from('venue_details')
+    .select('venue_id, venue_name, city, country, venue_name_slug')
+    .in('venue_id', venueIds);
+
+  if (error) {
+    throw new Error(
+      `Standalone image venue details could not be loaded. Error: ${error.message}`
+    );
+  }
+
+  const venueDetailsById = new Map(
+    (camelcaseKeys(data, { deep: true }) as StandaloneImageVenueRow[]).map(
+      (venue) => [venue.venueId, venue]
+    )
+  );
+
+  return groups.map((group) => {
+    const venueDetails = venueDetailsById.get(group.venueId);
+
+    if (!venueDetails) return group;
+
+    return {
+      ...group,
+      city: group.city ?? venueDetails.city,
+      country: group.country ?? venueDetails.country,
+      venueName: group.venueName ?? venueDetails.venueName,
+      venueNameSlug: group.venueNameSlug ?? venueDetails.venueNameSlug,
+    };
+  });
 }
 
 export async function getIsAdmin(): Promise<boolean> {
@@ -448,10 +498,12 @@ export async function getModerationStandaloneImages({
   const groupsMatchingStatus = groups.filter((group) =>
     group.images.some((image) => image.status === status)
   );
+  const groupsWithVenueDetails =
+    await fillStandaloneImageVenueDetails(groupsMatchingStatus);
 
   return {
-    data: groupsMatchingStatus,
-    count: status === 'pending' ? count : groupsMatchingStatus.length,
+    data: groupsWithVenueDetails,
+    count: status === 'pending' ? count : groupsWithVenueDetails.length,
   };
 }
 

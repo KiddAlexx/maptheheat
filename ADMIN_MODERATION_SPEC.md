@@ -47,7 +47,7 @@ plus the relevant tests.
 - [x] Step 20a: Notification services, hooks, and shared composer.
 - [x] Step 20b: Manual notifications tab.
 - [x] Step 20c: Inline composer in venue and review detail.
-- [ ] Step 20d: Inline composer in standalone image group.
+- [x] Step 20d: Inline composer in standalone image group.
 
 ## Completed Slices
 
@@ -386,6 +386,19 @@ plus the relevant tests.
 - Covered venue approve/decline notification payloads, review edited partial
   drafts, RPC retry/error behavior, and the status-vs-notification call split.
 
+### Step 20d: Inline Composer In Standalone Image Group
+
+- Converted standalone image draft decisions into a save-first flow using
+  `useUpdateStandaloneImageStatuses`, with notification sending remaining a
+  separate second action.
+- Added a frozen image notification snapshot before saving decisions, including
+  canonical venue links from `buildVenueShareUrl()` for approved, partial, and
+  declined image outcomes.
+- Rendered the shared moderation-mode composer after image status success, with
+  all-approved, mixed, and all-declined image templates covered by tests.
+- Kept a saved group snapshot so the composer remains available after pending
+  images leave the standalone group query.
+
 ## Architecture Rules
 
 - Do not make public components admin-aware with `isAdmin` flags.
@@ -670,7 +683,6 @@ Shared design notes (apply to all four slices):
   - `Mention unsuitable photos were removed`
   - `Mention not spicy enough / not a spicy venue`
   - `Mention explicit content`
-  - `Mention the item can now be found publicly`
   Manual tab starts unchecked. Inline (moderation-flow) composer
   pre-checks based on context (e.g. venue approved with edits → include
   link + mention edits; images partial → include link + mention images
@@ -696,34 +708,34 @@ Default template catalogue:
 
 - Venue approved:
   - Title: `Yay, {venueName} is live!`
-  - Message: `Good news - your venue {venueName} has been approved and can now be found on MapTheHeat. You can check it out here: {linkUrl}`
+  - Message: `Good news - your venue {venueName} has been approved. You can find the venue here: {linkUrl}`
 - Venue declined:
   - Title: `Update on {venueName}`
   - Message: `Thanks for submitting {venueName}. We could not approve it this time, but you can make changes and try again.`
 - Venue partial/edited:
   - Title: `{venueName} has been approved with a few tidy-ups`
-  - Message: `Yay, {venueName} is live. We made a few small edits before approving it, and it can now be found here: {linkUrl}`
+  - Message: `Yay, {venueName} has been approved. We made a few small edits before approving it. You can find the venue here: {linkUrl}`
 - Venue partial/photos removed:
   - Title: `{venueName} is live with a few photo changes`
-  - Message: `Yay, {venueName} has been approved and is now live. We removed a few photos that were not suitable, but the venue can now be found here: {linkUrl}`
+  - Message: `Yay, {venueName} has been approved. We removed a few photos that were not suitable. You can find the venue here: {linkUrl}`
 - Review approved:
   - Title: `Your review for {venueName} is live`
-  - Message: `Yay, your review for {venueName} has been approved and is now visible on MapTheHeat. You can find it here: {linkUrl}`
+  - Message: `Yay, your review for {venueName} has been approved. You can find the review here: {linkUrl}`
 - Review declined:
   - Title: `Update on your review for {venueName}`
   - Message: `Thanks for sending your review for {venueName}. We could not approve it this time, but you can edit it and try again.`
 - Review partial/edited:
   - Title: `Your review for {venueName} is live with a few edits`
-  - Message: `Yay, your review for {venueName} has been approved. We made a few small edits before publishing it, and it can now be found here: {linkUrl}`
+  - Message: `Yay, your review for {venueName} has been approved. We made a few small edits before publishing it. You can find the review here: {linkUrl}`
 - Images all approved:
   - Title: `Your images for {venueName} were approved`
-  - Message: `Yay, your images for {venueName} have been approved and can now appear on MapTheHeat.`
+  - Message: `Yay, your images for {venueName} have been approved. You can find the images here: {linkUrl}`
 - Images all declined:
   - Title: `Update on your images for {venueName}`
-  - Message: `Thanks for adding images for {venueName}. We could not approve those images this time, but you can upload different ones whenever you are ready.`
+  - Message: `Thanks for adding images for {venueName}. We could not approve those images this time, but you can upload different ones whenever you are ready. You can find the images here: {linkUrl}`
 - Images partial:
   - Title: `Some of your images for {venueName} were approved`
-  - Message: `Thanks for adding images for {venueName}. We approved some of them, but a few were not quite right for MapTheHeat this time.`
+  - Message: `Thanks for adding images for {venueName}. We approved some of them, but a few were not quite right for MapTheHeat this time. You can find the images here: {linkUrl}`
 
 Decline/edit reason snippets:
 
@@ -771,7 +783,7 @@ Manual editing rules:
 - Add `src/features/moderation/components/ModerationNotificationComposer.tsx`
   (shared, modes `'manual' | 'moderation'`).
 - Add `src/features/moderation/components/notificationTemplates.ts` — pure
-  function `buildModerationNotificationTemplate({ relatedType, decision, venueName, linkUrl, includeLink, mentionEdits, mentionImagesDeclined, mentionPublic })`
+  function `buildModerationNotificationTemplate({ relatedType, decision, venueName, linkUrl, includeLink, mentionEdits, mentionImagesDeclined })`
   returning `{ title, message }`. Test in isolation — most logic lives
   here.
 - Composer fields: recipient, related type, decision, venue name, link URL,
@@ -838,9 +850,9 @@ Manual editing rules:
 - `decision` is derived from the draft: all approved → `'approved'`,
   all declined → `'declined'`, mixed → `'partial'`.
 - Pre-check checkboxes:
-  - All approved → `Include venue link` + `Mention public`
+  - All approved → `Include venue link`
   - Partial → `Include venue link` + `Mention some images declined`
-  - All declined → none
+  - All declined → `Include venue link`
 - The composer reads from the snapshot, so it stays mounted even though
   the saved images leave the pending standalone group view.
 - Update the existing comment in

@@ -11,7 +11,6 @@ export interface ModerationNotificationTemplateOptions {
   linkUrl?: string;
   mentionEdits?: boolean;
   mentionImagesDeclined?: boolean;
-  mentionPublic?: boolean;
   relatedType: NotificationRelatedType;
   venueName?: string;
 }
@@ -27,7 +26,6 @@ export function buildModerationNotificationTemplate({
   linkUrl,
   mentionEdits = false,
   mentionImagesDeclined = false,
-  mentionPublic = false,
   relatedType,
   venueName,
 }: ModerationNotificationTemplateOptions): ModerationNotificationTemplate {
@@ -41,7 +39,6 @@ export function buildModerationNotificationTemplate({
       linkUrl,
       mentionEdits,
       mentionImagesDeclined,
-      mentionPublic,
       venueName: safeVenueName,
     });
   }
@@ -53,7 +50,6 @@ export function buildModerationNotificationTemplate({
       linkUrl,
       mentionEdits,
       mentionImagesDeclined,
-      mentionPublic,
       venueName: safeVenueName,
     });
   }
@@ -64,7 +60,6 @@ export function buildModerationNotificationTemplate({
     linkUrl,
     mentionEdits,
     mentionImagesDeclined,
-    mentionPublic,
     venueName: safeVenueName,
   });
 }
@@ -75,7 +70,6 @@ interface TemplateBranchOptions {
   linkUrl?: string;
   mentionEdits: boolean;
   mentionImagesDeclined: boolean;
-  mentionPublic: boolean;
   venueName: string;
 }
 
@@ -85,7 +79,6 @@ function buildVenueTemplate({
   linkUrl,
   mentionEdits,
   mentionImagesDeclined,
-  mentionPublic,
   venueName,
 }: TemplateBranchOptions): ModerationNotificationTemplate {
   if (decision === 'declined') {
@@ -103,15 +96,15 @@ function buildVenueTemplate({
       ? `${venueName} is live with a few photo changes`
       : `${venueName} has been approved with a few tidy-ups`;
     const editMessage = mentionImagesDeclined
-      ? `Yay, ${venueName} has been approved and is now live. We removed a few photos that were not suitable.`
-      : `Yay, ${venueName} is live. We made a few small edits before approving it.`;
+      ? `Yay, ${venueName} has been approved. We removed a few photos that were not suitable.`
+      : `Yay, ${venueName} has been approved. We made a few small edits before approving it.`;
 
     return {
       title,
       message: appendOptionalSentences(editMessage, {
         canIncludeLink,
         linkUrl,
-        mentionPublic,
+        linkLabel: 'venue',
       }),
     };
   }
@@ -119,8 +112,8 @@ function buildVenueTemplate({
   return {
     title: `Yay, ${venueName} is live!`,
     message: appendOptionalSentences(
-      `Good news - your venue ${venueName} has been approved and can now be found on MapTheHeat.`,
-      { canIncludeLink, linkUrl, mentionPublic }
+      `Good news - your venue ${venueName} has been approved.`,
+      { canIncludeLink, linkLabel: 'venue', linkUrl }
     ),
   };
 }
@@ -131,7 +124,6 @@ function buildReviewTemplate({
   linkUrl,
   mentionEdits,
   mentionImagesDeclined,
-  mentionPublic,
   venueName,
 }: TemplateBranchOptions): ModerationNotificationTemplate {
   if (decision === 'declined') {
@@ -149,7 +141,7 @@ function buildReviewTemplate({
       title: `Your review for ${venueName} is live with a few edits`,
       message: appendOptionalSentences(
         `Yay, your review for ${venueName} has been approved. We made a few small edits before publishing it.`,
-        { canIncludeLink, linkUrl, mentionImagesDeclined, mentionPublic }
+        { canIncludeLink, linkLabel: 'review', linkUrl, mentionImagesDeclined }
       ),
     };
   }
@@ -157,8 +149,8 @@ function buildReviewTemplate({
   return {
     title: `Your review for ${venueName} is live`,
     message: appendOptionalSentences(
-      `Yay, your review for ${venueName} has been approved and is now visible on MapTheHeat.`,
-      { canIncludeLink, linkUrl, mentionPublic }
+      `Yay, your review for ${venueName} has been approved.`,
+      { canIncludeLink, linkLabel: 'review', linkUrl }
     ),
   };
 }
@@ -169,7 +161,6 @@ function buildImageTemplate({
   linkUrl,
   mentionEdits,
   mentionImagesDeclined,
-  mentionPublic,
   venueName,
 }: TemplateBranchOptions): ModerationNotificationTemplate {
   if (decision === 'declined') {
@@ -177,7 +168,7 @@ function buildImageTemplate({
       title: `Update on your images for ${venueName}`,
       message: appendOptionalSentences(
         `Thanks for adding images for ${venueName}. We could not approve those images this time, but you can upload different ones whenever you are ready.`,
-        { mentionImagesDeclined }
+        { canIncludeLink, linkLabel: 'images', linkUrl, mentionImagesDeclined }
       ),
     };
   }
@@ -187,7 +178,7 @@ function buildImageTemplate({
       title: `Some of your images for ${venueName} were approved`,
       message: appendOptionalSentences(
         `Thanks for adding images for ${venueName}. We approved some of them, but a few were not quite right for MapTheHeat this time.`,
-        { canIncludeLink, linkUrl, mentionEdits, mentionPublic }
+        { canIncludeLink, linkLabel: 'images', linkUrl, mentionEdits }
       ),
     };
   }
@@ -195,8 +186,8 @@ function buildImageTemplate({
   return {
     title: `Your images for ${venueName} were approved`,
     message: appendOptionalSentences(
-      `Yay, your images for ${venueName} have been approved and can now appear on MapTheHeat.`,
-      { canIncludeLink, linkUrl, mentionEdits, mentionPublic }
+      `Yay, your images for ${venueName} have been approved.`,
+      { canIncludeLink, linkLabel: 'images', linkUrl, mentionEdits }
     ),
   };
 }
@@ -205,16 +196,16 @@ function appendOptionalSentences(
   message: string,
   {
     canIncludeLink = false,
+    linkLabel = 'item',
     linkUrl,
     mentionEdits = false,
     mentionImagesDeclined = false,
-    mentionPublic = false,
   }: {
     canIncludeLink?: boolean;
+    linkLabel?: 'images' | 'item' | 'review' | 'venue';
     linkUrl?: string;
     mentionEdits?: boolean;
     mentionImagesDeclined?: boolean;
-    mentionPublic?: boolean;
   }
 ): string {
   const sentences = [message];
@@ -227,12 +218,8 @@ function appendOptionalSentences(
     sentences.push('Some photos were not suitable for the venue page, so we removed or declined those images.');
   }
 
-  if (mentionPublic) {
-    sentences.push('The item can now be found publicly on MapTheHeat.');
-  }
-
   if (canIncludeLink && linkUrl) {
-    sentences.push(`You can check it out here: ${linkUrl}`);
+    sentences.push(`You can find the ${linkLabel} here: ${linkUrl}`);
   }
 
   return sentences.join(' ');

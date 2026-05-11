@@ -107,6 +107,7 @@ const standaloneImageGroupRow = {
   venue_id: 'venue-test-id',
   venue_name: 'Pepper Palace',
   city: 'London',
+  country: 'United Kingdom',
   venue_name_slug: 'pepper-palace',
   user_id: 'submitter-user-id',
   username: 'pepper_admin',
@@ -291,6 +292,7 @@ describe('apiModeration standalone image reads', () => {
     });
     expect(count).toBe(1);
     expect(data[0]).toMatchObject({
+      country: 'United Kingdom',
       groupId: 'venue-test-id:submitter-user-id',
       imageCount: 1,
       username: 'pepper_admin',
@@ -321,6 +323,45 @@ describe('apiModeration standalone image reads', () => {
 
     expect(group.venueName).toBe('Pepper Palace');
     expect(group.images).toHaveLength(1);
+  });
+
+  it('fills missing standalone image venue route fields from venue details', async () => {
+    const groupingQuery = createSupabaseQueryMock({
+      count: 1,
+      data: [
+        {
+          ...standaloneImageGroupRow,
+          country: null,
+          venue_name_slug: null,
+        },
+      ],
+    });
+    const venueQuery = createSupabaseQueryMock({
+      data: [
+        {
+          venue_id: 'venue-test-id',
+          venue_name: 'Pepper Palace',
+          city: 'London',
+          country: 'United Kingdom',
+          venue_name_slug: 'pepper-palace',
+        },
+      ],
+    });
+    supabaseMocks.from
+      .mockReturnValueOnce(groupingQuery)
+      .mockReturnValueOnce(venueQuery);
+
+    const { data } = await getModerationStandaloneImages();
+
+    expect(supabaseMocks.from).toHaveBeenCalledWith('venue_details');
+    expect(venueQuery.select).toHaveBeenCalledWith(
+      'venue_id, venue_name, city, country, venue_name_slug'
+    );
+    expect(venueQuery.in).toHaveBeenCalledWith('venue_id', ['venue-test-id']);
+    expect(data[0]).toMatchObject({
+      country: 'United Kingdom',
+      venueNameSlug: 'pepper-palace',
+    });
   });
 });
 

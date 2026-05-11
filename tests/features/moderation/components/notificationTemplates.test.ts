@@ -72,16 +72,30 @@ describe('buildModerationNotificationTemplate', () => {
     expect(template.message).toContain('removed or declined');
   });
 
-  it('adds public availability context when selected', () => {
+  it('does not add a separate public availability sentence', () => {
     const template = buildModerationNotificationTemplate({
       decision: 'approved',
-      mentionPublic: true,
+      includeLink: true,
+      linkUrl: 'https://example.com/app/venue/london/uk/pepper-palace/1',
+      relatedType: 'image',
+      venueName: 'Pepper Palace',
+    });
+
+    expect(template.message).not.toContain('can now be found publicly');
+    expect(template.message).toContain('You can find the images here:');
+  });
+
+  it('includes the venue link in declined image notifications when requested', () => {
+    const template = buildModerationNotificationTemplate({
+      decision: 'declined',
+      includeLink: true,
+      linkUrl: 'https://example.com/app/venue/london/uk/pepper-palace/1',
       relatedType: 'image',
       venueName: 'Pepper Palace',
     });
 
     expect(template.message).toContain(
-      'The item can now be found publicly on MapTheHeat.'
+      'https://example.com/app/venue/london/uk/pepper-palace/1'
     );
   });
 });

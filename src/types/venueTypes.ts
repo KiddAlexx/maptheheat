@@ -49,6 +49,7 @@ export interface ModerationStandaloneImageGroup {
   venueId: string;
   venueName: string | null;
   city: string | null;
+  country?: string | null;
   venueNameSlug: string | null;
   userId: string;
   username: string | null;

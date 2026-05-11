@@ -7,6 +7,7 @@ import { ModerationStandaloneImageGroup } from '@/types/venueTypes';
 import AllProviders from 'tests/AllProviders';
 import {
   getModerationStandaloneImageGroupMock,
+  insertModerationNotificationMock,
   updateModerationImageStatusesMock,
 } from 'tests/mocks/apiModeration';
 
@@ -15,6 +16,7 @@ function createStandaloneImageGroup(
 ): ModerationStandaloneImageGroup {
   return {
     city: 'London',
+    country: 'United Kingdom',
     groupId: 'venue-test-id:submitter-user-id',
     imageCount: 2,
     images: [
@@ -83,6 +85,18 @@ describe('StandaloneImageModerationGroup', () => {
     getModerationStandaloneImageGroupMock.mockResolvedValue(
       createStandaloneImageGroup()
     );
+    insertModerationNotificationMock.mockResolvedValue({
+      createdAt: '2026-01-01T12:00:00.000Z',
+      linkUrl: null,
+      message: 'Your images are live',
+      notificationId: 'notification-test-id',
+      notificationStatus: 'unread',
+      relatedType: 'image',
+      requestStatus: 'confirmed',
+      title: 'Images approved',
+      userId: 'submitter-user-id',
+      venueId: 'venue-test-id',
+    });
     updateModerationImageStatusesMock.mockResolvedValue();
   });
 
@@ -112,8 +126,14 @@ describe('StandaloneImageModerationGroup', () => {
     ).toBeInTheDocument();
   });
 
-  it('prepares selected standalone image status decisions before notification', async () => {
+  it('saves mixed standalone image decisions and sends the partial notification payload', async () => {
     const user = userEvent.setup();
+    const expectedVenueLink =
+      'https://maptheheat.com/app/venue/London/United Kingdom/pepper-palace/venue-test-id';
+    const expectedMessage = [
+      'Thanks for adding images for Pepper Palace. We approved some of them, but a few were not quite right for MapTheHeat this time.',
+      `You can find the images here: ${expectedVenueLink}`,
+    ].join(' ');
     renderGroup();
 
     expect(
@@ -122,12 +142,47 @@ describe('StandaloneImageModerationGroup', () => {
 
     await user.click(screen.getAllByLabelText(/approve image/i)[0]);
     await user.click(screen.getAllByLabelText(/decline image/i)[1]);
-    await user.click(screen.getByRole('button', { name: /proceed with decisions/i }));
-
-    expect(screen.getByRole('status')).toHaveTextContent(
-      /decisions are ready/i
+    await user.click(
+      screen.getByRole('button', {
+        name: /save decisions and prepare notification/i,
+      })
     );
-    expect(updateModerationImageStatusesMock).not.toHaveBeenCalled();
+
+    await waitFor(() => {
+      expect(updateModerationImageStatusesMock).toHaveBeenCalledWith({
+        approvedImageIds: ['image-1'],
+        declinedImageIds: ['image-2'],
+      });
+    });
+    expect(insertModerationNotificationMock).not.toHaveBeenCalled();
+
+    expect(
+      await screen.findByRole('heading', { name: /send notification/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText('image')).toBeInTheDocument();
+    expect(screen.getByText('partial')).toBeInTheDocument();
+    expect(screen.getByLabelText(/title/i)).toHaveDisplayValue(
+      'Some of your images for Pepper Palace were approved'
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: /send notification/i })
+    );
+
+    await waitFor(() => {
+      expect(insertModerationNotificationMock).toHaveBeenCalledWith({
+        userId: 'submitter-user-id',
+        relatedType: 'image',
+        title: 'Some of your images for Pepper Palace were approved',
+        message: expectedMessage,
+        linkUrl: expectedVenueLink,
+        venueId: 'venue-test-id',
+        requestStatus: 'confirmed',
+      });
+    });
+    expect(
+      updateModerationImageStatusesMock.mock.invocationCallOrder[0]
+    ).toBeLessThan(insertModerationNotificationMock.mock.invocationCallOrder[0]);
   });
 
   it('requires every pending image to have a decision before proceeding', async () => {
@@ -139,7 +194,7 @@ describe('StandaloneImageModerationGroup', () => {
     ).toBeInTheDocument();
 
     const proceedButton = screen.getByRole('button', {
-      name: /proceed with decisions/i,
+      name: /save decisions and prepare notification/i,
     });
 
     expect(proceedButton).toBeDisabled();
@@ -153,8 +208,14 @@ describe('StandaloneImageModerationGroup', () => {
     expect(updateModerationImageStatusesMock).not.toHaveBeenCalled();
   });
 
-  it('marks every image in the standalone group as approved without saving', async () => {
+  it('saves every image in the standalone group as approved and sends the all-approved notification payload', async () => {
     const user = userEvent.setup();
+    const expectedVenueLink =
+      'https://maptheheat.com/app/venue/London/United Kingdom/pepper-palace/venue-test-id';
+    const expectedMessage = [
+      'Yay, your images for Pepper Palace have been approved.',
+      `You can find the images here: ${expectedVenueLink}`,
+    ].join(' ');
     renderGroup();
 
     expect(
@@ -164,16 +225,47 @@ describe('StandaloneImageModerationGroup', () => {
     await user.click(
       screen.getByRole('button', { name: /mark all approved/i })
     );
-    await user.click(screen.getByRole('button', { name: /proceed with decisions/i }));
-
-    expect(screen.getByRole('status')).toHaveTextContent(
-      /decisions are ready/i
+    await user.click(
+      screen.getByRole('button', {
+        name: /save decisions and prepare notification/i,
+      })
     );
-    expect(updateModerationImageStatusesMock).not.toHaveBeenCalled();
+
+    await waitFor(() => {
+      expect(updateModerationImageStatusesMock).toHaveBeenCalledWith({
+        approvedImageIds: ['image-1', 'image-2'],
+        declinedImageIds: [],
+      });
+    });
+    expect(screen.getByLabelText(/title/i)).toHaveDisplayValue(
+      'Your images for Pepper Palace were approved'
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: /send notification/i })
+    );
+
+    await waitFor(() => {
+      expect(insertModerationNotificationMock).toHaveBeenCalledWith({
+        userId: 'submitter-user-id',
+        relatedType: 'image',
+        title: 'Your images for Pepper Palace were approved',
+        message: expectedMessage,
+        linkUrl: expectedVenueLink,
+        venueId: 'venue-test-id',
+        requestStatus: 'confirmed',
+      });
+    });
   });
 
-  it('marks every image in the standalone group as declined without saving', async () => {
+  it('saves every image in the standalone group as declined and sends the declined notification payload', async () => {
     const user = userEvent.setup();
+    const expectedVenueLink =
+      'https://maptheheat.com/app/venue/London/United Kingdom/pepper-palace/venue-test-id';
+    const expectedMessage = [
+      'Thanks for adding images for Pepper Palace. We could not approve those images this time, but you can upload different ones whenever you are ready.',
+      `You can find the images here: ${expectedVenueLink}`,
+    ].join(' ');
     renderGroup();
 
     expect(
@@ -183,12 +275,88 @@ describe('StandaloneImageModerationGroup', () => {
     await user.click(
       screen.getByRole('button', { name: /mark all declined/i })
     );
-    await user.click(screen.getByRole('button', { name: /proceed with decisions/i }));
-
-    expect(screen.getByRole('status')).toHaveTextContent(
-      /decisions are ready/i
+    await user.click(
+      screen.getByRole('button', {
+        name: /save decisions and prepare notification/i,
+      })
     );
-    expect(updateModerationImageStatusesMock).not.toHaveBeenCalled();
+
+    await waitFor(() => {
+      expect(updateModerationImageStatusesMock).toHaveBeenCalledWith({
+        approvedImageIds: [],
+        declinedImageIds: ['image-1', 'image-2'],
+      });
+    });
+    expect(screen.getByLabelText(/title/i)).toHaveDisplayValue(
+      'Update on your images for Pepper Palace'
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: /send notification/i })
+    );
+
+    await waitFor(() => {
+      expect(insertModerationNotificationMock).toHaveBeenCalledWith({
+        userId: 'submitter-user-id',
+        relatedType: 'image',
+        title: 'Update on your images for Pepper Palace',
+        message: expectedMessage,
+        linkUrl: expectedVenueLink,
+        venueId: 'venue-test-id',
+        requestStatus: 'declined',
+      });
+    });
+  });
+
+  it('keeps the inline composer mounted with retry when notification sending fails', async () => {
+    const user = userEvent.setup();
+    insertModerationNotificationMock
+      .mockRejectedValueOnce(new Error('RPC failed'))
+      .mockResolvedValueOnce({
+        createdAt: '2026-01-01T12:00:00.000Z',
+        linkUrl: null,
+        message: 'Your images are live',
+        notificationId: 'notification-test-id',
+        notificationStatus: 'unread',
+        relatedType: 'image',
+        requestStatus: 'confirmed',
+        title: 'Images approved',
+        userId: 'submitter-user-id',
+        venueId: 'venue-test-id',
+      });
+
+    renderGroup();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: /mark all approved/i })
+    );
+    await user.click(
+      screen.getByRole('button', {
+        name: /save decisions and prepare notification/i,
+      })
+    );
+    await user.click(
+      await screen.findByRole('button', { name: /send notification/i })
+    );
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('RPC failed');
+    expect(
+      screen.getByRole('heading', { name: /send notification/i })
+    ).toBeInTheDocument();
+    expect(updateModerationImageStatusesMock).toHaveBeenCalledTimes(1);
+
+    await user.click(
+      screen.getByRole('button', { name: /send notification/i })
+    );
+
+    await waitFor(() => {
+      expect(insertModerationNotificationMock).toHaveBeenCalledTimes(2);
+    });
+    expect(updateModerationImageStatusesMock).toHaveBeenCalledTimes(1);
   });
 
   it('renders an error state when the image group cannot be loaded', async () => {

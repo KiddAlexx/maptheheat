@@ -24,7 +24,6 @@ export interface ModerationNotificationComposerProps {
   linkUrl?: string | null;
   mentionEdits?: boolean;
   mentionImagesDeclined?: boolean;
-  mentionPublic?: boolean;
   mode: 'manual' | 'moderation';
   recipientUserId?: string;
   recipientUsername?: string | null;
@@ -37,7 +36,6 @@ interface TemplateOptionsState {
   includeLink: boolean;
   mentionEdits: boolean;
   mentionImagesDeclined: boolean;
-  mentionPublic: boolean;
 }
 
 const RELATED_TYPE_OPTIONS: Array<{
@@ -64,7 +62,6 @@ function ModerationNotificationComposer({
   linkUrl: initialLinkUrl = '',
   mentionEdits = false,
   mentionImagesDeclined = false,
-  mentionPublic = false,
   mode,
   recipientUserId = '',
   recipientUsername = null,
@@ -84,7 +81,6 @@ function ModerationNotificationComposer({
     includeLink,
     mentionEdits,
     mentionImagesDeclined,
-    mentionPublic,
   });
   const initialTemplate = buildTemplate({
     decision: initialDecision,
@@ -94,7 +90,6 @@ function ModerationNotificationComposer({
       includeLink,
       mentionEdits,
       mentionImagesDeclined,
-      mentionPublic,
     },
     venueName: initialVenueName,
   });
@@ -123,7 +118,6 @@ function ModerationNotificationComposer({
       includeLink,
       mentionEdits,
       mentionImagesDeclined,
-      mentionPublic,
     };
     const nextTemplate = buildTemplate({
       decision,
@@ -265,14 +259,6 @@ function ModerationNotificationComposer({
               }
             >
               Mention some images were declined
-            </Checkbox>
-            <Checkbox
-              isSelected={templateOptions.mentionPublic}
-              onValueChange={(isSelected) =>
-                handleCheckboxChange('mentionPublic', isSelected)
-              }
-            >
-              Mention the item can now be found publicly
             </Checkbox>
           </div>
         </fieldset>

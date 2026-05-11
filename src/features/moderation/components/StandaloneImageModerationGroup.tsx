@@ -5,24 +5,51 @@ import ActionButton from '@/ui/ActionButton';
 import ImageModerationPanel, { ImageDecision } from './ImageModerationPanel';
 import ModerationDetailItem from './ModerationDetailItem';
 import ModerationDetailMessage from './ModerationDetailMessage';
+import ModerationNotificationComposer from './ModerationNotificationComposer';
 import ModerationSubmitter from './ModerationSubmitter';
+import type { ModerationNotificationDecision } from './notificationTemplates';
 import { useModerationStandaloneImageGroup } from '../hooks/useModerationStandaloneImageGroup';
+import { useUpdateStandaloneImageStatuses } from '../hooks/useUpdateStandaloneImageStatuses';
 import { formatSubmittedDate } from '../utils/formatSubmittedDate';
-import { getImageStatusUpdatePayload } from '../utils/imageStatusPayload';
+import {
+  getImageStatusUpdatePayload,
+  hasImageStatusUpdates,
+} from '../utils/imageStatusPayload';
 import {
   ModerationImage,
   ModerationStandaloneImageGroup,
   ModerationStatus,
 } from '@/types/venueTypes';
+import { buildVenueShareUrl } from '@/utils/buildVenueShareUrl';
+
+interface ImageNotificationDraft {
+  decision: ModerationNotificationDecision;
+  imageCounts: {
+    approved: number;
+    declined: number;
+  };
+  includeLink: boolean;
+  linkUrl: string | null;
+  mentionImagesDeclined: boolean;
+  recipientUserId: string;
+  recipientUsername?: string | null;
+  venueId: string;
+  venueName: string;
+}
 
 function StandaloneImageModerationGroup() {
   const { groupId } = useParams();
   const [selectedImageStatuses, setSelectedImageStatuses] = useState<
     Record<string, ImageDecision | undefined>
   >({});
-  const [isDecisionReady, setIsDecisionReady] = useState(false);
+  const [savedImageGroupSnapshot, setSavedImageGroupSnapshot] =
+    useState<ModerationStandaloneImageGroup | null>(null);
+  const [notificationDraft, setNotificationDraft] =
+    useState<ImageNotificationDraft | null>(null);
   const { error, imageGroup, isPending } =
     useModerationStandaloneImageGroup(groupId);
+  const { isUpdating, updateImageStatuses } =
+    useUpdateStandaloneImageStatuses(groupId);
 
   if (!groupId) {
     return (
@@ -33,11 +60,11 @@ function StandaloneImageModerationGroup() {
     );
   }
 
-  if (isPending) {
+  if (isPending && !savedImageGroupSnapshot) {
     return <LoaderSpinner message="Loading standalone image group" />;
   }
 
-  if (error) {
+  if (error && !savedImageGroupSnapshot) {
     return (
       <DetailMessage
         title="Image group could not be loaded"
@@ -46,7 +73,9 @@ function StandaloneImageModerationGroup() {
     );
   }
 
-  if (!imageGroup) {
+  const currentImageGroup = savedImageGroupSnapshot ?? imageGroup;
+
+  if (!currentImageGroup) {
     return (
       <DetailMessage
         title="Image group not found"
@@ -55,7 +84,7 @@ function StandaloneImageModerationGroup() {
     );
   }
 
-  const loadedImageGroup = imageGroup;
+  const loadedImageGroup: ModerationStandaloneImageGroup = currentImageGroup;
   const imageStatusUpdatePayload =
     getImageStatusUpdatePayload(selectedImageStatuses);
   const pendingImagesWithoutDecision = loadedImageGroup.images.filter(
@@ -68,7 +97,7 @@ function StandaloneImageModerationGroup() {
     decision: ImageDecision,
     isChecked: boolean
   ) {
-    setIsDecisionReady(false);
+    setNotificationDraft(null);
     setSelectedImageStatuses((currentStatuses) => ({
       ...currentStatuses,
       [imageId]: isChecked ? decision : undefined,
@@ -76,7 +105,7 @@ function StandaloneImageModerationGroup() {
   }
 
   function handleMarkAllImages(decision: ImageDecision) {
-    setIsDecisionReady(false);
+    setNotificationDraft(null);
     setSelectedImageStatuses(
       Object.fromEntries(
         loadedImageGroup.images.map((image) => [image.imageId, decision])
@@ -84,8 +113,25 @@ function StandaloneImageModerationGroup() {
     );
   }
 
-  function handleProceedWithDecisions() {
-    setIsDecisionReady(true);
+  function handleSaveDecisions() {
+    if (!hasImageStatusUpdates(imageStatusUpdatePayload)) return;
+
+    const draft = getImageNotificationDraft(
+      loadedImageGroup,
+      imageStatusUpdatePayload
+    );
+    const nextImageGroupSnapshot = getImageGroupWithDraftStatuses(
+      loadedImageGroup,
+      selectedImageStatuses
+    );
+
+    setSavedImageGroupSnapshot(nextImageGroupSnapshot);
+    updateImageStatuses(imageStatusUpdatePayload, {
+      onSuccess: () => {
+        setSelectedImageStatuses({});
+        setNotificationDraft(draft);
+      },
+    });
   }
 
   return (
@@ -116,19 +162,34 @@ function StandaloneImageModerationGroup() {
         <div className="space-y-5">
           <StandaloneImageStatusActions
             images={loadedImageGroup.images}
-            isDecisionReady={isDecisionReady}
+            isUpdating={isUpdating}
             onMarkAll={handleMarkAllImages}
-            onProceed={handleProceedWithDecisions}
+            onSave={handleSaveDecisions}
             pendingImagesWithoutDecision={pendingImagesWithoutDecision}
             selectedStatuses={selectedImageStatuses}
             statusUpdatePayload={imageStatusUpdatePayload}
           />
+          {notificationDraft ? (
+            <ModerationNotificationComposer
+              key={`${notificationDraft.venueId}-${notificationDraft.decision}-${notificationDraft.imageCounts.approved}-${notificationDraft.imageCounts.declined}`}
+              decision={notificationDraft.decision}
+              includeLink={notificationDraft.includeLink}
+              linkUrl={notificationDraft.linkUrl}
+              mentionImagesDeclined={notificationDraft.mentionImagesDeclined}
+              mode="moderation"
+              recipientUserId={notificationDraft.recipientUserId}
+              recipientUsername={notificationDraft.recipientUsername}
+              relatedType="image"
+              venueId={notificationDraft.venueId}
+              venueName={notificationDraft.venueName}
+            />
+          ) : null}
           <MetadataPanel imageGroup={loadedImageGroup} />
         </div>
       </div>
 
-      {/* No onUpdateStatuses: standalone decisions stay draft here until the */}
-      {/* Step 20 notification flow lands and submits them alongside a notification. */}
+      {/* No onUpdateStatuses: standalone decisions save from the workflow panel so */}
+      {/* the notification draft can snapshot before the moderation update runs. */}
       <ImageModerationPanel
         images={loadedImageGroup.images}
         onImageDecisionChange={handleImageDecisionChange}
@@ -142,17 +203,17 @@ function StandaloneImageModerationGroup() {
 
 function StandaloneImageStatusActions({
   images,
-  isDecisionReady,
+  isUpdating,
   onMarkAll,
-  onProceed,
+  onSave,
   pendingImagesWithoutDecision,
   selectedStatuses,
   statusUpdatePayload,
 }: {
   images: ModerationImage[];
-  isDecisionReady: boolean;
+  isUpdating: boolean;
   onMarkAll: (decision: ImageDecision) => void;
-  onProceed: () => void;
+  onSave: () => void;
   pendingImagesWithoutDecision: number;
   selectedStatuses: Record<string, ImageDecision | undefined>;
   statusUpdatePayload: {
@@ -181,8 +242,8 @@ function StandaloneImageStatusActions({
     <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
       <h3 className="text-lg font-semibold text-gray-900">Decision workflow</h3>
       <p className="mt-1 text-sm text-zinc-600">
-        Review the draft image decisions, then proceed to the notification
-        step before saving status changes.
+        Review the draft image decisions, then save them before sending the
+        notification.
       </p>
 
       <dl className="mt-4 grid grid-cols-3 gap-3">
@@ -199,27 +260,17 @@ function StandaloneImageStatusActions({
         </p>
       ) : null}
 
-      {isDecisionReady ? (
-        <p
-          role="status"
-          className="mt-3 rounded-lg border border-success-200 bg-success-50 px-3 py-2 text-sm text-success-700"
-        >
-          Decisions are ready for the notification step. Image statuses have not
-          been changed yet.
-        </p>
-      ) : null}
-
       <div className="mt-4 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
         <ActionButton
           intent="confirm"
-          isDisabled={!hasImages}
+          isDisabled={!hasImages || isUpdating}
           onPress={handleMarkAllApproved}
         >
           Mark all approved
         </ActionButton>
         <ActionButton
           intent="cancel"
-          isDisabled={!hasImages}
+          isDisabled={!hasImages || isUpdating}
           onPress={handleMarkAllDeclined}
         >
           Mark all declined
@@ -229,10 +280,11 @@ function StandaloneImageStatusActions({
       <ActionButton
         className="mt-3 w-full"
         intent="confirm"
-        isDisabled={!canProceed}
-        onPress={onProceed}
+        isDisabled={!canProceed || isUpdating}
+        isLoading={isUpdating}
+        onPress={onSave}
       >
-        Proceed with decisions
+        Save decisions and prepare notification
       </ActionButton>
     </section>
   );
@@ -271,6 +323,7 @@ function MetadataPanel({
 }) {
   const {
     city,
+    country,
     groupId,
     imageCount,
     lastCreatedAt,
@@ -298,6 +351,9 @@ function MetadataPanel({
         </ModerationDetailItem>
         <ModerationDetailItem label="Venue">{venueName ?? 'Unknown venue'}</ModerationDetailItem>
         <ModerationDetailItem label="City">{city ?? 'Unknown city'}</ModerationDetailItem>
+        <ModerationDetailItem label="Country">
+          {country ?? 'Unknown country'}
+        </ModerationDetailItem>
         <ModerationDetailItem label="Slug">{venueNameSlug ?? 'Unknown slug'}</ModerationDetailItem>
         <ModerationDetailItem label="Images">{imageCount}</ModerationDetailItem>
         <ModerationDetailItem label="Group id">
@@ -311,6 +367,77 @@ function MetadataPanel({
   );
 }
 
+function getImageNotificationDraft(
+  imageGroup: ModerationStandaloneImageGroup,
+  statusUpdatePayload: {
+    approvedImageIds: string[];
+    declinedImageIds: string[];
+  }
+): ImageNotificationDraft {
+  const decision = getImageNotificationDecision(statusUpdatePayload);
+  const linkUrl = getStandaloneVenueShareUrl(imageGroup);
+
+  return {
+    decision,
+    imageCounts: {
+      approved: statusUpdatePayload.approvedImageIds.length,
+      declined: statusUpdatePayload.declinedImageIds.length,
+    },
+    includeLink: Boolean(linkUrl),
+    linkUrl,
+    mentionImagesDeclined: decision === 'partial',
+    recipientUserId: imageGroup.userId,
+    recipientUsername: imageGroup.username,
+    venueId: imageGroup.venueId,
+    venueName: imageGroup.venueName ?? 'this venue',
+  };
+}
+
+function getImageNotificationDecision({
+  approvedImageIds,
+  declinedImageIds,
+}: {
+  approvedImageIds: string[];
+  declinedImageIds: string[];
+}): ModerationNotificationDecision {
+  if (approvedImageIds.length > 0 && declinedImageIds.length === 0) {
+    return 'approved';
+  }
+
+  if (declinedImageIds.length > 0 && approvedImageIds.length === 0) {
+    return 'declined';
+  }
+
+  return 'partial';
+}
+
+function getStandaloneVenueShareUrl(
+  imageGroup: ModerationStandaloneImageGroup
+): string | null {
+  const { city, country, venueId, venueNameSlug } = imageGroup;
+
+  if (!city || !country || !venueNameSlug) return null;
+
+  return buildVenueShareUrl({
+    city,
+    country,
+    venueId,
+    venueNameSlug,
+  });
+}
+
+function getImageGroupWithDraftStatuses(
+  imageGroup: ModerationStandaloneImageGroup,
+  selectedStatuses: Record<string, ImageDecision | undefined>
+): ModerationStandaloneImageGroup {
+  return {
+    ...imageGroup,
+    images: imageGroup.images.map((image) => ({
+      ...image,
+      status: selectedStatuses[image.imageId] ?? image.status,
+    })),
+  };
+}
 
 function getImageStatusCounts(
   images: ModerationImage[]

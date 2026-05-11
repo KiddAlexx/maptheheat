@@ -235,7 +235,7 @@ describe('ReviewModerationDetail', () => {
     const expectedMessage = [
       'Yay, your review for Pepper Palace has been approved.',
       'We made a few small edits before publishing it.',
-      `You can check it out here: ${expectedVenueLink}`,
+      `You can find the review here: ${expectedVenueLink}`,
     ].join(' ');
     const updatedReview = createModerationReview({
       reviewTitle: 'Sharper review',

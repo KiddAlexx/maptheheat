@@ -268,8 +268,8 @@ describe('VenueModerationDetail', () => {
     const expectedVenueLink =
       'https://maptheheat.com/app/venue/London/United Kingdom/pepper-palace/venue-test-id';
     const expectedMessage = [
-      'Good news - your venue Pepper Palace has been approved and can now be found on MapTheHeat.',
-      `You can check it out here: ${expectedVenueLink}`,
+      'Good news - your venue Pepper Palace has been approved.',
+      `You can find the venue here: ${expectedVenueLink}`,
     ].join(' ');
     getModerationVenueMock.mockResolvedValue(
       createModerationVenue({ venueImages: [] })
