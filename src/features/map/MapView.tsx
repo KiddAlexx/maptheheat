@@ -23,6 +23,9 @@ import type { Coords } from '@/types/venueTypes';
 // Style imports
 import styles from './MapView.module.css';
 
+const TILE_URL =
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
+
 function MapView() {
   const [searchParams] = useSearchParams();
   const { filters } = useVenueFilterContext();
@@ -85,7 +88,7 @@ function MapView() {
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+          url={TILE_URL}
         />
         {isLoadingVenues ? (
           <LoaderSpinner message="Loading venues on map" />
