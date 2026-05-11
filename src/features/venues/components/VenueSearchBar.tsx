@@ -28,6 +28,7 @@ function VenueSearchBar({ useVenueContext }: VenueSearchBarProps) {
     <form className="mb-3 flex gap-2" onSubmit={handleSubmit}>
       <Input
         radius="full"
+        variant="bordered"
         value={searchValue}
         onValueChange={setSearchValue}
         placeholder="Search by venue name"
