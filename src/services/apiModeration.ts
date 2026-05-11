@@ -281,7 +281,8 @@ export async function searchModerationNotificationRecipients(
   if (UUID_PATTERN.test(trimmedQuery)) {
     request = request.eq('user_id', trimmedQuery);
   } else {
-    request = request.ilike('username', `%${trimmedQuery}%`);
+    const escapedQuery = trimmedQuery.replace(/[\\%_]/g, '\\$&');
+    request = request.ilike('username', `%${escapedQuery}%`);
   }
 
   const { data, error } = await request;

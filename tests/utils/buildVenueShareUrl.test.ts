@@ -20,4 +20,11 @@ describe('buildVenueShareUrl', () => {
       'https://preview.maptheheat.com/app/venue/London/United Kingdom/pepper-palace/venue-test-id'
     );
   });
+
+  it('returns null when any required field is missing or empty', () => {
+    expect(buildVenueShareUrl({ ...venue, city: undefined })).toBeNull();
+    expect(buildVenueShareUrl({ ...venue, country: null })).toBeNull();
+    expect(buildVenueShareUrl({ ...venue, venueNameSlug: '' })).toBeNull();
+    expect(buildVenueShareUrl({ ...venue, venueId: null })).toBeNull();
+  });
 });

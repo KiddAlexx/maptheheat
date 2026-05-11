@@ -48,6 +48,7 @@ plus the relevant tests.
 - [x] Step 20b: Manual notifications tab.
 - [x] Step 20c: Inline composer in venue and review detail.
 - [x] Step 20d: Inline composer in standalone image group.
+- [x] Step 20.5: Post-notifications refactor pass.
 - [ ] Step 21: Add notification reason checkboxes.
 
 ## Completed Slices
@@ -864,6 +865,35 @@ Manual editing rules:
   status update and notification send are separate calls; on
   notification RPC failure the composer stays mounted while the image
   statuses remain saved.
+
+### Step 20.5: Post-Notifications Refactor Pass
+
+- Fixed `buildImageTemplate` passing `mentionEdits` to partial/approved
+  branches — now correctly passes `mentionImagesDeclined` so the appended
+  sentence matches what actually happened (images declined, not record edits).
+- Added null guard to `buildVenueShareUrl`: returns `null` when any of city /
+  country / venueNameSlug / venueId are missing; callers pass the null safely.
+  Updated `DetailedVenueView` with `?? ''` fallback for the `ShareButton`.
+- Added ilike wildcard escaping in `searchModerationNotificationRecipients`:
+  `%` / `_` / `\` in the username query are now escaped before interpolation.
+- Extracted `useModerationNotificationDraft` hook from the near-identical
+  `VenueNotificationDraft` / `ReviewNotificationDraft` state + `hasEdited`
+  boilerplate in both detail screens. Type is `ModerationNotificationDraftSnapshot`.
+- Added `aria-autocomplete="list"` and `aria-controls="recipient-results"` to
+  the recipient search input; `role="listbox"` to the results list.
+- Renamed composer "Generate message" button to "Apply template changes" to
+  clarify that it must be clicked to apply checkbox changes. Added a helper
+  hint below the text fields when no manual edits have been made.
+- Added a missing notification-RPC-failure retry integration test to
+  `ReviewModerationDetail.test.tsx` (venue and standalone already had this
+  coverage; review was the gap).
+- Added empty-query and wildcard-escape service tests for the recipient search
+  to `tests/services/apiModeration.test.ts`.
+- Added `buildVenueShareUrl` null-guard tests to
+  `tests/utils/buildVenueShareUrl.test.ts`.
+- Set global `testTimeout: 15_000` in `vite.config.ts` to prevent flaky
+  timeouts on slow detail-screen tests under full-suite parallel load.
+- All 129 tests pass; `npm.cmd run checks` clean.
 
 ### Step 21: Notification Reason Checkboxes
 

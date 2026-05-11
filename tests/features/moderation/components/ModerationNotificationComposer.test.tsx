@@ -22,7 +22,7 @@ describe('ModerationNotificationComposer', () => {
     });
   });
 
-  it('keeps admin title edits until Generate message is clicked', async () => {
+  it('keeps admin title edits until Apply template changes is clicked', async () => {
     const user = userEvent.setup();
 
     render(
@@ -45,7 +45,7 @@ describe('ModerationNotificationComposer', () => {
 
     expect(titleInput).toHaveDisplayValue('Custom admin title');
 
-    await user.click(screen.getByRole('button', { name: /generate message/i }));
+    await user.click(screen.getByRole('button', { name: /apply template changes/i }));
 
     expect(titleInput).toHaveDisplayValue(
       'Pepper Palace is live with a few photo changes'

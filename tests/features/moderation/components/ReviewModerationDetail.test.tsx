@@ -410,6 +410,52 @@ describe('ReviewModerationDetail', () => {
     ).toHaveAttribute('href', '/admin/moderation/reviews');
   });
 
+  it('keeps the inline composer mounted with retry when notification sending fails', async () => {
+    const user = userEvent.setup();
+    getModerationReviewMock.mockResolvedValue(
+      createModerationReview({ venueImages: [] })
+    );
+    insertModerationNotificationMock
+      .mockRejectedValueOnce(new Error('RPC failed'))
+      .mockResolvedValueOnce({
+        createdAt: '2026-01-01T12:00:00.000Z',
+        linkUrl: null,
+        message: 'Your review is live',
+        notificationId: 'notification-test-id',
+        notificationStatus: 'unread',
+        relatedType: 'review',
+        requestStatus: 'confirmed',
+        title: 'Review approved',
+        userId: 'submitter-user-id',
+        venueId: 'venue-test-id',
+      });
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /big heat, clean flavor/i })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /approve review/i }));
+    await user.click(
+      await screen.findByRole('button', { name: /send notification/i })
+    );
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('RPC failed');
+    expect(
+      screen.getByRole('heading', { name: /send notification/i })
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: /send notification/i })
+    );
+
+    await waitFor(() => {
+      expect(insertModerationNotificationMock).toHaveBeenCalledTimes(2);
+    });
+    expect(updateModerationReviewStatusMock).toHaveBeenCalledTimes(1);
+  });
+
   it('renders a not found state when no review id is present', async () => {
     renderDetail('/admin/moderation/reviews');
 

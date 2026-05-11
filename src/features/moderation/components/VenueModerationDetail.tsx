@@ -12,8 +12,12 @@ import ModerationStatusActions from './ModerationStatusActions';
 import ModerationStatusBadge from './ModerationStatusBadge';
 import ModerationSubmitter from './ModerationSubmitter';
 import VenueModerationEditForm from './VenueModerationEditForm';
-import type { ModerationNotificationDecision } from './notificationTemplates';
 import { useModerationVenue } from '../hooks/useModerationVenue';
+import {
+  useModerationNotificationDraft,
+  type ModerationNotificationDraftSnapshot,
+} from '../hooks/useModerationNotificationDraft';
+import type { ModerationNotificationDecision } from './notificationTemplates';
 import { useUpdateVenueImageStatuses } from '../hooks/useUpdateVenueImageStatuses';
 import { useUpdateModerationVenue } from '../hooks/useUpdateModerationVenue';
 import { useUpdateModerationVenueStatus } from '../hooks/useUpdateModerationVenueStatus';
@@ -25,17 +29,6 @@ import {
 import { ModerationVenue } from '@/types/venueTypes';
 import { buildVenueShareUrl } from '@/utils/buildVenueShareUrl';
 
-interface VenueNotificationDraft {
-  decision: ModerationNotificationDecision;
-  includeLink: boolean;
-  linkUrl: string | null;
-  mentionEdits: boolean;
-  recipientUserId: string;
-  recipientUsername?: string | null;
-  venueId: string;
-  venueName: string;
-}
-
 function formatCoordinate(value: number | string) {
   return typeof value === 'number' ? value.toFixed(5) : value;
 }
@@ -45,9 +38,12 @@ function VenueModerationDetail() {
   const [selectedImageStatuses, setSelectedImageStatuses] = useState<
     Record<string, ImageDecision | undefined>
   >({});
-  const [hasEditedVenue, setHasEditedVenue] = useState(false);
-  const [notificationDraft, setNotificationDraft] =
-    useState<VenueNotificationDraft | null>(null);
+  const {
+    hasEdited: hasEditedVenue,
+    markEdited,
+    notificationDraft,
+    setNotificationDraft,
+  } = useModerationNotificationDraft();
   const { error, isPending, venue } = useModerationVenue(venueId);
   const { isUpdating: isUpdatingImages, updateImageStatuses } =
     useUpdateVenueImageStatuses(venueId);
@@ -121,7 +117,7 @@ function VenueModerationDetail() {
   }) {
     updateVenue(payload, {
       onSuccess: () => {
-        setHasEditedVenue(true);
+        markEdited();
       },
     });
   }
@@ -272,7 +268,7 @@ function getVenueNotificationDraft(
     includeLink: boolean;
     mentionEdits: boolean;
   }
-): VenueNotificationDraft {
+): ModerationNotificationDraftSnapshot {
   return {
     decision,
     includeLink,

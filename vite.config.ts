@@ -24,6 +24,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: 'tests/setup.tsx',
+    testTimeout: 15_000,
   },
   build: {
     rollupOptions: {

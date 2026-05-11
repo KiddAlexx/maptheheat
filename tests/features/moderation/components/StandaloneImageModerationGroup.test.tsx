@@ -132,6 +132,7 @@ describe('StandaloneImageModerationGroup', () => {
       'https://maptheheat.com/app/venue/London/United Kingdom/pepper-palace/venue-test-id';
     const expectedMessage = [
       'Thanks for adding images for Pepper Palace. We approved some of them, but a few were not quite right for MapTheHeat this time.',
+      'Some photos were not suitable for the venue page, so we removed or declined those images.',
       `You can find the images here: ${expectedVenueLink}`,
     ].join(' ');
     renderGroup();

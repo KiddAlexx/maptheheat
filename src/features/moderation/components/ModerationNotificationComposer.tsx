@@ -95,12 +95,23 @@ function ModerationNotificationComposer({
   });
   const [title, setTitle] = useState(initialTemplate.title);
   const [message, setMessage] = useState(initialTemplate.message);
+  const [hasManualEdits, setHasManualEdits] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const { insertNotification, isInserting } = useInsertModerationNotification();
 
   const isManual = mode === 'manual';
 
-  function handleGenerateMessage() {
+  function handleTitleChange(value: string) {
+    setTitle(value);
+    setHasManualEdits(true);
+  }
+
+  function handleMessageChange(value: string) {
+    setMessage(value);
+    setHasManualEdits(true);
+  }
+
+  function handleApplyTemplateChanges() {
     const nextTemplate = buildTemplate({
       decision,
       linkUrl,
@@ -111,6 +122,7 @@ function ModerationNotificationComposer({
 
     setTitle(nextTemplate.title);
     setMessage(nextTemplate.message);
+    setHasManualEdits(false);
   }
 
   function handleResetTemplate() {
@@ -130,6 +142,7 @@ function ModerationNotificationComposer({
     setTemplateOptions(resetOptions);
     setTitle(nextTemplate.title);
     setMessage(nextTemplate.message);
+    setHasManualEdits(false);
   }
 
   function handleCheckboxChange(
@@ -267,7 +280,7 @@ function ModerationNotificationComposer({
           isRequired
           label="Title"
           labelPlacement="outside"
-          onValueChange={setTitle}
+          onValueChange={handleTitleChange}
           radius="full"
           type="text"
           value={title}
@@ -278,19 +291,27 @@ function ModerationNotificationComposer({
           label="Message"
           labelPlacement="outside"
           minRows={5}
-          onValueChange={setMessage}
+          onValueChange={handleMessageChange}
           radius="lg"
           value={message}
         />
+
+        {!hasManualEdits ? (
+          <p className="text-xs text-zinc-500">
+            Checkbox and option changes update the template — click{' '}
+            <span className="font-medium">Apply template changes</span> to
+            regenerate the title and message.
+          </p>
+        ) : null}
 
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
           <Button
             radius="full"
             type="button"
             variant="flat"
-            onPress={handleGenerateMessage}
+            onPress={handleApplyTemplateChanges}
           >
-            Generate message
+            Apply template changes
           </Button>
           <Button
             radius="full"

@@ -111,10 +111,12 @@ function RecipientPicker({
 
       <div className="mt-4 space-y-4">
         <Input
+          aria-autocomplete="list"
+          aria-controls="recipient-results"
           label="Search by username or user id"
           labelPlacement="outside"
           onValueChange={onRecipientSearchChange}
-          placeholder="Type at least 2 characters"
+          placeholder="Username or paste user id"
           radius="full"
           type="text"
           value={searchValue}
@@ -149,7 +151,9 @@ function RecipientPicker({
 
         {recipients.length > 0 ? (
           <ul
+            id="recipient-results"
             aria-label="Notification recipient results"
+            role="listbox"
             className="space-y-2"
           >
             {recipients.map((recipient) => (

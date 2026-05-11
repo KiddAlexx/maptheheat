@@ -14,6 +14,10 @@ import ModerationSubmitter from './ModerationSubmitter';
 import ReviewModerationEditForm from './ReviewModerationEditForm';
 import type { ModerationNotificationDecision } from './notificationTemplates';
 import { useModerationReview } from '../hooks/useModerationReview';
+import {
+  useModerationNotificationDraft,
+  type ModerationNotificationDraftSnapshot,
+} from '../hooks/useModerationNotificationDraft';
 import { useUpdateModerationReview } from '../hooks/useUpdateModerationReview';
 import { useUpdateModerationReviewStatus } from '../hooks/useUpdateModerationReviewStatus';
 import { useUpdateReviewImageStatuses } from '../hooks/useUpdateReviewImageStatuses';
@@ -25,25 +29,17 @@ import {
 import { ModerationReview } from '@/types/reviewTypes';
 import { buildVenueShareUrl } from '@/utils/buildVenueShareUrl';
 
-interface ReviewNotificationDraft {
-  decision: ModerationNotificationDecision;
-  includeLink: boolean;
-  linkUrl: string | null;
-  mentionEdits: boolean;
-  recipientUserId: string;
-  recipientUsername?: string | null;
-  venueId: string;
-  venueName: string;
-}
-
 function ReviewModerationDetail() {
   const { reviewId } = useParams();
   const [selectedImageStatuses, setSelectedImageStatuses] = useState<
     Record<string, ImageDecision | undefined>
   >({});
-  const [hasEditedReview, setHasEditedReview] = useState(false);
-  const [notificationDraft, setNotificationDraft] =
-    useState<ReviewNotificationDraft | null>(null);
+  const {
+    hasEdited: hasEditedReview,
+    markEdited,
+    notificationDraft,
+    setNotificationDraft,
+  } = useModerationNotificationDraft();
   const { error, isPending, review } = useModerationReview(reviewId);
   const { isUpdating: isUpdatingImages, updateImageStatuses } =
     useUpdateReviewImageStatuses(reviewId);
@@ -117,7 +113,7 @@ function ReviewModerationDetail() {
   }) {
     updateReview(payload, {
       onSuccess: () => {
-        setHasEditedReview(true);
+        markEdited();
       },
     });
   }
@@ -271,7 +267,7 @@ function getReviewNotificationDraft(
     includeLink: boolean;
     mentionEdits: boolean;
   }
-): ReviewNotificationDraft {
+): ModerationNotificationDraftSnapshot {
   const venue = review.venueDetails;
 
   return {

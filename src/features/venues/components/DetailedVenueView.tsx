@@ -132,7 +132,7 @@ function DetailedVenueView() {
   const totalReviewCount = totalReviews ?? 0;
 
   const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
-  const shareUrl = buildVenueShareUrl(venue);
+  const shareUrl = buildVenueShareUrl(venue) ?? '';
 
   async function handleReview() {
     if (!venueId) return null;

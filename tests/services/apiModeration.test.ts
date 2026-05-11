@@ -160,6 +160,18 @@ describe('apiModeration notification services', () => {
     ]);
   });
 
+  it('returns empty array for empty or whitespace-only queries without calling Supabase', async () => {
+    const query = createSupabaseQueryMock({ data: [] });
+    supabaseMocks.state.query = query;
+
+    const resultEmpty = await searchModerationNotificationRecipients('');
+    const resultWhitespace = await searchModerationNotificationRecipients('   ');
+
+    expect(resultEmpty).toEqual([]);
+    expect(resultWhitespace).toEqual([]);
+    expect(supabaseMocks.from).not.toHaveBeenCalled();
+  });
+
   it('searches notification recipients by username for non-UUID queries', async () => {
     const query = createSupabaseQueryMock({
       data: [{ user_id: 'user-test-id', username: 'pepper_admin' }],
@@ -171,6 +183,15 @@ describe('apiModeration notification services', () => {
     expect(supabaseMocks.from).toHaveBeenCalledWith('profiles');
     expect(query.ilike).toHaveBeenCalledWith('username', '%pepper%');
     expect(query.eq).not.toHaveBeenCalled();
+  });
+
+  it('escapes ilike wildcards in username queries', async () => {
+    const query = createSupabaseQueryMock({ data: [] });
+    supabaseMocks.state.query = query;
+
+    await searchModerationNotificationRecipients('user%name');
+
+    expect(query.ilike).toHaveBeenCalledWith('username', '%user\\%name%');
   });
 
   it('sends notification payloads through the admin RPC with snake case keys', async () => {

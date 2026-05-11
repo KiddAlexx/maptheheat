@@ -159,7 +159,6 @@ function buildImageTemplate({
   canIncludeLink,
   decision,
   linkUrl,
-  mentionEdits,
   mentionImagesDeclined,
   venueName,
 }: TemplateBranchOptions): ModerationNotificationTemplate {
@@ -178,7 +177,7 @@ function buildImageTemplate({
       title: `Some of your images for ${venueName} were approved`,
       message: appendOptionalSentences(
         `Thanks for adding images for ${venueName}. We approved some of them, but a few were not quite right for MapTheHeat this time.`,
-        { canIncludeLink, linkLabel: 'images', linkUrl, mentionEdits }
+        { canIncludeLink, linkLabel: 'images', linkUrl, mentionImagesDeclined }
       ),
     };
   }
@@ -187,7 +186,7 @@ function buildImageTemplate({
     title: `Your images for ${venueName} were approved`,
     message: appendOptionalSentences(
       `Yay, your images for ${venueName} have been approved.`,
-      { canIncludeLink, linkLabel: 'images', linkUrl, mentionEdits }
+      { canIncludeLink, linkLabel: 'images', linkUrl }
     ),
   };
 }

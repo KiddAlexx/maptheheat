@@ -122,7 +122,7 @@ describe('AdminNotificationCenter', () => {
     expect(searchModerationNotificationRecipientsMock).not.toHaveBeenCalled();
   });
 
-  it('only updates generated copy after Generate message or Reset template is clicked', async () => {
+  it('only updates generated copy after Apply template changes or Reset template is clicked', async () => {
     const user = userEvent.setup();
     renderNotificationRoute();
 
@@ -141,7 +141,7 @@ describe('AdminNotificationCenter', () => {
 
     expect(titleInput).toHaveDisplayValue('Keep this admin title');
 
-    await user.click(screen.getByRole('button', { name: /generate message/i }));
+    await user.click(screen.getByRole('button', { name: /apply template changes/i }));
 
     expect(titleInput).toHaveDisplayValue(
       'Pepper Palace is live with a few photo changes'
