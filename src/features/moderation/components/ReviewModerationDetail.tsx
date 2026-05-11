@@ -7,10 +7,12 @@ import ImageModerationPanel, {
 } from './ImageModerationPanel';
 import ModerationDetailItem from './ModerationDetailItem';
 import ModerationDetailMessage from './ModerationDetailMessage';
+import ModerationNotificationComposer from './ModerationNotificationComposer';
 import ModerationStatusActions from './ModerationStatusActions';
 import ModerationStatusBadge from './ModerationStatusBadge';
 import ModerationSubmitter from './ModerationSubmitter';
 import ReviewModerationEditForm from './ReviewModerationEditForm';
+import type { ModerationNotificationDecision } from './notificationTemplates';
 import { useModerationReview } from '../hooks/useModerationReview';
 import { useUpdateModerationReview } from '../hooks/useUpdateModerationReview';
 import { useUpdateModerationReviewStatus } from '../hooks/useUpdateModerationReviewStatus';
@@ -21,12 +23,27 @@ import {
   hasImageStatusUpdates,
 } from '../utils/imageStatusPayload';
 import { ModerationReview } from '@/types/reviewTypes';
+import { buildVenueShareUrl } from '@/utils/buildVenueShareUrl';
+
+interface ReviewNotificationDraft {
+  decision: ModerationNotificationDecision;
+  includeLink: boolean;
+  linkUrl: string | null;
+  mentionEdits: boolean;
+  recipientUserId: string;
+  recipientUsername?: string | null;
+  venueId: string;
+  venueName: string;
+}
 
 function ReviewModerationDetail() {
   const { reviewId } = useParams();
   const [selectedImageStatuses, setSelectedImageStatuses] = useState<
     Record<string, ImageDecision | undefined>
   >({});
+  const [hasEditedReview, setHasEditedReview] = useState(false);
+  const [notificationDraft, setNotificationDraft] =
+    useState<ReviewNotificationDraft | null>(null);
   const { error, isPending, review } = useModerationReview(reviewId);
   const { isUpdating: isUpdatingImages, updateImageStatuses } =
     useUpdateReviewImageStatuses(reviewId);
@@ -94,27 +111,71 @@ function ReviewModerationDetail() {
     });
   }
 
+  function handleUpdateReview(payload: {
+    reviewId: string;
+    reviewUpdate: Partial<ModerationReview>;
+  }) {
+    updateReview(payload, {
+      onSuccess: () => {
+        setHasEditedReview(true);
+      },
+    });
+  }
+
   function handleApproveReview() {
     if (hasPendingImageWithoutDecision) return;
+
+    const draft = getReviewNotificationDraft(loadedReview, {
+      decision: hasEditedReview ? 'partial' : 'approved',
+      includeLink: true,
+      mentionEdits: hasEditedReview,
+    });
 
     if (hasImageStatusUpdates(imageStatusUpdatePayload)) {
       updateImageStatuses(imageStatusUpdatePayload, {
         onSuccess: () => {
           setSelectedImageStatuses({});
-          updateStatus({
-            reviewId: loadedReview.reviewId,
-            status: 'approved',
-          });
+          updateStatus(
+            {
+              reviewId: loadedReview.reviewId,
+              status: 'approved',
+            },
+            {
+              onSuccess: () => {
+                setNotificationDraft(draft);
+              },
+            }
+          );
         },
       });
       return;
     }
 
-    updateStatus({ reviewId: loadedReview.reviewId, status: 'approved' });
+    updateStatus(
+      { reviewId: loadedReview.reviewId, status: 'approved' },
+      {
+        onSuccess: () => {
+          setNotificationDraft(draft);
+        },
+      }
+    );
   }
 
   function handleDeclineReview() {
-    updateStatus({ reviewId: loadedReview.reviewId, status: 'declined' });
+    const draft = getReviewNotificationDraft(loadedReview, {
+      decision: 'declined',
+      includeLink: false,
+      mentionEdits: false,
+    });
+
+    updateStatus(
+      { reviewId: loadedReview.reviewId, status: 'declined' },
+      {
+        onSuccess: () => {
+          setNotificationDraft(draft);
+        },
+      }
+    );
   }
 
   return (
@@ -154,7 +215,7 @@ function ReviewModerationDetail() {
           <ReviewModerationEditForm
             isUpdating={isUpdatingReview}
             key={loadedReview.reviewId}
-            onUpdateReview={updateReview}
+            onUpdateReview={handleUpdateReview}
             review={loadedReview}
           />
         </div>
@@ -168,6 +229,21 @@ function ReviewModerationDetail() {
             resourceLabel="review"
             status={loadedReview.status}
           />
+          {notificationDraft ? (
+            <ModerationNotificationComposer
+              key={`${notificationDraft.venueId}-${notificationDraft.decision}`}
+              decision={notificationDraft.decision}
+              includeLink={notificationDraft.includeLink}
+              linkUrl={notificationDraft.linkUrl}
+              mentionEdits={notificationDraft.mentionEdits}
+              mode="moderation"
+              recipientUserId={notificationDraft.recipientUserId}
+              recipientUsername={notificationDraft.recipientUsername}
+              relatedType="review"
+              venueId={notificationDraft.venueId}
+              venueName={notificationDraft.venueName}
+            />
+          ) : null}
           <MetadataPanel review={loadedReview} />
           <VenueContextPanel review={loadedReview} />
         </aside>
@@ -182,6 +258,32 @@ function ReviewModerationDetail() {
       />
     </section>
   );
+}
+
+function getReviewNotificationDraft(
+  review: ModerationReview,
+  {
+    decision,
+    includeLink,
+    mentionEdits,
+  }: {
+    decision: ModerationNotificationDecision;
+    includeLink: boolean;
+    mentionEdits: boolean;
+  }
+): ReviewNotificationDraft {
+  const venue = review.venueDetails;
+
+  return {
+    decision,
+    includeLink,
+    linkUrl: includeLink && venue ? buildVenueShareUrl(venue) : null,
+    mentionEdits,
+    recipientUserId: review.userId,
+    recipientUsername: review.submitterUsername,
+    venueId: review.venueId,
+    venueName: venue?.venueName ?? 'this venue',
+  };
 }
 
 function DetailMessage({ title, message }: { title: string; message: string }) {

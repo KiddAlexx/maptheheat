@@ -7,6 +7,7 @@ import { ModerationReview } from '@/types/reviewTypes';
 import AllProviders from 'tests/AllProviders';
 import {
   getModerationReviewMock,
+  insertModerationNotificationMock,
   updateModerationImageStatusesMock,
   updateModerationReviewMock,
   updateModerationReviewStatusMock,
@@ -88,6 +89,18 @@ describe('ReviewModerationDetail', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     getModerationReviewMock.mockResolvedValue(createModerationReview());
+    insertModerationNotificationMock.mockResolvedValue({
+      createdAt: '2026-01-01T12:00:00.000Z',
+      linkUrl: null,
+      message: 'Your review is live',
+      notificationId: 'notification-test-id',
+      notificationStatus: 'unread',
+      relatedType: 'review',
+      requestStatus: 'confirmed',
+      title: 'Review approved',
+      userId: 'submitter-user-id',
+      venueId: 'venue-test-id',
+    });
     updateModerationImageStatusesMock.mockResolvedValue();
     updateModerationReviewMock.mockResolvedValue(createModerationReview());
     updateModerationReviewStatusMock.mockResolvedValue();
@@ -211,6 +224,73 @@ describe('ReviewModerationDetail', () => {
             'This corrected review has enough detail for moderation approval.',
           reviewTitle: 'Sharper review',
         }),
+      });
+    });
+  });
+
+  it('uses a partial notification draft when an edited review is approved', async () => {
+    const user = userEvent.setup();
+    const expectedVenueLink =
+      'https://maptheheat.com/app/venue/London/United Kingdom/pepper-palace/venue-test-id';
+    const expectedMessage = [
+      'Yay, your review for Pepper Palace has been approved.',
+      'We made a few small edits before publishing it.',
+      `You can check it out here: ${expectedVenueLink}`,
+    ].join(' ');
+    const updatedReview = createModerationReview({
+      reviewTitle: 'Sharper review',
+      venueImages: [],
+    });
+    getModerationReviewMock.mockResolvedValue(
+      createModerationReview({ venueImages: [] })
+    );
+    updateModerationReviewMock.mockResolvedValue(updatedReview);
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /big heat, clean flavor/i })
+    ).toBeInTheDocument();
+
+    await user.clear(screen.getByLabelText(/^review title$/i));
+    await user.type(screen.getByLabelText(/^review title$/i), 'Sharper review');
+    await user.click(
+      screen.getByRole('button', { name: /save review changes/i })
+    );
+
+    await waitFor(() => {
+      expect(updateModerationReviewMock).toHaveBeenCalled();
+    });
+
+    await user.click(screen.getByRole('button', { name: /approve review/i }));
+
+    expect(
+      await screen.findByRole('heading', { name: /send notification/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText('partial')).toBeInTheDocument();
+    expect(screen.getByLabelText(/mention edits/i)).toBeChecked();
+    expect(screen.getByLabelText(/include venue link/i)).toBeChecked();
+    expect(screen.getByLabelText(/^title$/i)).toHaveDisplayValue(
+      'Your review for Pepper Palace is live with a few edits'
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: /send notification/i })
+    );
+
+    await waitFor(() => {
+      expect(updateModerationReviewStatusMock).toHaveBeenCalledWith({
+        reviewId: 'review-test-id',
+        status: 'approved',
+      });
+      expect(insertModerationNotificationMock).toHaveBeenCalledWith({
+        userId: 'submitter-user-id',
+        relatedType: 'review',
+        title: 'Your review for Pepper Palace is live with a few edits',
+        message: expectedMessage,
+        linkUrl: expectedVenueLink,
+        venueId: 'venue-test-id',
+        requestStatus: 'confirmed',
       });
     });
   });

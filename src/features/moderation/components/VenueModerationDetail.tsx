@@ -7,10 +7,12 @@ import ImageModerationPanel, {
 } from './ImageModerationPanel';
 import ModerationDetailItem from './ModerationDetailItem';
 import ModerationDetailMessage from './ModerationDetailMessage';
+import ModerationNotificationComposer from './ModerationNotificationComposer';
 import ModerationStatusActions from './ModerationStatusActions';
 import ModerationStatusBadge from './ModerationStatusBadge';
 import ModerationSubmitter from './ModerationSubmitter';
 import VenueModerationEditForm from './VenueModerationEditForm';
+import type { ModerationNotificationDecision } from './notificationTemplates';
 import { useModerationVenue } from '../hooks/useModerationVenue';
 import { useUpdateVenueImageStatuses } from '../hooks/useUpdateVenueImageStatuses';
 import { useUpdateModerationVenue } from '../hooks/useUpdateModerationVenue';
@@ -21,6 +23,18 @@ import {
   hasImageStatusUpdates,
 } from '../utils/imageStatusPayload';
 import { ModerationVenue } from '@/types/venueTypes';
+import { buildVenueShareUrl } from '@/utils/buildVenueShareUrl';
+
+interface VenueNotificationDraft {
+  decision: ModerationNotificationDecision;
+  includeLink: boolean;
+  linkUrl: string | null;
+  mentionEdits: boolean;
+  recipientUserId: string;
+  recipientUsername?: string | null;
+  venueId: string;
+  venueName: string;
+}
 
 function formatCoordinate(value: number | string) {
   return typeof value === 'number' ? value.toFixed(5) : value;
@@ -31,6 +45,9 @@ function VenueModerationDetail() {
   const [selectedImageStatuses, setSelectedImageStatuses] = useState<
     Record<string, ImageDecision | undefined>
   >({});
+  const [hasEditedVenue, setHasEditedVenue] = useState(false);
+  const [notificationDraft, setNotificationDraft] =
+    useState<VenueNotificationDraft | null>(null);
   const { error, isPending, venue } = useModerationVenue(venueId);
   const { isUpdating: isUpdatingImages, updateImageStatuses } =
     useUpdateVenueImageStatuses(venueId);
@@ -98,24 +115,68 @@ function VenueModerationDetail() {
     });
   }
 
+  function handleUpdateVenue(payload: {
+    venueId: string;
+    venueUpdate: Partial<ModerationVenue>;
+  }) {
+    updateVenue(payload, {
+      onSuccess: () => {
+        setHasEditedVenue(true);
+      },
+    });
+  }
+
   function handleApproveVenue() {
     if (hasPendingImageWithoutDecision) return;
+
+    const draft = getVenueNotificationDraft(loadedVenue, {
+      decision: hasEditedVenue ? 'partial' : 'approved',
+      includeLink: true,
+      mentionEdits: hasEditedVenue,
+    });
 
     if (hasImageStatusUpdates(imageStatusUpdatePayload)) {
       updateImageStatuses(imageStatusUpdatePayload, {
         onSuccess: () => {
           setSelectedImageStatuses({});
-          updateStatus({ venueId: loadedVenue.venueId, status: 'approved' });
+          updateStatus(
+            { venueId: loadedVenue.venueId, status: 'approved' },
+            {
+              onSuccess: () => {
+                setNotificationDraft(draft);
+              },
+            }
+          );
         },
       });
       return;
     }
 
-    updateStatus({ venueId: loadedVenue.venueId, status: 'approved' });
+    updateStatus(
+      { venueId: loadedVenue.venueId, status: 'approved' },
+      {
+        onSuccess: () => {
+          setNotificationDraft(draft);
+        },
+      }
+    );
   }
 
   function handleDeclineVenue() {
-    updateStatus({ venueId: loadedVenue.venueId, status: 'declined' });
+    const draft = getVenueNotificationDraft(loadedVenue, {
+      decision: 'declined',
+      includeLink: false,
+      mentionEdits: false,
+    });
+
+    updateStatus(
+      { venueId: loadedVenue.venueId, status: 'declined' },
+      {
+        onSuccess: () => {
+          setNotificationDraft(draft);
+        },
+      }
+    );
   }
 
   return (
@@ -155,7 +216,7 @@ function VenueModerationDetail() {
           <VenueModerationEditForm
             isUpdating={isUpdatingVenue}
             key={venue.venueId}
-            onUpdateVenue={updateVenue}
+            onUpdateVenue={handleUpdateVenue}
             venue={venue}
           />
         </div>
@@ -169,6 +230,21 @@ function VenueModerationDetail() {
             resourceLabel="venue"
             status={venue.status}
           />
+          {notificationDraft ? (
+            <ModerationNotificationComposer
+              key={`${notificationDraft.venueId}-${notificationDraft.decision}`}
+              decision={notificationDraft.decision}
+              includeLink={notificationDraft.includeLink}
+              linkUrl={notificationDraft.linkUrl}
+              mentionEdits={notificationDraft.mentionEdits}
+              mode="moderation"
+              recipientUserId={notificationDraft.recipientUserId}
+              recipientUsername={notificationDraft.recipientUsername}
+              relatedType="venue"
+              venueId={notificationDraft.venueId}
+              venueName={notificationDraft.venueName}
+            />
+          ) : null}
           <MetadataPanel venue={venue} />
           <ClassificationPanel venue={venue} />
         </aside>
@@ -183,6 +259,30 @@ function VenueModerationDetail() {
       />
     </section>
   );
+}
+
+function getVenueNotificationDraft(
+  venue: ModerationVenue,
+  {
+    decision,
+    includeLink,
+    mentionEdits,
+  }: {
+    decision: ModerationNotificationDecision;
+    includeLink: boolean;
+    mentionEdits: boolean;
+  }
+): VenueNotificationDraft {
+  return {
+    decision,
+    includeLink,
+    linkUrl: includeLink ? buildVenueShareUrl(venue) : null,
+    mentionEdits,
+    recipientUserId: venue.userId,
+    recipientUsername: venue.submitterUsername,
+    venueId: venue.venueId,
+    venueName: venue.venueName,
+  };
 }
 
 function DetailMessage({ title, message }: { title: string; message: string }) {

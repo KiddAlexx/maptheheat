@@ -448,7 +448,20 @@ function ModerationSummary({
       <SummaryItem label="Venue name">
         {venueName || 'Not provided'}
       </SummaryItem>
-      <SummaryItem label="Link URL">{linkUrl || 'Not provided'}</SummaryItem>
+      <SummaryItem label="Link URL">
+        {linkUrl ? (
+          <a
+            href={linkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="break-all text-primary-700 underline underline-offset-2 hover:text-primary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+          >
+            {linkUrl}
+          </a>
+        ) : (
+          'Not provided'
+        )}
+      </SummaryItem>
     </dl>
   );
 }

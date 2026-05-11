@@ -46,7 +46,7 @@ plus the relevant tests.
 - [x] Step 19.5: Post-standalone refactor pass.
 - [x] Step 20a: Notification services, hooks, and shared composer.
 - [x] Step 20b: Manual notifications tab.
-- [ ] Step 20c: Inline composer in venue and review detail.
+- [x] Step 20c: Inline composer in venue and review detail.
 - [ ] Step 20d: Inline composer in standalone image group.
 
 ## Completed Slices
@@ -372,6 +372,20 @@ plus the relevant tests.
   rules, notification send payloads, in-flight disabled state, and the negative
   no-status-mutation case.
 
+### Step 20c: Inline Composer In Venue And Review Detail
+
+- Added post-decision notification draft snapshots to `VenueModerationDetail`
+  and `ReviewModerationDetail`, rendered through the shared
+  `ModerationNotificationComposer` in moderation mode after status success.
+- Drafts are built before status mutations and use `buildVenueShareUrl()` for
+  venue/review links, so the composer reads frozen data rather than live query
+  state.
+- Tracked successful admin edits through `useUpdateModerationVenue` and
+  `useUpdateModerationReview`; edited approvals now open the partial template
+  with link and edits options pre-checked.
+- Covered venue approve/decline notification payloads, review edited partial
+  drafts, RPC retry/error behavior, and the status-vs-notification call split.
+
 ## Architecture Rules
 
 - Do not make public components admin-aware with `isAdmin` flags.
@@ -668,7 +682,7 @@ Shared design notes (apply to all four slices):
 - Link URLs are absolute and use a shared
   `buildVenueShareUrl(venue)` helper (new) that
   `DetailedVenueView.tsx:251` adopts at the same time so we don't have two
-  copies. Shape: `${window.location.origin}/app/venue/{city}/{country}/{slug}/{id}`.
+  copies. Shape: `https://maptheheat.com/app/venue/{city}/{country}/{slug}/{id}`.
 - Snapshot pattern in detail flows: on click of approve/decline, snapshot
   `{ userId, venueId, venueName, venueNameSlug, decision, linkUrl }` into
   local state **before** firing the status mutation. The composer reads

@@ -5,9 +5,11 @@ interface VenueShareUrlVenue {
   venueNameSlug: string;
 }
 
+export const MAPTHEHEAT_ORIGIN = 'https://maptheheat.com';
+
 export function buildVenueShareUrl(
   venue: VenueShareUrlVenue,
-  origin = window.location.origin
+  origin = MAPTHEHEAT_ORIGIN
 ): string {
   return `${origin}/app/venue/${venue.city}/${venue.country}/${venue.venueNameSlug}/${venue.venueId}`;
 }

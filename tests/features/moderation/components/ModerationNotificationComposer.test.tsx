@@ -91,6 +91,30 @@ describe('ModerationNotificationComposer', () => {
     });
   });
 
+  it('shows the moderation summary link as a clickable venue link', () => {
+    render(
+      <ModerationNotificationComposer
+        includeLink
+        linkUrl="https://maptheheat.com/app/venue/london/uk/pepper-palace/1"
+        mode="moderation"
+        recipientUserId="user-test-id"
+        relatedType="venue"
+        venueId="venue-test-id"
+        venueName="Pepper Palace"
+      />,
+      { wrapper: AllProviders }
+    );
+
+    expect(
+      screen.getByRole('link', {
+        name: 'https://maptheheat.com/app/venue/london/uk/pepper-palace/1',
+      })
+    ).toHaveAttribute(
+      'href',
+      'https://maptheheat.com/app/venue/london/uk/pepper-palace/1'
+    );
+  });
+
   it('disables send while the notification is in flight', async () => {
     const user = userEvent.setup();
     insertModerationNotificationMock.mockReturnValue(new Promise(() => {}));

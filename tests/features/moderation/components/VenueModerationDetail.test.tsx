@@ -7,6 +7,7 @@ import { ModerationVenue } from '@/types/venueTypes';
 import AllProviders from 'tests/AllProviders';
 import {
   getModerationVenueMock,
+  insertModerationNotificationMock,
   updateModerationImageStatusesMock,
   updateModerationVenueMock,
   updateModerationVenueStatusMock,
@@ -78,6 +79,18 @@ describe('VenueModerationDetail', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     getModerationVenueMock.mockResolvedValue(createModerationVenue());
+    insertModerationNotificationMock.mockResolvedValue({
+      createdAt: '2026-01-01T12:00:00.000Z',
+      linkUrl: null,
+      message: 'Your venue is live',
+      notificationId: 'notification-test-id',
+      notificationStatus: 'unread',
+      relatedType: 'venue',
+      requestStatus: 'confirmed',
+      title: 'Venue approved',
+      userId: 'submitter-user-id',
+      venueId: 'venue-test-id',
+    });
     updateModerationImageStatusesMock.mockResolvedValue();
     updateModerationVenueMock.mockResolvedValue(createModerationVenue());
     updateModerationVenueStatusMock.mockResolvedValue();
@@ -250,6 +263,60 @@ describe('VenueModerationDetail', () => {
     });
   });
 
+  it('approves a pending venue, snapshots fields, and sends the notification payload', async () => {
+    const user = userEvent.setup();
+    const expectedVenueLink =
+      'https://maptheheat.com/app/venue/London/United Kingdom/pepper-palace/venue-test-id';
+    const expectedMessage = [
+      'Good news - your venue Pepper Palace has been approved and can now be found on MapTheHeat.',
+      `You can check it out here: ${expectedVenueLink}`,
+    ].join(' ');
+    getModerationVenueMock.mockResolvedValue(
+      createModerationVenue({ venueImages: [] })
+    );
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /approve venue/i }));
+
+    expect(
+      await screen.findByRole('heading', { name: /send notification/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/pepper_admin.*submitter-user-id/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText('venue')).toBeInTheDocument();
+    expect(screen.getByText('approved')).toBeInTheDocument();
+    expect(screen.getAllByText('Pepper Palace').length).toBeGreaterThan(0);
+    expect(screen.getByLabelText(/title/i)).toHaveDisplayValue(
+      'Yay, Pepper Palace is live!'
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: /send notification/i })
+    );
+
+    await waitFor(() => {
+      expect(updateModerationVenueStatusMock).toHaveBeenCalledWith({
+        venueId: 'venue-test-id',
+        status: 'approved',
+      });
+      expect(insertModerationNotificationMock).toHaveBeenCalledWith({
+        userId: 'submitter-user-id',
+        relatedType: 'venue',
+        title: 'Yay, Pepper Palace is live!',
+        message: expectedMessage,
+        linkUrl: expectedVenueLink,
+        venueId: 'venue-test-id',
+        requestStatus: 'confirmed',
+      });
+    });
+  });
+
   it('does not approve a pending venue until pending images have decisions', async () => {
     renderDetail();
 
@@ -309,6 +376,89 @@ describe('VenueModerationDetail', () => {
         status: 'declined',
       });
     });
+  });
+
+  it('declines a venue with the declined template and no link', async () => {
+    const user = userEvent.setup();
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /decline venue/i }));
+
+    expect(
+      await screen.findByRole('heading', { name: /send notification/i })
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/title/i)).toHaveDisplayValue(
+      'Update on Pepper Palace'
+    );
+    expect(screen.getByText('declined')).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: /send notification/i })
+    );
+
+    await waitFor(() => {
+      expect(insertModerationNotificationMock).toHaveBeenCalledWith({
+        userId: 'submitter-user-id',
+        relatedType: 'venue',
+        title: 'Update on Pepper Palace',
+        message:
+          'Thanks for submitting Pepper Palace. We could not approve it this time, but you can make changes and try again.',
+        linkUrl: null,
+        venueId: 'venue-test-id',
+        requestStatus: 'declined',
+      });
+    });
+  });
+
+  it('keeps the inline composer mounted with retry when notification sending fails', async () => {
+    const user = userEvent.setup();
+    getModerationVenueMock.mockResolvedValue(
+      createModerationVenue({ venueImages: [] })
+    );
+    insertModerationNotificationMock
+      .mockRejectedValueOnce(new Error('RPC failed'))
+      .mockResolvedValueOnce({
+        createdAt: '2026-01-01T12:00:00.000Z',
+        linkUrl: null,
+        message: 'Your venue is live',
+        notificationId: 'notification-test-id',
+        notificationStatus: 'unread',
+        relatedType: 'venue',
+        requestStatus: 'confirmed',
+        title: 'Venue approved',
+        userId: 'submitter-user-id',
+        venueId: 'venue-test-id',
+      });
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /approve venue/i }));
+    await user.click(
+      await screen.findByRole('button', { name: /send notification/i })
+    );
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('RPC failed');
+    expect(
+      screen.getByRole('heading', { name: /send notification/i })
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: /send notification/i })
+    );
+
+    await waitFor(() => {
+      expect(insertModerationNotificationMock).toHaveBeenCalledTimes(2);
+    });
+    expect(updateModerationVenueStatusMock).toHaveBeenCalledTimes(1);
   });
 
   it('submits corrected venue fields', async () => {
