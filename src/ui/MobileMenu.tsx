@@ -32,12 +32,12 @@ function MobileMenu() {
           placement="left"
           radius="none"
           classNames={{
-            closeButton: 'text-primary-900 text-2xl bg-primary-50 p-1 m-2',
+            closeButton: 'text-primary-100 text-2xl bg-zinc-950/90 p-1 m-2 hover:bg-zinc-800',
             wrapper: 'z-[9999]',
           }}
         >
           <DrawerContent>
-            <DrawerHeader className=" h-16 bg-slate-950/80 ">
+            <DrawerHeader className="h-16 border-b border-app-border bg-zinc-950/90">
               <MainLogo />
             </DrawerHeader>
 
@@ -45,7 +45,7 @@ function MobileMenu() {
             <ul className="flex flex-col space-y-4 px-6 py-6 text-lg">
               <li onClick={onClose}>
                 <NavLink
-                  className="text-2xl font-medium text-primary-950 transition-colors hover:text-primary-300"
+                  className="text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
                   to="/"
                 >
                   Home
@@ -55,7 +55,7 @@ function MobileMenu() {
                 <NavLink
                   onClick={onClose}
                   to="/app/map"
-                  className="text-2xl font-medium text-primary-950 transition-colors hover:text-primary-300"
+                  className="text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
                 >
                   Map
                 </NavLink>
@@ -63,7 +63,7 @@ function MobileMenu() {
               <li>
                 <AddVenueButton
                   closeOtherModals={onClose}
-                  className="bg-transparent px-0 text-2xl font-medium text-primary-950 transition-colors hover:text-primary-300"
+                  className="bg-transparent px-0 text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
                 />
               </li>
             </ul>
