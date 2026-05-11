@@ -48,6 +48,7 @@ plus the relevant tests.
 - [x] Step 20b: Manual notifications tab.
 - [x] Step 20c: Inline composer in venue and review detail.
 - [x] Step 20d: Inline composer in standalone image group.
+- [ ] Step 21: Add notification reason checkboxes.
 
 ## Completed Slices
 
@@ -863,6 +864,57 @@ Manual editing rules:
   status update and notification send are separate calls; on
   notification RPC failure the composer stays mounted while the image
   statuses remain saved.
+
+### Step 21: Notification Reason Checkboxes
+
+- Add text-only moderation reason checkboxes to
+  `ModerationNotificationComposer`.
+- Reasons affect generated notification copy only; do not save reasons to the
+  database, notification payload, or moderation status records.
+- Add a typed reason catalogue keyed by `relatedType`:
+  `'venue'`, `'review'`, and `'image'`.
+- Add `reasonIds?: ModerationReasonId[]` to notification template inputs and
+  composer state. Prefer IDs over one boolean prop per reason.
+- Render a `Reason details` checkbox group filtered by selected related type.
+- Preserve manual-edit behavior: checking or unchecking reasons does not
+  overwrite admin-edited title/message until `Generate message` or
+  `Reset template` is clicked.
+- Append selected reason snippets before the resource-specific link sentence.
+- In manual mode, when the admin changes related type, clear selected reasons
+  that do not apply to the new type.
+- Inline venue/review/image composers start with no specific reasons selected;
+  admins choose reasons after the moderation save succeeds.
+
+Reason options:
+
+- Venue:
+  - Not a spicy venue / no clear spicy-food angle.
+  - Duplicate or already listed.
+  - Could not verify details.
+  - Incomplete or confusing submission.
+  - Unsuitable photos were removed.
+- Review:
+  - Not enough useful detail.
+  - Not about the selected venue.
+  - Not focused on the spicy item / heat experience.
+  - Explicit, abusive, or unsafe content.
+  - Attached review images were unsuitable.
+- Images:
+  - Low quality or unclear image.
+  - Not related to the venue or food.
+  - Duplicate or near-duplicate image.
+  - Explicit or unsafe content.
+  - Contains private or sensitive information.
+
+Tests:
+
+- Template unit tests for venue, review, and image reason snippets.
+- Composer tests that reason checkbox changes preserve admin-edited copy until
+  generation/reset.
+- Manual notification test that changing related type clears invalid reasons.
+- Inline moderation test that selected reasons appear in generated notification
+  text.
+- Run `npm.cmd run checks` plus relevant Vitest files.
 
 ### Verification expectations across 20a–d
 
