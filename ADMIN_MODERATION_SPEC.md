@@ -49,7 +49,7 @@ plus the relevant tests.
 - [x] Step 20c: Inline composer in venue and review detail.
 - [x] Step 20d: Inline composer in standalone image group.
 - [x] Step 20.5: Post-notifications refactor pass.
-- [ ] Step 21: Add notification reason checkboxes.
+- [x] Step 21: Add notification reason checkboxes.
 
 ## Completed Slices
 
@@ -865,6 +865,16 @@ Manual editing rules:
   status update and notification send are separate calls; on
   notification RPC failure the composer stays mounted while the image
   statuses remain saved.
+
+### Step 21: Notification Reason Checkboxes
+
+- Added `ModerationReasonId` type, `ModerationReason` interface, and `MODERATION_REASONS` catalogue keyed by `NotificationRelatedType` in `notificationTemplates.ts`.
+- Added `reasonIds?: ModerationReasonId[]` to `ModerationNotificationTemplateOptions`; selected reason snippets are appended before the link sentence via `appendOptionalSentences`.
+- Added `selectedReasonIds: ModerationReasonId[]` state and a "Reason details" fieldset to `ModerationNotificationComposer`, filtered by the current `relatedType`.
+- Checking or unchecking reasons does not overwrite admin-edited title/message until "Apply template changes" or "Reset template" is clicked; "Reset template" also clears all selected reason IDs back to `[]`.
+- In manual mode, switching `relatedType` filters `selectedReasonIds` to only keep IDs that belong to the new type (since reason IDs are type-namespaced, switching types effectively clears all reasons).
+- Inline composers (moderation mode) always start with no reasons selected.
+- Added template unit tests for venue/review/image reason snippets, ordering before the link sentence, and cross-type filtering. Added composer tests for preserve-on-check, apply-generates-snippet, and reset-clears-reasons. Added AdminNotificationCenter test for type-specific reason rendering.
 
 ### Step 20.5: Post-Notifications Refactor Pass
 

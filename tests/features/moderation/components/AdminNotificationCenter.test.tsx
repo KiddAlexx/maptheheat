@@ -196,6 +196,25 @@ describe('AdminNotificationCenter', () => {
     expect(updateModerationImageStatusesMock).not.toHaveBeenCalled();
   });
 
+  it('shows reason details checkboxes filtered to the current related type', () => {
+    renderNotificationRoute();
+
+    // Default related type is venue — venue reasons are shown
+    expect(
+      screen.getByRole('checkbox', { name: /not a spicy venue/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('checkbox', { name: /unsuitable photos were removed/i })
+    ).toBeInTheDocument();
+    // Review and image reasons are not shown for venue type
+    expect(
+      screen.queryByRole('checkbox', { name: /not enough useful detail/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('checkbox', { name: /low quality or unclear image/i })
+    ).not.toBeInTheDocument();
+  });
+
   it('disables the send button while the notification is in flight', async () => {
     const user = userEvent.setup();
     insertModerationNotificationMock.mockReturnValue(new Promise(() => {}));

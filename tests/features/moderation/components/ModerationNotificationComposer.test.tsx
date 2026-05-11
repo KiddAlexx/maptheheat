@@ -115,6 +115,93 @@ describe('ModerationNotificationComposer', () => {
     );
   });
 
+  it('does not overwrite admin-edited copy when a reason checkbox changes', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <ModerationNotificationComposer
+        mode="manual"
+        recipientUserId="user-test-id"
+        relatedType="venue"
+        venueName="Pepper Palace"
+      />,
+      { wrapper: AllProviders }
+    );
+
+    const titleInput = screen.getByLabelText(/title/i);
+    await user.clear(titleInput);
+    await user.type(titleInput, 'Keep this admin title');
+
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: /not a spicy venue/i,
+      })
+    );
+
+    expect(titleInput).toHaveDisplayValue('Keep this admin title');
+  });
+
+  it('applies reason snippets to the generated message after Apply template changes', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <ModerationNotificationComposer
+        mode="moderation"
+        recipientUserId="user-test-id"
+        relatedType="venue"
+        decision="declined"
+        venueName="Pepper Palace"
+      />,
+      { wrapper: AllProviders }
+    );
+
+    await user.click(
+      screen.getByRole('checkbox', { name: /not a spicy venue/i })
+    );
+    await user.click(
+      screen.getByRole('button', { name: /apply template changes/i })
+    );
+
+    expect(screen.getByLabelText(/message/i)).toHaveDisplayValue(
+      /clear spicy food angle/
+    );
+  });
+
+  it('resets selected reasons and regenerates clean template on Reset template', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <ModerationNotificationComposer
+        mode="manual"
+        recipientUserId="user-test-id"
+        relatedType="venue"
+        venueName="Pepper Palace"
+      />,
+      { wrapper: AllProviders }
+    );
+
+    const reasonCheckbox = screen.getByRole('checkbox', {
+      name: /not a spicy venue/i,
+    });
+    await user.click(reasonCheckbox);
+    await user.click(
+      screen.getByRole('button', { name: /apply template changes/i })
+    );
+
+    expect(screen.getByLabelText(/message/i)).toHaveDisplayValue(
+      /clear spicy food angle/
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: /reset template/i })
+    );
+
+    expect(screen.getByLabelText(/message/i)).not.toHaveDisplayValue(
+      /clear spicy food angle/
+    );
+    expect(reasonCheckbox).not.toBeChecked();
+  });
+
   it('disables send while the notification is in flight', async () => {
     const user = userEvent.setup();
     insertModerationNotificationMock.mockReturnValue(new Promise(() => {}));

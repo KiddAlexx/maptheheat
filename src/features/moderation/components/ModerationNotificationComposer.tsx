@@ -11,7 +11,9 @@ import ActionButton from '@/ui/ActionButton';
 import { useInsertModerationNotification } from '../hooks/useInsertModerationNotification';
 import {
   buildModerationNotificationTemplate,
+  MODERATION_REASONS,
   ModerationNotificationDecision,
+  ModerationReasonId,
 } from './notificationTemplates';
 import {
   AdminNotificationPayload,
@@ -82,9 +84,13 @@ function ModerationNotificationComposer({
     mentionEdits,
     mentionImagesDeclined,
   });
+  const [selectedReasonIds, setSelectedReasonIds] = useState<
+    ModerationReasonId[]
+  >([]);
   const initialTemplate = buildTemplate({
     decision: initialDecision,
     linkUrl: initialLinkUrl ?? '',
+    reasonIds: [],
     relatedType: initialRelatedType,
     templateOptions: {
       includeLink,
@@ -100,6 +106,7 @@ function ModerationNotificationComposer({
   const { insertNotification, isInserting } = useInsertModerationNotification();
 
   const isManual = mode === 'manual';
+  const currentTypeReasons = MODERATION_REASONS[relatedType];
 
   function handleTitleChange(value: string) {
     setTitle(value);
@@ -115,6 +122,7 @@ function ModerationNotificationComposer({
     const nextTemplate = buildTemplate({
       decision,
       linkUrl,
+      reasonIds: selectedReasonIds,
       relatedType,
       templateOptions,
       venueName,
@@ -134,11 +142,13 @@ function ModerationNotificationComposer({
     const nextTemplate = buildTemplate({
       decision,
       linkUrl,
+      reasonIds: [],
       relatedType,
       templateOptions: resetOptions,
       venueName,
     });
 
+    setSelectedReasonIds([]);
     setTemplateOptions(resetOptions);
     setTitle(nextTemplate.title);
     setMessage(nextTemplate.message);
@@ -155,12 +165,26 @@ function ModerationNotificationComposer({
     }));
   }
 
+  function handleReasonChange(id: ModerationReasonId, isSelected: boolean) {
+    setSelectedReasonIds((current) =>
+      isSelected ? [...current, id] : current.filter((r) => r !== id)
+    );
+  }
+
   function handleRelatedTypeChange(keys: 'all' | Set<Key>) {
     if (keys === 'all') return;
 
     const nextValue = [...keys][0];
     if (typeof nextValue === 'string') {
-      setRelatedType(nextValue as NotificationRelatedType);
+      const nextType = nextValue as NotificationRelatedType;
+      setRelatedType(nextType);
+      if (isManual) {
+        // Clear reasons that don't apply to the new type
+        const nextTypeIds = new Set(MODERATION_REASONS[nextType].map((r) => r.id));
+        setSelectedReasonIds((current) =>
+          current.filter((id) => nextTypeIds.has(id))
+        );
+      }
     }
   }
 
@@ -275,6 +299,27 @@ function ModerationNotificationComposer({
             </Checkbox>
           </div>
         </fieldset>
+
+        {currentTypeReasons.length > 0 ? (
+          <fieldset className="space-y-3">
+            <legend className="text-sm font-semibold text-gray-900">
+              Reason details
+            </legend>
+            <div className="grid gap-3 md:grid-cols-2">
+              {currentTypeReasons.map((reason) => (
+                <Checkbox
+                  key={reason.id}
+                  isSelected={selectedReasonIds.includes(reason.id)}
+                  onValueChange={(isSelected) =>
+                    handleReasonChange(reason.id, isSelected)
+                  }
+                >
+                  {reason.label}
+                </Checkbox>
+              ))}
+            </div>
+          </fieldset>
+        ) : null}
 
         <Input
           isRequired
@@ -493,12 +538,14 @@ function SummaryItem({
 function buildTemplate({
   decision,
   linkUrl,
+  reasonIds,
   relatedType,
   templateOptions,
   venueName,
 }: {
   decision: ModerationNotificationDecision;
   linkUrl: string;
+  reasonIds: ModerationReasonId[];
   relatedType: NotificationRelatedType;
   templateOptions: TemplateOptionsState;
   venueName: string;
@@ -506,6 +553,7 @@ function buildTemplate({
   return buildModerationNotificationTemplate({
     decision,
     linkUrl,
+    reasonIds,
     relatedType,
     venueName,
     ...templateOptions,

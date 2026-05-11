@@ -98,4 +98,88 @@ describe('buildModerationNotificationTemplate', () => {
       'https://example.com/app/venue/london/uk/pepper-palace/1'
     );
   });
+
+  it('appends a venue reason snippet to the message', () => {
+    const template = buildModerationNotificationTemplate({
+      decision: 'declined',
+      reasonIds: ['venue-not-spicy'],
+      relatedType: 'venue',
+      venueName: 'Pepper Palace',
+    });
+
+    expect(template.message).toContain(
+      'MapTheHeat is focused on places with a clear spicy food angle'
+    );
+  });
+
+  it('appends a review reason snippet to the message', () => {
+    const template = buildModerationNotificationTemplate({
+      decision: 'declined',
+      reasonIds: ['review-wrong-venue'],
+      relatedType: 'review',
+      venueName: 'Pepper Palace',
+    });
+
+    expect(template.message).toContain(
+      'does not appear to be about the selected venue'
+    );
+  });
+
+  it('appends an image reason snippet to the message', () => {
+    const template = buildModerationNotificationTemplate({
+      decision: 'declined',
+      reasonIds: ['image-low-quality'],
+      relatedType: 'image',
+      venueName: 'Pepper Palace',
+    });
+
+    expect(template.message).toContain(
+      'too unclear or low quality to publish'
+    );
+  });
+
+  it('appends multiple reason snippets in order before the link sentence', () => {
+    const template = buildModerationNotificationTemplate({
+      decision: 'approved',
+      includeLink: true,
+      linkUrl: 'https://example.com/app/venue/london/uk/pepper-palace/1',
+      reasonIds: ['venue-not-spicy', 'venue-duplicate'],
+      relatedType: 'venue',
+      venueName: 'Pepper Palace',
+    });
+
+    const notSpicyIndex = template.message.indexOf('clear spicy food angle');
+    const duplicateIndex = template.message.indexOf(
+      'appears to be a duplicate'
+    );
+    const linkIndex = template.message.indexOf('You can find the venue here:');
+
+    expect(notSpicyIndex).toBeGreaterThan(-1);
+    expect(duplicateIndex).toBeGreaterThan(notSpicyIndex);
+    expect(linkIndex).toBeGreaterThan(duplicateIndex);
+  });
+
+  it('ignores reason ids that do not belong to the selected related type', () => {
+    const template = buildModerationNotificationTemplate({
+      decision: 'declined',
+      // venue reasons passed to a review notification are not in MODERATION_REASONS['review'], so they are ignored
+      reasonIds: ['venue-not-spicy'],
+      relatedType: 'review',
+      venueName: 'Pepper Palace',
+    });
+
+    expect(template.message).not.toContain('clear spicy food angle');
+  });
+
+  it('does not append reason snippets when no reasonIds are selected', () => {
+    const template = buildModerationNotificationTemplate({
+      decision: 'declined',
+      reasonIds: [],
+      relatedType: 'venue',
+      venueName: 'Pepper Palace',
+    });
+
+    expect(template.message).not.toContain('clear spicy food angle');
+    expect(template.message).not.toContain('duplicate');
+  });
 });
