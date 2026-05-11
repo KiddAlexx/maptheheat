@@ -116,25 +116,27 @@ function VenueListCard({
 
   return (
     <li>
-      {/* <button className=" w-full" onClick={handleClick}> */}
-
       <Card
         className="mb-2 h-48 w-full border border-gray-200 bg-white shadow-md transition [&:has(.venue-btn:hover)]:border-primary-200 [&:has(.venue-btn:hover)]:bg-primary-50/30"
         radius="lg"
       >
         <div className="flex">
-          <div className="relative h-48 w-1/3 ">
+          <button
+            type="button"
+            className="venue-btn relative h-48 w-1/3 cursor-pointer overflow-hidden"
+            onClick={handleClick}
+            tabIndex={-1}
+            aria-hidden="true"
+          >
             <Image
               className="h-full w-full object-cover"
               src={thumbnailImage?.url || greyChilli}
               fallbackSrc={greyChilli}
-              alt={
-                thumbnailImage?.alt || 'a greyed out image of a chilli pepper'
-              }
+              alt=""
               removeWrapper
-              radius="sm"
+              radius="none"
             />
-          </div>
+          </button>
           <CardBody className="relative w-2/3">
             <div className="mb-2 flex items-center justify-between">
               <h3>
@@ -211,14 +213,13 @@ function VenueListCard({
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-blue-500 hover:opacity-80"
+                className="flex items-center gap-1 text-primary-600 hover:opacity-80"
               >
                 <span>View hours</span>
                 <Icon
                   aria-hidden="true"
                   icon="lucide:external-link"
                   width={12}
-                  className="text-blue-500"
                 />
               </a>
             </div>
@@ -226,7 +227,7 @@ function VenueListCard({
             <CardFooter>
               <button
                 type="button"
-                className="absolute bottom-3 right-2 z-10 flex cursor-pointer items-center text-sm text-blue-500 underline hover:opacity-80"
+                className="absolute bottom-3 right-2 z-10 flex cursor-pointer items-center text-sm text-primary-600 underline hover:opacity-80"
                 onClick={() => {
                   setParamsAndNavigate(venue, 'venue');
                 }}
