@@ -332,9 +332,7 @@ function DetailedVenueView() {
               width={18}
               className="shrink-0"
             />
-            <span className="text-app-link">
-              View hours
-            </span>
+            <span className="text-app-link">View hours</span>
             <Icon
               aria-hidden="true"
               icon="lucide:external-link"
@@ -365,7 +363,7 @@ function DetailedVenueView() {
             className="shrink-0"
           />
           <a
-            className="break-all text-app-link hover:opacity-80"
+            className="text-app-link break-all hover:opacity-80"
             href={website}
             target="_blank"
             rel="noopener noreferrer"
@@ -383,22 +381,9 @@ function DetailedVenueView() {
         <div className="mb-3 flex gap-2 ">
           <Button
             radius="full"
-            as="a"
-            href={mapsDirectionsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
             color="primary"
             variant="flat"
             className="dark:bg-app-link/20 dark:text-app-link"
-            startContent={
-              <Icon className="hidden xs:block" icon="lucide:navigation" />
-            }
-          >
-            Get Directions
-          </Button>
-          <Button
-            radius="full"
-            variant="flat"
             startContent={
               <Icon className="hidden xs:block" icon="lucide:message-circle" />
             }
@@ -415,6 +400,19 @@ function DetailedVenueView() {
             onPress={handleAddImages}
           >
             Add Images
+          </Button>
+          <Button
+            radius="full"
+            as="a"
+            variant="flat"
+            href={mapsDirectionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            startContent={
+              <Icon className="hidden xs:block" icon="lucide:navigation" />
+            }
+          >
+            Get Directions
           </Button>
         </div>
       </article>

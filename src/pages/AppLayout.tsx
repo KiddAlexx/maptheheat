@@ -17,6 +17,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import VenueListContainer from '@/features/venues/components/VenueListContainer';
 import { Button } from '@heroui/react';
 import LoaderSpinner from '@/ui/LoaderSpinner';
+import BackgroundBlobs from '@/ui/BackgroundBlobs';
 
 type Pane = 'venue' | 'map' | 'list';
 
@@ -68,9 +69,10 @@ function AppLayout() {
 
   return (
     <main className="relative flex h-full overflow-hidden">
+      <BackgroundBlobs className="dark:hidden" />
       <aside
         className={clsx(
-          'w-full shrink flex-col overflow-hidden p-3 lg:flex lg:min-w-[32rem] lg:basis-1/3 bg-app-card dark:bg-zinc-950',
+          'w-full shrink flex-col overflow-hidden p-3 lg:flex lg:min-w-[32rem] lg:basis-1/3 bg-white/70 backdrop-blur-sm dark:bg-zinc-950',
           currentPane === 'list' ? 'flex' : 'hidden'
         )}
       >
@@ -78,7 +80,7 @@ function AppLayout() {
       </aside>
       <section
         className={clsx(
-          'flex-1 overflow-y-scroll bg-zinc-50 dark:bg-zinc-950 lg:block',
+          'flex-1 overflow-y-scroll bg-white/50 backdrop-blur-sm dark:bg-zinc-950 lg:block',
           currentPane === 'map' || currentPane === 'venue' ? 'block' : 'hidden'
         )}
       >

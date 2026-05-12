@@ -1,76 +1,131 @@
 // Third Party Imports
-import { FilePond, registerPlugin } from 'react-filepond';
-
-// Import the Image EXIF Orientation and Image Preview plugins
-// Note: These need to be installed separately
-// `npm i filepond-plugin-image-preview filepond-plugin-image-exif-orientation --save`
-import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import Cropper from 'react-easy-crop';
+import type { Area } from 'react-easy-crop';
 
 // React imports
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 // Hooks
 import { useGlobalError } from '@/context/ErrorContext';
 import { useUpdateAvatar } from '../hooks/useUpdateAvatar';
 
+// Utils
+import { getCroppedImage } from '../utils/cropImage';
+
 // Components
 import ActionButton from '@/ui/ActionButton';
 import LoaderSpinner from '@/ui/LoaderSpinner';
-
-// Register the plugins
-registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
+import { Icon } from '@iconify/react/dist/iconify.js';
 
 function UpdateAvatar() {
-  //File Upload State
-  const [newAvatar, setNewAvatar] = useState<File[]>([]);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const croppedAreaRef = useRef<Area | null>(null);
+
   const { setGlobalError } = useGlobalError();
   const { updateAvatar, isUpdating } = useUpdateAvatar();
 
-  function uploadFile() {
-    if (newAvatar.length === 0) {
-      setGlobalError('No images were selected!');
-      return;
-    }
+  function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setImageSrc(reader.result as string);
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
 
-    updateAvatar(
-      { newAvatar },
-      {
-        onSuccess: () => setNewAvatar([]),
-        onError: (error) => setGlobalError(error.message),
-      }
+  function handleCancel() {
+    setImageSrc(null);
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    croppedAreaRef.current = null;
+  }
+
+  async function handleUpload() {
+    if (!imageSrc || !croppedAreaRef.current) return;
+    try {
+      const file = await getCroppedImage(imageSrc, croppedAreaRef.current);
+      updateAvatar(
+        { newAvatar: [file] },
+        { onSuccess: handleCancel, onError: (err) => setGlobalError(err.message) }
+      );
+    } catch {
+      setGlobalError('Failed to process image. Please try again.');
+    }
+  }
+
+  if (!imageSrc) {
+    return (
+      <div className="flex flex-col items-center gap-3">
+        <label
+          htmlFor="avatar-upload"
+          className="flex h-32 w-32 cursor-pointer flex-col items-center justify-center rounded-full border-2 border-dashed border-app-border bg-app-surface text-app-muted transition-colors hover:border-primary-400 hover:text-primary-400"
+          aria-label="Upload new avatar"
+        >
+          <Icon icon="lucide:camera" width={28} />
+          <span className="mt-1 text-xs">Upload photo</span>
+        </label>
+        <input
+          id="avatar-upload"
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          onChange={onFileChange}
+        />
+      </div>
     );
   }
 
   return (
-    <div>
-      <FilePond
-        files={newAvatar}
-        onupdatefiles={(images) => {
-          // Update state with new files array
-          const newImages = images
-            .map((image) => image.file)
-            // Filter out non-File entries and ensure TypeScript treats all items as File objects
-            .filter((file): file is File => file instanceof File);
-          setNewAvatar(newImages);
-        }}
-        allowMultiple={false}
-        disabled={isUpdating}
-        maxFiles={1}
-        name="files"
-        labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-      />
-      <h3>Select a suitable avatar to upload</h3>
-      <div className="mt-2 flex justify-end">
-        <ActionButton
-          intent="confirm"
-          size="md"
-          onPress={uploadFile}
-          isDisabled={isUpdating}
-        >
-          {isUpdating ? <LoaderSpinner message="Uploading avatar" /> : 'Upload'}
-        </ActionButton>
+    <div className="flex flex-col gap-4">
+      {/* Crop area */}
+      <div className="relative h-64 w-full overflow-hidden rounded-lg bg-zinc-900">
+        <Cropper
+          image={imageSrc}
+          crop={crop}
+          zoom={zoom}
+          aspect={1}
+          cropShape="round"
+          showGrid={false}
+          onCropChange={setCrop}
+          onZoomChange={setZoom}
+          onCropComplete={(_, areaPx) => {
+            croppedAreaRef.current = areaPx;
+          }}
+        />
+      </div>
+
+      {/* Zoom slider */}
+      <div className="flex items-center gap-3">
+        <Icon icon="lucide:zoom-out" width={16} className="text-app-muted" />
+        <input
+          type="range"
+          aria-label="Zoom"
+          min={1}
+          max={3}
+          step={0.05}
+          value={zoom}
+          onChange={(e) => setZoom(Number(e.target.value))}
+          className="w-full accent-primary-400"
+        />
+        <Icon icon="lucide:zoom-in" width={16} className="text-app-muted" />
+      </div>
+
+      {/* Actions */}
+      <div className="flex justify-end gap-2">
+        {isUpdating ? (
+          <LoaderSpinner message="Uploading avatar" />
+        ) : (
+          <>
+            <ActionButton intent="cancel" onPress={handleCancel}>
+              Cancel
+            </ActionButton>
+            <ActionButton intent="confirm" onPress={handleUpload}>
+              Save Avatar
+            </ActionButton>
+          </>
+        )}
       </div>
     </div>
   );

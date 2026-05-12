@@ -116,28 +116,30 @@ function ImageUploader({
   }
 
   return (
-    <div className={`${isModal && 'min-w-[18rem]'} w-full `}>
+    <div className={`${isModal && 'w-[min(37.5rem,80vw)]'} w-full `}>
       {isUploading ? (
         <LoaderSpinner message="Images currently uploading" />
       ) : (
-        <FilePond
-          files={imageFiles}
-          onupdatefiles={(images) => {
-            // Update state with new files array
-            const newImages = images.map((image) => image.file as File);
-            setImageFiles(newImages);
-          }}
-          allowMultiple={true}
-          maxFiles={maxPhotos}
-          name="files"
-          labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-          id="firstElementToFocus"
-        />
+        <div className={isModal ? 'filepond-modal-constrain' : ''}>
+          <FilePond
+            files={imageFiles}
+            onupdatefiles={(images) => {
+              const newImages = images.map((image) => image.file as File);
+              setImageFiles(newImages);
+            }}
+            allowMultiple={true}
+            maxFiles={maxPhotos}
+            name="files"
+            labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+            id="firstElementToFocus"
+            imagePreviewHeight={isModal ? 96 : 130}
+          />
+        </div>
       )}
       {isUploading ? (
         <span>Compression & Upload in progress. Won't be too long!</span>
       ) : (
-        <p>Add up to a maximum of {maxPhotos} photos</p>
+        <p className="mb-2">Add up to a maximum of {maxPhotos} photos</p>
       )}
 
       <div className="flex justify-end gap-1">

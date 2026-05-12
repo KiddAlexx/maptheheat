@@ -59,7 +59,7 @@ function NotificationContainer({ userId }: NotificationContainerProps) {
           </Switch>
         </div>
 
-        <div className="col-span-3 ">
+        <div className="col-span-3 mt-2">
           <NotificationListView userNotifications={userNotifications} />
         </div>
         <div className="col-span-3 col-start-1 justify-self-center @2xl:col-span-1 @2xl:col-start-2">
