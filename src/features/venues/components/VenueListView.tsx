@@ -79,7 +79,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
 
   return (
     <>
-      <div className="mb-2 flex justify-center">
+      <div className="mb-4 flex justify-center">
         <PaginationControls
           updatePageNumber={updatePageNumber}
           pagination={pagination}
@@ -90,9 +90,9 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
         <div
           role="alert"
           aria-live="polite"
-          className="rounded-xl border border-app-border bg-app-card p-6 text-center shadow-md"
+          className="border-app-border bg-app-card rounded-xl border p-6 text-center shadow-md"
         >
-          <p className="mb-2 text-xl font-semibold text-app-muted">
+          <p className="text-app-muted mb-2 text-xl font-semibold">
             No venues found, please adjust filters
           </p>
         </div>
@@ -113,7 +113,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
         </ul>
       )}
 
-      <div className="mb-2 flex justify-center">
+      <div className="mb-2 mt-4 flex justify-center">
         <PaginationControls
           updatePageNumber={updatePageNumber}
           pagination={pagination}

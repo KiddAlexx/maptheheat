@@ -36,7 +36,10 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    containerRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
   }, [pagination.pageNumber]);
 
   const { user, isPending: isPendingUser } = useUser();
@@ -63,9 +66,9 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
     return (
       <div
         role="alert"
-        className="rounded-xl border border-app-border bg-app-card p-6 text-center shadow-md"
+        className="border-app-border bg-app-card rounded-xl border p-6 text-center shadow-md"
       >
-        <p className="mb-2 text-xl font-semibold text-app-muted">
+        <p className="text-app-muted mb-2 text-xl font-semibold">
           Error loading reviews - Please try refreshing
         </p>
       </div>
@@ -73,9 +76,12 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
   }
 
   return reviews && reviews.length > 0 ? (
-    <div ref={containerRef} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 @container ">
+    <div
+      ref={containerRef}
+      className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 @container "
+    >
       <h2 className="row-start-1 text-2xl font-semibold ">Reviews</h2>
-      <div className="col-span-3 row-start-2 justify-self-center @2xl:col-span-1 @2xl:row-start-1">
+      <div className="col-span-3 row-start-2 mt-2 justify-self-center @2xl:col-span-1 @2xl:row-start-1">
         <PaginationControls
           pagination={pagination}
           updatePageNumber={updatePageNumber}
@@ -90,7 +96,7 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
         <ReviewListView reviews={reviews} mode={mode} />
       </div>
 
-      <div className="col-span-3 col-start-1 justify-self-center @2xl:col-span-1 @2xl:col-start-2">
+      <div className="col-span-3 col-start-1 mt-2 justify-self-center @2xl:col-span-1 @2xl:col-start-2">
         <PaginationControls
           pagination={pagination}
           updatePageNumber={updatePageNumber}

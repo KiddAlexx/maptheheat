@@ -35,13 +35,14 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
   const { isDeleting, deleteUserNotification } = useDeleteUserNotification();
 
   return (
-    <article className="mb-3 mt-2 rounded-xl border border-app-border bg-app-card p-3 text-sm shadow-md">
+    <article className="border-app-border bg-app-card mb-4 rounded-xl border p-3 text-sm shadow-md">
       <header className="flex justify-between">
         <h3 className="font-semibold">{title}</h3>
         <div>
           <Tooltip content="Delete notification">
             <Button
-              aria-label="Delete notification" radius="full"
+              aria-label="Delete notification"
+              radius="full"
               className="h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
               isIconOnly
               onPress={() => deleteUserNotification({ notificationId })}
@@ -59,7 +60,8 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
           {notificationStatus === 'unread' && (
             <Tooltip content="Mark as read">
               <Button
-                aria-label="Mark notification as read" radius="full"
+                aria-label="Mark notification as read"
+                radius="full"
                 className="ml-2 h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
                 isIconOnly
                 onPress={() => updateUserNotification({ notificationId })}
@@ -81,7 +83,7 @@ function NotificationListItem({ notification }: NotificationListItemProps) {
         <NotificationMessage message={message} linkUrl={linkUrl} />
       </p>
       <footer className="mt-2">
-        <time className="text-xs text-app-muted" dateTime={createdAt}>
+        <time className="text-app-muted text-xs" dateTime={createdAt}>
           {formattedDate}
         </time>
       </footer>
@@ -108,7 +110,7 @@ function NotificationMessage({
           {index < messageParts.length - 1 ? (
             <a
               href={linkUrl}
-              className="break-all text-app-link underline underline-offset-2 hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+              className="text-app-link break-all underline underline-offset-2 hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
             >
               {linkUrl}
             </a>
