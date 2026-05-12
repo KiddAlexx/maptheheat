@@ -41,6 +41,18 @@ function MobileMenu() {
           wrapper: 'z-[9999]',
         }}
         motionProps={{
+          // HeroUI replaces its placement variants entirely when motionProps is set,
+          // so the left-slide variants must be included here explicitly.
+          variants: {
+            enter: {
+              x: 0,
+              transition: { x: { duration: 0.2, ease: 'easeOut' } },
+            },
+            exit: {
+              x: '-100%',
+              transition: { x: { duration: 0.1, ease: 'easeIn' } },
+            },
+          },
           onAnimationComplete: (definition) => {
             // Fires after the exit animation fully completes — safe point to open
             // a new modal without competing with the Drawer's overlay cleanup.
