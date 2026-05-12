@@ -139,7 +139,7 @@ function LoginForm() {
           <button
             disabled={isLoading}
             type="button"
-            className="mr-2 mt-2 flex items-center rounded-xl p-1 text-sm text-primary-500 underline hover:opacity-80"
+            className="mr-2 mt-2 flex items-center rounded-xl p-1 text-sm text-app-link underline hover:opacity-80"
             onClick={() => openModal('forgot-password')}
           >
             Forgot Password
@@ -180,7 +180,7 @@ function LoginForm() {
         <button
           disabled={isLoading}
           type="button"
-          className="flex items-center rounded-xl p-1 text-primary-500 underline hover:opacity-80"
+          className="flex items-center rounded-xl p-1 text-app-link underline hover:opacity-80"
           onClick={() => openModal('sign-up')}
         >
           Sign up now

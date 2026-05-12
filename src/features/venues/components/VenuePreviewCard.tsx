@@ -29,7 +29,7 @@ function VenuePreviewCard({ venue }: VenuePreviewCardProps) {
 
   return (
     <button
-      className="mb-2 flex w-full items-center gap-3 rounded-xl border border-app-border bg-app-card p-3 text-left shadow-sm transition-shadow hover:border-primary-200 hover:bg-primary-50/30 hover:shadow-md dark:hover:border-primary-400 dark:hover:bg-primary-900/20"
+      className="border-app-border bg-app-card mb-2 flex w-full items-center gap-3 rounded-xl border p-3 text-left shadow-sm transition-shadow hover:border-primary-200 hover:bg-primary-50/30 hover:shadow-md dark:hover:border-primary-400 dark:hover:bg-primary-900/20"
       onClick={() => handleSelectVenue(venue)}
     >
       <div className="relative h-12 w-12 ">
@@ -49,14 +49,14 @@ function VenuePreviewCard({ venue }: VenuePreviewCardProps) {
         <div className="mb-1 flex gap-1 [&>span]:!flex">
           <VenueRating initialRating={finalHeatRating} readonly size="16" />
 
-          <span className="tracking-medium text-xs text-app-muted">
+          <span className="tracking-medium text-app-muted text-xs">
             ({totalReviewCount} {totalReviewCount === 1 ? 'review' : 'reviews'})
           </span>
         </div>
-        <p className="text-xs text-app-muted">{city}</p>
+        <p className="text-app-muted text-xs">{city}</p>
       </div>
 
-      <span className="hidden text-xs font-semibold text-primary-600 opacity-70 transition group-hover:opacity-100 xs:block">
+      <span className="text-app-link hidden text-xs font-semibold opacity-70 transition group-hover:opacity-100 xs:block">
         View →
       </span>
     </button>
