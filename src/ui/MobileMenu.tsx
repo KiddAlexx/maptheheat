@@ -3,7 +3,7 @@ import Hamburger from 'hamburger-react';
 import { NavLink } from 'react-router-dom';
 
 // React imports
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 
 // Components
 import {
@@ -20,18 +20,6 @@ function MobileMenu() {
   const { isOpen, onClose, onOpenChange } = useDisclosure();
   const pendingCallback = useRef<(() => void) | null>(null);
 
-  // Waits for the drawer exit animation, then fires the pending callback.
-  // Timer starts when isOpen actually becomes false (reliable React state event),
-  // avoiding the production race where HeroUI's overlay cleanup was still running.
-  useEffect(() => {
-    if (!isOpen && pendingCallback.current) {
-      const cb = pendingCallback.current;
-      pendingCallback.current = null;
-      const id = setTimeout(cb, 300);
-      return () => clearTimeout(id);
-    }
-  }, [isOpen]);
-
   function closeAndThen(callback: () => void) {
     pendingCallback.current = callback;
     onClose();
@@ -43,50 +31,62 @@ function MobileMenu() {
       <Hamburger color="#fee9d6" toggled={isOpen} toggle={onOpenChange} />
 
       <Drawer
-          isOpen={isOpen}
-          onClose={onClose}
-          placement="left"
-          radius="none"
-          classNames={{
-            closeButton: 'text-primary-100 text-2xl bg-zinc-950/90 p-1 m-2 hover:bg-zinc-800',
-            wrapper: 'z-[9999]',
-          }}
-        >
-          <DrawerContent>
-            <DrawerHeader className="h-16 border-b border-app-border bg-zinc-950/90">
-              <MainLogo />
-            </DrawerHeader>
+        isOpen={isOpen}
+        onClose={onClose}
+        placement="left"
+        radius="none"
+        classNames={{
+          closeButton:
+            'text-primary-100 text-2xl bg-zinc-950/90 p-1 m-2 hover:bg-zinc-800',
+          wrapper: 'z-[9999]',
+        }}
+        motionProps={{
+          onAnimationComplete: (definition) => {
+            // Fires after the exit animation fully completes — safe point to open
+            // a new modal without competing with the Drawer's overlay cleanup.
+            if (definition === 'exit' && pendingCallback.current) {
+              const cb = pendingCallback.current;
+              pendingCallback.current = null;
+              cb();
+            }
+          },
+        }}
+      >
+        <DrawerContent>
+          <DrawerHeader className="border-app-border h-16 border-b bg-zinc-950/90">
+            <MainLogo />
+          </DrawerHeader>
 
-            {/* Navigation items */}
-            <ul className="flex flex-col space-y-4 px-6 py-6 text-lg">
-              <li onClick={onClose}>
-                <NavLink
-                  className="text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
-                  to="/"
-                >
-                  Home
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  onClick={onClose}
-                  to="/app/map"
-                  className="text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
-                >
-                  Map
-                </NavLink>
-              </li>
-              <li>
-                <AddVenueButton
-                  closeOtherModals={closeAndThen}
-                  className="bg-transparent px-0 text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
-                />
-              </li>
-            </ul>
+          {/* Navigation items */}
+          <ul className="flex flex-col space-y-4 px-6 py-6 text-lg">
+            <li onClick={onClose}>
+              <NavLink
+                className="text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
+                to="/"
+              >
+                Home
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                onClick={onClose}
+                to="/app/map"
+                className="text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
+              >
+                Map
+              </NavLink>
+            </li>
+            <li>
+              <AddVenueButton
+                closeOtherModals={closeAndThen}
+                className="bg-transparent px-0 text-2xl font-medium text-foreground transition-colors hover:text-primary-400"
+              />
+            </li>
+          </ul>
 
-            <DrawerFooter />
-          </DrawerContent>
-        </Drawer>
+          <DrawerFooter />
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }
