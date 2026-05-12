@@ -55,6 +55,7 @@ export default {
         'app-border':  'rgb(var(--app-border) / <alpha-value>)',
         'app-surface': 'rgb(var(--app-surface) / <alpha-value>)',
         'app-muted':   'rgb(var(--app-muted) / <alpha-value>)',
+        'app-link':    'rgb(var(--app-link) / <alpha-value>)',
       },
       /*  colors: {
         background: 'hsl(var(--background))',

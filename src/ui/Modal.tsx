@@ -17,14 +17,25 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 
 const backdropVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.22, ease: 'easeOut' as const } },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.22, ease: 'easeOut' as const },
+  },
   exit: { opacity: 0, transition: { duration: 0.22, ease: 'easeIn' as const } },
 };
 
 const panelVariants = {
   hidden: { opacity: 0, scale: 0.8 },
-  visible: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 260, damping: 20 } },
-  exit: { opacity: 0, scale: 0.8, transition: { duration: 0.15, ease: 'easeIn' as const } },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 260, damping: 20 },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.8,
+    transition: { duration: 0.15, ease: 'easeIn' as const },
+  },
 };
 
 const panelVariantsReduced = {
@@ -76,7 +87,9 @@ function Modal({ children }: ModalProps) {
 
   if (!modalRoot) return null;
 
-  const activePanelVariants = prefersReducedMotion ? panelVariantsReduced : panelVariants;
+  const activePanelVariants = prefersReducedMotion
+    ? panelVariantsReduced
+    : panelVariants;
 
   return createPortal(
     <AnimatePresence>
@@ -94,7 +107,7 @@ function Modal({ children }: ModalProps) {
             }}
           >
             <motion.div
-              className="relative flex max-h-[90dvh] max-w-[90dvw] items-center justify-center gap-5 rounded-xl bg-app-card p-5 shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)]"
+              className="bg-app-card relative flex max-h-[90dvh] max-w-[90dvw] items-center justify-center gap-5 rounded-xl p-5 shadow-[0_10px_20px_rgba(0,0,0,0.19),0_6px_6px_rgba(0,0,0,0.23)]"
               ref={modalRef}
               variants={activePanelVariants}
               initial="hidden"

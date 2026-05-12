@@ -55,7 +55,6 @@ function VenueListCard({
 
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venueName} ${address} ${city}`)}`;
 
-
   const totalReviewCount = totalReviews ?? 0;
 
   const isFavourite = favVenuesList?.includes(venueId) ?? false;
@@ -117,7 +116,7 @@ function VenueListCard({
   return (
     <li>
       <Card
-        className="mb-2 h-48 w-full border border-app-border bg-app-card shadow-md transition [&:has(.venue-btn:hover)]:border-primary-200 [&:has(.venue-btn:hover)]:bg-primary-50/30 dark:[&:has(.venue-btn:hover)]:border-primary-400 dark:[&:has(.venue-btn:hover)]:bg-primary-900/20"
+        className="border-app-border bg-app-card mb-2 h-48 w-full border shadow-md transition [&:has(.venue-btn:hover)]:border-primary-200 [&:has(.venue-btn:hover)]:bg-primary-50/30 dark:[&:has(.venue-btn:hover)]:border-primary-400 dark:[&:has(.venue-btn:hover)]:bg-primary-900/20"
         radius="lg"
       >
         <div className="flex">
@@ -213,7 +212,7 @@ function VenueListCard({
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-primary-600 hover:opacity-80"
+                className="flex items-center gap-1 text-app-link hover:opacity-80"
               >
                 <span>View hours</span>
                 <Icon
@@ -227,7 +226,7 @@ function VenueListCard({
             <CardFooter>
               <button
                 type="button"
-                className="absolute bottom-3 right-2 z-10 flex cursor-pointer items-center text-sm text-primary-600 underline hover:opacity-80"
+                className="absolute bottom-3 right-2 z-10 flex cursor-pointer items-center text-sm text-app-link underline hover:opacity-80"
                 onClick={() => {
                   setParamsAndNavigate(venue, 'venue');
                 }}

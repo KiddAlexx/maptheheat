@@ -75,7 +75,7 @@ function DetailedVenueView() {
       <div className="mx-auto mt-8 max-w-[70rem] p-3">
         <div
           role="alert"
-          className="rounded-xl border border-app-border bg-app-card p-6 text-center shadow-md"
+          className="border-app-border bg-app-card rounded-xl border p-6 text-center shadow-md"
         >
           <h1 className="mb-2 text-xl font-semibold text-foreground">
             Venue not found
@@ -220,7 +220,7 @@ function DetailedVenueView() {
 
   return (
     <div className="hyphens-auto p-3">
-      <article className="mb-5 rounded-xl border border-app-border bg-app-card p-3 text-sm shadow-md">
+      <article className="border-app-border bg-app-card mb-5 rounded-xl border p-3 text-sm shadow-md">
         <div className="mb-3 ml-1 flex items-end justify-between">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
             <h2
@@ -332,12 +332,14 @@ function DetailedVenueView() {
               width={18}
               className="shrink-0"
             />
-            <span className="text-primary-600">View hours</span>
+            <span className="text-app-link">
+              View hours
+            </span>
             <Icon
               aria-hidden="true"
               icon="lucide:external-link"
               width={14}
-              className="text-primary-600 "
+              className="text-app-link"
             />
           </a>
         </div>
@@ -363,7 +365,7 @@ function DetailedVenueView() {
             className="shrink-0"
           />
           <a
-            className="break-all text-primary-600  hover:opacity-80"
+            className="break-all text-app-link hover:opacity-80"
             href={website}
             target="_blank"
             rel="noopener noreferrer"
@@ -387,6 +389,7 @@ function DetailedVenueView() {
             rel="noopener noreferrer"
             color="primary"
             variant="flat"
+            className="dark:bg-app-link/20 dark:text-app-link"
             startContent={
               <Icon className="hidden xs:block" icon="lucide:navigation" />
             }

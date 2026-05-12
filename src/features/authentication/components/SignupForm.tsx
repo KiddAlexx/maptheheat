@@ -209,7 +209,7 @@ function SignupForm() {
         <button
           disabled={isPendingEmail}
           type="button"
-          className="flex items-center rounded-xl p-1 text-primary-500 underline hover:opacity-80"
+          className="flex items-center rounded-xl p-1 text-app-link underline hover:opacity-80"
           onClick={() => openModal('login')}
         >
           Login

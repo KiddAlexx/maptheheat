@@ -2,6 +2,9 @@
 import Hamburger from 'hamburger-react';
 import { NavLink } from 'react-router-dom';
 
+// React imports
+import { useRef, useEffect } from 'react';
+
 // Components
 import {
   Drawer,
@@ -15,13 +18,23 @@ import MainLogo from './MainLogo';
 
 function MobileMenu() {
   const { isOpen, onClose, onOpenChange } = useDisclosure();
+  const pendingCallback = useRef<(() => void) | null>(null);
 
-  // 300ms matches HeroUI Drawer's default spring close animation duration.
-  // If the drawer animation is ever changed, this value must be updated too.
-  // Sequences drawer close → callback to prevent two focus traps competing.
+  // Waits for the drawer exit animation, then fires the pending callback.
+  // Timer starts when isOpen actually becomes false (reliable React state event),
+  // avoiding the production race where HeroUI's overlay cleanup was still running.
+  useEffect(() => {
+    if (!isOpen && pendingCallback.current) {
+      const cb = pendingCallback.current;
+      pendingCallback.current = null;
+      const id = setTimeout(cb, 300);
+      return () => clearTimeout(id);
+    }
+  }, [isOpen]);
+
   function closeAndThen(callback: () => void) {
+    pendingCallback.current = callback;
     onClose();
-    setTimeout(callback, 300);
   }
 
   return (

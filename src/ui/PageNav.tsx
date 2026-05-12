@@ -43,7 +43,7 @@ function PageNav() {
   return (
     <nav
       aria-label="Main navigation"
-      className="flex h-16 items-center justify-between border-b border-app-border bg-zinc-950/90 px-4 sm:px-8"
+      className="border-app-border flex h-16 items-center justify-between border-b bg-zinc-950/90 px-4 sm:px-8"
     >
       {/* Left: hamburger (mobile) / logo + links (desktop) */}
       <div className="flex items-center gap-5">
@@ -64,13 +64,6 @@ function PageNav() {
           </Link>
           <AddVenueButton className="h-auto bg-transparent p-1 px-0 text-xl font-medium text-primary-50 hover:text-primary-300 data-[hover=true]:bg-transparent" />
         </div>
-      </div>
-
-      {/* Center: logo visible on mobile — non-interactive to avoid misclicks */}
-      <div className="flex flex-1 justify-center sm:hidden">
-        <span className={styles.logoWrap} aria-hidden="true">
-          <MainLogo variant={isAdminRoute ? 'admin' : 'public'} />
-        </span>
       </div>
 
       {/* Right: theme toggle + auth */}

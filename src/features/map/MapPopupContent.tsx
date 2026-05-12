@@ -31,15 +31,12 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
     address,
     phoneNumber,
     thumbnailImage,
-    venueId,
   } = venue;
 
   /*   const totalReviewCount = totalReviews ?? 0; */
 
   // Create a unique id to be used on each main button
   // Used to assign accessible name
-  const accMapButtonId = `select-map-venue-${venueId}`;
-
   const finalHeatRating =
     averageHeatRating != null ? Math.round(averageHeatRating * 2) / 2 : 0;
 
@@ -49,8 +46,12 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
       : 0;
 
   return (
-    <div className={styles.global}>
-      {/* Duplication of code from ListItem - Move to own component */}
+    <button
+      type="button"
+      className={`${styles.global} w-full cursor-pointer text-left`}
+      onClick={() => setParamsAndNavigate(venue, 'venue')}
+      aria-label={`View details for ${venueName}`}
+    >
       {/* Render venue image if available, otherwise show default greyed out image */}
       <div className="h-40 w-full overflow-hidden">
         <Image
@@ -60,23 +61,9 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
           radius="sm"
         />
       </div>
-      {/* Link to the detailed page of the venue.  */}
       <div className="px-2">
-        <h3>
-          <button
-            type="button"
-            onClick={() => {
-              setParamsAndNavigate(venue, 'venue');
-            }}
-            className="my-1 text-xl font-medium text-foreground"
-            aria-labelledby={accMapButtonId}
-          >
-            {venueName}
-          </button>
-
-          <span id={accMapButtonId} hidden>
-            Detailed information for {venueName}
-          </span>
+        <h3 className="my-1 text-xl font-medium text-foreground">
+          {venueName}
         </h3>
 
         <div className="flex items-center gap-1">
@@ -88,11 +75,6 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
                   of react rating - ensures icons allign correctly */}
           <div className="flex items-center gap-1 [&>span]:!flex">
             <VenueRating initialRating={finalHeatRating} readonly size="20" />
-
-            {/*     <span className="text-sm">
-              ({totalReviewCount}{' '}
-              {totalReviewCount === 1 ? 'review' : 'reviews'})
-            </span> */}
           </div>
         </div>
         <div className="mt-1 flex items-center gap-2 text-sm">
@@ -104,7 +86,7 @@ function MapPopupContent({ venue }: MapPopupContentProps) {
           <span>{phoneNumber}</span>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 

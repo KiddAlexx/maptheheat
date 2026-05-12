@@ -108,7 +108,7 @@ function NotificationMessage({
           {index < messageParts.length - 1 ? (
             <a
               href={linkUrl}
-              className="break-all text-primary-700 underline underline-offset-2 hover:text-primary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+              className="break-all text-app-link underline underline-offset-2 hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
             >
               {linkUrl}
             </a>
