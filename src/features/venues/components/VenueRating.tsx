@@ -1,5 +1,5 @@
+import { useId, useState } from 'react';
 import type { JSX } from 'react';
-import { Rating, type ItemStyles } from '@smastrom/react-rating';
 
 interface NewVenueRatingProps {
   initialRating?: number | null;
@@ -7,12 +7,15 @@ interface NewVenueRatingProps {
   handleRatingChange?: (rating: number) => void;
   size?: string;
   variant?: 'star' | 'flame';
+  name?: string;
+  ariaLabel?: string;
 }
 
 interface IconVariantConfig {
   itemShape: JSX.Element;
   activeFillColor: string;
   inactiveFillColor: string;
+  viewBox: string;
 }
 
 const ICON_VARIANTS: Record<'star' | 'flame', IconVariantConfig> = {
@@ -23,6 +26,7 @@ const ICON_VARIANTS: Record<'star' | 'flame', IconVariantConfig> = {
     ),
     activeFillColor: 'hsl(var(--heroui-primary-500))',
     inactiveFillColor: 'rgb(113 113 122)',
+    viewBox: '0 0 56 56',
   },
   star: {
     // Iconify: tabler:star-filled
@@ -31,6 +35,7 @@ const ICON_VARIANTS: Record<'star' | 'flame', IconVariantConfig> = {
     ),
     activeFillColor: 'rgb(249 201 124)',
     inactiveFillColor: 'rgb(107 114 128)',
+    viewBox: '0 0 24 24',
   },
 };
 
@@ -40,32 +45,98 @@ function NewVenueRating({
   handleRatingChange,
   size = '24',
   variant = 'flame',
+  name,
+  ariaLabel = 'Rating',
 }: NewVenueRatingProps) {
-  const ratingValue = initialRating || 0;
-  const iconSize = Number(size) > 0 ? Number(size) : 24;
-  const { itemShape, activeFillColor, inactiveFillColor } =
-    ICON_VARIANTS[variant];
+  const autoId = useId();
+  const groupName = name ?? autoId;
+  const [hoverValue, setHoverValue] = useState<number | null>(null);
 
-  const itemStyles: ItemStyles = {
-    itemShapes: itemShape,
-    activeFillColor,
-    inactiveFillColor,
-  };
+  const value = initialRating ?? 0;
+  const iconSize = Number(size) > 0 ? Number(size) : 24;
+  const { itemShape, activeFillColor, inactiveFillColor, viewBox } = ICON_VARIANTS[variant];
+
+  const displayValue = hoverValue ?? value;
+  const fillPct = Math.max(0, Math.min(100, (displayValue / 5) * 100));
+
+  const wrapperStyle = { width: iconSize * 5, height: iconSize } as const;
+  const rowWidth = iconSize * 5;
+
+  const renderIcons = () =>
+    [0, 1, 2, 3, 4].map((i) => (
+      <svg key={i} width={iconSize} height={iconSize} viewBox={viewBox} fill="currentColor">
+        {itemShape}
+      </svg>
+    ));
+
+  const backgroundLayer = (
+    <div
+      className="absolute inset-0 flex pointer-events-none"
+      style={{ color: inactiveFillColor }}
+      aria-hidden="true"
+    >
+      {renderIcons()}
+    </div>
+  );
+
+  // overflow:hidden + fixed inner width instead of clip-path — works reliably in all layout contexts
+  const foregroundLayer = (
+    <div
+      className="absolute inset-y-0 left-0 overflow-hidden pointer-events-none"
+      style={{ width: `${fillPct}%`, color: activeFillColor }}
+      aria-hidden="true"
+    >
+      <div className="flex" style={{ width: rowWidth }}>
+        {renderIcons()}
+      </div>
+    </div>
+  );
+
+  if (readonly) {
+    return (
+      <div
+        className="relative inline-flex"
+        style={wrapperStyle}
+        role="img"
+        aria-label={`${value} out of 5`}
+      >
+        {backgroundLayer}
+        {foregroundLayer}
+      </div>
+    );
+  }
 
   return (
-    <Rating
-      value={ratingValue}
-      onChange={(value: number) => handleRatingChange?.(value)}
-      readOnly={readonly}
-      items={5}
-      halfFillMode="svg"
-      transition="none"
-      radius="none"
-      spaceBetween="none"
-      spaceInside="none"
-      itemStyles={itemStyles}
-      style={{ maxWidth: `${iconSize * 5}px` }}
-    />
+    <fieldset
+      className="relative inline-flex border-0 p-0 m-0"
+      style={wrapperStyle}
+      onMouseLeave={() => setHoverValue(null)}
+    >
+      <legend className="sr-only">{ariaLabel}</legend>
+      {backgroundLayer}
+      {foregroundLayer}
+      {Array.from({ length: 10 }).map((_, i) => {
+        const val = (i + 1) / 2;
+        return (
+          <label
+            key={val}
+            className="relative cursor-pointer focus-within:ring-2 focus-within:ring-primary"
+            style={{ width: iconSize / 2, height: iconSize }}
+            onMouseEnter={() => setHoverValue(val)}
+          >
+            <input
+              type="radio"
+              name={groupName}
+              value={val}
+              checked={value === val}
+              onChange={() => handleRatingChange?.(val)}
+              className="sr-only"
+              aria-label={`${val} out of 5`}
+            />
+          </label>
+        );
+      })}
+    </fieldset>
   );
 }
 
