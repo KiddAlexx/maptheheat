@@ -19,7 +19,6 @@
     "@heroui/system": "2.4.13",
     "@heroui/theme": "2.4.13",
     "@radix-ui/react-slot": "^1.2.4",
-    "@smastrom/react-rating": "^1.5.0",
     "@supabase/supabase-js": "^2.39.0",
     "@tanstack/react-query": "^5.12.2",
     "@tanstack/react-query-devtools": "^5.13.3",
