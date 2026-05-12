@@ -21,3 +21,27 @@
 .filepond--item {
   width: calc(50% - 0.5em);
 }
+
+.filepond-modal-constrain .filepond--root {
+  max-height: 55dvh;
+}
+
+@media (max-height: 600px) {
+  .filepond-modal-constrain .filepond--root {
+    max-height: 35dvh;
+  }
+}
+
+.dark .filepond--panel-root {
+  background-color: rgb(var(--app-surface));
+  border-color: rgb(var(--app-border));
+}
+
+.dark .filepond--drop-label label {
+  color: rgb(var(--app-muted));
+}
+
+.dark .filepond--label-action {
+  color: hsl(var(--heroui-primary));
+  text-decoration-color: hsl(var(--heroui-primary));
+}
