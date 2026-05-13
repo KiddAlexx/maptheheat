@@ -1,11 +1,13 @@
 import { useMatch, useNavigate } from 'react-router-dom';
-import { Venue } from '../types/venueTypes';
+import type { Venue } from '../types/venueTypes';
+
+type AppMode = 'venue' | 'map';
 
 export function useParamsAndNavigate() {
   const navigate = useNavigate();
   const isOnMapRoute = useMatch('/app/map/*');
 
-  function setParamsAndNavigate(venue: Venue, specifiedMode?: string) {
+  function setParamsAndNavigate(venue: Venue, specifiedMode?: AppMode) {
     if (!venue) return;
 
     const { city, country, venueNameSlug, venueId, coords } = venue;
@@ -14,15 +16,25 @@ export function useParamsAndNavigate() {
     // Determine the current mode based on URL path
     const mode = specifiedMode ? specifiedMode : isOnMapRoute ? 'map' : 'venue';
 
-    // Construct the query string
-    let queryString = '';
+    // Map navigations also carry the one-shot popup-open request in location state.
+    const queryParams = new URLSearchParams();
+    if (mode === 'map') {
+      queryParams.set('pane', 'map');
+    }
     if (lat != null && lon != null) {
-      queryString += `&lat=${lat}&lon=${lon}`;
+      queryParams.set('lat', String(lat));
+      queryParams.set('lon', String(lon));
     }
 
-    navigate(
-      `/app/${mode}/${city}/${country}/${venueNameSlug}/${venueId}?${queryString}`
-    );
+    const queryString = queryParams.toString();
+    const destination = `/app/${mode}/${city}/${country}/${venueNameSlug}/${venueId}${queryString ? `?${queryString}` : ''}`;
+
+    if (mode === 'map') {
+      navigate(destination, { state: { openPopupFor: venueId } });
+      return;
+    }
+
+    navigate(destination);
   }
   return setParamsAndNavigate;
 }
