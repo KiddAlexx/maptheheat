@@ -13,6 +13,7 @@ import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfil
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
 
 import { useGlobalError } from '@/context/ErrorContext';
+import { useParamsAndNavigate } from '@/hooks/useParamsAndNavigate';
 
 // Assets
 import greyChilli from '@/assets/chilli-explosion-grey-md.jpg';
@@ -34,6 +35,7 @@ import { buildVenueShareUrl } from '@/utils/buildVenueShareUrl';
 
 function DetailedVenueView() {
   const navigate = useNavigate();
+  const setParamsAndNavigate = useParamsAndNavigate();
   const { venueId } = useParams();
 
   const { openModal, openModalUpload, openDialog } = useModalContext();
@@ -75,7 +77,7 @@ function DetailedVenueView() {
       <div className="mx-auto mt-8 max-w-[70rem] p-3">
         <div
           role="alert"
-          className="border-app-border bg-app-card rounded-xl border p-6 text-center shadow-md"
+          className="rounded-xl border border-app-border bg-app-card p-6 text-center shadow-md"
         >
           <h1 className="mb-2 text-xl font-semibold text-foreground">
             Venue not found
@@ -220,7 +222,7 @@ function DetailedVenueView() {
 
   return (
     <div className="hyphens-auto p-3">
-      <article className="border-app-border bg-app-card mb-5 rounded-xl border p-3 text-sm shadow-md">
+      <article className="mb-5 rounded-xl border border-app-border bg-app-card px-4 py-3 text-sm shadow-md">
         <div className="mb-3 ml-1 flex items-end justify-between">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
             <h2
@@ -289,7 +291,7 @@ function DetailedVenueView() {
                 </span>
               ))}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <Button
               size="sm"
               aria-label="Back to map"
@@ -297,11 +299,7 @@ function DetailedVenueView() {
               color="primary"
               variant="bordered"
               isIconOnly
-              onPress={() => {
-                navigate(
-                  `/app/map/${city}/${country}/${venueNameSlug}/${venueId}?&lat=${lat}&lon=${lon}`
-                );
-              }}
+              onPress={() => setParamsAndNavigate(venue, 'map')}
             >
               <Icon icon="lucide:map-pinned" width="18" />
             </Button>
@@ -363,7 +361,7 @@ function DetailedVenueView() {
             className="shrink-0"
           />
           <a
-            className="text-app-link break-all hover:opacity-80"
+            className="break-all text-app-link hover:opacity-80"
             href={website}
             target="_blank"
             rel="noopener noreferrer"
