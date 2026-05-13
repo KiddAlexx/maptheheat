@@ -3,12 +3,12 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 
 // React imports
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 // Hooks
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
 import { useVenues } from '../venues/hooks/useVenues';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 // Assets
 import chilliPin from '@/assets/chillipin.webp';
@@ -28,9 +28,16 @@ const TILE_URL =
 
 function MapView() {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const { filters } = useVenueFilterContext();
   // Load venues from supabase
   const { venues, isPending: isLoadingVenues } = useVenues({ filters });
+  // Popup opening is a one-shot navigation request; Leaflet owns popup state after this.
+  const markerRefs = useRef<Record<string, L.Marker>>({});
+  const consumedLocationKey = useRef<string | null>(null);
+  const openPopupFor = (
+    location.state as { openPopupFor?: string } | null
+  )?.openPopupFor;
 
   // Sets coordinates based on searchParams if available
   // Used to center map on selected venue
@@ -41,7 +48,12 @@ function MapView() {
     const map = useMap();
 
     useEffect(() => {
-      map.setView([Number(lat), Number(lon)], 13.5);
+      const zoom = 13.5;
+      // Shift the center 150px north in pixel space so the pin sits lower in
+      // the viewport and the popup card appears roughly centered.
+      const pinPx = map.project([Number(lat), Number(lon)], zoom);
+      const centeredPx = pinPx.subtract([0, 150]);
+      map.flyTo(map.unproject(centeredPx, zoom), zoom);
     }, [lat, lon, map]);
 
     return null;
@@ -77,6 +89,34 @@ function MapView() {
     []
   );
 
+  const openRequestedPopup = useCallback(
+    (marker: L.Marker, venueId: string) => {
+      if (!openPopupFor || openPopupFor !== venueId) {
+        return;
+      }
+
+      if (location.key === consumedLocationKey.current) {
+        return;
+      }
+
+      // Consume before opening so ref callbacks and effects cannot double-open.
+      consumedLocationKey.current = location.key;
+      requestAnimationFrame(() => marker.openPopup());
+    },
+    [location.key, openPopupFor]
+  );
+
+  useEffect(() => {
+    if (!openPopupFor || !venues?.length) {
+      return;
+    }
+
+    const marker = markerRefs.current[openPopupFor];
+    if (!marker) return;
+
+    openRequestedPopup(marker, openPopupFor);
+  }, [openPopupFor, openRequestedPopup, venues]);
+
   // Render the map with markers for each venue and center it based on the active venue or default coordinates.
   return (
     <div className={styles.mapContainer} aria-label="Venue map">
@@ -98,8 +138,18 @@ function MapView() {
               key={venue.venueId}
               position={[Number(venue.coords.lat), Number(venue.coords.lon)]}
               icon={customIcon}
+              ref={(marker: L.Marker | null) => {
+                if (marker) {
+                  markerRefs.current[venue.venueId] = marker;
+                  // Ref callbacks can arrive after the effect, so try opening here too.
+                  openRequestedPopup(marker, venue.venueId);
+                  return;
+                }
+
+                delete markerRefs.current[venue.venueId];
+              }}
             >
-              <Popup>
+              <Popup autoPan={false}>
                 <MapPopupContent venue={venue} />
               </Popup>
             </Marker>

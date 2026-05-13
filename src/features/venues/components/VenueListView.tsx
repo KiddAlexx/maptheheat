@@ -68,11 +68,12 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
       updateVenueFilter({ field: 'city', value: city, method: 'eq' });
       updateVenueFilter({ field: 'country', value: country, method: 'eq' });
     }
-    {
-      isLargeScreen
-        ? setParamsAndNavigate(venue)
-        : setParamsAndNavigate(venue, 'venue');
+    if (isLargeScreen) {
+      setParamsAndNavigate(venue);
+      return;
     }
+
+    setParamsAndNavigate(venue, 'venue');
   }
 
   const favVenuesList = userProfile?.favouriteVenues || null;
