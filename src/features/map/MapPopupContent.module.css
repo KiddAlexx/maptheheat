@@ -36,12 +36,14 @@
 /* Dark mode — override Leaflet's hardcoded white popup background */
 :global(.dark .leaflet-popup-content-wrapper) {
   background-color: #18181b; /* zinc-900 */
+  border: 1px solid rgb(var(--app-border));
   color: #f4f4f5; /* zinc-100 */
-  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.6);
 }
 
 :global(.dark .leaflet-popup-tip) {
   background-color: #18181b; /* zinc-900 — matches wrapper */
+  border: 1px solid rgb(var(--app-border));
 }
 
 :global(.leaflet-popup-close-button:hover) {
