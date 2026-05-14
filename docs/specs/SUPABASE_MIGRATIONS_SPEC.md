@@ -28,8 +28,8 @@ file. Always `cat supabase/.temp/project-ref` before `supabase db push`.
 
 - [x] Step 1: Reorganize docs/ into guides/ and specs/.
 - [x] Step 2: Move and rewrite SUPABASE_WORKFLOW.md as the canonical reference.
-- [ ] Step 3: Clean slate the supabase/ folder, supabase init, link to staging.
-- [ ] Step 4: Pull baseline migration from staging, verify, commit.
+- [x] Step 3: Clean slate the supabase/ folder, supabase init, link to staging.
+- [x] Step 4: Pull baseline migration from staging, verify, ready for manual commit.
 - [ ] Step 5: Boot local stack and verify db reset replay.
 - [ ] Step 6: Sync production migration state (repair if needed).
 - [x] Step 7: Verify AGENTS.md path references (no stale references found).
@@ -59,6 +59,22 @@ file. Always `cat supabase/.temp/project-ref` before `supabase db push`.
 
 - Grepped `AGENTS.md` for the old doc paths. No matches. Nothing to update.
 
+### Step 3: Clean slate the supabase/ folder
+
+- Fresh `supabase/` project structure already existed from `supabase init`.
+- Verified `SUPABASE_ACCESS_TOKEN` was available outside the sandbox without printing it.
+- Linked the CLI to staging with `supabase link --project-ref iuhgmfdpeblaaoolhpbt`.
+- Verified `supabase/.temp/project-ref` contains `iuhgmfdpeblaaoolhpbt`.
+
+### Step 4: Pull baseline migration from staging
+
+- Pulled baseline schema into `supabase/migrations/20260514105740_remote_schema.sql`.
+- Verified the baseline includes the manually applied approved-count trigger changes.
+- The first successful pull timed out after writing the file but before recording remote migration history.
+- Ran `supabase migration repair --status applied 20260514105740` against staging to mark the baseline as already applied.
+- Verified `supabase migration list` shows `20260514105740` in both Local and Remote columns.
+- Left Git commit for the developer to review and run manually.
+
 ## Architecture Rules
 
 - All schema changes go in `supabase/migrations/` files; never edited in the
@@ -75,6 +91,8 @@ file. Always `cat supabase/.temp/project-ref` before `supabase db push`.
 - Migration files are committed to git. The
   `supabase_migrations.schema_migrations` table on each remote tracks what is
   applied.
+- Codex must never run `git commit`. The developer reviews and commits repo
+  changes manually.
 - The approved-counts trigger changes were applied manually to both staging
   and production before this workflow was adopted. The baseline pull in Step 4
   captures the current state, including those changes.
@@ -94,7 +112,8 @@ file. Always `cat supabase/.temp/project-ref` before `supabase db push`.
 - Create `docs/guides/` and `docs/specs/` folders.
 - `git mv docs/ADMIN_MODERATION_SPEC.md docs/specs/ADMIN_MODERATION_SPEC.md`.
 - `git mv docs/MAP_SPEC.md docs/specs/MAP_SPEC.md`.
-- Commit as `chore(docs): reorganize into guides/ and specs/`.
+- Leave ready for the developer to manually commit as
+  `chore(docs): reorganize into guides/ and specs/`.
 - Verify: old paths gone, new paths populated, `git log --follow` shows
   renames.
 
@@ -149,13 +168,13 @@ file. Always `cat supabase/.temp/project-ref` before `supabase db push`.
   supabase migration list
   # Local + Remote columns must show the same timestamp.
   ```
-- Commit:
+- Leave ready for the developer to manually commit:
   ```powershell
   git add supabase/
   git commit -m "chore(supabase): adopt migrations workflow, baseline from staging"
   ```
 - Done when: baseline file exists, `migration list` shows it on both sides,
-  commit landed.
+  and repo changes are ready for developer review/manual commit.
 
 ### Step 5: Boot local stack and verify reproducibility
 
@@ -220,8 +239,8 @@ Before calling each slice complete:
   applicable.
 - `supabase db reset` replays cleanly locally before any `db push`.
 - After every prod push, CLI is re-linked to staging.
-- Commits follow conventional commits (`feat(db):`, `chore(supabase):`,
-  `fix(db):`).
+- Suggested manual commits follow conventional commits (`feat(db):`,
+  `chore(supabase):`, `fix(db):`).
 - Manual smoke check the app against staging where relevant.
 
 ## Updating This Spec
@@ -233,9 +252,10 @@ After each completed slice:
   rename/move steps can be recorded with just the checkbox.
 - Capture decisions, deviations, and gotchas future chats need.
 
-## Commit Style
+## Manual Commit Style
 
-Use conventional commits with short bullet bodies for meaningful slices.
+The developer manually commits changes after review. Suggested commit messages
+should use conventional commits with short bullet bodies for meaningful slices.
 
 Example:
 
