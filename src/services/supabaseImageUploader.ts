@@ -1,3 +1,4 @@
+import slugify from 'slugify';
 import { ImageBundle } from '@/utils/compressImage';
 import supabase from './supabase';
 
@@ -22,8 +23,9 @@ export async function uploadImages(
     throw new Error('No image files provided');
   }
 
-  // Create storage path
-  const folderPath = folders.join('/').toLowerCase();
+  // Slugify each folder segment to strip accents and special characters
+  // that Supabase storage rejects (e.g. "Horta-Guinardó" → "horta-guinardo")
+  const folderPath = folders.map(f => slugify(f, { lower: true })).join('/');
 
   const imagePaths = imageFiles.map(async (imageFile) => {
     // Create unique file name
@@ -48,8 +50,9 @@ export async function uploadImageBundle(
   if (!imageFiles?.length) {
     throw new Error('No image files provided');
   }
-  // Create storage path
-  const folderPath = folders.join('/').toLowerCase();
+  // Slugify each folder segment to strip accents and special characters
+  // that Supabase storage rejects (e.g. "Horta-Guinardó" → "horta-guinardo")
+  const folderPath = folders.map(f => slugify(f, { lower: true })).join('/');
 
   const imagePaths = imageFiles.map(async (imageFile) => {
     // Create image names + full path

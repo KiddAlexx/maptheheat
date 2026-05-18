@@ -59,7 +59,9 @@ function NewVenueRating({
   const displayValue = hoverValue ?? value;
   const fillPct = Math.max(0, Math.min(100, (displayValue / 5) * 100));
 
-  const wrapperStyle = { width: iconSize * 5, height: iconSize } as const;
+  // touch-action:none tells the browser not to scroll on touch — e.preventDefault() in
+  // onTouchMove is ignored by React (passive listeners), so this CSS property is the correct fix
+  const wrapperStyle = { width: iconSize * 5, height: iconSize, touchAction: 'none' } as const;
   const rowWidth = iconSize * 5;
 
   const renderIcons = () =>
@@ -92,6 +94,13 @@ function NewVenueRating({
     </div>
   );
 
+  // Converts a touch/pointer X coordinate to a half-star rating (0.5–5)
+  function ratingFromClientX(fieldset: HTMLFieldSetElement, clientX: number): number {
+    const rect = fieldset.getBoundingClientRect();
+    const x = Math.max(0, clientX - rect.left);
+    return Math.max(0.5, Math.min(5, Math.ceil((x / rect.width) * 10) / 2));
+  }
+
   if (readonly) {
     return (
       <div
@@ -111,6 +120,13 @@ function NewVenueRating({
       className="relative inline-flex border-0 p-0 m-0"
       style={wrapperStyle}
       onMouseLeave={() => setHoverValue(null)}
+      onTouchMove={(e) => setHoverValue(ratingFromClientX(e.currentTarget, e.touches[0].clientX))}
+      onTouchEnd={() => {
+        if (hoverValue !== null) {
+          handleRatingChange?.(hoverValue);
+          setHoverValue(null);
+        }
+      }}
     >
       <legend className="sr-only">{ariaLabel}</legend>
       {backgroundLayer}

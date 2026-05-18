@@ -116,7 +116,7 @@ function VenueListCard({
   return (
     <li>
       <Card
-        className="border-app-border bg-app-card mb-2 h-48 w-full border shadow-md transition [&:has(.venue-btn:hover)]:border-primary-200 [&:has(.venue-btn:hover)]:bg-primary-50/30 dark:[&:has(.venue-btn:hover)]:border-primary-400 dark:[&:has(.venue-btn:hover)]:bg-primary-900/20"
+        className="mb-2 h-48 w-full border border-app-border bg-app-card shadow-md transition [&:has(.venue-btn:hover)]:border-primary-200 [&:has(.venue-btn:hover)]:bg-primary-50/30 dark:[&:has(.venue-btn:hover)]:border-primary-400 dark:[&:has(.venue-btn:hover)]:bg-primary-900/20"
         radius="lg"
       >
         <div className="flex">
@@ -137,23 +137,26 @@ function VenueListCard({
             />
           </button>
           <CardBody className="relative w-2/3">
-            <div className="mb-2 flex items-center justify-between">
-              <h3>
-                <button
-                  type="button"
-                  className="venue-btn text-lg font-medium hover:underline"
-                  onClick={handleClick}
-                >
-                  {venueName}
-                </button>
-              </h3>
-
+            {/* Pinned to top-right regardless of how many lines the name spans */}
+            <div className="absolute right-3 top-4">
               <LikeButton
                 isFavourite={optimisticIsFavourite}
                 isAuthenticated={isAuthenticated}
                 handleClick={toggleFavourite}
                 isDisabled={isUpdating}
               />
+            </div>
+
+            <div className="mb-2 pr-8">
+              <h3>
+                <button
+                  type="button"
+                  className="venue-btn text-left text-lg font-medium hover:underline"
+                  onClick={handleClick}
+                >
+                  {venueName}
+                </button>
+              </h3>
             </div>
 
             {/* display flex is forced to override default display inline block
@@ -226,7 +229,7 @@ function VenueListCard({
             <CardFooter>
               <button
                 type="button"
-                className="absolute bottom-3 right-2 z-10 flex cursor-pointer items-center text-sm text-app-link underline hover:opacity-80"
+                className="absolute bottom-3 right-2 z-10 hidden cursor-pointer items-center text-sm text-app-link underline hover:opacity-80 sm:flex"
                 onClick={() => {
                   setParamsAndNavigate(venue, 'venue');
                 }}

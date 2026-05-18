@@ -6,7 +6,7 @@ import { useGetReviews } from '../hooks/useGetReviews';
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useReviewSortContext } from '@/context/ReviewSortContext';
 import { useUserReviewsContext } from '@/context/UserReviewsContext';
-import { useLayoutEffect, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 
 // Components
 import PaginationControls from '@/ui/PaginationControls';
@@ -34,8 +34,24 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
   const { venueId } = useParams();
 
   const containerRef = useRef<HTMLDivElement>(null);
+  // Only scroll when the user explicitly clicks a pagination control —
+  // not on mount or when the venue changes and resets the page
+  const shouldScrollRef = useRef(false);
+
+  const handlePageChange = useCallback((page: number) => {
+    shouldScrollRef.current = true;
+    updatePageNumber(page);
+  }, [updatePageNumber]);
+
+  // Reset to page 1 when navigating to a different venue to prevent
+  // fetching a page that doesn't exist on the new venue
+  useEffect(() => {
+    if (isVenueMode) updatePageNumber(1);
+  }, [venueId, isVenueMode, updatePageNumber]);
 
   useLayoutEffect(() => {
+    if (!shouldScrollRef.current) return;
+    shouldScrollRef.current = false;
     containerRef.current?.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
@@ -66,9 +82,9 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
     return (
       <div
         role="alert"
-        className="border-app-border bg-app-card rounded-xl border p-6 text-center shadow-md"
+        className="rounded-xl border border-app-border bg-app-card p-6 text-center shadow-md"
       >
-        <p className="text-app-muted mb-2 text-xl font-semibold">
+        <p className="mb-2 text-xl font-semibold text-app-muted">
           Error loading reviews - Please try refreshing
         </p>
       </div>
@@ -84,7 +100,7 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
       <div className="col-span-3 row-start-2 mt-2 justify-self-center @2xl:col-span-1 @2xl:row-start-1">
         <PaginationControls
           pagination={pagination}
-          updatePageNumber={updatePageNumber}
+          updatePageNumber={handlePageChange}
           totalCount={totalCount}
         />
       </div>
@@ -99,7 +115,7 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
       <div className="col-span-3 col-start-1 mt-2 justify-self-center @2xl:col-span-1 @2xl:col-start-2">
         <PaginationControls
           pagination={pagination}
-          updatePageNumber={updatePageNumber}
+          updatePageNumber={handlePageChange}
           totalCount={totalCount}
         />
       </div>

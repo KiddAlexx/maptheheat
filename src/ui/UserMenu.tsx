@@ -51,7 +51,7 @@ function UserMenu() {
             notificationCount > 0 &&
             !isMenuOpen &&
             notificationIcon}
-          <Avatar userId={id} />
+          <Avatar userId={id} hasNotifications={notificationCount > 0} />
         </button>
       </DropdownTrigger>
       <DropdownMenu>

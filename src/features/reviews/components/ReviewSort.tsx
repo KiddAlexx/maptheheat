@@ -37,6 +37,7 @@ function ReviewSort({ updateSort, resetSort }: ReviewSortParams) {
       label={'Sort by'}
       size="sm"
       radius="full"
+      variant="bordered"
     >
       <SelectItem key={'default'}>Default</SelectItem>
       <SelectItem endContent={<FaSortAmountUp />} key={'heatRating-desc'}>
