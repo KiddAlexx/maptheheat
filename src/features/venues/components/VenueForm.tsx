@@ -165,8 +165,12 @@ function VenueForm() {
       : feature.text;
     const street = `${feature.address ?? ''} ${streetName}`.trim() || feature.text;
 
-    // Auto-fill venue name when a POI is selected (feature.text is the business name)
-    if (isPoi) setValue('venueName', feature.text);
+    // Auto-fill venue name and phone when a POI is selected
+    // Phone (properties.tel) is from OpenStreetMap data — present for some venues, not all
+    if (isPoi) {
+      setValue('venueName', feature.text);
+      if (feature.properties?.tel) setValue('phoneNumber', feature.properties.tel);
+    }
 
     const [lon, lat] = feature.geometry.coordinates;
 

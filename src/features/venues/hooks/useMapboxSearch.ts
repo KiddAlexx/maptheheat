@@ -7,6 +7,7 @@ export interface MapboxFeature {
   address?: string;
   geometry: { coordinates: [number, number] }; // [lon, lat] — GeoJSON order, reversed from our { lat, lon } Coords type
   context?: Array<{ id: string; text: string }>;
+  properties?: { tel?: string };
 }
 
 export function useMapboxSearch() {
