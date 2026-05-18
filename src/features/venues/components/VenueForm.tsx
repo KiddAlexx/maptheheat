@@ -33,37 +33,7 @@ import ImageUploader from '@/components/ImageUploader';
 // Type imports
 import type { Venue } from '@/types/venueTypes';
 
-const CUISINE_TYPES = [
-  'Indian',
-  'Mexican',
-  'Thai',
-  'Chinese',
-  'Korean',
-  'Caribbean',
-  'Ethiopian',
-  'Middle Eastern',
-  'South African',
-  'Pakistani',
-  'Sri Lankan',
-  'Vietnamese',
-  'Nepalese',
-  'Indonesian / Malaysian',
-  'West African',
-  'Peruvian',
-  'Japanese',
-  'American / BBQ',
-  'Turkish',
-  'Bangladeshi',
-  'Fusion',
-];
-
-const DIETARY_OPTIONS = [
-  'Vegan options',
-  'Vegetarian options',
-  'Gluten-free options',
-  'Halal',
-  'Kosher',
-];
+import { CUISINE_TYPES, DIETARY_OPTIONS } from '@/shared/data/cuisineTypes';
 
 interface FormData {
   city: string;

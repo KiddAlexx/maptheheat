@@ -103,7 +103,7 @@ export type Key = string | number;
 
 // Review context types - used in VenueFilterContext and UserFavVenuesContext
 
-export type FilterField = 'city' | 'country' | 'venueType' | 'venueName';
+export type FilterField = 'city' | 'country' | 'venueType' | 'venueName' | 'cuisines' | 'dietaryOptions';
 export type VenueSortField =
   | 'averageHeatRating'
   | 'averageQualityRating'
@@ -112,7 +112,7 @@ export type VenueSortField =
 
 export interface VenueFilter {
   field: FilterField;
-  value: string;
+  value: string | string[];
   method: SupabaseQueryMethod;
 }
 
