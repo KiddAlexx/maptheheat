@@ -22,6 +22,8 @@ import {
   SelectItem,
   Textarea,
 } from '@heroui/react';
+import { useMapboxSearch } from '../hooks/useMapboxSearch';
+import type { MapboxFeature } from '../hooks/useMapboxSearch';
 import ActionButton from '@/ui/ActionButton';
 import StepIndicator from '@/ui/StepIndicator';
 import LoaderSpinner from '@/ui/LoaderSpinner';
@@ -31,8 +33,6 @@ import ImageUploader from '@/components/ImageUploader';
 // Type imports
 import type { Venue } from '@/types/venueTypes';
 
-// Data imports
-import countries from '@/shared/data/countries.json';
 
 const CUISINE_TYPES = [
   'Indian',
@@ -87,10 +87,18 @@ function VenueForm() {
   const { openDialog } = useModalContext();
 
   const { user } = useUser();
+  const { suggestions, isLoading: isSearchingAddress, search, fetchCityCoords } = useMapboxSearch();
 
   const [localFormError, setLocalFormError] = useState('');
   const [formIndex, setFormIndex] = useState(1);
   const [createdVenue, setCreatedVenue] = useState<Venue | null>(null);
+  // Captures venue + city coords at address selection time — gates form progression
+  // and replaces the Nominatim geocoding calls that previously happened on submit
+  const [mapboxVenueData, setMapboxVenueData] = useState<{
+    coords: { lat: number; lon: number };
+    detailedAddress: string;
+    cityCoords: { lat: number; lon: number };
+  } | null>(null);
 
   const defaultFormValues: FormData = {
     city: '',
@@ -113,44 +121,65 @@ function VenueForm() {
     trigger,
     watch,
     setValue,
-  } = useForm<FormData>({ defaultValues: defaultFormValues });
+  } = useForm<FormData>({ defaultValues: defaultFormValues, mode: 'onChange' });
 
   const selectedCuisines = watch('cuisines');
   const selectedDietary = watch('dietaryOptions');
 
-  // Fetches coordinates + detailed address from user input
-  async function fetchAddressDetails(formData: FormData) {
-    const { address, postcode, country, city } = formData;
-    try {
-      const resVenue = await fetch(
-        `https://nominatim.openstreetmap.org/search?street=${address}&city=${city}&country=${country}&postalcode=${postcode}&format=jsonv2`
-      );
-      const [venueData] = await resVenue.json(); // Take first result from array in case of multiple
+  // Mapbox returns coordinates as [lon, lat] (GeoJSON order) — we reverse to match
+  // our internal Coords type { lat, lon }
+  async function handleAddressSelect(key: React.Key | null) {
+    const feature = suggestions.find((f: MapboxFeature) => f.place_name === key);
+    if (!feature) return;
 
-      // Fetch central coordinates for city.
-      const resCity = await fetch(
-        `https://nominatim.openstreetmap.org/search.php?city=${city}&country=${country}&format=jsonv2`
-      );
-      const [cityData] = await resCity.json();
-      return {
-        venueAddress: {
-          detailedAddress: venueData.display_name,
-          coords: { lat: venueData.lat, lon: venueData.lon },
-        },
-        cityAddress: {
-          coords: { lat: cityData.lat, lon: cityData.lon },
-          city,
-          country,
-        },
-      };
+    const ctx = feature.context ?? [];
+    const isPoi = feature.place_type.includes('poi');
+    const postcode = ctx.find(c => c.id.startsWith('postcode'))?.text ?? '';
+    // Prefer place (city) over locality (district/neighbourhood) — locality can be a sub-area of the city
+    const city =
+      ctx.find(c => c.id.startsWith('place'))?.text ??
+      ctx.find(c => c.id.startsWith('locality'))?.text ??
+      '';
+    const country = ctx.find(c => c.id.startsWith('country'))?.text ?? '';
+
+    // For POI results, Mapbox puts the business name in feature.text and the street
+    // in feature.properties.address — context carries the street differently to address-type results
+    const street = isPoi
+      ? ctx.find(c => c.id.startsWith('address'))?.text ?? feature.text
+      : `${feature.address ?? ''} ${feature.text}`.trim();
+
+    // Auto-fill venue name when a POI is selected (feature.text is the business name)
+    if (isPoi) setValue('venueName', feature.text);
+
+    const [lon, lat] = feature.geometry.coordinates;
+
+    setValue('address', street);
+    setValue('postcode', postcode);
+    setValue('city', city);
+    setValue('country', country);
+
+    try {
+      const cityCoords = await fetchCityCoords(city, country);
+      setMapboxVenueData({
+        coords: { lat, lon },
+        detailedAddress: feature.place_name,
+        cityCoords,
+      });
     } catch {
-      throw new Error(
-        "Couldn't find address. Please confirm that the details are correct"
-      );
+      // Fallback to venue coords if city geocode fails
+      setMapboxVenueData({
+        coords: { lat, lon },
+        detailedAddress: feature.place_name,
+        cityCoords: { lat, lon },
+      });
     }
   }
 
   async function goToStep2() {
+    if (!mapboxVenueData) {
+      toast.error('Please use the address search to find the venue');
+      return;
+    }
     const valid = await trigger([
       'venueType',
       'venueName',
@@ -176,29 +205,29 @@ function VenueForm() {
         website: formData.website.trim(),
       };
 
-      // Fetch detailed address + coordinates
-      const additionalVenueData = await fetchAddressDetails(trimmedFormData);
-
       // Remove spaces and dashes from phoneNumber before adding
       const phoneNumber = formData.phoneNumber
         .replaceAll(' ', '')
         .replaceAll('-', '');
 
-      // Compile complete venue data
+      // mapboxVenueData is guaranteed here — goToStep2 blocks progression if null
       const finalVenueData = {
         ...trimmedFormData,
         phoneNumber,
-        ...additionalVenueData.venueAddress,
-        userId: user!.id, // Value will not be null, checks done prior, further validation to be added
+        detailedAddress: mapboxVenueData!.detailedAddress,
+        coords: mapboxVenueData!.coords,
+        userId: user!.id,
         venueNameSlug: slugify(formData.venueName).toLowerCase(),
       };
 
-      // Add final venue data to supabase table
       const newVenue = await createVenue(finalVenueData);
       setCreatedVenue(newVenue);
 
-      // Adds city details to unique_cities table if entry does not already exist.
-      await createUniqueCity(additionalVenueData.cityAddress);
+      await createUniqueCity({
+        city: trimmedFormData.city,
+        country: trimmedFormData.country,
+        coords: mapboxVenueData!.cityCoords,
+      });
 
       setFormIndex(3);
     } catch (err) {
@@ -322,6 +351,26 @@ function VenueForm() {
                   />
                 </div>
                 <div>
+                  <Autocomplete
+                    label="Address Search"
+                    labelPlacement="outside"
+                    classNames={{ label: 'text-md font-normal ml-1', base: 'mb-6' }}
+                    placeholder="Start typing the venue address..."
+                    radius="full"
+                    isLoading={isSearchingAddress}
+                    onInputChange={search}
+                    onSelectionChange={handleAddressSelect}
+                    autoComplete="off"
+                  >
+                    {suggestions.map((f: MapboxFeature) => (
+                      <AutocompleteItem key={f.place_name}>
+                        {f.place_name}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                </div>
+
+                <div>
                   <Controller
                     name="address"
                     control={control}
@@ -398,31 +447,21 @@ function VenueForm() {
                   control={control}
                   rules={{ required: 'This field is required' }}
                   render={({ field }) => (
-                    <div className="mb-12">
-                      <label
-                        htmlFor="country"
-                        className="text-md mb-1 ml-1 block"
-                      >
-                        Country
-                      </label>
-                      <Autocomplete
-                        {...field}
-                        id="country"
-                        placeholder="Select Country"
-                        radius="full"
-                        defaultItems={countries}
-                        isInvalid={!!errors.country}
-                        errorMessage={errors.country?.message}
-                        onSelectionChange={(key) => field.onChange(key)}
-                        autoComplete="off"
-                      >
-                        {(country) => (
-                          <AutocompleteItem key={country.name}>
-                            {country.name}
-                          </AutocompleteItem>
-                        )}
-                      </Autocomplete>
-                    </div>
+                    <Input
+                      {...field}
+                      classNames={{
+                        label: 'text-md font-normal ml-1',
+                        base: 'mb-12',
+                      }}
+                      id="country"
+                      type="text"
+                      label="Country"
+                      labelPlacement="outside"
+                      placeholder="Auto-filled from address search"
+                      radius="full"
+                      isInvalid={!!errors.country}
+                      errorMessage={errors.country?.message}
+                    />
                   )}
                 />
 
@@ -467,8 +506,7 @@ function VenueForm() {
                     control={control}
                     rules={{
                       pattern: {
-                        value:
-                          /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+                        value: /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(\/\S*)?$/i,
                         message: 'Invalid web address',
                       },
                     }}
@@ -481,7 +519,7 @@ function VenueForm() {
                         }}
                         id="website"
                         type="text"
-                        label="Website"
+                        label={<>Website <span className="text-xs font-normal text-app-muted">Optional</span></>}
                         labelPlacement="outside"
                         placeholder="http://www.example.com..."
                         radius="full"
