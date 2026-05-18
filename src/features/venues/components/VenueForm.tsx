@@ -67,7 +67,7 @@ const DIETARY_OPTIONS = [
 
 interface FormData {
   city: string;
-  venueType: 'shop' | 'restaurant';
+  venueType: 'shop' | 'restaurant' | '';
   venueName: string;
   address: string;
   postcode: string;
@@ -106,7 +106,7 @@ function VenueForm() {
 
   const defaultFormValues: FormData = {
     city: '',
-    venueType: 'restaurant', // *********temp set as restaurant to fix ts error **************
+    venueType: '',
     venueName: '',
     address: '',
     postcode: '',
@@ -218,6 +218,8 @@ function VenueForm() {
     try {
       const trimmedFormData = {
         ...formData,
+        // venueType is guaranteed non-empty — goToStep2 validates it as required before proceeding
+        venueType: formData.venueType as 'shop' | 'restaurant',
         venueName: formData.venueName.trim(),
         address: formData.address.trim(),
         postcode: formData.postcode.trim(),
