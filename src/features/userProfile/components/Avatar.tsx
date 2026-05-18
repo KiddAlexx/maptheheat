@@ -4,14 +4,15 @@ import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfil
 interface AvatarProps {
   userId: string;
   className?: string;
+  hasNotifications?: boolean;
 }
 
-function Avatar({ userId, className = 'w-11 h-11' }: AvatarProps) {
+function Avatar({ userId, className = 'w-11 h-11', hasNotifications = false }: AvatarProps) {
   const { userProfile, isLoading } = useGetUserProfile(userId);
 
   return (
     <div
-      className={`overflow-hidden rounded-full border-2 border-success-500 p-[2px] ${className}`}
+      className={`overflow-hidden rounded-full border-2 p-[2px] ${hasNotifications ? 'border-success-500' : 'border-primary'} ${className}`}
     >
       <img
         src={
