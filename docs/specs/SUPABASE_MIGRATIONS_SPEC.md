@@ -30,8 +30,8 @@ file. Always `cat supabase/.temp/project-ref` before `supabase db push`.
 - [x] Step 2: Move and rewrite SUPABASE_WORKFLOW.md as the canonical reference.
 - [x] Step 3: Clean slate the supabase/ folder, supabase init, link to staging.
 - [x] Step 4: Pull baseline migration from staging, verify, ready for manual commit.
-- [ ] Step 5: Boot local stack and verify db reset replay.
-- [ ] Step 6: Sync production migration state (repair if needed).
+- [x] Step 5: Boot local stack and verify db reset replay.
+- [x] Step 6: Sync production migration state (repair if needed).
 - [x] Step 7: Verify AGENTS.md path references (no stale references found).
 - [ ] Step 8 (optional): Configure Supabase MCP server scoped to staging, read-only.
 
@@ -75,6 +75,24 @@ file. Always `cat supabase/.temp/project-ref` before `supabase db push`.
 - Verified `supabase migration list` shows `20260514105740` in both Local and Remote columns.
 - Left Git commit for the developer to review and run manually.
 
+### Step 5: Boot local stack and verify reproducibility
+
+- Started the local Supabase stack with `supabase start`.
+- Confirmed local Studio is running at `http://127.0.0.1:54323`.
+- Confirmed the local database has public tables and records baseline migration `20260514105740`.
+- Ran `supabase db reset`; it replayed `20260514105740_remote_schema.sql` successfully.
+- Confirmed public tables and the baseline migration record still exist after reset.
+
+### Step 6: Sync production migration state
+
+- Identified production project `map-the-heat` as `ccmlswzjnxeqmwyvjzow` via `supabase projects list`.
+- Linked to production and verified `supabase/.temp/project-ref` contained `ccmlswzjnxeqmwyvjzow`.
+- Verified production did not yet show baseline migration `20260514105740` as applied.
+- Ran `supabase migration repair --status applied 20260514105740` against production.
+- Verified production migration history showed `20260514105740` in both Local and Remote columns.
+- Re-linked immediately to staging and verified `supabase/.temp/project-ref` contains `iuhgmfdpeblaaoolhpbt`.
+- Gotcha: linking to production warned that production uses Postgres major version 15 while the local config currently uses a different major version.
+
 ## Architecture Rules
 
 - All schema changes go in `supabase/migrations/` files; never edited in the
@@ -88,6 +106,7 @@ file. Always `cat supabase/.temp/project-ref` before `supabase db push`.
 - Production pushes require: (1) confirmed on staging first, (2)
   `cat supabase/.temp/project-ref` checked before push, (3) immediate re-link
   to staging after.
+- Production project ref: `ccmlswzjnxeqmwyvjzow`.
 - Migration files are committed to git. The
   `supabase_migrations.schema_migrations` table on each remote tracks what is
   applied.
@@ -196,7 +215,7 @@ file. Always `cat supabase/.temp/project-ref` before `supabase db push`.
 
 - Switch to production:
   ```powershell
-  supabase link --project-ref <prod-ref>
+  supabase link --project-ref ccmlswzjnxeqmwyvjzow
   ```
 - Check production's migration state:
   ```powershell

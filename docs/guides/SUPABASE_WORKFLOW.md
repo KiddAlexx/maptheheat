@@ -102,7 +102,7 @@ A project ref is the 20-character string in your project URL: `https://<ref>.sup
 
 - Dashboard → Settings → General → **Reference ID**
 - Staging ref: `iuhgmfdpeblaaoolhpbt`
-- Production ref: *(fill in when set up)*
+- Production ref: `ccmlswzjnxeqmwyvjzow`
 
 Project refs are **not secret** — they appear in your frontend URL.
 
@@ -132,19 +132,19 @@ Vite auto-loads env files based on the `--mode` flag.
 **`.env.staging`:**
 ```
 VITE_SUPABASE_URL=https://iuhgmfdpeblaaoolhpbt.supabase.co
-VITE_SUPABASE_ANON_KEY=<staging-anon-key>
+VITE_SUPABASE_PUB_KEY=<staging-publishable-key>
 ```
 
 **`.env.production`:**
 ```
 VITE_SUPABASE_URL=https://<prod-ref>.supabase.co
-VITE_SUPABASE_ANON_KEY=<prod-anon-key>
+VITE_SUPABASE_PUB_KEY=<prod-publishable-key>
 ```
 
 **`.env.example`** (template, committed):
 ```
 VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
+VITE_SUPABASE_PUB_KEY=
 ```
 
 ### 3.3 npm Scripts
@@ -154,6 +154,7 @@ VITE_SUPABASE_ANON_KEY=
   "scripts": {
     "dev": "vite --mode staging",
     "dev:prod": "vite --mode production",
+    "build": "vite build --mode production",
     "build:staging": "vite build --mode staging",
     "build:prod": "vite build --mode production"
   }
@@ -501,6 +502,6 @@ supabase migration repair --status reverted <timestamp>
 ## Appendix: Project-Specific Refs
 
 - **Staging:** `iuhgmfdpeblaaoolhpbt`
-- **Production:** *(fill in when set up)*
+- **Production:** `ccmlswzjnxeqmwyvjzow`
 - **Dev server points at:** staging (via `.env.staging`)
 - **Active migration spec:** [`docs/specs/SUPABASE_MIGRATIONS_SPEC.md`](../specs/SUPABASE_MIGRATIONS_SPEC.md)
