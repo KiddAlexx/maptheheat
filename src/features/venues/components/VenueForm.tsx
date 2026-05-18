@@ -140,6 +140,16 @@ function VenueForm() {
 
     const ctx = feature.context ?? [];
     const isPoi = feature.place_type.includes('poi');
+
+    // Bare street results (no house number, not a POI) give imprecise street-centroid
+    // coordinates — reject them and ask the user to include the building number
+    if (!isPoi && !feature.address) {
+      toast.error(
+        'Please include the building number in your search, e.g. "10 Baker Street London"'
+      );
+      return;
+    }
+
     const postcode = ctx.find((c) => c.id.startsWith('postcode'))?.text ?? '';
     // Prefer place (city) over locality (district/neighbourhood) — locality can be a sub-area of the city
     const city =
@@ -148,11 +158,12 @@ function VenueForm() {
       '';
     const country = ctx.find((c) => c.id.startsWith('country'))?.text ?? '';
 
-    // For POI results, Mapbox puts the business name in feature.text and the street
-    // in feature.properties.address — context carries the street differently to address-type results
-    const street = isPoi
-      ? ctx.find((c) => c.id.startsWith('address'))?.text ?? feature.text
-      : `${feature.address ?? ''} ${feature.text}`.trim();
+    // For POI results, feature.address = house number, context 'address' = street name
+    // For address results, feature.address = house number, feature.text = street name
+    const streetName = isPoi
+      ? ctx.find((c) => c.id.startsWith('address'))?.text ?? ''
+      : feature.text;
+    const street = `${feature.address ?? ''} ${streetName}`.trim() || feature.text;
 
     // Auto-fill venue name when a POI is selected (feature.text is the business name)
     if (isPoi) setValue('venueName', feature.text);

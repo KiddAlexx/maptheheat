@@ -16,12 +16,15 @@ export function useMapboxSearch() {
   const debounceTimer = useRef<ReturnType<typeof setTimeout>>();
   const token = import.meta.env.VITE_MAPBOX_TOKEN;
 
-  // Waits 300ms after the user stops typing before fetching — avoids hammering the API
+  // Waits 200ms after the user stops typing before fetching — avoids hammering the API
   // on every keystroke. Minimum 3 chars to avoid overly broad results.
+  // Old suggestions stay visible while waiting so the dropdown doesn't flash empty.
   function search(query: string) {
     clearTimeout(debounceTimer.current);
-    setSuggestions([]);
-    if (query.length < 3) return;
+    if (query.length < 3) {
+      setSuggestions([]);
+      return;
+    }
     debounceTimer.current = setTimeout(async () => {
       setIsLoading(true);
       try {
@@ -34,7 +37,7 @@ export function useMapboxSearch() {
       } finally {
         setIsLoading(false);
       }
-    }, 300);
+    }, 200);
   }
 
   // Address features don't carry city-level geometry — a separate call with types=place
