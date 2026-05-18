@@ -2,7 +2,7 @@
 import { useNavigate, useParams } from 'react-router';
 
 // React imports
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense } from 'react';
 
 // Hooks
 import { useUser } from '@/features/authentication/hooks/useUser';
@@ -40,8 +40,7 @@ function UserProfile() {
   const { section } = useParams();
   const navigate = useNavigate();
 
-  // State for currently active Tab
-  const [selected, setSelected] = useState<Key>(section || 'reviews');
+  const selected = (section || 'reviews') as Key;
 
   if (isFetching || isPendingUser || isLoadingProfile || !userId)
     return <LoaderSpinner message="Loading profile" />;
@@ -49,7 +48,6 @@ function UserProfile() {
   const { favouriteVenues } = userProfile;
 
   function handleSelectionChange(key: Key) {
-    setSelected(key);
     navigate(`/profile/${key}`, { replace: true });
   }
 
