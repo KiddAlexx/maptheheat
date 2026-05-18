@@ -118,6 +118,7 @@
     border-color: hsl(var(--heroui-primary)) !important;
   }
 
+
   /* Dark mode error state: HeroUI's default uses danger-50 (#fff1f1) which is
      far too light on dark backgrounds — override with a subtle danger tint */
   .dark [data-slot='input-wrapper'][data-invalid='true'] {
@@ -126,6 +127,20 @@
   .dark [data-slot='input-wrapper'][data-invalid='true'] input::placeholder,
   .dark [data-slot='input-wrapper'][data-invalid='true'] textarea::placeholder {
     color: rgba(255, 255, 255, 0.55) !important;
+  }
+}
+
+/* Prevent iOS WebKit auto-zoom: font-size < 16px triggers zoom on focus.
+   -webkit-touch-callout is only supported on iOS, making this block iOS-only.
+   [data-slot='value'] covers HeroUI Select trigger text for consistency. */
+@supports (-webkit-touch-callout: none) {
+  [data-slot='input'],
+  [data-slot='textarea'],
+  [data-slot='value'],
+  input,
+  textarea,
+  select {
+    font-size: 1rem !important;
   }
 }
 

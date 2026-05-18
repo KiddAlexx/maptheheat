@@ -20,7 +20,7 @@ Users can explore venues via list or map, add reviews, save favourites, and subm
 - View venues on interactive map (Leaflet)
 - View list of venues & filter by city and category (restaurants / shops)
 - Sort venues and reviews by heat rating, quality rating etc
-- Add venues - use the Nominatim API to fetch address details and coordinates
+- Add venues - address autocomplete powered by **Mapbox Geocoding API** (migrated from Nominatim)
 - Add/edit reviews
 - Upload images (with venue, review or standalone)
 - All submissions enter a pending moderation state
@@ -57,6 +57,7 @@ Users can explore venues via list or map, add reviews, save favourites, and subm
 - React Hook Form
 - HeroUI
 - Leaflet / React Leaflet
+- Mapbox Geocoding API (address autocomplete + coordinate resolution)
 
 **Backend**
 
@@ -105,6 +106,19 @@ This project was built to demonstrate:
 - Testing discipline
 - Accessibility awareness
 - Scalable frontend patterns
+
+---
+
+## ⚙️ Environment Variables
+
+| Variable | Description |
+|---|---|
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_PUB_KEY` | Supabase anon/public key |
+| `VITE_PUBLIC_FB_APP_ID` | Facebook app ID |
+| `VITE_MAPBOX_TOKEN` | Mapbox public token — required for venue address autocomplete |
+
+> **Mapbox migration note:** The app previously used the Nominatim (OpenStreetMap) API for geocoding on venue submission. This has been replaced with the Mapbox Geocoding API (`mapbox.places` endpoint) which provides live address autocomplete, structured address components, and coordinates in a single selection — no geocoding call needed on form submit. A free Mapbox account and public token (`pk.`) with no additional scopes are sufficient.
 
 ---
 
