@@ -63,8 +63,10 @@ export async function getVenues({
   if (filters.length > 0) {
     filters.forEach((filter) => {
       const convertedField = decamelize(filter.field);
+      // Array values (multi-select tag filters) are passed directly — Supabase JS client handles serialisation
+      const value = filter.value;
       // @ts-expect-error: Dynamic method call on Supabase query builder is safe due to controlled filter.method values
-      query = query[filter.method](convertedField, filter.value);
+      query = query[filter.method](convertedField, value);
     });
   }
 

@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 
 export interface MapboxFeature {
   place_name: string;
@@ -7,6 +8,7 @@ export interface MapboxFeature {
   address?: string;
   geometry: { coordinates: [number, number] }; // [lon, lat] — GeoJSON order, reversed from our { lat, lon } Coords type
   context?: Array<{ id: string; text: string }>;
+  properties?: { tel?: string };
 }
 
 export function useMapboxSearch() {
@@ -16,12 +18,15 @@ export function useMapboxSearch() {
   const debounceTimer = useRef<ReturnType<typeof setTimeout>>();
   const token = import.meta.env.VITE_MAPBOX_TOKEN;
 
-  // Waits 300ms after the user stops typing before fetching — avoids hammering the API
+  // Waits 200ms after the user stops typing before fetching — avoids hammering the API
   // on every keystroke. Minimum 3 chars to avoid overly broad results.
+  // Old suggestions stay visible while waiting so the dropdown doesn't flash empty.
   function search(query: string) {
     clearTimeout(debounceTimer.current);
-    setSuggestions([]);
-    if (query.length < 3) return;
+    if (query.length < 3) {
+      setSuggestions([]);
+      return;
+    }
     debounceTimer.current = setTimeout(async () => {
       setIsLoading(true);
       try {
@@ -29,12 +34,16 @@ export function useMapboxSearch() {
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json` +
             `?access_token=${token}&types=poi,address&autocomplete=true&limit=5&language=en`
         );
+        if (!res.ok) throw new Error();
         const data = await res.json();
         setSuggestions(data.features ?? []);
+      } catch {
+        toast.error('Address search unavailable — please try again or enter the address manually');
+        setSuggestions([]);
       } finally {
         setIsLoading(false);
       }
-    }, 300);
+    }, 200);
   }
 
   // Address features don't carry city-level geometry — a separate call with types=place
