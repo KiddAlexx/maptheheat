@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 
 export interface MapboxFeature {
   place_name: string;
@@ -33,8 +34,12 @@ export function useMapboxSearch() {
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json` +
             `?access_token=${token}&types=poi,address&autocomplete=true&limit=5&language=en`
         );
+        if (!res.ok) throw new Error();
         const data = await res.json();
         setSuggestions(data.features ?? []);
+      } catch {
+        toast.error('Address search unavailable — please try again or enter the address manually');
+        setSuggestions([]);
       } finally {
         setIsLoading(false);
       }
