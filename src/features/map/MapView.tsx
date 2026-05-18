@@ -149,7 +149,7 @@ function MapView() {
                 delete markerRefs.current[venue.venueId];
               }}
             >
-              <Popup autoPan={false}>
+              <Popup>
                 <MapPopupContent venue={venue} />
               </Popup>
             </Marker>

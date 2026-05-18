@@ -277,16 +277,10 @@ function ReviewForm({ mode }: ReviewFormProps) {
                         name="hottestSauce"
                         control={control}
                         rules={{
-                          required: 'This field is required',
                           maxLength: {
                             value: 100,
                             message:
                               'Hottest Sauce cannot be more than 100 characters',
-                          },
-                          minLength: {
-                            value: 3,
-                            message:
-                              'Hottest sauce must be at least 3 characters long',
                           },
                         }}
                         render={({ field }) => (
@@ -298,7 +292,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                             }}
                             id="hottestSauce"
                             type="text"
-                            label="Hottest Sauce"
+                            label={<>Hottest Sauce <span className="text-xs font-normal text-app-muted">Optional</span></>}
                             labelPlacement="outside"
                             placeholder="Whats the hottest sauce available?"
                             radius="full"
@@ -316,16 +310,10 @@ function ReviewForm({ mode }: ReviewFormProps) {
                         name="hottestDish"
                         control={control}
                         rules={{
-                          required: 'This field is required',
                           maxLength: {
                             value: 100,
                             message:
                               'Hottest Dish cannot be more than 100 characters',
-                          },
-                          minLength: {
-                            value: 3,
-                            message:
-                              'Hottest dish must be at least 3 characters long',
                           },
                         }}
                         render={({ field }) => (
@@ -337,7 +325,7 @@ function ReviewForm({ mode }: ReviewFormProps) {
                             }}
                             id="hottestDish"
                             type="text"
-                            label="Hottest Dish"
+                            label={<>Hottest Dish <span className="text-xs font-normal text-app-muted">Optional</span></>}
                             labelPlacement="outside"
                             placeholder="Whats the hottest dish they serve?"
                             radius="full"

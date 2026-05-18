@@ -33,41 +33,11 @@ import ImageUploader from '@/components/ImageUploader';
 // Type imports
 import type { Venue } from '@/types/venueTypes';
 
-const CUISINE_TYPES = [
-  'Indian',
-  'Mexican',
-  'Thai',
-  'Chinese',
-  'Korean',
-  'Caribbean',
-  'Ethiopian',
-  'Middle Eastern',
-  'South African',
-  'Pakistani',
-  'Sri Lankan',
-  'Vietnamese',
-  'Nepalese',
-  'Indonesian / Malaysian',
-  'West African',
-  'Peruvian',
-  'Japanese',
-  'American / BBQ',
-  'Turkish',
-  'Bangladeshi',
-  'Fusion',
-];
-
-const DIETARY_OPTIONS = [
-  'Vegan options',
-  'Vegetarian options',
-  'Gluten-free options',
-  'Halal',
-  'Kosher',
-];
+import { CUISINE_TYPES, DIETARY_OPTIONS } from '@/shared/data/cuisineTypes';
 
 interface FormData {
   city: string;
-  venueType: 'shop' | 'restaurant';
+  venueType: 'shop' | 'restaurant' | '';
   venueName: string;
   address: string;
   postcode: string;
@@ -106,7 +76,7 @@ function VenueForm() {
 
   const defaultFormValues: FormData = {
     city: '',
-    venueType: 'restaurant', // *********temp set as restaurant to fix ts error **************
+    venueType: '',
     venueName: '',
     address: '',
     postcode: '',
@@ -140,6 +110,16 @@ function VenueForm() {
 
     const ctx = feature.context ?? [];
     const isPoi = feature.place_type.includes('poi');
+
+    // Bare street results (no house number, not a POI) give imprecise street-centroid
+    // coordinates — reject them and ask the user to include the building number
+    if (!isPoi && !feature.address) {
+      toast.error(
+        'Please include the building number in your search, e.g. "10 Baker Street London"'
+      );
+      return;
+    }
+
     const postcode = ctx.find((c) => c.id.startsWith('postcode'))?.text ?? '';
     // Prefer place (city) over locality (district/neighbourhood) — locality can be a sub-area of the city
     const city =
@@ -148,14 +128,19 @@ function VenueForm() {
       '';
     const country = ctx.find((c) => c.id.startsWith('country'))?.text ?? '';
 
-    // For POI results, Mapbox puts the business name in feature.text and the street
-    // in feature.properties.address — context carries the street differently to address-type results
-    const street = isPoi
-      ? ctx.find((c) => c.id.startsWith('address'))?.text ?? feature.text
-      : `${feature.address ?? ''} ${feature.text}`.trim();
+    // For POI results, feature.address = house number, context 'address' = street name
+    // For address results, feature.address = house number, feature.text = street name
+    const streetName = isPoi
+      ? ctx.find((c) => c.id.startsWith('address'))?.text ?? ''
+      : feature.text;
+    const street = `${feature.address ?? ''} ${streetName}`.trim() || feature.text;
 
-    // Auto-fill venue name when a POI is selected (feature.text is the business name)
-    if (isPoi) setValue('venueName', feature.text);
+    // Auto-fill venue name and phone when a POI is selected
+    // Phone (properties.tel) is from OpenStreetMap data — present for some venues, not all
+    if (isPoi) {
+      setValue('venueName', feature.text);
+      if (feature.properties?.tel) setValue('phoneNumber', feature.properties.tel);
+    }
 
     const [lon, lat] = feature.geometry.coordinates;
 
@@ -203,6 +188,8 @@ function VenueForm() {
     try {
       const trimmedFormData = {
         ...formData,
+        // venueType is guaranteed non-empty — goToStep2 validates it as required before proceeding
+        venueType: formData.venueType as 'shop' | 'restaurant',
         venueName: formData.venueName.trim(),
         address: formData.address.trim(),
         postcode: formData.postcode.trim(),
