@@ -1,5 +1,6 @@
 
 
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -12,10 +13,36 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
-CREATE SCHEMA IF NOT EXISTS "public";
+COMMENT ON SCHEMA "public" IS 'standard public schema';
 
 
-ALTER SCHEMA "public" OWNER TO "pg_database_owner";
+
+CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
+
+
+
+
 
 
 CREATE TYPE "public"."review_type" AS ENUM (
@@ -530,6 +557,21 @@ $$;
 ALTER FUNCTION "public"."enforce_review_cooldown"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."get_pending_cities"() RETURNS TABLE("city" "text", "country" "text")
+    LANGUAGE "sql" STABLE
+    AS $$
+  select distinct vd.city, vd.country
+  from public.venue_details vd
+  where vd.status = 'pending'
+    and vd.city is not null
+    and vd.country is not null
+  order by vd.city, vd.country;
+$$;
+
+
+ALTER FUNCTION "public"."get_pending_cities"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."get_unique_cities"("venue_ids" "uuid"[]) RETURNS TABLE("city" "text", "country" "text")
     LANGUAGE "plpgsql"
     AS $$BEGIN
@@ -717,7 +759,7 @@ CREATE OR REPLACE FUNCTION "public"."review_owner_update_guard"() RETURNS "trigg
     AS $$begin
   -- If not admin, enforce: reset status to pending and prevent venue_id change
   if not is_admin() then
-    new.status := 'approved';
+    new.status := 'pending';
     new.venue_id := old.venue_id;
   end if;
   return new;
@@ -742,6 +784,7 @@ begin
      set total_reviews = (
        select count(*) from public.venue_reviews vr
        where vr.user_id = uid
+         and vr.status = 'approved'   -- ← ADD THIS
      )
    where p.user_id = uid;
 
@@ -768,6 +811,7 @@ begin
      set total_venues_added = (
        select count(*) from public.venue_details vd
        where vd.user_id = uid
+         and vd.status = 'approved'   -- ← ADD THIS
      )
    where p.user_id = uid;
 
@@ -888,30 +932,6 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
 ALTER TABLE "public"."profiles" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."unique_cities" (
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "city" "text" NOT NULL,
-    "coords" "jsonb" NOT NULL,
-    "country" "text",
-    "city_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "city_key" "text" GENERATED ALWAYS AS ((("lower"("regexp_replace"(TRIM(BOTH FROM "city"), '\s+'::"text", ' '::"text", 'g'::"text")) || '|'::"text") || "lower"("regexp_replace"(TRIM(BOTH FROM "country"), '\s+'::"text", ' '::"text", 'g'::"text")))) STORED
-);
-
-
-ALTER TABLE "public"."unique_cities" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."user_roles" (
-    "user_id" "uuid" NOT NULL,
-    "role" "text" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "user_roles_role_check" CHECK (("role" = 'admin'::"text"))
-);
-
-
-ALTER TABLE "public"."user_roles" OWNER TO "postgres";
-
-
 CREATE TABLE IF NOT EXISTS "public"."venue_details" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "venue_name" "text" NOT NULL,
@@ -934,7 +954,9 @@ CREATE TABLE IF NOT EXISTS "public"."venue_details" (
     "hottest_dishes" "text"[],
     "average_quality_rating" real,
     "status" "text" DEFAULT 'pending'::"text" NOT NULL,
-    "thumbnail_image" "jsonb"
+    "thumbnail_image" "jsonb",
+    "cuisines" "text"[] DEFAULT '{}'::"text"[],
+    "dietary_options" "text"[] DEFAULT '{}'::"text"[]
 );
 
 
@@ -950,11 +972,55 @@ CREATE TABLE IF NOT EXISTS "public"."venue_images" (
     "alt_text" "text",
     "status" "text" DEFAULT 'pending'::"text" NOT NULL,
     "image_type" "text",
-    "image_path" "json"
+    "image_path" json
 );
 
 
 ALTER TABLE "public"."venue_images" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."pending_standalone_image_groups" AS
+ SELECT "vi"."venue_id",
+    "vd"."venue_name",
+    "vd"."city",
+    "vd"."venue_name_slug",
+    "vi"."user_id",
+    "p"."username",
+    ("count"(*))::integer AS "image_count",
+    "max"("vi"."created_at") AS "last_created_at",
+    "jsonb_agg"("jsonb_build_object"('imageId', "vi"."image_id", 'createdAt', "vi"."created_at", 'reviewId', "vi"."review_id", 'altText', "vi"."alt_text", 'status', "vi"."status", 'imageType', "vi"."image_type", 'imagePath', "vi"."image_path") ORDER BY "vi"."created_at" DESC) AS "images"
+   FROM (("public"."venue_images" "vi"
+     JOIN "public"."venue_details" "vd" ON (("vd"."venue_id" = "vi"."venue_id")))
+     JOIN "public"."profiles" "p" ON (("p"."user_id" = "vi"."user_id")))
+  WHERE ((COALESCE("vi"."status", 'pending'::"text") = 'pending'::"text") AND ("vi"."image_type" = 'standalone'::"text"))
+  GROUP BY "vi"."venue_id", "vd"."venue_name", "vd"."city", "vd"."venue_name_slug", "vi"."user_id", "p"."username";
+
+
+ALTER VIEW "public"."pending_standalone_image_groups" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."unique_cities" (
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "city" "text" NOT NULL,
+    "coords" "jsonb" NOT NULL,
+    "country" "text",
+    "city_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "city_key" "text" GENERATED ALWAYS AS ((("lower"("regexp_replace"(TRIM(BOTH FROM "city"), '\s+'::"text", ' '::"text", 'g'::"text")) || '|'::"text") || "lower"("regexp_replace"(TRIM(BOTH FROM "country"), '\s+'::"text", ' '::"text", 'g'::"text")))) STORED
+);
+
+
+ALTER TABLE "public"."unique_cities" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."user_roles" (
+    "user_id" "uuid" NOT NULL,
+    "role" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "user_roles_role_check" CHECK (("role" = 'admin'::"text"))
+);
+
+
+ALTER TABLE "public"."user_roles" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."venue_reviews" (
@@ -1137,11 +1203,11 @@ CREATE OR REPLACE TRIGGER "update_calculate_venue_metrics_trigger" AFTER INSERT 
 
 
 
-CREATE OR REPLACE TRIGGER "update_user_review_count_trigger" AFTER INSERT OR DELETE OR UPDATE OF "user_id" ON "public"."venue_reviews" FOR EACH ROW EXECUTE FUNCTION "public"."update_user_review_count"();
+CREATE OR REPLACE TRIGGER "update_user_review_count_trigger" AFTER INSERT OR DELETE OR UPDATE OF "user_id", "status" ON "public"."venue_reviews" FOR EACH ROW EXECUTE FUNCTION "public"."update_user_review_count"();
 
 
 
-CREATE OR REPLACE TRIGGER "venue_change_trigger" AFTER INSERT OR DELETE OR UPDATE OF "user_id" ON "public"."venue_details" FOR EACH ROW EXECUTE FUNCTION "public"."update_user_venues_added"();
+CREATE OR REPLACE TRIGGER "venue_change_trigger" AFTER INSERT OR DELETE OR UPDATE OF "user_id", "status" ON "public"."venue_details" FOR EACH ROW EXECUTE FUNCTION "public"."update_user_venues_added"();
 
 
 
@@ -1152,6 +1218,11 @@ ALTER TABLE ONLY "public"."profiles"
 
 ALTER TABLE ONLY "public"."user_roles"
     ADD CONSTRAINT "user_roles_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."venue_details"
+    ADD CONSTRAINT "venue_details_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("user_id");
 
 
 
@@ -1325,6 +1396,11 @@ CREATE POLICY "vr_update_owner" ON "public"."venue_reviews" FOR UPDATE TO "authe
 
 
 
+
+
+ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
+
+
 REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
 GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
@@ -1333,7 +1409,155 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 REVOKE ALL ON FUNCTION "public"."admin_delete_notification"("p_notification_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_delete_notification"("p_notification_id" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."admin_delete_notification"("p_notification_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."admin_delete_notification"("p_notification_id" "uuid") TO "service_role";
 
@@ -1350,68 +1574,92 @@ GRANT UPDATE("notification_status") ON TABLE "public"."user_notifications" TO "a
 
 
 REVOKE ALL ON FUNCTION "public"."admin_insert_notification"("p" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_insert_notification"("p" "jsonb") TO "anon";
 GRANT ALL ON FUNCTION "public"."admin_insert_notification"("p" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."admin_insert_notification"("p" "jsonb") TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."admin_update_notification"("p_notification_id" "uuid", "patch" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_update_notification"("p_notification_id" "uuid", "patch" "jsonb") TO "anon";
 GRANT ALL ON FUNCTION "public"."admin_update_notification"("p_notification_id" "uuid", "patch" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."admin_update_notification"("p_notification_id" "uuid", "patch" "jsonb") TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."calculate_venue_metrics"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."calculate_venue_metrics"() TO "anon";
+GRANT ALL ON FUNCTION "public"."calculate_venue_metrics"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."calculate_venue_metrics"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."can_submit_review"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."can_submit_review"() TO "anon";
 GRANT ALL ON FUNCTION "public"."can_submit_review"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."can_submit_review"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."can_submit_review_for_venue"("p_venue_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."can_submit_review_for_venue"("p_venue_id" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."can_submit_review_for_venue"("p_venue_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."can_submit_review_for_venue"("p_venue_id" "uuid") TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."can_submit_standalone_images"("batch_size" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."can_submit_standalone_images"("batch_size" integer) TO "anon";
 GRANT ALL ON FUNCTION "public"."can_submit_standalone_images"("batch_size" integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."can_submit_standalone_images"("batch_size" integer) TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."can_submit_venue"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."can_submit_venue"() TO "anon";
 GRANT ALL ON FUNCTION "public"."can_submit_venue"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."can_submit_venue"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."create_welcome_notification"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."create_welcome_notification"() TO "anon";
+GRANT ALL ON FUNCTION "public"."create_welcome_notification"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."create_welcome_notification"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."enforce_pending_reviews_limit"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."enforce_pending_reviews_limit"() TO "anon";
+GRANT ALL ON FUNCTION "public"."enforce_pending_reviews_limit"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."enforce_pending_reviews_limit"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."enforce_pending_standalone_images_limit"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."enforce_pending_standalone_images_limit"() TO "anon";
+GRANT ALL ON FUNCTION "public"."enforce_pending_standalone_images_limit"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."enforce_pending_standalone_images_limit"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."enforce_pending_venues_limit"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."enforce_pending_venues_limit"() TO "anon";
+GRANT ALL ON FUNCTION "public"."enforce_pending_venues_limit"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."enforce_pending_venues_limit"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."enforce_review_cooldown"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."enforce_review_cooldown"() TO "anon";
+GRANT ALL ON FUNCTION "public"."enforce_review_cooldown"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."enforce_review_cooldown"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_pending_cities"() TO "anon";
+GRANT ALL ON FUNCTION "public"."get_pending_cities"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_pending_cities"() TO "service_role";
 
 
 
@@ -1422,6 +1670,8 @@ GRANT ALL ON FUNCTION "public"."get_unique_cities"("venue_ids" "uuid"[]) TO "ser
 
 
 REVOKE ALL ON FUNCTION "public"."handle_new_user"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "anon";
+GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 
 
@@ -1434,36 +1684,49 @@ GRANT ALL ON FUNCTION "public"."is_admin"() TO "service_role";
 
 
 REVOKE ALL ON FUNCTION "public"."notify_review_submission"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notify_review_submission"() TO "anon";
+GRANT ALL ON FUNCTION "public"."notify_review_submission"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."notify_review_submission"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."notify_standalone_images"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notify_standalone_images"() TO "anon";
+GRANT ALL ON FUNCTION "public"."notify_standalone_images"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."notify_standalone_images"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."notify_venue_submission"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."notify_venue_submission"() TO "anon";
+GRANT ALL ON FUNCTION "public"."notify_venue_submission"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."notify_venue_submission"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."review_owner_update_guard"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."review_owner_update_guard"() TO "anon";
+GRANT ALL ON FUNCTION "public"."review_owner_update_guard"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."review_owner_update_guard"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."update_user_review_count"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."update_user_review_count"() TO "anon";
+GRANT ALL ON FUNCTION "public"."update_user_review_count"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."update_user_review_count"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."update_user_venues_added"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."update_user_venues_added"() TO "anon";
+GRANT ALL ON FUNCTION "public"."update_user_venues_added"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."update_user_venues_added"() TO "service_role";
 
 
 
 REVOKE ALL ON FUNCTION "public"."upsert_unique_city"("p_city" "text", "p_country" "text", "p_coords" "jsonb") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."upsert_unique_city"("p_city" "text", "p_country" "text", "p_coords" "jsonb") TO "anon";
 GRANT ALL ON FUNCTION "public"."upsert_unique_city"("p_city" "text", "p_country" "text", "p_coords" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."upsert_unique_city"("p_city" "text", "p_country" "text", "p_coords" "jsonb") TO "service_role";
 
@@ -1478,6 +1741,21 @@ GRANT ALL ON FUNCTION "public"."vd_before_insert_guard"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."vr_before_insert_guard"() TO "anon";
 GRANT ALL ON FUNCTION "public"."vr_before_insert_guard"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."vr_before_insert_guard"() TO "service_role";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1499,18 +1777,6 @@ GRANT UPDATE("favourite_venues") ON TABLE "public"."profiles" TO "authenticated"
 
 
 
-GRANT ALL ON TABLE "public"."unique_cities" TO "anon";
-GRANT ALL ON TABLE "public"."unique_cities" TO "authenticated";
-GRANT ALL ON TABLE "public"."unique_cities" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."user_roles" TO "anon";
-GRANT ALL ON TABLE "public"."user_roles" TO "authenticated";
-GRANT ALL ON TABLE "public"."user_roles" TO "service_role";
-
-
-
 GRANT ALL ON TABLE "public"."venue_details" TO "anon";
 GRANT ALL ON TABLE "public"."venue_details" TO "authenticated";
 GRANT ALL ON TABLE "public"."venue_details" TO "service_role";
@@ -1523,36 +1789,85 @@ GRANT ALL ON TABLE "public"."venue_images" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."pending_standalone_image_groups" TO "anon";
+GRANT ALL ON TABLE "public"."pending_standalone_image_groups" TO "authenticated";
+GRANT ALL ON TABLE "public"."pending_standalone_image_groups" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."unique_cities" TO "anon";
+GRANT ALL ON TABLE "public"."unique_cities" TO "authenticated";
+GRANT ALL ON TABLE "public"."unique_cities" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."user_roles" TO "anon";
+GRANT ALL ON TABLE "public"."user_roles" TO "authenticated";
+GRANT ALL ON TABLE "public"."user_roles" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."venue_reviews" TO "anon";
 GRANT ALL ON TABLE "public"."venue_reviews" TO "authenticated";
 GRANT ALL ON TABLE "public"."venue_reviews" TO "service_role";
 
 
 
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "service_role";
 
 
 
 
 
 
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "service_role";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "postgres";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "anon";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "authenticated";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "service_role";
 
 
 
 
 
 
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "service_role";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO "postgres";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO "anon";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO "authenticated";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO "service_role";
+
+
+
+
+
+
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "postgres";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "anon";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

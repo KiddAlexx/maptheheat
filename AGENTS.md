@@ -37,6 +37,7 @@ npm run test:ui      # Vitest UI dashboard
 - Do not refactor unrelated code
 - Keep changes scoped to a single feature
 - Ask before making **architectural changes**
+- Never run `git commit`. The developer manually reviews and commits all changes.
 - **Never remove existing code comments** when editing or rewriting files — comments, commented-out code, and JSX comment blocks belong to the developer and must be preserved
 
 ---
