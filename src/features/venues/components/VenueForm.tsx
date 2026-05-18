@@ -414,6 +414,7 @@ function VenueForm() {
                         isInvalid={!!errors.country}
                         errorMessage={errors.country?.message}
                         onSelectionChange={(key) => field.onChange(key)}
+                        autoComplete="off"
                       >
                         {(country) => (
                           <AutocompleteItem key={country.name}>
