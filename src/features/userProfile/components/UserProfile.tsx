@@ -11,7 +11,7 @@ import { useGetUserProfile } from '../hooks/useGetUserProfile';
 // Assets
 
 // Components
-
+import { Icon } from '@iconify/react';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 import { Tab, Tabs } from '@heroui/react';
 import UserProfileBanner from './UserProfileBanner';
@@ -55,7 +55,10 @@ function UserProfile() {
 
   return (
     <div className="w-full max-w-[70rem]">
-      <UserProfileBanner userProfile={userProfile} />
+      <UserProfileBanner
+        userProfile={userProfile}
+        onEditClick={() => handleSelectionChange('edit')}
+      />
 
       <Tabs
         aria-label="Profile Sections"
@@ -64,25 +67,57 @@ function UserProfile() {
         fullWidth
         radius="full"
       >
-        <Tab key="reviews" title="My Reviews">
+        <Tab
+          key="reviews"
+          title={
+            <div className="flex items-center gap-1.5">
+              <Icon icon="lucide:star" width={15} aria-hidden="true" />
+              <span className="mt-px">Reviews</span>
+            </div>
+          }
+        >
           <Suspense fallback={<LoaderSpinner />}>
             <ReviewContainer mode="user" />
           </Suspense>
         </Tab>
 
-        <Tab key="venues" title="Favourite Venues">
+        <Tab
+          key="venues"
+          title={
+            <div className="flex items-center gap-1.5">
+              <Icon icon="lucide:heart" width={15} aria-hidden="true" />
+              <span className="mt-px">Favourites</span>
+            </div>
+          }
+        >
           <Suspense fallback={<LoaderSpinner />}>
             <VenueListContainer mode="user" favouriteVenues={favouriteVenues} />
           </Suspense>
         </Tab>
 
-        <Tab key="notifications" title="Notifications">
+        <Tab
+          key="notifications"
+          title={
+            <div className="flex items-center gap-1.5">
+              <Icon icon="lucide:bell" width={15} aria-hidden="true" />
+              <span className="mt-px">Notifications</span>
+            </div>
+          }
+        >
           <Suspense fallback={<LoaderSpinner />}>
             <NotificationContainer userId={userId} />
           </Suspense>
         </Tab>
 
-        <Tab key="edit" title="Edit Profile">
+        <Tab
+          key="edit"
+          title={
+            <div className="flex items-center gap-1.5">
+              <Icon icon="lucide:settings" width={15} aria-hidden="true" />
+              <span className="mt-px">Edit Profile</span>
+            </div>
+          }
+        >
           <EditProfilePanel />
         </Tab>
       </Tabs>
