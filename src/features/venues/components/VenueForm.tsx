@@ -33,7 +33,6 @@ import ImageUploader from '@/components/ImageUploader';
 // Type imports
 import type { Venue } from '@/types/venueTypes';
 
-
 const CUISINE_TYPES = [
   'Indian',
   'Mexican',
@@ -87,7 +86,12 @@ function VenueForm() {
   const { openDialog } = useModalContext();
 
   const { user } = useUser();
-  const { suggestions, isLoading: isSearchingAddress, search, fetchCityCoords } = useMapboxSearch();
+  const {
+    suggestions,
+    isLoading: isSearchingAddress,
+    search,
+    fetchCityCoords,
+  } = useMapboxSearch();
 
   const [localFormError, setLocalFormError] = useState('');
   const [formIndex, setFormIndex] = useState(1);
@@ -129,23 +133,25 @@ function VenueForm() {
   // Mapbox returns coordinates as [lon, lat] (GeoJSON order) — we reverse to match
   // our internal Coords type { lat, lon }
   async function handleAddressSelect(key: React.Key | null) {
-    const feature = suggestions.find((f: MapboxFeature) => f.place_name === key);
+    const feature = suggestions.find(
+      (f: MapboxFeature) => f.place_name === key
+    );
     if (!feature) return;
 
     const ctx = feature.context ?? [];
     const isPoi = feature.place_type.includes('poi');
-    const postcode = ctx.find(c => c.id.startsWith('postcode'))?.text ?? '';
+    const postcode = ctx.find((c) => c.id.startsWith('postcode'))?.text ?? '';
     // Prefer place (city) over locality (district/neighbourhood) — locality can be a sub-area of the city
     const city =
-      ctx.find(c => c.id.startsWith('place'))?.text ??
-      ctx.find(c => c.id.startsWith('locality'))?.text ??
+      ctx.find((c) => c.id.startsWith('place'))?.text ??
+      ctx.find((c) => c.id.startsWith('locality'))?.text ??
       '';
-    const country = ctx.find(c => c.id.startsWith('country'))?.text ?? '';
+    const country = ctx.find((c) => c.id.startsWith('country'))?.text ?? '';
 
     // For POI results, Mapbox puts the business name in feature.text and the street
     // in feature.properties.address — context carries the street differently to address-type results
     const street = isPoi
-      ? ctx.find(c => c.id.startsWith('address'))?.text ?? feature.text
+      ? ctx.find((c) => c.id.startsWith('address'))?.text ?? feature.text
       : `${feature.address ?? ''} ${feature.text}`.trim();
 
     // Auto-fill venue name when a POI is selected (feature.text is the business name)
@@ -336,7 +342,7 @@ function VenueForm() {
                         {...field}
                         classNames={{
                           label: 'text-md font-normal ml-1',
-                          base: 'mb-12',
+                          base: 'mb-6',
                         }}
                         id="venueName"
                         type="text"
@@ -354,7 +360,8 @@ function VenueForm() {
                   <Autocomplete
                     label="Address Search"
                     labelPlacement="outside"
-                    classNames={{ label: 'text-md font-normal ml-1', base: 'mb-6' }}
+                    classNames={{ base: 'mb-6' }}
+                    inputProps={{ classNames: { label: 'text-md font-normal ml-1' } }}
                     placeholder="Start typing the venue address..."
                     radius="full"
                     isLoading={isSearchingAddress}
@@ -519,7 +526,14 @@ function VenueForm() {
                         }}
                         id="website"
                         type="text"
-                        label={<>Website <span className="text-xs font-normal text-app-muted">Optional</span></>}
+                        label={
+                          <>
+                            Website{' '}
+                            <span className="text-xs font-normal text-app-muted">
+                              Optional
+                            </span>
+                          </>
+                        }
                         labelPlacement="outside"
                         placeholder="http://www.example.com..."
                         radius="full"
