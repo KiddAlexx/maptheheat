@@ -1,0 +1,7 @@
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; connect-src 'self' https://iuhgmfdpeblaaoolhpbt.supabase.co wss://iuhgmfdpeblaaoolhpbt.supabase.co https://ccmlswzjnxeqmwyvjzow.supabase.co wss://ccmlswzjnxeqmwyvjzow.supabase.co https://api.mapbox.com https://formspree.io https://api.iconify.design https://api.unisvg.com https://api.simplesvg.com; img-src 'self' data: blob: https://iuhgmfdpeblaaoolhpbt.supabase.co https://ccmlswzjnxeqmwyvjzow.supabase.co https://server.arcgisonline.com https://*.tile.openstreetmap.org https://tile.openstreetmap.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; frame-src 'none'; manifest-src 'self'; media-src 'self' data: blob:
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=()
