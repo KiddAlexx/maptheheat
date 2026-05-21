@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { PageSeo } from '@/lib/seo';
 import { Input, Select, SelectItem, Textarea } from '@heroui/react';
 import { useNavigate } from 'react-router-dom';
 import ActionButton from '@/ui/ActionButton';
@@ -59,6 +60,10 @@ function Contact() {
 
   return (
     <main className="flex w-full justify-center px-4 py-12 sm:px-6 lg:px-8">
+      <PageSeo
+        title="Contact Us | MapTheHeat"
+        description="Get in touch with the MapTheHeat team. Report a venue, ask a question, share feedback, or flag an issue about our spicy food venue directory."
+      />
       <div className="w-full max-w-2xl rounded-xl border border-app-border bg-app-card p-6 shadow-md sm:p-10">
         <h1 className="mb-2 text-3xl font-bold text-foreground">Contact Us</h1>
         <p className="mb-8 text-sm text-app-muted">

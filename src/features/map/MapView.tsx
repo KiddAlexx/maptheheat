@@ -8,7 +8,8 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 // Hooks
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
 import { useVenues } from '../venues/hooks/useVenues';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { PageSeo } from '@/lib/seo';
 
 // Assets
 import chilliPin from '@/assets/chillipin.webp';
@@ -29,7 +30,16 @@ const TILE_URL =
 function MapView() {
   const [searchParams] = useSearchParams();
   const location = useLocation();
+  const { city } = useParams<{ city?: string }>();
   const { filters } = useVenueFilterContext();
+
+  const cityLabel = city ? city.replace(/-/g, ' ') : null;
+  const seoTitle = cityLabel
+    ? `Spicy Venues in ${cityLabel} | MapTheHeat`
+    : 'Venue Map | MapTheHeat';
+  const seoDescription = cityLabel
+    ? `Browse spicy venues in ${cityLabel} on the MapTheHeat map. Filter by heat rating, cuisine, and venue type to find your next spicy food destination.`
+    : 'Browse spicy venues on the MapTheHeat interactive map. Filter by heat rating, cuisine, and venue type to find your next spicy food destination.';
   // Load venues from supabase
   const { venues, isPending: isLoadingVenues } = useVenues({ filters });
   // Popup opening is a one-shot navigation request; Leaflet owns popup state after this.
@@ -119,6 +129,8 @@ function MapView() {
 
   // Render the map with markers for each venue and center it based on the active venue or default coordinates.
   return (
+    <>
+    <PageSeo title={seoTitle} description={seoDescription} />
     <div className={styles.mapContainer} aria-label="Venue map">
       <MapContainer
         className={styles.map}
@@ -159,6 +171,7 @@ function MapView() {
         <ChangeCenter lat={lat} lon={lon} />
       </MapContainer>
     </div>
+    </>
   );
 }
 
