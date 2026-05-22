@@ -18,6 +18,7 @@ import { useGlobalError } from '@/context/ErrorContext';
 // Assets
 
 // Components
+import { PageSeo } from '@/lib/seo';
 import VenueRating from '../../venues/components/VenueRating';
 import ImageUploader from '@/components/ImageUploader';
 import LoaderSpinner from '@/ui/LoaderSpinner';
@@ -193,8 +194,19 @@ function ReviewForm({ mode }: ReviewFormProps) {
         );
   };
 
+  const venueTitle = mode === 'creating' ? venueName : venueNameReview;
+  const seoTitle = venueTitle
+    ? `${mode === 'creating' ? 'Write a Review' : 'Edit Review'} — ${venueTitle} | MapTheHeat`
+    : `${mode === 'creating' ? 'Write a Review' : 'Edit Review'} | MapTheHeat`;
+  const seoDescription = venueTitle
+    ? mode === 'creating'
+      ? `Share your experience at ${venueTitle} on MapTheHeat — rate the heat, describe the food, and help others find the best spicy venues.`
+      : `Update your MapTheHeat review for ${venueTitle}.`
+    : 'Share your spicy food experience on MapTheHeat — rate the heat and help the community discover great venues.';
+
   return (
     <>
+      <PageSeo title={seoTitle} description={seoDescription} />
       {(isPendingReview && isFetchingReview) || isLoadingVenue ? (
         <LoaderSpinner message="Loading" />
       ) : (

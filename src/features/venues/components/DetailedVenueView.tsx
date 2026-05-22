@@ -1,5 +1,6 @@
 // Third Party Imports
 import { useNavigate, useParams } from 'react-router';
+import { PageSeo } from '@/lib/seo';
 
 // React imports
 import { useEffect, useRef, useState } from 'react';
@@ -69,34 +70,48 @@ function DetailedVenueView() {
   }, [isFavourite]);
 
   if (isLoadingVenue || isPendingReviews) {
-    return <LoaderSpinner message="Loading venue" />;
+    return (
+      <>
+        <PageSeo
+          title="Venue Details | MapTheHeat"
+          description="Check heat ratings and community reviews for this spicy venue on MapTheHeat."
+        />
+        <LoaderSpinner message="Loading venue" />
+      </>
+    );
   }
 
   if (!venueId || !venue)
     return (
-      <div className="mx-auto mt-8 max-w-[70rem] p-3">
-        <div
-          role="alert"
-          className="rounded-xl border border-app-border bg-app-card p-6 text-center shadow-md"
-        >
-          <h1 className="mb-2 text-xl font-semibold text-foreground">
-            Venue not found
-          </h1>
-          <p className="text-app-muted">
-            The venue you're looking for doesn't exist or may have been removed.
-          </p>
-          <div className="mt-4">
-            <Button
-              radius="full"
-              variant="flat"
-              color="primary"
-              onPress={() => navigate(-1)}
-            >
-              Go back
-            </Button>
+      <>
+        <PageSeo
+          title="Venue Not Found | MapTheHeat"
+          description="This venue could not be found on MapTheHeat. Browse the map to discover spicy venues near you."
+        />
+        <div className="mx-auto mt-8 max-w-[70rem] p-3">
+          <div
+            role="alert"
+            className="rounded-xl border border-app-border bg-app-card p-6 text-center shadow-md"
+          >
+            <h1 className="mb-2 text-xl font-semibold text-foreground">
+              Venue not found
+            </h1>
+            <p className="text-app-muted">
+              The venue you're looking for doesn't exist or may have been removed.
+            </p>
+            <div className="mt-4">
+              <Button
+                radius="full"
+                variant="flat"
+                color="primary"
+                onPress={() => navigate(-1)}
+              >
+                Go back
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
 
   const {
@@ -220,7 +235,12 @@ function DetailedVenueView() {
     );
   }
 
+  const seoTitle = `${venueName} in ${city} | MapTheHeat`;
+  const seoDescription = `${venueName} in ${city} — check community heat ratings and reviews for this spicy venue on MapTheHeat.`;
+
   return (
+    <>
+    <PageSeo title={seoTitle} description={seoDescription} />
     <div className="hyphens-auto p-3">
       <article className="mb-5 rounded-xl border border-app-border bg-app-card px-4 py-3 text-sm shadow-md">
         <div className="mb-3 ml-1 flex items-end justify-between">
@@ -417,6 +437,7 @@ function DetailedVenueView() {
 
       {totalReviewCount > 0 && <ReviewContainer mode="venue" />}
     </div>
+    </>
   );
 }
 

@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom';
+import { PageSeo } from '@/lib/seo';
 
 function Privacy() {
   return (
     <main className="flex w-full justify-center px-4 py-12 sm:px-6 lg:px-8">
+      <PageSeo
+        title="Privacy Policy | MapTheHeat"
+        description="MapTheHeat Privacy Policy — how we collect, use, and protect your personal data in accordance with GDPR and applicable data protection law."
+      />
       <div className="w-full max-w-3xl rounded-xl border border-app-border bg-app-card p-6 shadow-md sm:p-10">
         <h1 className="mb-2 text-3xl font-bold text-foreground">Privacy Policy</h1>
         <p className="mb-8 text-sm text-app-muted">Last updated: April 2026</p>

@@ -26,3 +26,6 @@ dist-ssr
 
 # Environment variables
 .env*
+
+# Local-only specs (sensitive — e.g. unfixed security gaps before launch)
+docs/specs/PRE_LAUNCH_AUDIT_SPEC.md
