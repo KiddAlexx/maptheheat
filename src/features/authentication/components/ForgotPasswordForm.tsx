@@ -72,6 +72,7 @@ function ForgotPasswordForm() {
                 type="email"
                 label="Email" radius="full"
                 variant="bordered"
+                autoComplete="email"
                 isInvalid={!!errors.email}
                 errorMessage={errors?.email?.message}
               />

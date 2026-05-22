@@ -44,6 +44,7 @@ function SignupForm() {
 
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
   const { setGlobalError } = useGlobalError();
 
@@ -97,8 +98,10 @@ function SignupForm() {
                 id="firstElementToFocus"
                 className="mb-5"
                 type="email"
-                label="Email" radius="full"
+                label="Email"
+                radius="full"
                 variant="bordered"
+                autoComplete="email"
                 isInvalid={!!errors.email}
                 errorMessage={errors.email?.message}
               />
@@ -124,32 +127,51 @@ function SignupForm() {
               },
             }}
             render={({ field }) => (
-              <Input
-                {...field}
-                isDisabled={isPendingEmail}
-                className="mb-5"
-                type={isVisible ? 'text' : 'password'} radius="full"
-                variant="bordered"
-                label="Password"
-                isInvalid={!!errors.password}
-                errorMessage={errors.password?.message}
-                endContent={
-                  <div className="flex h-full items-center">
-                    <button
-                      aria-label={isVisible ? 'Hide password' : 'Show password'}
-                      type="button"
-                      onClick={toggleVisibility}
-                      className="rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 "
-                    >
-                      {isVisible ? (
-                        <Icon icon="lucide:eye" width="18" height="18" />
-                      ) : (
-                        <Icon icon="lucide:eye-off" width="18" height="18" />
-                      )}
-                    </button>
-                  </div>
-                }
-              />
+              <>
+                <Input
+                  {...field}
+                  isDisabled={isPendingEmail}
+                  className={
+                    isPasswordFocused && !errors.password ? 'mb-1' : 'mb-5'
+                  }
+                  type={isVisible ? 'text' : 'password'}
+                  radius="full"
+                  variant="bordered"
+                  label="Password"
+                  autoComplete="new-password"
+                  onFocus={() => setIsPasswordFocused(true)}
+                  onBlur={() => {
+                    field.onBlur();
+                    setIsPasswordFocused(false);
+                  }}
+                  isInvalid={!!errors.password}
+                  errorMessage={errors.password?.message}
+                  endContent={
+                    <div className="flex h-full items-center">
+                      <button
+                        aria-label={
+                          isVisible ? 'Hide password' : 'Show password'
+                        }
+                        type="button"
+                        onClick={toggleVisibility}
+                        className="rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 "
+                      >
+                        {isVisible ? (
+                          <Icon icon="lucide:eye" width="18" height="18" />
+                        ) : (
+                          <Icon icon="lucide:eye-off" width="18" height="18" />
+                        )}
+                      </button>
+                    </div>
+                  }
+                />
+                {isPasswordFocused && !errors.password && (
+                  <p className="mb-5 ml-3 mt-1 text-xs text-zinc-500 dark:text-zinc-300">
+                    At least 8 characters including an uppercase letter, a
+                    number and a symbol (@$!%*?&)
+                  </p>
+                )}
+              </>
             )}
           />
 
@@ -166,9 +188,11 @@ function SignupForm() {
                 {...field}
                 isDisabled={isPendingEmail}
                 className="mb-5"
-                type={isVisible ? 'text' : 'password'} radius="full"
+                type={isVisible ? 'text' : 'password'}
+                radius="full"
                 variant="bordered"
                 label="Confirm Password"
+                autoComplete="new-password"
                 isInvalid={!!errors.confirmPassword}
                 errorMessage={errors.confirmPassword?.message}
                 endContent={
@@ -195,7 +219,8 @@ function SignupForm() {
         <div className="mt-5 flex w-full flex-col items-center gap-2">
           <Button
             isDisabled={isPendingEmail}
-            className="w-full" radius="full"
+            className="w-full"
+            radius="full"
             size="lg"
             type="submit"
           >
