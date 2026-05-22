@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom';
+import { PageSeo } from '@/lib/seo';
 
 function Terms() {
   return (
     <main className="flex w-full justify-center px-4 py-12 sm:px-6 lg:px-8">
+      <PageSeo
+        title="Terms of Service | MapTheHeat"
+        description="Read the MapTheHeat Terms of Service. Understand your rights and responsibilities when using our community-driven spicy food venue platform."
+      />
       <div className="w-full max-w-3xl rounded-xl border border-app-border bg-app-card p-6 shadow-md sm:p-10">
         <h1 className="mb-2 text-3xl font-bold text-foreground">Terms of Service</h1>
         <p className="mb-8 text-sm text-app-muted">Last updated: April 2026</p>
