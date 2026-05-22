@@ -8,6 +8,7 @@ function Profile() {
         title="My Profile | MapTheHeat"
         description="Manage your MapTheHeat profile — update your username, track your submitted venues and reviews, manage saved venues, and adjust account settings."
       />
+      <h1 className="sr-only">My Profile</h1>
       <UserProfile />
     </main>
   );

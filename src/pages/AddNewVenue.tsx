@@ -9,6 +9,7 @@ function AddNewVenue() {
         title="Add a Venue | MapTheHeat"
         description="Submit a new spicy food venue to MapTheHeat. Share a restaurant or shop that serves hot, spicy dishes with the community and help others find the heat."
       />
+      <h1 className="sr-only">Add a Venue</h1>
       <BackgroundBlobs />
       <VenueForm />
     </main>
