@@ -576,7 +576,10 @@ function VenueForm() {
                           Select 1 or 2
                         </span>
                       </div>
-                      <div className="flex flex-wrap gap-2">
+                      <div
+                        className="flex flex-wrap gap-2"
+                        aria-describedby={errors.cuisines ? 'error-cuisines' : undefined}
+                      >
                         {CUISINE_TYPES.map((cuisine) => {
                           const isSelected = selectedCuisines.includes(cuisine);
                           const isDisabled =
@@ -601,7 +604,7 @@ function VenueForm() {
                         })}
                       </div>
                       {errors.cuisines && (
-                        <p className="mt-2 text-xs text-danger">
+                        <p id="error-cuisines" role="alert" className="mt-2 text-xs text-danger">
                           {errors.cuisines.message}
                         </p>
                       )}
