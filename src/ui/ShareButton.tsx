@@ -45,6 +45,7 @@ function ShareButton({ shareUrl, title, body }: ShareButtonProps) {
           className="h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
           isIconOnly
           disableAnimation
+          aria-label="Share venue"
         >
           <Icon
             className="text-slate-700 dark:text-zinc-200"
