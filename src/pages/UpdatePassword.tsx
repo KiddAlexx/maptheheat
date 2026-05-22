@@ -3,6 +3,7 @@ import UpdatePasswordForm from '@/features/userProfile/components/UpdatePassword
 function UpdatePassword() {
   return (
     <main>
+      <h1 className="sr-only">Update Password</h1>
       <UpdatePasswordForm />
     </main>
   );

@@ -41,10 +41,12 @@ function ShareButton({ shareUrl, title, body }: ShareButtonProps) {
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
-        <Button radius="full"
+        <Button
+          radius="full"
           className="h-auto w-auto min-w-0 bg-transparent p-0 shadow-none"
           isIconOnly
           disableAnimation
+          aria-label="Share venue"
         >
           <Icon
             className="text-slate-700 dark:text-zinc-200"
@@ -91,9 +93,9 @@ function ShareButton({ shareUrl, title, body }: ShareButtonProps) {
         </DropdownSection>
         <DropdownSection>
           <DropdownItem key="copy">
-            <Button radius="full"
+            <Button
+              radius="full"
               className="flex h-auto w-auto bg-transparent"
-              isIconOnly
               disableAnimation
               onPress={() => copyLink(shareUrl)}
             >

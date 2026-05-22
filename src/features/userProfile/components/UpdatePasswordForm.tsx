@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useModalContext } from '@/context/ModalContext';
 import { useLogout } from '@/features/authentication/hooks/useLogout';
 import { useUpdatePassword } from '@/features/authentication/hooks/useUpdatePassword';
@@ -14,6 +15,7 @@ function UpdatePasswordForm() {
   const { updatePassword } = useUpdatePassword();
   const { logout } = useLogout();
   const { openModal } = useModalContext();
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
   const { control, formState, handleSubmit, getValues } = useForm<FormData>();
   const { errors } = formState;
@@ -55,14 +57,25 @@ function UpdatePasswordForm() {
           },
         }}
         render={({ field }) => (
-          <Input
-            {...field}
-            type="password" radius="full"
-            variant="bordered"
-            label="Password"
-            isInvalid={!!errors.password}
-            errorMessage={errors.password?.message}
-          />
+          <>
+            <Input
+              {...field}
+              type="password"
+              radius="full"
+              variant="bordered"
+              label="Password"
+              autoComplete="new-password"
+              onFocus={() => setIsPasswordFocused(true)}
+              onBlur={() => { field.onBlur(); setIsPasswordFocused(false); }}
+              isInvalid={!!errors.password}
+              errorMessage={errors.password?.message}
+            />
+            {isPasswordFocused && !errors.password && (
+              <p className="mb-2 ml-1 mt-1 text-xs text-zinc-500 dark:text-zinc-300">
+                At least 8 characters including an uppercase letter, a number and a symbol (@$!%*?&)
+              </p>
+            )}
+          </>
         )}
       />
 
@@ -78,9 +91,11 @@ function UpdatePasswordForm() {
           <Input
             {...field}
             className="mt-2"
-            type="password" radius="full"
+            type="password"
+            radius="full"
             variant="bordered"
             label="Confirm Password"
+            autoComplete="new-password"
             isInvalid={!!errors.confirmPassword}
             errorMessage={errors.confirmPassword?.message}
           />

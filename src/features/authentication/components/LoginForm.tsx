@@ -97,6 +97,7 @@ function LoginForm() {
                 type="email"
                 label="Email" radius="full"
                 variant="bordered"
+                autoComplete="email"
                 isInvalid={!!errors.email}
                 errorMessage={errors.email?.message}
               />
@@ -114,6 +115,7 @@ function LoginForm() {
                 type={isVisible ? 'text' : 'password'} radius="full"
                 variant="bordered"
                 label="Password"
+                autoComplete="current-password"
                 isInvalid={!!errors.password}
                 errorMessage={errors.password?.message}
                 endContent={
