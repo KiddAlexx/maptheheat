@@ -100,16 +100,30 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     html = html
       .replace(/(<title>)[^<]*(<\/title>)/, `$1${title}$2`)
       .replace(/(<meta\s+property="og:title"\s+content=")[^"]*"/, `$1${title}"`)
-      .replace(/(<meta\s+property="og:description"\s+content=")[^"]*"/, `$1${desc}"`)
+      .replace(
+        /(<meta\s+property="og:description"\s+content=")[^"]*"/,
+        `$1${desc}"`
+      )
       .replace(/(<meta\s+property="og:image"\s+content=")[^"]*"/, `$1${image}"`)
       .replace(/(<meta\s+property="og:url"\s+content=")[^"]*"/, `$1${pageUrl}"`)
-      .replace(/(<meta\s+name="twitter:title"\s+content=")[^"]*"/, `$1${title}"`)
-      .replace(/(<meta\s+name="twitter:description"\s+content=")[^"]*"/, `$1${desc}"`)
-      .replace(/(<meta\s+name="twitter:image"\s+content=")[^"]*"/, `$1${image}"`);
+      .replace(
+        /(<meta\s+name="twitter:title"\s+content=")[^"]*"/,
+        `$1${title}"`
+      )
+      .replace(
+        /(<meta\s+name="twitter:description"\s+content=")[^"]*"/,
+        `$1${desc}"`
+      )
+      .replace(
+        /(<meta\s+name="twitter:image"\s+content=")[^"]*"/,
+        `$1${image}"`
+      );
 
     // Build and inject JSON-LD structured data
-    const jsonLd = buildJsonLd(venue, reviews, url.href, ctx.env.VITE_SITE_URL);
-    html = html.replace('</head>', `${jsonLd}\n</head>`);
+    const siteUrl = ctx.env.VITE_SITE_URL;
+    const jsonLd = buildJsonLd(venue, reviews, url.href, siteUrl);
+    const breadcrumb = buildBreadcrumb(venue, url.href, siteUrl);
+    html = html.replace('</head>', `${jsonLd}\n${breadcrumb}\n</head>`);
   }
 
   return new Response(html, {
@@ -174,7 +188,7 @@ function buildJsonLd(
           '@type': 'Rating',
           ratingValue: rating,
           bestRating: '5',
-          worstRating: '1',
+          worstRating: '0.5',
         },
       };
       if (r.profiles?.username) {
@@ -185,6 +199,23 @@ function buildJsonLd(
       return entry;
     });
   }
+
+  return `<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n</script>`;
+}
+
+function buildBreadcrumb(venue: VenueRow, pageUrl: string, siteUrl: string): string {
+  const cityMapUrl = `${siteUrl}/app/map/${encodeURIComponent(venue.city)}${venue.country ? '/' + encodeURIComponent(venue.country) : ''}`;
+  const cityLabel = venue.country ? `${venue.city}, ${venue.country}` : venue.city;
+
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'MapTheHeat', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: cityLabel, item: cityMapUrl },
+      { '@type': 'ListItem', position: 3, name: venue.venue_name, item: pageUrl },
+    ],
+  };
 
   return `<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n</script>`;
 }
