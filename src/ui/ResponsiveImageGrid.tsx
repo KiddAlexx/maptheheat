@@ -109,8 +109,10 @@ function ResponsiveImageGrid({
   }));
 
   return (
-    <div
-      className={`grid cursor-pointer gap-[2px] overflow-hidden rounded-xl ${gridLayout.grid} `}
+    <button
+      type="button"
+      aria-label="View images"
+      className={`grid w-full cursor-pointer gap-[2px] overflow-hidden rounded-xl border-0 p-0 ${gridLayout.grid}`}
       style={{ height: `${height}rem` }}
       onClick={() => openModalImages('image-carousel', carouselImagesLg)}
     >
@@ -131,7 +133,7 @@ function ResponsiveImageGrid({
           </div>
         ))
       }
-    </div>
+    </button>
   );
 }
 

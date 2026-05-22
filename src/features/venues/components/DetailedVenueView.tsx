@@ -245,13 +245,13 @@ function DetailedVenueView() {
       <article className="mb-5 rounded-xl border border-app-border bg-app-card px-4 py-3 text-sm shadow-md">
         <div className="mb-3 ml-1 flex items-end justify-between">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
-            <h2
+            <h1
               ref={venueHeadingRef}
               tabIndex={-1}
               className="mb-1 text-2xl font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:mb-0"
             >
               {venueName}
-            </h2>
+            </h1>
             {/* Ratings grouped so they stay together when stacked on small screens */}
             <div className="flex items-center gap-2">
               {/* display flex is forced to override default display inline block

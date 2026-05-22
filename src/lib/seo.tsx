@@ -20,6 +20,7 @@ export function PageSeo({ title, description, ogImage }: PageSeoProps) {
       <meta property="og:description" content={description} />
       <meta property="og:image" content={image} />
       {url && <meta property="og:url" content={url} />}
+      {url && <link rel="canonical" href={url} />}
       <meta property="og:type" content="website" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
