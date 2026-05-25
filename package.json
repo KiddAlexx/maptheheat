@@ -16,6 +16,7 @@
     "preview": "vite preview",
     "gen:sitemap": "node scripts/build-sitemap.mjs",
     "gen:sitemap:staging": "node scripts/build-sitemap.mjs --mode staging",
+    "gen:icons": "node scripts/gen-icons.mjs",
     "test": "vitest",
     "test:ui": "vitest --ui"
   },
@@ -91,6 +92,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "rollup-plugin-visualizer": "^7.0.1",
+    "sharp": "^0.34.5",
     "supabase": "^2.58.5",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.0.2",

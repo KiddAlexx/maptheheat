@@ -4,6 +4,7 @@ import PageNav from './ui/PageNav';
 import LoaderSpinner from './ui/LoaderSpinner';
 import HomeFooter from './components/HomeFooter';
 import BackgroundBlobs from './ui/BackgroundBlobs';
+import InstallBanner from './ui/InstallBanner';
 
 function RootLayout() {
   const { pathname } = useLocation();
@@ -17,6 +18,7 @@ function RootLayout() {
     >
       <header>
         <PageNav />
+        <InstallBanner />
       </header>
 
       <div
