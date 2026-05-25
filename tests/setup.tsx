@@ -13,6 +13,7 @@ import {
   getModerationVenuesMock,
   insertModerationNotificationMock,
   searchModerationNotificationRecipientsMock,
+  setVenueThumbnailMock,
   updateModerationImageStatusesMock,
   updateModerationReviewMock,
   updateModerationReviewStatusMock,
@@ -57,6 +58,7 @@ vi.mock('@/services/apiModeration', () => ({
   updateModerationReviewStatus: updateModerationReviewStatusMock,
   updateModerationReview: updateModerationReviewMock,
   updateModerationImageStatuses: updateModerationImageStatusesMock,
+  setVenueThumbnail: setVenueThumbnailMock,
 }));
 
 vi.mock('@/services/apiUserProfiles', () => ({

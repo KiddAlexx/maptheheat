@@ -1,3 +1,5 @@
+import './instrument';
+import * as Sentry from '@sentry/react';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
@@ -14,7 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <HelmetProvider>
       <BrowserRouter>
         <AppProviders>
-          <ErrorBoundary FallbackComponent={ErrorFallback}>
+          <ErrorBoundary FallbackComponent={ErrorFallback} onError={(error) => Sentry.captureException(error)}>
             <App />
           </ErrorBoundary>
         </AppProviders>

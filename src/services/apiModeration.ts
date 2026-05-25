@@ -700,6 +700,29 @@ export async function updateModerationReview({
   );
 }
 
+export interface SetVenueThumbnailArgs {
+  venueId: string;
+  url: string;
+  altText: string;
+}
+
+export async function setVenueThumbnail({
+  venueId,
+  url,
+  altText,
+}: SetVenueThumbnailArgs): Promise<void> {
+  const { error } = await supabase
+    .from('venue_details')
+    .update({ thumbnail_image: { url, alt: altText } })
+    .eq('venue_id', venueId);
+
+  if (error) {
+    throw new Error(
+      `Venue thumbnail could not be updated. Error: ${error.message}`
+    );
+  }
+}
+
 export async function updateModerationImageStatuses({
   approvedImageIds,
   declinedImageIds,

@@ -2,6 +2,7 @@
 
 //React imports
 import { createContext, useContext, useReducer, ReactNode } from 'react';
+import * as Sentry from '@sentry/react';
 
 // Data types
 interface State {
@@ -55,6 +56,7 @@ function GlobalErrorProvider({ children }: GlobalErrorProviderProps) {
   }
 
   function setGlobalError(message: string) {
+    Sentry.captureMessage(message, 'error');
     dispatch({ type: 'set-error', payload: { message } });
   }
 
