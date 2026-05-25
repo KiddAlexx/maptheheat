@@ -54,7 +54,12 @@ function MobileMenu() {
 
   return (
     <>
-      <Hamburger color="#fee9d6" toggled={isOpen} toggle={setIsOpen} />
+      <Hamburger
+        color="#fee9d6"
+        toggled={isOpen}
+        toggle={setIsOpen}
+        label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+      />
 
       {portalRoot &&
         createPortal(

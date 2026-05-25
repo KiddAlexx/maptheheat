@@ -126,13 +126,13 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
             </div>
             <div className="mr-5 sm:mr-0">
               <div
-                aria-label={`Review heat rating ${heatRating}`}
                 data-value={heatRating}
                 className=" -translate-x-[1px] sm:mt-2 [&>span]:!flex"
               >
                 <VenueRating initialRating={heatRating} readonly size="20" />
               </div>
               <div
+                role="group"
                 aria-label={`Review quality rating ${qualityRating}`}
                 className="mt-1 flex items-start gap-1 sm:mt-2"
               >

@@ -10,6 +10,13 @@
     <meta name="theme-color" content="#09090b" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Font preconnect — must come before the stylesheet to eliminate the round-trip penalty -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" />
+    <!-- Supabase preconnect — reduces data-fetch latency on first page load -->
+    <link rel="preconnect" href="https://iuhgmfdpeblaaoolhpbt.supabase.co" />
+    <link rel="preconnect" href="https://ccmlswzjnxeqmwyvjzow.supabase.co" />
     <title>Map The Heat</title>
     <!-- OpenGraph defaults — bot-visible on every route; overridden per-page by Helmet in the browser -->
     <meta property="og:site_name" content="MapTheHeat" />
