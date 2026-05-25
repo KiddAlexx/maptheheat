@@ -1,9 +1,18 @@
 import { FallbackProps } from 'react-error-boundary';
 import brokenChilli from '../assets/broken-chilli-grey-md.webp';
 import { Button, Image } from '@heroui/react';
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { useState } from 'react';
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   const message = error instanceof Error ? error.message : String(error);
+  const [copied, setCopied] = useState(false);
+
+  async function copyError() {
+    await navigator.clipboard.writeText(message);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
   return (
     <main className="flex w-full justify-center px-4 pt-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-3xl rounded-xl border border-app-border bg-app-card p-6 text-center shadow-md sm:p-10">
@@ -29,7 +38,20 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
           <summary className="cursor-pointer text-sm font-medium text-app-muted">
             Technical details
           </summary>
-          <pre className="mt-3 overflow-auto rounded-lg bg-gray-100 p-3 text-xs text-foreground dark:bg-zinc-800">
+          <div className="mt-3 flex items-center justify-between gap-2">
+            <p className="text-xs text-app-muted">Copy this and paste it into the contact form.</p>
+            <Button
+              isIconOnly
+              size="sm"
+              variant="light"
+              aria-label="Copy error details"
+              title={copied ? 'Copied!' : 'Copy error details'}
+              onPress={copyError}
+            >
+              <Icon aria-hidden="true" icon={copied ? 'lucide:check' : 'lucide:copy'} width={16} />
+            </Button>
+          </div>
+          <pre className="mt-2 overflow-auto rounded-lg bg-gray-100 p-3 text-xs text-foreground dark:bg-zinc-800">
             {message}
           </pre>
         </details>

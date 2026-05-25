@@ -21,6 +21,7 @@ import type { ModerationNotificationDecision } from './notificationTemplates';
 import { useUpdateVenueImageStatuses } from '../hooks/useUpdateVenueImageStatuses';
 import { useUpdateModerationVenue } from '../hooks/useUpdateModerationVenue';
 import { useUpdateModerationVenueStatus } from '../hooks/useUpdateModerationVenueStatus';
+import { useSetVenueThumbnail } from '../hooks/useSetVenueThumbnail';
 import { formatSubmittedDate } from '../utils/formatSubmittedDate';
 import {
   getImageStatusUpdatePayload,
@@ -51,6 +52,7 @@ function VenueModerationDetail() {
     useUpdateModerationVenue();
   const { isUpdating: isUpdatingVenueStatus, updateStatus } =
     useUpdateModerationVenueStatus();
+  const { setThumbnail } = useSetVenueThumbnail(venueId ?? '');
 
   if (!venueId) {
     return (
@@ -247,9 +249,13 @@ function VenueModerationDetail() {
       </div>
 
       <ImageModerationPanel
+        currentThumbnailUrl={loadedVenue.thumbnailImage?.url}
         images={venueImages}
         isUpdating={isUpdatingImages}
         onImageDecisionChange={handleImageDecisionChange}
+        onSetThumbnail={(image) =>
+          setThumbnail({ venueId: venueId!, url: image.imagePath.sm, altText: image.altText })
+        }
         onUpdateStatuses={handleUpdateImageStatuses}
         selectedStatuses={selectedImageStatuses}
       />

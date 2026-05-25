@@ -10,6 +10,7 @@ const ISSUE_TYPES = [
   'Report a Venue',
   'Report a Review',
   'Account Issue',
+  'Data / Privacy Request',
   'Suggest a Feature',
   'Bug Report',
   'Other',

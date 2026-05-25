@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import FocusTrap from 'focus-trap-react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import ActionButton from '@/ui/ActionButton';
+import { Button } from '@heroui/react';
 
 // Framer Motion
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
@@ -48,6 +49,15 @@ function ErrorModal({
 
   // Gives option for error message via props or context
   const finalErrorMessage = localErrorMessage || globalErrorMessage;
+
+  const [copied, setCopied] = useState(false);
+
+  async function copyError() {
+    if (!finalErrorMessage) return;
+    await navigator.clipboard.writeText(finalErrorMessage);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
 
   // Clears eror message in local file or context
   const handleClearError = localErrorMessage
@@ -117,14 +127,26 @@ function ErrorModal({
                 </h2>
                 <p className="max-w-md">{finalErrorMessage}</p>
               </div>
-              <ActionButton
-                intent="confirm"
-                id="initialErrorFocus"
-                onPress={handleClearError}
-                type="button"
-              >
-                Close
-              </ActionButton>
+              <div className="flex items-center gap-2">
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="light"
+                  aria-label="Copy error message"
+                  title={copied ? 'Copied!' : 'Copy error message'}
+                  onPress={copyError}
+                >
+                  <Icon aria-hidden="true" icon={copied ? 'lucide:check' : 'lucide:copy'} width={16} />
+                </Button>
+                <ActionButton
+                  intent="confirm"
+                  id="initialErrorFocus"
+                  onPress={handleClearError}
+                  type="button"
+                >
+                  Close
+                </ActionButton>
+              </div>
             </motion.div>
           </FocusTrap>
         </motion.div>

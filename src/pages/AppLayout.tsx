@@ -71,6 +71,8 @@ function AppLayout() {
     <main className="relative flex h-full overflow-hidden">
       <BackgroundBlobs className="dark:hidden" />
       <aside
+        id="venue-list-panel"
+        aria-label="Venue list"
         className={clsx(
           'w-full shrink flex-col overflow-hidden p-3 lg:flex lg:min-w-[32rem] lg:basis-1/3 bg-white/70 backdrop-blur-sm dark:bg-zinc-950',
           currentPane === 'list' ? 'flex' : 'hidden'

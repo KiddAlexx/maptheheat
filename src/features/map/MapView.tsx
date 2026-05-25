@@ -28,7 +28,7 @@ const TILE_URL =
   'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
 
 function MapView() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const { city } = useParams<{ city?: string }>();
   const { filters } = useVenueFilterContext();
@@ -127,10 +127,23 @@ function MapView() {
     openRequestedPopup(marker, openPopupFor);
   }, [openPopupFor, openRequestedPopup, venues]);
 
+  function goToList() {
+    const params = new URLSearchParams(searchParams);
+    params.set('pane', 'list');
+    setSearchParams(params);
+  }
+
   // Render the map with markers for each venue and center it based on the active venue or default coordinates.
   return (
     <>
     <PageSeo title={seoTitle} description={seoDescription} />
+    <a
+      href="#venue-list-panel"
+      onClick={(e) => { e.preventDefault(); goToList(); }}
+      className="sr-only focus:not-sr-only focus:absolute focus:z-[2000] focus:top-3 focus:left-3 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:shadow-lg focus:ring-2 focus:ring-success-400 dark:focus:bg-zinc-900 dark:focus:text-white"
+    >
+      Browse venues as list
+    </a>
     <div className={styles.mapContainer} aria-label="Venue map">
       <MapContainer
         className={styles.map}
