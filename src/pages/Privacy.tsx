@@ -10,7 +10,7 @@ function Privacy() {
       />
       <div className="w-full max-w-3xl rounded-xl border border-app-border bg-app-card p-6 shadow-md sm:p-10">
         <h1 className="mb-2 text-3xl font-bold text-foreground">Privacy Policy</h1>
-        <p className="mb-8 text-sm text-app-muted">Last updated: April 2026</p>
+        <p className="mb-8 text-sm text-app-muted">Last updated: May 2026</p>
 
         <section className="mb-8">
           <h2 className="mb-2 text-xl font-semibold text-foreground">1. Who We Are</h2>
@@ -41,6 +41,12 @@ function Privacy() {
             <li>
               <span className="font-medium">Usage data</span> — session tokens and authentication
               logs managed by our hosting provider, Supabase.
+            </li>
+            <li>
+              <span className="font-medium">Error and diagnostic data</span> — if an error occurs
+              while you use the platform, we automatically capture anonymised error reports
+              (including stack traces and browser/OS version) via Sentry to help us diagnose and
+              fix bugs. These reports do not include your email address or account credentials.
             </li>
           </ul>
           <p className="mt-3 text-app-muted">
@@ -88,6 +94,36 @@ function Privacy() {
                 className="text-primary underline"
               >
                 Supabase's privacy policy
+              </a>
+              .
+            </li>
+            <li>
+              <span className="font-medium">Sentry</span> — our error monitoring provider.
+              Anonymised error reports are sent to Sentry's servers when an unhandled error occurs.
+              Reports may include the page URL, browser and OS version, and a stack trace. They do
+              not include your email, name, or account credentials. Sentry is GDPR-compliant. See{' '}
+              <a
+                href="https://sentry.io/privacy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline"
+              >
+                Sentry's privacy policy
+              </a>
+              .
+            </li>
+            <li>
+              <span className="font-medium">Cloudflare</span> — our hosting and CDN provider.
+              Cloudflare Web Analytics collects anonymised, cookieless page-view data (country,
+              browser, referrer) without tracking individuals. Cloudflare also handles DDoS
+              protection and routes all traffic to our servers. See{' '}
+              <a
+                href="https://www.cloudflare.com/privacypolicy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline"
+              >
+                Cloudflare's privacy policy
               </a>
               .
             </li>
@@ -149,11 +185,13 @@ function Privacy() {
             <li><span className="font-medium">Objection</span> — object to processing based on legitimate interests.</li>
           </ul>
           <p className="mt-3 text-app-muted">
-            To exercise any of these rights, please use our{' '}
+            To exercise any of these rights — including requesting deletion of your account and
+            personal data — please use our{' '}
             <Link to="/contact" className="text-primary underline">
               contact form
-            </Link>
-            . We will respond within 30 days. You also have the right to lodge a complaint with
+            </Link>{' '}
+            and select <strong>Data / Privacy Request</strong> as the issue type. We will respond
+            within 30 days. You also have the right to lodge a complaint with
             the Spanish data protection authority,{' '}
             <a
               href="https://www.aepd.es"
