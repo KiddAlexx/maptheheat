@@ -51,8 +51,18 @@ plus the relevant tests.
 - [x] Step 20.5: Post-notifications refactor pass.
 - [x] Step 21: Add notification reason checkboxes.
 - [x] Step 22: Add admin nav link for admin users.
+- [x] Step 23: Set venue thumbnail from moderation panel.
 
 ## Completed Slices
+
+### Step 23: Set Venue Thumbnail From Moderation Panel
+
+- `setVenueThumbnail` in `apiModeration.ts` accepts `{ venueId, url, altText }` and stores directly into `venue_details.thumbnail_image`; `imagePath.sm` is already a full URL after `addImagePaths`, so no URL construction in the service.
+- `useSetVenueThumbnail` hook accepts `SetVenueThumbnailArgs`; call site in `VenueModerationDetail` does the field extraction from `ModerationImage`. Invalidates both `['moderation', 'venue', venueId]` and `['moderation', 'venues']` on success.
+- `ImageModerationPanel` gains optional `currentThumbnailUrl` and `onSetThumbnail` props; thumbnail controls only render for approved images when `onSetThumbnail` is provided — review and standalone callers unaffected.
+- Thumbnail comparison uses `currentThumbnailUrl === image.imagePath.sm` (strict equality, both full URLs in production).
+- Replaced inline status badge `<span>` with `<ModerationStatusBadge />`.
+- 3 new tests cover: button only on approved images, current-thumbnail chip for matching URL, correct `{ venueId, url, altText }` payload on click.
 
 ### Step 22: Admin Nav Link
 
@@ -976,6 +986,22 @@ Tests:
 - Manual smoke after 20d: in a standalone group, mark some
   approved/some declined, save decisions, confirm partial template loads
   and image statuses are updated.
+
+### Step 23: Set Venue Thumbnail From Moderation Panel
+
+- Allow moderators to pick any approved image for a venue and promote it to `venue_details.thumbnail_image`. This column already exists as JSONB `{url, alt}` — no migration needed. The commented-out auto-set logic in `apiVenues.ts` was never shipped; this replaces it with an explicit admin action.
+- Add `setVenueThumbnail(venueId: string, thumbnail: { url: string; alt: string })` to `src/services/apiModeration.ts` — direct `UPDATE venue_details SET thumbnail_image = ... WHERE venue_id = ...`. Keep this in the moderation service (admin write), not `apiVenues.ts` (public reads only). Build the `url` from `image_path.sm` (small variant), `alt` from `alt_text`.
+- Add `useSetVenueThumbnail` hook under `src/features/moderation/hooks/` — TanStack Query `useMutation`; invalidates `['moderation-venue', venueId]` on success so the panel re-renders with the updated badge.
+- In `ImageModerationPanel.tsx`, add per-image thumbnail controls:
+  - Approved images show a "Set thumbnail" icon button (e.g. star outline).
+  - The image whose `image_path.sm` URL matches `venue.thumbnailImage?.url` shows a filled star or "Current thumbnail" chip instead of the button.
+  - Pending/declined images get no control.
+  - The panel needs a new optional prop `onSetThumbnail?: (image: ModerationImage) => void` and `currentThumbnailUrl?: string`; when omitted (review/standalone callers) no thumbnail UI renders — backwards compatible.
+- Wire `onSetThumbnail` and `currentThumbnailUrl` in `VenueModerationDetail` only; review and standalone detail screens pass neither.
+- Scope: works on both pending and approved venues so thumbnails can be corrected after launch without reopening moderation.
+- Files: `src/services/apiModeration.ts`, `src/features/moderation/hooks/useSetVenueThumbnail.ts` (new), `src/features/moderation/components/ImageModerationPanel.tsx`, `src/features/moderation/components/VenueModerationDetail.tsx`
+- Tests: mutation payload shape (correct `url`/`alt` built from `image_path.sm`), cache invalidation, thumbnail control renders only for approved images, current-thumbnail badge shown for matching URL, review/standalone callers unaffected.
+- Verify: clicking "Set thumbnail" on an approved image updates `venue_details.thumbnail_image` in the DB; venue card on the map reflects the new thumbnail within one query refresh.
 
 ## Future Notes
 

@@ -8,6 +8,7 @@ import AllProviders from 'tests/AllProviders';
 import {
   getModerationVenueMock,
   insertModerationNotificationMock,
+  setVenueThumbnailMock,
   updateModerationImageStatusesMock,
   updateModerationVenueMock,
   updateModerationVenueStatusMock,
@@ -91,6 +92,7 @@ describe('VenueModerationDetail', () => {
       userId: 'submitter-user-id',
       venueId: 'venue-test-id',
     });
+    setVenueThumbnailMock.mockResolvedValue();
     updateModerationImageStatusesMock.mockResolvedValue();
     updateModerationVenueMock.mockResolvedValue(createModerationVenue());
     updateModerationVenueStatusMock.mockResolvedValue();
@@ -562,6 +564,116 @@ describe('VenueModerationDetail', () => {
       expect(screen.getByRole('alert')).toHaveTextContent(
         /venue submission not found/i
       );
+    });
+  });
+
+  it('shows set-as-thumbnail button only on approved images, not pending ones', async () => {
+    getModerationVenueMock.mockResolvedValue(
+      createModerationVenue({
+        venueImages: [
+          {
+            altText: 'Pending image',
+            createdAt: '2026-05-01T10:05:00.000Z',
+            imageId: 'image-pending',
+            imagePath: { lg: 'pending-lg.jpg', md: 'pending-md.jpg', sm: 'pending-sm.jpg' },
+            imageType: 'venue',
+            reviewId: null,
+            status: 'pending',
+            userId: 'submitter-user-id',
+            venueId: 'venue-test-id',
+          },
+          {
+            altText: 'Approved image',
+            createdAt: '2026-05-01T10:06:00.000Z',
+            imageId: 'image-approved',
+            imagePath: { lg: 'approved-lg.jpg', md: 'approved-md.jpg', sm: 'approved-sm.jpg' },
+            imageType: 'venue',
+            reviewId: null,
+            status: 'approved',
+            userId: 'submitter-user-id',
+            venueId: 'venue-test-id',
+          },
+        ],
+      })
+    );
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    expect(screen.getByRole('button', { name: /set as thumbnail/i })).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /set as thumbnail/i })).toHaveLength(1);
+  });
+
+  it('shows current thumbnail chip on the matching approved image', async () => {
+    getModerationVenueMock.mockResolvedValue(
+      createModerationVenue({
+        thumbnailImage: {
+          url: 'approved-sm.jpg',
+          alt: 'Approved image',
+        },
+        venueImages: [
+          {
+            altText: 'Approved image',
+            createdAt: '2026-05-01T10:06:00.000Z',
+            imageId: 'image-approved',
+            imagePath: { lg: 'approved-lg.jpg', md: 'approved-md.jpg', sm: 'approved-sm.jpg' },
+            imageType: 'venue',
+            reviewId: null,
+            status: 'approved',
+            userId: 'submitter-user-id',
+            venueId: 'venue-test-id',
+          },
+        ],
+      })
+    );
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    expect(screen.getByText(/current thumbnail/i)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /set as thumbnail/i })).not.toBeInTheDocument();
+  });
+
+  it('calls setVenueThumbnail with the correct payload when set as thumbnail is clicked', async () => {
+    const user = userEvent.setup();
+    getModerationVenueMock.mockResolvedValue(
+      createModerationVenue({
+        venueImages: [
+          {
+            altText: 'Approved image',
+            createdAt: '2026-05-01T10:06:00.000Z',
+            imageId: 'image-approved',
+            imagePath: { lg: 'approved-lg.jpg', md: 'approved-md.jpg', sm: 'approved-sm.jpg' },
+            imageType: 'venue',
+            reviewId: null,
+            status: 'approved',
+            userId: 'submitter-user-id',
+            venueId: 'venue-test-id',
+          },
+        ],
+      })
+    );
+
+    renderDetail();
+
+    expect(
+      await screen.findByRole('heading', { name: /pepper palace/i })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /set as thumbnail/i }));
+
+    await waitFor(() => {
+      expect(setVenueThumbnailMock).toHaveBeenCalledWith({
+        venueId: 'venue-test-id',
+        url: 'approved-sm.jpg',
+        altText: 'Approved image',
+      });
     });
   });
 });

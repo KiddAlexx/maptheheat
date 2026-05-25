@@ -8,6 +8,7 @@ import {
   ModerationStandaloneImagesResponse,
   ModerationReviewsResponse,
   ModerationVenuesResponse,
+  SetVenueThumbnailArgs,
   UpdateModerationImageStatusesArgs,
   UpdateModerationReviewArgs,
   UpdateModerationReviewStatusArgs,
@@ -68,4 +69,7 @@ export const updateModerationReviewMock = vi.fn<
 >();
 export const updateModerationImageStatusesMock = vi.fn<
   (args: UpdateModerationImageStatusesArgs) => Promise<void>
+>();
+export const setVenueThumbnailMock = vi.fn<
+  (args: SetVenueThumbnailArgs) => Promise<void>
 >();

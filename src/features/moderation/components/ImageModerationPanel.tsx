@@ -1,22 +1,23 @@
 import { Image } from '@heroui/react';
-import clsx from 'clsx';
 import type { ChangeEvent } from 'react';
 import ActionButton from '@/ui/ActionButton';
 import { useModalContext } from '@/context/ModalContext';
 import type { ModerationImage, ModerationStatus } from '@/types/venueTypes';
-import { STATUS_BADGE_CLASSES, STATUS_LABELS } from '../constants';
 import { getImageStatusUpdatePayload } from '../utils/imageStatusPayload';
+import ModerationStatusBadge from './ModerationStatusBadge';
 
 export type ImageDecision = Extract<ModerationStatus, 'approved' | 'declined'>;
 
 interface ImageModerationPanelProps {
   images?: ModerationImage[];
   isUpdating?: boolean;
+  currentThumbnailUrl?: string;
   onImageDecisionChange: (
     imageId: string,
     decision: ImageDecision,
     isChecked: boolean
   ) => void;
+  onSetThumbnail?: (image: ModerationImage) => void;
   onUpdateStatuses?: (payload: ImageStatusUpdatePayload) => void;
   selectedStatuses: Record<string, ImageDecision | undefined>;
   description?: string;
@@ -31,7 +32,9 @@ export interface ImageStatusUpdatePayload {
 function ImageModerationPanel({
   images = [],
   isUpdating = false,
+  currentThumbnailUrl,
   onImageDecisionChange,
+  onSetThumbnail,
   onUpdateStatuses,
   selectedStatuses,
   description = 'Select image moderation decisions before updating their statuses.',
@@ -107,18 +110,19 @@ function ImageModerationPanel({
                 />
                 <figcaption className="space-y-4 p-4">
                   <div className="flex flex-col gap-2">
-                    <span
-                      className={clsx(
-                        'w-fit rounded-full border px-2.5 py-1 text-xs font-semibold',
-                        STATUS_BADGE_CLASSES[image.status]
-                      )}
-                    >
-                      {STATUS_LABELS[image.status]}
-                    </span>
+                    <ModerationStatusBadge status={image.status} />
                     <p className="text-sm font-medium text-gray-900">
                       {image.altText || 'Submitted venue image'}
                     </p>
                   </div>
+
+                  {onSetThumbnail && image.status === 'approved' && (
+                    <ThumbnailControl
+                      image={image}
+                      isCurrent={currentThumbnailUrl === image.imagePath.sm}
+                      onSet={onSetThumbnail}
+                    />
+                  )}
 
                   <fieldset className="space-y-2">
                     <legend className="text-xs font-semibold uppercase tracking-normal text-gray-500">
@@ -186,6 +190,34 @@ function ImagePreviewButton({
         removeWrapper
         src={image.imagePath.md}
       />
+    </button>
+  );
+}
+
+function ThumbnailControl({
+  image,
+  isCurrent,
+  onSet,
+}: {
+  image: ModerationImage;
+  isCurrent: boolean;
+  onSet: (image: ModerationImage) => void;
+}) {
+  if (isCurrent) {
+    return (
+      <span className="inline-flex w-fit items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-800">
+        ★ Current thumbnail
+      </span>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => onSet(image)}
+      className="inline-flex w-fit items-center gap-1 rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+    >
+      ☆ Set as thumbnail
     </button>
   );
 }
