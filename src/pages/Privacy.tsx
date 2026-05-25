@@ -44,8 +44,9 @@ function Privacy() {
             </li>
           </ul>
           <p className="mt-3 text-app-muted">
-            We do not use cookies for tracking or advertising, and we do not run any analytics
-            tools on this site.
+            We do not use cookies for tracking or advertising. We use Cloudflare Web Analytics, a
+            cookieless analytics tool that does not track individuals, set cookies, or collect
+            personal data. No consent banner is required.
           </p>
         </section>
 
