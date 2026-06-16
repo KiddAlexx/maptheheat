@@ -9,7 +9,11 @@ interface VenueSortProps {
 }
 
 function VenueSort({ useVenueContext }: VenueSortProps) {
-  const { updateSort, resetSort } = useVenueContext();
+  const { sort, updateSort, resetSort } = useVenueContext();
+
+  // Derived from context so the selection persists across panel remounts
+  const selectedKey = sort ? `${sort.field}-${sort.direction}` : 'default';
+
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     if (e.target.value === 'default') {
       resetSort();
@@ -23,7 +27,7 @@ function VenueSort({ useVenueContext }: VenueSortProps) {
     }
   }
   return (
-    <Select onChange={handleChange} label={'Sort by'} size="sm" radius="full" variant="bordered">
+    <Select onChange={handleChange} selectedKeys={[selectedKey]} label={'Sort by'} size="sm" radius="full" variant="bordered">
       <SelectItem key={'default'}>Default</SelectItem>
       <SelectItem
         endContent={<FaSortAmountUp />}

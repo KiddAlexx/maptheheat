@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 
 // Hooks
 import { useVenue } from '../hooks/useVenue';
+import { useSyncCityFilterFromParams } from '../hooks/useSyncCityFilterFromParams';
 import { useUser } from '../../authentication/hooks/useUser';
 import { useModalContext } from '@/context/ModalContext';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
@@ -38,6 +39,9 @@ function DetailedVenueView() {
   const navigate = useNavigate();
   const setParamsAndNavigate = useParamsAndNavigate();
   const { venueId } = useParams();
+
+  // Keep the city/country filter aligned with the venue's location in the URL
+  useSyncCityFilterFromParams();
 
   const { openModal, openModalUpload, openDialog } = useModalContext();
 

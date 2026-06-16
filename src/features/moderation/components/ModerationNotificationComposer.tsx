@@ -226,8 +226,8 @@ function ModerationNotificationComposer({
   }
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">
+    <section className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold">
         Send notification
       </h3>
 
@@ -269,7 +269,7 @@ function ModerationNotificationComposer({
         )}
 
         <fieldset className="space-y-3">
-          <legend className="text-sm font-semibold text-gray-900">
+          <legend className="text-sm font-semibold">
             Template options
           </legend>
           <div className="grid gap-3 md:grid-cols-2">
@@ -302,7 +302,7 @@ function ModerationNotificationComposer({
 
         {currentTypeReasons.length > 0 ? (
           <fieldset className="space-y-3">
-            <legend className="text-sm font-semibold text-gray-900">
+            <legend className="text-sm font-semibold">
               Reason details
             </legend>
             <div className="grid gap-3 md:grid-cols-2">
@@ -342,7 +342,7 @@ function ModerationNotificationComposer({
         />
 
         {!hasManualEdits ? (
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-app-muted">
             Checkbox and option changes update the template — click{' '}
             <span className="font-medium">Apply template changes</span> to
             regenerate the title and message.
@@ -490,7 +490,7 @@ function ModerationSummary({
   venueName,
 }: ModerationSummaryProps) {
   return (
-    <dl className="grid gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 md:grid-cols-2">
+    <dl className="grid gap-4 rounded-lg border border-app-border bg-app-surface p-4 md:grid-cols-2">
       <SummaryItem label="Recipient">
         {recipientUsername ? `${recipientUsername} (${userId})` : userId}
       </SummaryItem>
@@ -527,10 +527,10 @@ function SummaryItem({
 }) {
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase tracking-normal text-gray-500">
+      <dt className="text-xs font-semibold uppercase tracking-normal text-app-muted">
         {label}
       </dt>
-      <dd className="mt-1 break-words text-gray-800">{children}</dd>
+      <dd className="mt-1 break-words">{children}</dd>
     </div>
   );
 }

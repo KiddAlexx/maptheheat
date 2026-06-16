@@ -85,8 +85,8 @@ function VenueModerationEditForm({
   }
 
   return (
-    <article className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">Edit venue</h3>
+    <article className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold">Edit venue</h3>
 
       <form
         className="mt-4 space-y-5"

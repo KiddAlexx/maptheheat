@@ -95,7 +95,7 @@ function StandaloneImageModerationQueue() {
           <h2 id="image-moderation-title" className="text-2xl font-semibold">
             Image moderation
           </h2>
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="mt-1 text-sm text-app-muted">
             Review standalone image groups by status, venue, or submitter.
           </p>
         </div>
@@ -115,7 +115,7 @@ function StandaloneImageModerationQueue() {
       </div>
 
       <form
-        className="mb-5 rounded-xl border border-gray-200 bg-white p-4 text-sm shadow-md"
+        className="mb-5 rounded-xl border border-app-border bg-app-card p-4 text-sm shadow-md"
         onSubmit={handleSearchSubmit}
       >
         <div className="grid gap-3 md:grid-cols-2">
@@ -156,7 +156,7 @@ function StandaloneImageModerationQueue() {
       {error ? (
         <div
           role="alert"
-          className="rounded-xl border border-danger-200 bg-white p-5 text-sm text-danger-700 shadow-md"
+          className="rounded-xl border border-danger-200 bg-app-card p-5 text-sm text-danger-700 shadow-md dark:border-danger-700 dark:text-danger-400"
         >
           Image moderation queue could not be loaded.
         </div>
@@ -169,9 +169,9 @@ function StandaloneImageModerationQueue() {
       {!isLoadingImageGroups && !error && imageGroups?.length === 0 ? (
         <div
           role="status"
-          className="rounded-xl border border-gray-200 bg-white p-6 text-center text-sm shadow-md"
+          className="rounded-xl border border-app-border bg-app-card p-6 text-center text-sm shadow-md"
         >
-          <p className="text-lg font-semibold text-gray-700">
+          <p className="text-lg font-semibold">
             No {status} standalone image groups found.
           </p>
         </div>
@@ -239,46 +239,46 @@ function StandaloneImageModerationQueueItem({
       status={status}
       title={title}
       metadata={
-        <div className="grid gap-3 text-gray-600 md:grid-cols-[auto_1fr]">
+        <div className="grid gap-3 text-app-muted md:grid-cols-[auto_1fr]">
           <StandaloneImagePreviewCluster images={images} />
 
           <dl className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             <div>
-              <dt className="font-medium text-gray-800">Images</dt>
+              <dt className="font-medium text-foreground">Images</dt>
               <dd>
                 {imagesMatchingStatus.length}{' '}
                 {STATUS_LABELS[status].toLowerCase()} of {imageCount}
               </dd>
             </div>
             <div>
-              <dt className="font-medium text-gray-800">Venue</dt>
+              <dt className="font-medium text-foreground">Venue</dt>
               <dd>
                 {venueName ?? 'Unknown venue'}
                 {city ? (
-                  <span className="mt-0.5 block text-xs text-gray-500">
+                  <span className="mt-0.5 block text-xs text-app-muted">
                     {city}
                   </span>
                 ) : null}
               </dd>
             </div>
             <div>
-              <dt className="font-medium text-gray-800">Submitted</dt>
+              <dt className="font-medium text-foreground">Submitted</dt>
               <dd>
                 <time dateTime={lastCreatedAt}>{formattedDate}</time>
               </dd>
             </div>
             <div>
-              <dt className="font-medium text-gray-800">Submitter</dt>
+              <dt className="font-medium text-foreground">Submitter</dt>
               <dd>
                 <ModerationSubmitter username={username} userId={userId} />
               </dd>
             </div>
             <div>
-              <dt className="font-medium text-gray-800">Group ID</dt>
+              <dt className="font-medium text-foreground">Group ID</dt>
               <dd className="break-all font-mono text-xs">{groupId}</dd>
             </div>
             <div>
-              <dt className="font-medium text-gray-800">Venue ID</dt>
+              <dt className="font-medium text-foreground">Venue ID</dt>
               <dd className="break-all font-mono text-xs">{venueId}</dd>
             </div>
           </dl>
@@ -296,7 +296,7 @@ function StandaloneImagePreviewCluster({
   return (
     <div
       aria-label="Image previews"
-      className="grid h-20 w-28 shrink-0 grid-cols-2 gap-1 overflow-hidden rounded-lg border border-gray-200 bg-gray-100 p-1"
+      className="grid h-20 w-28 shrink-0 grid-cols-2 gap-1 overflow-hidden rounded-lg border border-app-border bg-app-surface p-1"
       role="img"
     >
       {images.slice(0, 3).map((image, index) => (
