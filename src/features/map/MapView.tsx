@@ -63,11 +63,21 @@ function MapView() {
 
     useEffect(() => {
       const zoom = 13.5;
+      const destination: [number, number] = [Number(lat), Number(lon)];
+
       // Shift the center 150px north in pixel space so the pin sits lower in
       // the viewport and the popup card appears roughly centered.
-      const pinPx = map.project([Number(lat), Number(lon)], zoom);
+      const pinPx = map.project(destination, zoom);
       const centeredPx = pinPx.subtract([0, 150]);
-      map.flyTo(map.unproject(centeredPx, zoom), zoom);
+      const centeredDestination = map.unproject(centeredPx, zoom);
+
+      // Snap instantly for city/country jumps (>50 km); animate for nearby venues.
+      const distanceMetres = map.distance(map.getCenter(), destination);
+      if (distanceMetres > 50_000) {
+        map.setView(centeredDestination, zoom);
+      } else {
+        map.flyTo(centeredDestination, zoom);
+      }
     }, [lat, lon, map]);
 
     return null;
