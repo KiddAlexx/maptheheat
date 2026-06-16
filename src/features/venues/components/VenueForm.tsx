@@ -99,6 +99,7 @@ function VenueForm() {
 
   const selectedCuisines = watch('cuisines');
   const selectedDietary = watch('dietaryOptions');
+  const venueType = watch('venueType');
 
   // Mapbox returns coordinates as [lon, lat] (GeoJSON order) — we reverse to match
   // our internal Coords type { lat, lon }
@@ -563,6 +564,7 @@ function VenueForm() {
                   control={control}
                   rules={{
                     validate: (v) =>
+                      venueType === 'shop' ||
                       v.length >= 1 ||
                       'Please select at least one cuisine type',
                   }}
@@ -573,7 +575,7 @@ function VenueForm() {
                           Cuisine Type
                         </span>
                         <span className="text-xs text-app-muted">
-                          Select 1 or 2
+                          {venueType === 'shop' ? 'Optional' : 'Select 1 or 2'}
                         </span>
                       </div>
                       <div
