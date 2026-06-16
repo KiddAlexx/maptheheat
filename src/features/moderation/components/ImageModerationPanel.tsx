@@ -74,13 +74,13 @@ function ImageModerationPanel({
   }
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
+    <section className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold">
             {title}
           </h3>
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="mt-1 text-sm text-app-muted">
             {description}
           </p>
         </div>
@@ -101,7 +101,7 @@ function ImageModerationPanel({
           {images.map((image) => (
             <li
               key={image.imageId}
-              className="overflow-hidden rounded-xl border border-gray-200 bg-gray-50"
+              className="overflow-hidden rounded-xl border border-app-border bg-app-surface"
             >
               <figure>
                 <ImagePreviewButton
@@ -111,7 +111,7 @@ function ImageModerationPanel({
                 <figcaption className="space-y-4 p-4">
                   <div className="flex flex-col gap-2">
                     <ModerationStatusBadge status={image.status} />
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium">
                       {image.altText || 'Submitted venue image'}
                     </p>
                   </div>
@@ -125,7 +125,7 @@ function ImageModerationPanel({
                   )}
 
                   <fieldset className="space-y-2">
-                    <legend className="text-xs font-semibold uppercase tracking-normal text-gray-500">
+                    <legend className="text-xs font-semibold uppercase tracking-normal text-app-muted">
                       Moderation decision
                     </legend>
                     <ImageDecisionCheckbox
@@ -157,7 +157,7 @@ function ImageModerationPanel({
           ))}
         </ul>
       ) : (
-        <p className="mt-5 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-zinc-600">
+        <p className="mt-5 rounded-lg border border-dashed border-app-border bg-app-surface p-4 text-sm text-app-muted">
           No images are attached to this submission.
         </p>
       )}
@@ -215,7 +215,7 @@ function ThumbnailControl({
     <button
       type="button"
       onClick={() => onSet(image)}
-      className="inline-flex w-fit items-center gap-1 rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+      className="inline-flex w-fit items-center gap-1 rounded-full border border-app-border bg-app-card px-2.5 py-1 text-xs font-medium text-foreground hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800 dark:hover:bg-amber-900/30 dark:hover:text-amber-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
     >
       ☆ Set as thumbnail
     </button>
@@ -259,10 +259,10 @@ function ImageDecisionCheckbox({
   }
 
   return (
-    <label className="flex min-h-10 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-800">
+    <label className="flex min-h-10 items-center gap-2 rounded-lg border border-app-border bg-app-card px-3 text-sm">
       <input
         checked={checked}
-        className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+        className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-zinc-600"
         name={name}
         onChange={handleChange}
         type="checkbox"

@@ -183,20 +183,20 @@ function VenueModerationDetail() {
         <div className="min-w-0">
           <Link
             to="/admin/moderation/venues"
-            className="mb-3 inline-flex min-h-10 items-center rounded-full pr-4 text-sm text-gray-700 hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+            className="mb-3 inline-flex min-h-10 items-center rounded-full pr-4 text-sm text-app-muted hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
           >
             Back to venue queue
           </Link>
           <div className="flex flex-wrap items-center gap-3">
             <h2
               id="venue-detail-title"
-              className="text-2xl font-semibold text-gray-900"
+              className="text-2xl font-semibold"
             >
               {venue.venueName}
             </h2>
             <ModerationStatusBadge status={venue.status} />
           </div>
-          <p className="mt-1 max-w-3xl text-sm text-zinc-600">
+          <p className="mt-1 max-w-3xl text-sm text-app-muted">
             Review the submitted venue details before making a moderation
             decision.
           </p>
@@ -205,8 +205,8 @@ function VenueModerationDetail() {
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(20rem,1fr)]">
         <div className="space-y-5">
-          <article className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-            <h3 className="text-lg font-semibold text-gray-900">
+          <article className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+            <h3 className="text-lg font-semibold">
               Venue details
             </h3>
             <VenueFields venue={venue} />
@@ -348,7 +348,7 @@ function VenueFields({ venue }: { venue: ModerationVenue }) {
       </ModerationDetailItem>
 
       <ModerationDetailItem label="Description">
-        <p className="whitespace-pre-wrap text-gray-700">{description}</p>
+        <p className="whitespace-pre-wrap text-app-muted">{description}</p>
       </ModerationDetailItem>
     </div>
   );
@@ -359,8 +359,8 @@ function MetadataPanel({ venue }: { venue: ModerationVenue }) {
   const formattedDate = formatSubmittedDate(createdAt, { includeTime: true });
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">
+    <section className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold">
         Submission metadata
       </h3>
       <dl className="mt-4 space-y-4">
@@ -390,8 +390,8 @@ function ClassificationPanel({ venue }: { venue: ModerationVenue }) {
   ];
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">
+    <section className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold">
         Submitted attributes
       </h3>
       {tags.length > 0 ? (
@@ -399,14 +399,14 @@ function ClassificationPanel({ venue }: { venue: ModerationVenue }) {
           {tags.map((tag) => (
             <li
               key={tag}
-              className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-800"
+              className="rounded-full bg-app-surface px-3 py-1 text-sm"
             >
               {tag}
             </li>
           ))}
         </ul>
       ) : (
-        <p className="mt-4 text-sm text-zinc-600">No attributes submitted.</p>
+        <p className="mt-4 text-sm text-app-muted">No attributes submitted.</p>
       )}
     </section>
   );

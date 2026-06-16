@@ -140,17 +140,17 @@ function StandaloneImageModerationGroup() {
         <div className="min-w-0">
           <Link
             to="/admin/moderation/images"
-            className="mb-3 inline-flex min-h-10 items-center rounded-full pr-4 text-sm text-gray-700 hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+            className="mb-3 inline-flex min-h-10 items-center rounded-full pr-4 text-sm text-app-muted hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
           >
             Back to image queue
           </Link>
           <h2
             id="image-group-detail-title"
-            className="text-2xl font-semibold text-gray-900"
+            className="text-2xl font-semibold"
           >
             {loadedImageGroup.venueName ?? 'Standalone image group'}
           </h2>
-          <p className="mt-1 max-w-3xl text-sm text-zinc-600">
+          <p className="mt-1 max-w-3xl text-sm text-app-muted">
             Review each submitted standalone image before updating image
             statuses.
           </p>
@@ -239,9 +239,9 @@ function StandaloneImageStatusActions({
   }
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">Decision workflow</h3>
-      <p className="mt-1 text-sm text-zinc-600">
+    <section className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold">Decision workflow</h3>
+      <p className="mt-1 text-sm text-app-muted">
         Review the draft image decisions, then save them before sending the
         notification.
       </p>
@@ -255,7 +255,7 @@ function StandaloneImageStatusActions({
       </dl>
 
       {pendingImagesWithoutDecision > 0 ? (
-        <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
           Resolve every pending image before proceeding.
         </p>
       ) : null}
@@ -305,8 +305,8 @@ function StatusSummaryPanel({ images }: { images: ModerationImage[] }) {
   const counts = getImageStatusCounts(images);
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">Image statuses</h3>
+    <section className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold">Image statuses</h3>
       <dl className="mt-4 grid gap-4 sm:grid-cols-3">
         <ModerationDetailItem label="Pending">{counts.pending}</ModerationDetailItem>
         <ModerationDetailItem label="Approved">{counts.approved}</ModerationDetailItem>
@@ -338,8 +338,8 @@ function MetadataPanel({
   });
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">
+    <section className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold">
         Submission metadata
       </h3>
       <dl className="mt-4 space-y-4">

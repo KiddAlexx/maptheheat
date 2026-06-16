@@ -54,7 +54,7 @@ function AdminNotificationCenter() {
         <h2 id="notification-center-title" className="text-2xl font-semibold">
           Notifications
         </h2>
-        <p className="mt-1 text-sm text-zinc-600">
+        <p className="mt-1 text-sm text-app-muted">
           Send manual moderation notifications without changing content status.
         </p>
       </div>
@@ -104,8 +104,8 @@ function RecipientPicker({
   shouldSearch,
 }: RecipientPickerProps) {
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">
+    <section className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold">
         Choose recipient
       </h3>
 
@@ -138,13 +138,13 @@ function RecipientPicker({
         ) : null}
 
         {isSearching ? (
-          <p role="status" className="text-sm text-zinc-600">
+          <p role="status" className="text-sm text-app-muted">
             Searching recipients...
           </p>
         ) : null}
 
         {shouldSearch && !isSearching && recipients.length === 0 ? (
-          <p role="status" className="text-sm text-zinc-600">
+          <p role="status" className="text-sm text-app-muted">
             No recipients found.
           </p>
         ) : null}
@@ -160,15 +160,15 @@ function RecipientPicker({
               <li key={recipient.userId}>
                 <Button
                   aria-label={`Select recipient ${formatRecipientLabel(recipient)}`}
-                  className="h-auto w-full justify-start rounded-lg border border-gray-200 bg-white px-3 py-2 text-left text-sm"
+                  className="h-auto w-full justify-start rounded-lg border border-app-border bg-app-card px-3 py-2 text-left text-sm"
                   onPress={() => onRecipientSelect(recipient)}
                   variant="flat"
                 >
                   <span className="flex min-w-0 flex-col items-start">
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium">
                       {recipient.username ?? 'Unknown username'}
                     </span>
-                    <span className="break-all text-xs text-zinc-600">
+                    <span className="break-all text-xs text-app-muted">
                       {recipient.userId}
                     </span>
                   </span>

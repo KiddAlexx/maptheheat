@@ -21,15 +21,15 @@ function AdminAccessMessage({
   action,
 }: AdminAccessMessageProps) {
   return (
-    <main className="flex min-h-0 flex-1 items-center justify-center bg-zinc-50 px-4 py-10">
+    <main className="flex min-h-0 flex-1 items-center justify-center bg-app-surface px-4 py-10">
       <section
-        className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 text-center text-sm shadow-md"
+        className="w-full max-w-md rounded-xl border border-app-border bg-app-card p-6 text-center text-sm shadow-md"
         aria-labelledby="admin-access-title"
       >
         <h1 id="admin-access-title" className="text-2xl font-semibold">
           {title}
         </h1>
-        <p className="mt-3 text-sm text-zinc-600">{message}</p>
+        <p className="mt-3 text-sm text-app-muted">{message}</p>
         {action && <div className="mt-5">{action}</div>}
       </section>
     </main>

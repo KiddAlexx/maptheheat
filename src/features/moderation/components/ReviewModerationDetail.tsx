@@ -180,20 +180,20 @@ function ReviewModerationDetail() {
         <div className="min-w-0">
           <Link
             to="/admin/moderation/reviews"
-            className="mb-3 inline-flex min-h-10 items-center rounded-full pr-4 text-sm text-gray-700 hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+            className="mb-3 inline-flex min-h-10 items-center rounded-full pr-4 text-sm text-app-muted hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
           >
             Back to review queue
           </Link>
           <div className="flex flex-wrap items-center gap-3">
             <h2
               id="review-detail-title"
-              className="text-2xl font-semibold text-gray-900"
+              className="text-2xl font-semibold"
             >
               {loadedReview.reviewTitle}
             </h2>
             <ModerationStatusBadge status={loadedReview.status} />
           </div>
-          <p className="mt-1 max-w-3xl text-sm text-zinc-600">
+          <p className="mt-1 max-w-3xl text-sm text-app-muted">
             Review the submitted ratings and comments before making a
             moderation decision.
           </p>
@@ -202,8 +202,8 @@ function ReviewModerationDetail() {
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(20rem,1fr)]">
         <div className="space-y-5">
-          <article className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-            <h3 className="text-lg font-semibold text-gray-900">
+          <article className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+            <h3 className="text-lg font-semibold">
               Review details
             </h3>
             <ReviewFields review={loadedReview} />
@@ -321,7 +321,7 @@ function ReviewFields({ review }: { review: ModerationReview }) {
       </dl>
 
       <ModerationDetailItem label="Review content">
-        <p className="whitespace-pre-wrap text-gray-700">{reviewContent}</p>
+        <p className="whitespace-pre-wrap text-app-muted">{reviewContent}</p>
       </ModerationDetailItem>
     </div>
   );
@@ -339,8 +339,8 @@ function MetadataPanel({ review }: { review: ModerationReview }) {
   const formattedDate = formatSubmittedDate(createdAt, { includeTime: true });
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">
+    <section className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold">
         Submission metadata
       </h3>
       <dl className="mt-4 space-y-4">
@@ -368,8 +368,8 @@ function VenueContextPanel({ review }: { review: ModerationReview }) {
   const venue = review.venueDetails;
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">Venue context</h3>
+    <section className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold">Venue context</h3>
       {venue ? (
         <dl className="mt-4 space-y-4">
           <ModerationDetailItem label="Venue">{venue.venueName}</ModerationDetailItem>
@@ -382,7 +382,7 @@ function VenueContextPanel({ review }: { review: ModerationReview }) {
           </ModerationDetailItem>
         </dl>
       ) : (
-        <p className="mt-4 text-sm text-zinc-600">
+        <p className="mt-4 text-sm text-app-muted">
           Venue context is not available for this review.
         </p>
       )}

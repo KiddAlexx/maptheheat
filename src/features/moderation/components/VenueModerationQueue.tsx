@@ -113,7 +113,7 @@ function VenueModerationQueue() {
           <h2 id="venue-moderation-title" className="text-2xl font-semibold">
             Venue moderation
           </h2>
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="mt-1 text-sm text-app-muted">
             Review submitted venues by status, city, and venue name.
           </p>
         </div>
@@ -132,7 +132,7 @@ function VenueModerationQueue() {
         </ButtonGroup>
       </div>
 
-      <div className="mb-5 grid gap-3 rounded-xl border border-gray-200 bg-white p-4 text-sm shadow-md lg:grid-cols-[minmax(14rem,18rem)_1fr]">
+      <div className="mb-5 grid gap-3 rounded-xl border border-app-border bg-app-card p-4 text-sm shadow-md lg:grid-cols-[minmax(14rem,18rem)_1fr]">
         <ModerationCitySelect
           cities={cities}
           value={selectedCityKey}
@@ -165,7 +165,7 @@ function VenueModerationQueue() {
       {error ? (
         <div
           role="alert"
-          className="rounded-xl border border-danger-200 bg-white p-5 text-sm text-danger-700 shadow-md"
+          className="rounded-xl border border-danger-200 bg-app-card p-5 text-sm text-danger-700 shadow-md dark:border-danger-700 dark:text-danger-400"
         >
           Venue moderation queue could not be loaded.
         </div>
@@ -178,9 +178,9 @@ function VenueModerationQueue() {
       {!isLoadingVenues && !error && venues?.length === 0 ? (
         <div
           role="status"
-          className="rounded-xl border border-gray-200 bg-white p-6 text-center text-sm shadow-md"
+          className="rounded-xl border border-app-border bg-app-card p-6 text-center text-sm shadow-md"
         >
-          <p className="text-lg font-semibold text-gray-700">
+          <p className="text-lg font-semibold">
             No {status} venues found.
           </p>
         </div>
@@ -235,25 +235,25 @@ function VenueModerationQueueItem({ venue }: { venue: ModerationVenue }) {
       status={status}
       title={venueName}
       metadata={
-        <dl className="grid gap-2 text-gray-600 sm:grid-cols-2">
+        <dl className="grid gap-2 text-app-muted sm:grid-cols-2">
           <div>
-            <dt className="font-medium text-gray-800">Location</dt>
+            <dt className="font-medium text-foreground">Location</dt>
             <dd>
               {city}, {country}
             </dd>
           </div>
           <div>
-            <dt className="font-medium text-gray-800">Type</dt>
+            <dt className="font-medium text-foreground">Type</dt>
             <dd className="capitalize">{venueType}</dd>
           </div>
           <div>
-            <dt className="font-medium text-gray-800">Submitted</dt>
+            <dt className="font-medium text-foreground">Submitted</dt>
             <dd>
               <time dateTime={createdAt}>{formattedDate}</time>
             </dd>
           </div>
           <div>
-            <dt className="font-medium text-gray-800">Submitter</dt>
+            <dt className="font-medium text-foreground">Submitter</dt>
             <dd>
               <ModerationSubmitter username={submitterUsername} userId={userId} />
             </dd>
