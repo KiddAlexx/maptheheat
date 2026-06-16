@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 // Hooks
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
 import { useVenues } from '../venues/hooks/useVenues';
+import { useSyncCityFilterFromParams } from '../venues/hooks/useSyncCityFilterFromParams';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { PageSeo } from '@/lib/seo';
 
@@ -32,6 +33,9 @@ function MapView() {
   const location = useLocation();
   const { city } = useParams<{ city?: string }>();
   const { filters } = useVenueFilterContext();
+
+  // Keep the city/country filter aligned with the location shown in the URL
+  useSyncCityFilterFromParams();
 
   const cityLabel = city ? city.replace(/-/g, ' ') : null;
   const seoTitle = cityLabel

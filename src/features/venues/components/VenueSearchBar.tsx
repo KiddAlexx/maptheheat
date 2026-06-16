@@ -1,14 +1,31 @@
 import { Button, ButtonGroup, Input } from '@heroui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { VenueFilterContextType } from '@/context/VenueFilterContext';
+import { getFilterValue } from '../utils/getFilterValue';
 
 interface VenueSearchBarProps {
   useVenueContext: () => VenueFilterContextType;
 }
 
 function VenueSearchBar({ useVenueContext }: VenueSearchBarProps) {
-  const { updateVenueFilter, removeVenueFilter } = useVenueContext();
-  const [searchValue, setSearchValue] = useState('');
+  const { filters, updateVenueFilter, removeVenueFilter } = useVenueContext();
+
+  // The applied term is stored wrapped as `%term%` for the ilike query; strip
+  // the wrapping to recover what the user actually typed.
+  const contextTerm = ((getFilterValue(filters, 'venueName') as string) ?? '').replace(
+    /^%|%$/g,
+    ''
+  );
+
+  // Local draft state for in-progress typing (only committed on submit),
+  // seeded from context on mount so a remount shows the applied search term.
+  const [searchValue, setSearchValue] = useState(contextTerm);
+
+  // Resync the draft when the context term changes externally — e.g. selecting
+  // a city clears the venueName filter (see CitySelect.handleSelectCity).
+  useEffect(() => {
+    setSearchValue(contextTerm);
+  }, [contextTerm]);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
