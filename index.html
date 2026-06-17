@@ -9,23 +9,6 @@
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#09090b" />
 
-    <!-- Apply the saved/system theme before first paint to avoid a light-mode flash.
-         Mirrors next-themes config (storageKey "theme", defaultTheme "system"). -->
-    <script>
-      (function () {
-        try {
-          var stored = localStorage.getItem('theme');
-          var isDark =
-            stored === 'dark' ||
-            ((!stored || stored === 'system') &&
-              window.matchMedia('(prefers-color-scheme: dark)').matches);
-          var root = document.documentElement;
-          root.classList.add(isDark ? 'dark' : 'light');
-          root.style.colorScheme = isDark ? 'dark' : 'light';
-        } catch (e) {}
-      })();
-    </script>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Font preconnect — must come before the stylesheet to eliminate the round-trip penalty -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -34,8 +17,7 @@
     <!-- Supabase preconnect — reduces data-fetch latency on first page load -->
     <link rel="preconnect" href="https://iuhgmfdpeblaaoolhpbt.supabase.co" />
     <link rel="preconnect" href="https://ccmlswzjnxeqmwyvjzow.supabase.co" />
-    <title>MapTheHeat | Discover & Review Spicy Restaurants & Shops</title>
-    <meta name="description" content="MapTheHeat is a community-driven platform for discovering and sharing venues that serve spicy food. Browse an interactive map, read community heat ratings, sign in (including with Google) to save favourites, submit venues, upload photos, and manage your reviews." />
+    <title>Map The Heat</title>
     <!-- OpenGraph defaults — bot-visible on every route; overridden per-page by Helmet in the browser -->
     <meta property="og:site_name" content="MapTheHeat" />
     <meta property="og:type" content="website" />
@@ -57,23 +39,6 @@
   <body>
     <div id="root"></div>
     <div id="modal-root"></div>
-    <noscript>
-      <h1>MapTheHeat</h1>
-      <p>
-        MapTheHeat is a community-driven platform for discovering and sharing
-        venues that serve spicy food. Browse an interactive map, read community
-        heat ratings, and contribute your own reviews.
-      </p>
-      <ul>
-        <li>Discover restaurants and shops serving spicy food in your city.</li>
-        <li>Read honest heat ratings and quality scores left by other users.</li>
-        <li>
-          Sign in (including with Google) to save favourite venues, submit new
-          venues, upload photos, and manage your reviews and profile.
-        </li>
-      </ul>
-      <p><a href="/privacy">Privacy Policy</a></p>
-    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
