@@ -15,7 +15,7 @@ const features = [
     icon: '✍️',
     title: 'Add & Rate',
     description:
-      'Submit new venues, upload photos, and leave your own reviews with heat level ratings to help the community grow.',
+      'Sign in, including with Google, to submit new venues, upload photos, and leave your own reviews with heat ratings.',
   },
 ];
 
