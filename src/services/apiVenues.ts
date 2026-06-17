@@ -75,6 +75,9 @@ export async function getVenues({
     const convertedSortField = decamelize(sort.field);
     query = query.order(convertedSortField, {
       ascending: sort.direction === 'asc',
+      // Unrated venues (NULL rating/review columns) always sink to the bottom,
+      // otherwise Postgres places NULLs first on a DESC sort
+      nullsFirst: false,
     });
   }
 
