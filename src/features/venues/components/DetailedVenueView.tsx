@@ -398,7 +398,7 @@ function DetailedVenueView() {
 
         <div className="mb-4">
           <h2 className="mb-2 text-lg font-medium">About</h2>
-          <p className="text-foreground">{description}</p>
+          <p className="whitespace-pre-wrap text-foreground">{description}</p>
         </div>
         <div className="mb-3 flex gap-2 ">
           <Button

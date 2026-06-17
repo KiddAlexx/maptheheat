@@ -6,7 +6,7 @@ import VenuePreviewContainer from '@/features/venues/components/VenuePreviewCont
 
 function HeroSection() {
   return (
-    <section className=" mx-auto grid max-w-7xl flex-1 items-center gap-6 md:grid-cols-2">
+    <section className="mx-auto grid max-w-7xl flex-1 items-center gap-6 pt-10 md:grid-cols-2 md:pt-16">
       <div className="mx-6">
         <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-foreground sm:text-6xl">
           Find the <span className="text-primary-500">spiciest</span>{' '}
