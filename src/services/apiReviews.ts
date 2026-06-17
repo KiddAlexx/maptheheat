@@ -58,6 +58,8 @@ export async function getReviews({
     const convertedSortField = decamelize(sort.field);
     query = query.order(convertedSortField, {
       ascending: sort.direction === 'asc',
+      // Keep any NULL-valued sort column last regardless of direction
+      nullsFirst: false,
     });
   }
 
