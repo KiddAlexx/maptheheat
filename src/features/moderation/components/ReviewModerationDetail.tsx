@@ -21,6 +21,7 @@ import {
 import { useUpdateModerationReview } from '../hooks/useUpdateModerationReview';
 import { useUpdateModerationReviewStatus } from '../hooks/useUpdateModerationReviewStatus';
 import { useUpdateReviewImageStatuses } from '../hooks/useUpdateReviewImageStatuses';
+import { useSetVenueThumbnail } from '../hooks/useSetVenueThumbnail';
 import { formatSubmittedDate } from '../utils/formatSubmittedDate';
 import {
   getImageStatusUpdatePayload,
@@ -47,6 +48,7 @@ function ReviewModerationDetail() {
     useUpdateModerationReview();
   const { isUpdating: isUpdatingReviewStatus, updateStatus } =
     useUpdateModerationReviewStatus();
+  const { setThumbnail } = useSetVenueThumbnail(review?.venueId ?? '');
 
   if (!reviewId) {
     return (
@@ -246,9 +248,13 @@ function ReviewModerationDetail() {
       </div>
 
       <ImageModerationPanel
+        currentThumbnailUrl={loadedReview.venueDetails?.thumbnailImage?.url}
         images={reviewImages}
         isUpdating={isUpdatingImages}
         onImageDecisionChange={handleImageDecisionChange}
+        onSetThumbnail={(image) =>
+          setThumbnail({ venueId: loadedReview.venueId, url: image.imagePath.sm, altText: image.altText })
+        }
         onUpdateStatuses={handleUpdateImageStatuses}
         selectedStatuses={selectedImageStatuses}
       />
