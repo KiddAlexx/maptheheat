@@ -158,7 +158,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
       <section className="mr-4 flex w-full justify-between gap-1 p-2 sm:ml-5">
         <div>
           <h4 className=" mb-1 font-medium">{reviewTitle}</h4>
-          <p className="mb-2">{reviewContent}</p>
+          <p className="mb-2 whitespace-pre-wrap">{reviewContent}</p>
           {reviewType === 'shop' && (
             <p>
               Hottest Sauce: <span>{hottestSauce}</span>

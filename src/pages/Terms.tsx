@@ -90,6 +90,12 @@ function Terms() {
             </Link>
             , which explains what personal data we collect, why, and your rights under GDPR.
           </p>
+          <p className="mt-3 text-app-muted">
+            If you choose to sign in with Google, we only access your name and email address to
+            create and secure your account. We do not request access to your Google Drive, Gmail,
+            contacts, or any other Google services. Your data is never sold or shared with third
+            parties for marketing purposes.
+          </p>
         </section>
 
         <section>

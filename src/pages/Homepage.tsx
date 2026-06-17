@@ -1,4 +1,5 @@
 import HeroSection from '../components/HeroSection';
+import FeaturesSection from '../components/FeaturesSection';
 import BackgroundBlobs from '@/ui/BackgroundBlobs';
 import { PageSeo } from '@/lib/seo';
 
@@ -11,6 +12,7 @@ function Homepage() {
       />
       <BackgroundBlobs />
       <HeroSection />
+      <FeaturesSection />
     </main>
   );
 }

@@ -10,6 +10,7 @@ import ModerationSubmitter from './ModerationSubmitter';
 import type { ModerationNotificationDecision } from './notificationTemplates';
 import { useModerationStandaloneImageGroup } from '../hooks/useModerationStandaloneImageGroup';
 import { useUpdateStandaloneImageStatuses } from '../hooks/useUpdateStandaloneImageStatuses';
+import { useSetVenueThumbnail } from '../hooks/useSetVenueThumbnail';
 import { formatSubmittedDate } from '../utils/formatSubmittedDate';
 import {
   getImageStatusUpdatePayload,
@@ -50,6 +51,7 @@ function StandaloneImageModerationGroup() {
     useModerationStandaloneImageGroup(groupId);
   const { isUpdating, updateImageStatuses } =
     useUpdateStandaloneImageStatuses(groupId);
+  const { setThumbnail } = useSetVenueThumbnail(imageGroup?.venueId ?? '');
 
   if (!groupId) {
     return (
@@ -193,6 +195,9 @@ function StandaloneImageModerationGroup() {
       <ImageModerationPanel
         images={loadedImageGroup.images}
         onImageDecisionChange={handleImageDecisionChange}
+        onSetThumbnail={(image) =>
+          setThumbnail({ venueId: loadedImageGroup.venueId, url: image.imagePath.sm, altText: image.altText })
+        }
         selectedStatuses={selectedImageStatuses}
         description="Choose per-image decisions here, then continue from the decision panel before saving changes."
         title="Submitted images"
