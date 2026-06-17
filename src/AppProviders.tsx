@@ -1,4 +1,4 @@
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools'; // temporarily disabled for GIF recording
 import { GlobalErrorProvider } from './context/ErrorContext';
 import { HeroUIProvider } from '@heroui/system';
 import { ThemeProvider } from 'next-themes';
@@ -37,7 +37,7 @@ function AppProviders({ children }: AppProviderProps) {
                 <ModalProvider>
                   <UIProvider>
                     <QueryClientProvider client={queryClient}>
-                      <ReactQueryDevtools initialIsOpen={false} />
+                      {/* <ReactQueryDevtools initialIsOpen={false} /> temporarily disabled for GIF recording */}
                       {children}
                     </QueryClientProvider>
                   </UIProvider>

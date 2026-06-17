@@ -1,6 +1,6 @@
 import { VenueFilterContextType } from '@/context/VenueFilterContext';
 import { Button, ButtonGroup } from '@heroui/react';
-import { useState } from 'react';
+import { getFilterValue } from '../utils/getFilterValue';
 
 interface VenueTypeFilterProps {
   useVenueContext: () => VenueFilterContextType;
@@ -9,11 +9,13 @@ interface VenueTypeFilterProps {
 type FilterValue = 'all' | 'restaurant' | 'shop';
 
 function VenueTypeFilter({ useVenueContext }: VenueTypeFilterProps) {
-  const [activeType, setActiveType] = useState('all');
-  const { updateVenueFilter, removeVenueFilter } = useVenueContext();
+  const { filters, updateVenueFilter, removeVenueFilter } = useVenueContext();
+
+  // Derived from context so the active button reflects the applied filter
+  // after the panel remounts on navigation.
+  const activeType = (getFilterValue(filters, 'venueType') as FilterValue) ?? 'all';
 
   function handleFilterClick(filterValue: FilterValue) {
-    setActiveType(filterValue);
     if (filterValue === 'all') {
       removeVenueFilter('venueType');
     } else {

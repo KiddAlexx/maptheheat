@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 // Hooks
 import { useVenueFilterContext } from '@/context/VenueFilterContext';
 import { useVenues } from '../venues/hooks/useVenues';
+import { useSyncCityFilterFromParams } from '../venues/hooks/useSyncCityFilterFromParams';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { PageSeo } from '@/lib/seo';
 
@@ -32,6 +33,9 @@ function MapView() {
   const location = useLocation();
   const { city } = useParams<{ city?: string }>();
   const { filters } = useVenueFilterContext();
+
+  // Keep the city/country filter aligned with the location shown in the URL
+  useSyncCityFilterFromParams();
 
   const cityLabel = city ? city.replace(/-/g, ' ') : null;
   const seoTitle = cityLabel
@@ -59,11 +63,21 @@ function MapView() {
 
     useEffect(() => {
       const zoom = 13.5;
+      const destination: [number, number] = [Number(lat), Number(lon)];
+
       // Shift the center 150px north in pixel space so the pin sits lower in
       // the viewport and the popup card appears roughly centered.
-      const pinPx = map.project([Number(lat), Number(lon)], zoom);
+      const pinPx = map.project(destination, zoom);
       const centeredPx = pinPx.subtract([0, 150]);
-      map.flyTo(map.unproject(centeredPx, zoom), zoom);
+      const centeredDestination = map.unproject(centeredPx, zoom);
+
+      // Snap instantly for city/country jumps (>50 km); animate for nearby venues.
+      const distanceMetres = map.distance(map.getCenter(), destination);
+      if (distanceMetres > 50_000) {
+        map.setView(centeredDestination, zoom);
+      } else {
+        map.flyTo(centeredDestination, zoom);
+      }
     }, [lat, lon, map]);
 
     return null;

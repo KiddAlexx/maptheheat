@@ -8,7 +8,7 @@ function ModerationSubmitter({ username, userId }: ModerationSubmitterProps) {
     <>
       <span>{username || userId}</span>
       {username ? (
-        <span className="mt-0.5 block break-all font-mono text-xs text-gray-500">
+        <span className="mt-0.5 block break-all font-mono text-xs text-app-muted">
           {userId}
         </span>
       ) : null}

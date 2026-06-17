@@ -8,6 +8,7 @@ import VenueSearchBar from './VenueSearchBar';
 import TagFilter from './TagFilter';
 import { CUISINE_TYPES, DIETARY_OPTIONS } from '@/shared/data/cuisineTypes';
 import { VenueFilterContextType } from '@/context/VenueFilterContext';
+import { getFilterValue } from '../utils/getFilterValue';
 
 interface SearchAndFilerPanelProps {
   useVenueContext: () => VenueFilterContextType;
@@ -20,40 +21,40 @@ function SearchAndFilterPanel({
 }: SearchAndFilerPanelProps) {
   // isUserMode hides the search bar on the profile/favourites view
   const isUserMode = useMatch('/profile/venues');
-  const { updateVenueFilter, removeVenueFilter } = useVenueContext();
+  const { filters, updateVenueFilter, removeVenueFilter } = useVenueContext();
 
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
-  const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
+
+  // Selected tags are derived from the filter context (the single source of
+  // truth) so the UI always reflects the applied filters, even after the panel
+  // unmounts and remounts on navigation.
+  const selectedCuisines = (getFilterValue(filters, 'cuisines') as string[]) ?? [];
+  const selectedDietary = (getFilterValue(filters, 'dietaryOptions') as string[]) ?? [];
 
   // Total active tag count shown as a badge on the Filters button
   const activeTagCount = selectedCuisines.length + selectedDietary.length;
 
-  // Toggles a single cuisine tag on/off and syncs to the filter context
+  // Toggles a single cuisine tag on/off in the filter context
   function toggleCuisine(tag: string) {
     const updatedCuisines = selectedCuisines.includes(tag)
       ? selectedCuisines.filter((existingTag) => existingTag !== tag)
       : [...selectedCuisines, tag];
-    setSelectedCuisines(updatedCuisines);
     updatedCuisines.length > 0
       ? updateVenueFilter({ field: 'cuisines', value: updatedCuisines, method: 'overlaps' })
       : removeVenueFilter('cuisines');
   }
 
-  // Toggles a single dietary option on/off and syncs to the filter context
+  // Toggles a single dietary option on/off in the filter context
   function toggleDietary(tag: string) {
     const updatedDietary = selectedDietary.includes(tag)
       ? selectedDietary.filter((existingTag) => existingTag !== tag)
       : [...selectedDietary, tag];
-    setSelectedDietary(updatedDietary);
     updatedDietary.length > 0
       ? updateVenueFilter({ field: 'dietaryOptions', value: updatedDietary, method: 'overlaps' })
       : removeVenueFilter('dietaryOptions');
   }
 
   function clearAllTagFilters() {
-    setSelectedCuisines([]);
-    setSelectedDietary([]);
     removeVenueFilter('cuisines');
     removeVenueFilter('dietaryOptions');
   }
@@ -111,14 +112,14 @@ function SearchAndFilterPanel({
               tags={CUISINE_TYPES}
               selectedTags={selectedCuisines}
               onToggle={toggleCuisine}
-              onClear={() => { setSelectedCuisines([]); removeVenueFilter('cuisines'); }}
+              onClear={() => removeVenueFilter('cuisines')}
             />
             <TagFilter
               label="Dietary"
               tags={DIETARY_OPTIONS}
               selectedTags={selectedDietary}
               onToggle={toggleDietary}
-              onClear={() => { setSelectedDietary([]); removeVenueFilter('dietaryOptions'); }}
+              onClear={() => removeVenueFilter('dietaryOptions')}
             />
           </div>
         )}

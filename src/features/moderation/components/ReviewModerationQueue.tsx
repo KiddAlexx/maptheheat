@@ -120,7 +120,7 @@ function ReviewModerationQueue() {
           <h2 id="review-moderation-title" className="text-2xl font-semibold">
             Review moderation
           </h2>
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="mt-1 text-sm text-app-muted">
             Review submitted ratings and comments by status, venue, city, or
             submitter.
           </p>
@@ -141,7 +141,7 @@ function ReviewModerationQueue() {
       </div>
 
       <form
-        className="mb-5 rounded-xl border border-gray-200 bg-white p-4 text-sm shadow-md"
+        className="mb-5 rounded-xl border border-app-border bg-app-card p-4 text-sm shadow-md"
         onSubmit={handleSearchSubmit}
       >
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -197,7 +197,7 @@ function ReviewModerationQueue() {
       {error ? (
         <div
           role="alert"
-          className="rounded-xl border border-danger-200 bg-white p-5 text-sm text-danger-700 shadow-md"
+          className="rounded-xl border border-danger-200 bg-app-card p-5 text-sm text-danger-700 shadow-md dark:border-danger-700 dark:text-danger-400"
         >
           Review moderation queue could not be loaded.
         </div>
@@ -214,9 +214,9 @@ function ReviewModerationQueue() {
       {!isLoadingReviews && !error && reviews?.length === 0 ? (
         <div
           role="status"
-          className="rounded-xl border border-gray-200 bg-white p-6 text-center text-sm shadow-md"
+          className="rounded-xl border border-app-border bg-app-card p-6 text-center text-sm shadow-md"
         >
-          <p className="text-lg font-semibold text-gray-700">
+          <p className="text-lg font-semibold">
             No {status} reviews found{selectedCityLabel}.
           </p>
         </div>
@@ -282,42 +282,42 @@ function ReviewModerationQueueItem({
       status={status}
       title={reviewTitle}
       metadata={
-        <dl className="grid gap-2 text-gray-600 sm:grid-cols-2 lg:grid-cols-3">
+        <dl className="grid gap-2 text-app-muted sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <dt className="font-medium text-gray-800">Venue</dt>
+            <dt className="font-medium text-foreground">Venue</dt>
             <dd>
               {venueName}
               {city && country ? (
-                <span className="mt-0.5 block text-xs text-gray-500">
+                <span className="mt-0.5 block text-xs text-app-muted">
                   {city}, {country}
                 </span>
               ) : null}
             </dd>
           </div>
           <div>
-            <dt className="font-medium text-gray-800">Ratings</dt>
+            <dt className="font-medium text-foreground">Ratings</dt>
             <dd>
               Heat {heatRating} / Quality {qualityRating}
             </dd>
           </div>
           <div>
-            <dt className="font-medium text-gray-800">Submitted</dt>
+            <dt className="font-medium text-foreground">Submitted</dt>
             <dd>
               <time dateTime={createdAt}>{formattedDate}</time>
             </dd>
           </div>
           <div>
-            <dt className="font-medium text-gray-800">Submitter</dt>
+            <dt className="font-medium text-foreground">Submitter</dt>
             <dd>
               <ModerationSubmitter username={submitterUsername} userId={userId} />
             </dd>
           </div>
           <div>
-            <dt className="font-medium text-gray-800">Review ID</dt>
+            <dt className="font-medium text-foreground">Review ID</dt>
             <dd className="break-all font-mono text-xs">{reviewId}</dd>
           </div>
           <div>
-            <dt className="font-medium text-gray-800">Venue ID</dt>
+            <dt className="font-medium text-foreground">Venue ID</dt>
             <dd className="break-all font-mono text-xs">{venueId}</dd>
           </div>
         </dl>

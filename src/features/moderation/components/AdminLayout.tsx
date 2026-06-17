@@ -13,8 +13,8 @@ function AdminLayout() {
   const { pathname } = useLocation();
 
   return (
-    <main className="flex h-full flex-col overflow-hidden bg-zinc-50 text-gray-900">
-      <header className="border-b border-zinc-200 bg-white px-4 py-4 shadow-sm sm:px-6">
+    <main className="flex h-full flex-col overflow-hidden bg-app-surface text-foreground">
+      <header className="border-b border-app-border bg-app-card px-4 py-4 shadow-sm sm:px-6">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-medium uppercase tracking-normal text-primary-600">
@@ -33,8 +33,8 @@ function AdminLayout() {
                       clsx(
                         'inline-flex h-10 items-center rounded-full border px-4 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
                         isActive
-                          ? 'border-primary-500 bg-primary-100 text-primary-700'
-                          : 'border-zinc-200 bg-white text-zinc-700 hover:border-primary-300 hover:text-primary-700'
+                          ? 'border-primary-500 bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300'
+                          : 'border-app-border bg-app-card text-foreground hover:border-primary-300 hover:text-primary-700 dark:hover:border-primary-700 dark:hover:text-primary-400'
                       )
                     }
                   >

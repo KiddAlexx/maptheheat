@@ -19,15 +19,15 @@ function ModerationStatusActions({
   status,
 }: ModerationStatusActionsProps) {
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5 text-sm shadow-md">
-      <h3 className="text-lg font-semibold text-gray-900">
+    <section className="rounded-xl border border-app-border bg-app-card p-5 text-sm shadow-md">
+      <h3 className="text-lg font-semibold">
         {capitalize(resourceLabel)} decision
       </h3>
-      <p className="mt-1 text-sm text-zinc-600">
+      <p className="mt-1 text-sm text-app-muted">
         Set the final status for this {resourceLabel} submission.
       </p>
       {hasPendingImageWithoutDecision ? (
-        <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
           Resolve all pending image decisions before approving this{' '}
           {resourceLabel}.
         </p>

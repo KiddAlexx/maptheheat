@@ -9,6 +9,9 @@ import { useUserCities } from '../hooks/useUserCities';
 import { Autocomplete, AutocompleteItem } from '@heroui/react';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 
+// Utils
+import { getFilterValue } from '../utils/getFilterValue';
+
 // Type imports
 import type { VenueFilterContextType } from '@/context/VenueFilterContext';
 import type { Key, UniqueCity } from '@/types/venueTypes';
@@ -26,7 +29,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
   const { isLoading: isLoadingUserCities, userCities } =
     useUserCities(favouriteVenues);
 
-  const { updateVenueFilter, removeVenueFilter } = useVenueContext();
+  const { filters, updateVenueFilter, removeVenueFilter } = useVenueContext();
   const navigate = useNavigate();
 
   // Determine "mode" based on url - used to differentiate between use
@@ -51,6 +54,15 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
         ...userCities!,
       ])
     : (finalCityList = uniqueCities!);
+
+  // Derive the selected city from context (the stored value is the city name)
+  // so the Autocomplete reflects the applied filter after a panel remount.
+  const cityFilter = getFilterValue(filters, 'city') as string | undefined;
+  const selectedKey = cityFilter
+    ? finalCityList.find((cityObj) => cityObj.city === cityFilter)?.cityId ?? null
+    : isUserMode
+      ? 'ALL_KEY'
+      : null;
 
   // Update venue filters based upon city selection
   async function handleSelectCity(value: Key | null) {
@@ -89,7 +101,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
       variant="bordered"
       /* onInputChange={handleSelectCity} */
       onSelectionChange={handleSelectCity}
-      /* defaultSelectedKey={isUserMode && 'ALL_KEY'} */
+      selectedKey={selectedKey}
     >
       {finalCityList.map((cityObj) => (
         // Using city + index as key for uniqueness in case of duplicate city names
