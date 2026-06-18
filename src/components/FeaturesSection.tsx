@@ -11,13 +11,13 @@ const features = [
     icon: 'lucide:flame',
     title: 'Community Reviews',
     description:
-      'Read honest heat ratings and quality scores from real people who live for the burn.',
+      'Read honest heat ratings and quality scores from users who live for the burn.',
   },
   {
     icon: 'solar:pen-linear',
     title: 'Add & Rate',
     description:
-      'Sign in, including with Google, to submit new venues, upload photos, and leave your own reviews with heat ratings.',
+      'Sign in to submit new venues, upload photos, and leave your own reviews with heat ratings.',
   },
 ];
 
