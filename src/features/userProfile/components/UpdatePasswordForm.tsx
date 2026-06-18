@@ -5,6 +5,7 @@ import { useUpdatePassword } from '@/features/authentication/hooks/useUpdatePass
 import ActionButton from '@/ui/ActionButton';
 import { Input } from '@heroui/react';
 import { Controller, useForm } from 'react-hook-form';
+import { validatePassword } from '@/utils/validatePassword';
 
 function UpdatePasswordForm() {
   interface FormData {
@@ -45,16 +46,7 @@ function UpdatePasswordForm() {
         control={control}
         rules={{
           required: 'This field is required',
-          minLength: {
-            value: 8,
-            message: 'Password needs a minimum of 8 characters',
-          },
-          pattern: {
-            value:
-              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-            message:
-              'Password must contain at least one uppercase, one lowercase, one number and one special character',
-          },
+          validate: validatePassword,
         }}
         render={({ field }) => (
           <>
@@ -72,7 +64,7 @@ function UpdatePasswordForm() {
             />
             {isPasswordFocused && !errors.password && (
               <p className="mb-2 ml-1 mt-1 text-xs text-zinc-500 dark:text-zinc-300">
-                At least 8 characters including an uppercase letter, a number and a symbol (@$!%*?&)
+                At least 8 characters including an uppercase letter, a lowercase letter, a number and a symbol
               </p>
             )}
           </>
