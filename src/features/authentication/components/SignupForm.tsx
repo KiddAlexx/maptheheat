@@ -16,6 +16,9 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { Input, Button, Divider } from '@heroui/react';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 
+// Utils
+import { validatePassword } from '@/utils/validatePassword';
+
 interface FormData {
   email: string;
   username: string;
@@ -115,16 +118,7 @@ function SignupForm() {
             control={control}
             rules={{
               required: 'This field is required',
-              minLength: {
-                value: 8,
-                message: 'Password needs a minimum of 8 characters',
-              },
-              pattern: {
-                value:
-                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-                message:
-                  'Password must contain at least one uppercase, one lowercase, one number and one special character',
-              },
+              validate: validatePassword,
             }}
             render={({ field }) => (
               <>
@@ -168,7 +162,7 @@ function SignupForm() {
                 {isPasswordFocused && !errors.password && (
                   <p className="mb-5 ml-3 mt-1 text-xs text-zinc-500 dark:text-zinc-300">
                     At least 8 characters including an uppercase letter, a
-                    number and a symbol (@$!%*?&)
+                    lowercase letter, a number and a symbol
                   </p>
                 )}
               </>
