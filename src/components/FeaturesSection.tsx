@@ -17,7 +17,7 @@ const features = [
     icon: 'solar:pen-linear',
     title: 'Add & Rate',
     description:
-      'Sign in, including with Google, to submit new venues, upload photos, and leave your own reviews with heat ratings.',
+      'Sign in to submit new venues, upload photos, and leave your own reviews with heat ratings.',
   },
 ];
 
