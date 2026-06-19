@@ -136,6 +136,7 @@ function DetailedVenueView() {
     venueType,
     cuisines,
     dietaryOptions,
+    addedByUsername,
   } = venue;
 
   const { lat, lon } = coords;
@@ -247,7 +248,7 @@ function DetailedVenueView() {
     <PageSeo title={seoTitle} description={seoDescription} />
     <div className="hyphens-auto p-3">
       <article className="mb-5 rounded-xl border border-app-border bg-app-card px-4 py-3 text-sm shadow-md">
-        <div className="mb-3 ml-1 flex items-end justify-between">
+        <div className="mb-3 ml-1">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
             <h1
               ref={venueHeadingRef}
@@ -277,6 +278,14 @@ function DetailedVenueView() {
               </div>
             </div>
           </div>
+          {addedByUsername && (
+            <p className="mt-2 text-sm text-app-muted">
+              Added by{' '}
+              <span className="font-medium text-foreground">
+                {addedByUsername}
+              </span>
+            </p>
+          )}
         </div>
         {venueImages && venueImages.length > 0 ? (
           <ResponsiveImageGrid images={venueImages} />
