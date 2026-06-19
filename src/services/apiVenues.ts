@@ -100,7 +100,7 @@ export async function getVenues({
 export async function getVenue(id: string): Promise<Venue> {
   const { data, error } = await supabase
     .from('venue_details')
-    .select('*,  venue_images(image_path, alt_text, image_id)')
+    .select('*, profiles(username), venue_images(image_path, alt_text, image_id)')
     .eq('venue_id', id)
     .eq('status', 'approved')
     .filter('venue_images.status', 'eq', 'approved');
@@ -110,10 +110,12 @@ export async function getVenue(id: string): Promise<Venue> {
   }
 
   const venueData = camelcaseKeys(data[0], { deep: true });
+  const { profiles, ...venueFields } = venueData;
 
   const venue = {
-    ...venueData,
+    ...venueFields,
     venueImages: addImagePaths(venueData.venueImages),
+    addedByUsername: profiles?.username ?? null,
   };
 
   return venue;
