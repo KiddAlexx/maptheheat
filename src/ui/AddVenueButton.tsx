@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGlobalError } from '@/context/ErrorContext';
 import { useModalContext } from '@/context/ModalContext';
 import { useUser } from '@/features/authentication/hooks/useUser';
+import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 
 // Components
 import { Button } from '@heroui/react';
@@ -21,11 +22,20 @@ function AddVenueButton({ closeOtherModals, className }: AddVenueButtonProps) {
   const { setGlobalError } = useGlobalError();
   const { openDialog, openModal } = useModalContext();
   const navigate = useNavigate();
-  const { isAuthenticated } = useUser();
+  const { isAuthenticated, user } = useUser();
+  const { userProfile } = useGetUserProfile(user?.id);
+  const username = userProfile?.username;
 
   async function proceed() {
     if (!isAuthenticated) {
       openModal('login');
+      return;
+    }
+    // Ask for a username if not set, mirroring the review flow
+    if (!username) {
+      openDialog('Please choose a username to proceed', () =>
+        navigate('/profile/edit/username')
+      );
       return;
     }
     try {
