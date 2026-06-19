@@ -11,6 +11,7 @@ export interface Venue {
   phoneNumber: string;
   website: string;
   userId: string;
+  addedByUsername?: string | null;
   venueNameSlug: string;
   coords: Coords;
   venueId: string;
