@@ -10,7 +10,7 @@ function Terms() {
       />
       <div className="w-full max-w-3xl rounded-xl border border-app-border bg-app-card p-6 shadow-md sm:p-10">
         <h1 className="mb-2 text-3xl font-bold text-foreground">Terms of Service</h1>
-        <p className="mb-8 text-sm text-app-muted">Last updated: May 2026</p>
+        <p className="mb-8 text-sm text-app-muted">Last updated: June 2026</p>
 
         <section className="mb-8">
           <h2 className="mb-2 text-xl font-semibold text-foreground">1. User-Generated Content</h2>
@@ -49,6 +49,11 @@ function Terms() {
           <ul className="mt-2 list-disc pl-6 text-app-muted">
             <li>The information you provide is accurate and honest to the best of your knowledge.</li>
             <li>You are not submitting spam, fake reviews, or content intended to mislead others.</li>
+            <li>
+              You own, or have permission to use, any photos you upload, and they do not infringe
+              anyone else's copyright. For example, do not upload images copied from other websites
+              or listings such as Google.
+            </li>
             <li>
               You grant MapTheHeat a worldwide, royalty-free, non-exclusive licence to store,
               display, distribute, aggregate, and sublicense (to infrastructure providers such as

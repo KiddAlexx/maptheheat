@@ -82,10 +82,19 @@ function ImageUploader({
   //File Upload State
   const [imageFiles, setImageFiles] = useState<File[]>([]);
 
+  // Confirmation that the user owns / has the right to upload the selected images
+  const [confirmedRights, setConfirmedRights] = useState(false);
+  const [rightsError, setRightsError] = useState(false);
+
   // Function to handle compression and upload of selected image to Supabase storage.
   async function uploadFile() {
     if (imageFiles.length === 0) {
       setGlobalError('No images were selected!');
+      return;
+    }
+
+    if (!confirmedRights) {
+      setRightsError(true);
       return;
     }
 
@@ -140,6 +149,49 @@ function ImageUploader({
         <span>Compression & Upload in progress. Won't be too long!</span>
       ) : (
         <p className="mb-2">Add up to a maximum of {maxPhotos} photos</p>
+      )}
+
+      {!isUploading && (
+        <div className="mb-3">
+          <div className="flex items-start gap-2">
+            <input
+              type="checkbox"
+              id="confirm-image-rights"
+              checked={confirmedRights}
+              aria-describedby={rightsError ? 'image-rights-error' : undefined}
+              onChange={(event) => {
+                setConfirmedRights(event.target.checked);
+                if (event.target.checked) setRightsError(false);
+              }}
+              className="mt-0.5"
+            />
+            <label
+              htmlFor="confirm-image-rights"
+              className="text-xs text-app-muted"
+            >
+              These are my own photos, or I have permission to use them. They're
+              not copied from other websites or listings such as Google. See our{' '}
+              <a
+                href="/terms"
+                className="underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Terms of Service
+              </a>
+              .
+            </label>
+          </div>
+          {rightsError && !confirmedRights && (
+            <p
+              id="image-rights-error"
+              role="alert"
+              className="mt-1 text-xs text-danger"
+            >
+              Please confirm you own or have permission to use these images.
+            </p>
+          )}
+        </div>
       )}
 
       <div className="flex justify-end gap-1">
