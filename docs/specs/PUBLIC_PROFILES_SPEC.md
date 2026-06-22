@@ -134,7 +134,7 @@ or settings.
 - [x] Step 5: Add public profile read service + hook (`getPublicProfile`) reading the public `profiles` row; same not-found for private/missing.
 - [x] Step 6: Add `/user/:userId` route + page shell (private==missing 404, malformed id, `noindex`).
 - [x] Step 7: Add a read-only banner variant (no settings cog) with join date.
-- [ ] Step 8: Mount Venues Added + Reviews-left on the public profile.
+- [x] Step 8: Mount Venues Added + Reviews-left on the public profile.
 - [ ] Step 9: Add the conditional public "Favourites" list (only when opted in).
 - [ ] Step 10: Add the Privacy settings section with the two toggles + update service/hook.
 - [ ] Step 11: Link "Added by" and review-author names to `/user/:userId` (plain text when private/unlinkable).
@@ -261,6 +261,13 @@ tested on staging. Never push to production mid-feature.**
 - **Visibility of the favourites count** vs the favourites list itself.
 
 ## Completed Slices
+
+### Step 8: Public contribution lists (2026-06-22)
+
+- Added `authorUserId?: string` to `ReviewContainerProps` in `ReviewContainer.tsx`; when provided, it replaces `useUser().id` as the target for the reviews query. The `isPendingUser` guard is skipped when `authorUserId` is supplied directly.
+- Lazy-loaded `ReviewContainer` and `VenueListContainer` in `PublicProfile.tsx`; added `Tab`/`Tabs` from HeroUI and `Icon` from `@iconify/react`.
+- Composed two tabs directly in `PublicProfile.tsx` (no shared shell): "Added" renders `<VenueListContainer mode="added" authorUserId={publicProfile.userId} />` and "Reviews" renders `<ReviewContainer mode="user" authorUserId={publicProfile.userId} />`, each in a `Suspense` boundary.
+- `npm run checks` passes (zero lint/type errors). No migration -- Step 8 is frontend-only.
 
 ### Step 7: Read-only banner (2026-06-22)
 
