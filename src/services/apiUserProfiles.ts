@@ -208,3 +208,26 @@ export async function toggleFavouriteVenue(venueId: string): Promise<string[]> {
   if (error) throw new Error(`Error toggling favourite venue: ${error.message}`);
   return (data ?? []) as string[];
 }
+
+export interface UpdatePrivacySettingsParams {
+  isPublic: boolean;
+  showFavourites: boolean;
+}
+
+export async function updatePrivacySettings({
+  isPublic,
+  showFavourites,
+}: UpdatePrivacySettingsParams) {
+  const { data: user, error: authError } = await supabase.auth.getUser();
+  if (authError)
+    throw new Error(`No authenticated user found: ${authError.message}`);
+  const userId = user?.user?.id;
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ is_public: isPublic, show_favourites: showFavourites })
+    .eq('user_id', userId);
+
+  if (error) throw new Error(`Error updating privacy settings: ${error.message}`);
+  return data;
+}

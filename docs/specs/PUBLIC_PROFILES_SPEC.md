@@ -136,7 +136,7 @@ or settings.
 - [x] Step 7: Add a read-only banner variant (no settings cog) with join date.
 - [x] Step 8: Mount Venues Added + Reviews-left on the public profile.
 - [x] Step 9: Add the conditional public "Favourites" list (only when opted in).
-- [ ] Step 10: Add the Privacy settings section with the two toggles + update service/hook.
+- [x] Step 10: Add the Privacy settings section with the two toggles + update service/hook.
 - [ ] Step 11: Link "Added by" and review-author names to `/user/:userId` (plain text when private/unlinkable).
 - [ ] Step 12: Account deletion — anonymise / `SET NULL` author FKs + avatar storage cleanup.
 - [ ] Step 13: Cover the public profile flow with tests.
@@ -261,6 +261,13 @@ tested on staging. Never push to production mid-feature.**
 - **Visibility of the favourites count** vs the favourites list itself.
 
 ## Completed Slices
+
+### Step 10: Privacy settings (2026-06-22)
+
+- Added `UpdatePrivacySettingsParams` interface and `updatePrivacySettings({ isPublic, showFavourites })` to `apiUserProfiles.ts`: calls `.update({ is_public, show_favourites })` on `profiles` for the current authenticated user; the existing `profiles_update_owner_admin` RLS policy permits this without a migration.
+- Created `src/features/userProfile/hooks/useUpdatePrivacySettings.ts`: `useMutation` wrapping `updatePrivacySettings`, invalidates `['profile', userId]` on success, shows a toast for success/error.
+- Added `useUser`, `useGetUserProfile`, and `useUpdatePrivacySettings` to `EditProfilePanel.tsx`; local state (`isPublic`, `showFavourites`) initialised from the cached profile (parent guards against loading state). Added a "Privacy" `AccordionItem` with two HeroUI `Switch` toggles -- "Public profile" (bound to `isPublic`, default ON) and "Show my favourites on my profile" (bound to `showFavourites`, default OFF) -- both disabled while the mutation is in flight.
+- `npm run checks` passes (zero lint/type errors). No migration needed -- columns were added in Step 1.
 
 ### Step 9: Conditional public Favourites list (2026-06-22)
 
