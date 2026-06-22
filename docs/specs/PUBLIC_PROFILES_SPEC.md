@@ -128,7 +128,7 @@ or settings.
 - [x] Step 2: Make favourites private — revoke `SELECT (favourite_venues)`; add owner + public favourites `SECURITY DEFINER` RPCs; move `apiUserProfiles` favourites read/toggle onto them.
 - [x] Step 3: Build the shared "Venues Added" list (approved-only, by user id, favourites-style search/filter, own list state).
 - [x] Step 4: Mount "Venues Added" as a new tab on the private profile (+ tab-key rename + `/profile/venues` redirect).
-- [ ] Step 5: Add public profile read service + hook (`getPublicProfile`) reading the public `profiles` row; same not-found for private/missing.
+- [x] Step 5: Add public profile read service + hook (`getPublicProfile`) reading the public `profiles` row; same not-found for private/missing.
 - [ ] Step 6: Add `/user/:userId` route + page shell (private==missing 404, malformed id, `noindex`).
 - [ ] Step 7: Add a read-only banner variant (no settings cog) with join date.
 - [ ] Step 8: Mount Venues Added + Reviews-left on the public profile.
@@ -258,6 +258,12 @@ tested on staging. Never push to production mid-feature.**
 - **Visibility of the favourites count** vs the favourites list itself.
 
 ## Completed Slices
+
+### Step 5: Public profile read service + hook (2026-06-22)
+
+- Added `getPublicProfile(userId)` to `src/services/apiUserProfiles.ts`: selects the same explicit column list as `getUserProfile` (no `favourite_venues`), returns `null` when the row is missing or `is_public` is false, otherwise returns the camelcased `Profile`.
+- Created `src/features/userProfile/hooks/useGetPublicProfile.ts`: `useQuery` with key `['publicProfile', userId]` (distinct from `['profile', userId]`), `enabled: !!userId`, returns `{ isLoading, error, publicProfile }`.
+- `npm run checks` passes (zero lint/type errors). No migration -- Step 5 is frontend-only.
 
 ### Step 4: Mount Venues Added tab on private profile (2026-06-22)
 

@@ -2,7 +2,7 @@ import camelcaseKeys from 'camelcase-keys';
 import supabase, { supabaseUrl } from './supabase';
 import { compressImage } from '@/utils/compressImage';
 import { uploadImages } from './supabaseImageUploader';
-import { UserNotification } from '@/types/userTypes';
+import { Profile, UserNotification } from '@/types/userTypes';
 
 export async function getUserProfile(userId: string) {
   const { data, error } = await supabase
@@ -16,6 +16,21 @@ export async function getUserProfile(userId: string) {
     throw new Error(`Profile could not be loaded. Error:${error.message}`);
   }
   return camelcaseKeys(data[0]);
+}
+
+export async function getPublicProfile(userId: string): Promise<Profile | null> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select(
+      'user_id, updated_at, username, avatar_url, total_reviews, total_venues_added, is_public, show_favourites, created_at'
+    )
+    .eq('user_id', userId);
+
+  if (error) {
+    throw new Error(`Profile could not be loaded. Error:${error.message}`);
+  }
+  if (!data[0] || !data[0].is_public) return null;
+  return camelcaseKeys(data[0]) as unknown as Profile;
 }
 
 export async function getMyFavourites(): Promise<string[]> {
