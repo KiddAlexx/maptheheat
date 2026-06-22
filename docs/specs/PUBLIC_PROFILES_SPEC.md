@@ -118,7 +118,7 @@ or settings.
 
 ## Current Status
 
-- [ ] Step 1: Schema migration — add `is_public`, `show_favourites`, `created_at` (backfilled from `auth.users`).
+- [x] Step 1: Schema migration — add `is_public`, `show_favourites`, `created_at` (backfilled from `auth.users`).
 - [ ] Step 2: Make favourites private — revoke `SELECT (favourite_venues)`; add owner + public favourites `SECURITY DEFINER` RPCs; move `apiUserProfiles` favourites read/toggle onto them.
 - [ ] Step 3: Build the shared "Venues Added" list (approved-only, by user id, favourites-style search/filter, own list state).
 - [ ] Step 4: Mount "Venues Added" as a new tab on the private profile (+ tab-key rename + `/profile/venues` redirect).
@@ -249,6 +249,11 @@ alongside `npm.cmd run checks`.
 
 ## Completed Slices
 
-_(Add a dated note here immediately after ticking each step in Current Status —
-what changed, key files, and any decisions, mirroring the format in
-`ADMIN_MODERATION_SPEC.md`.)_
+### Step 1: Schema migration (2026-06-22)
+
+- Created `supabase/migrations/20260622120000_profiles_add_public_columns.sql`.
+- Added `is_public boolean NOT NULL DEFAULT true` and `show_favourites boolean NOT NULL DEFAULT false` to `profiles`.
+- Added `created_at timestamptz` (nullable; no `DEFAULT now()` to avoid stamping existing users with the migration date).
+- Backfill `UPDATE profiles SET created_at = auth.users.created_at` for all existing rows.
+- Updated `handle_new_user()` to include `created_at = new.created_at` in its insert so future signups populate the column.
+- `npm run checks` passes; `supabase db reset` could not run (Docker Desktop not started) -- validate before pushing to staging.
