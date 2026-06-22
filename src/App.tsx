@@ -75,6 +75,10 @@ function App() {
           />
 
           <Route
+            path="/profile/venues"
+            element={<Navigate replace to="/profile/favourite-venues" />}
+          />
+          <Route
             path="/profile/:section?/:setting?"
             element={
               <ProtectedRoute>

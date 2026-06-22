@@ -41,7 +41,7 @@ function UserProfile() {
   const { section } = useParams();
   const navigate = useNavigate();
 
-  const selected = (section || 'reviews') as Key;
+  const selected = (section || 'added-venues') as Key;
 
   const { myFavourites: favouriteVenues, isLoading: isLoadingFavourites } =
     useGetMyFavourites(userId);
@@ -68,6 +68,20 @@ function UserProfile() {
         radius="full"
       >
         <Tab
+          key="added-venues"
+          title={
+            <div className="flex items-center gap-1.5">
+              <Icon icon="lucide:map-pin" width={15} aria-hidden="true" />
+              <span className="mt-px">Added</span>
+            </div>
+          }
+        >
+          <Suspense fallback={<LoaderSpinner />}>
+            <VenueListContainer mode="added" authorUserId={userId} />
+          </Suspense>
+        </Tab>
+
+        <Tab
           key="reviews"
           title={
             <div className="flex items-center gap-1.5">
@@ -82,7 +96,7 @@ function UserProfile() {
         </Tab>
 
         <Tab
-          key="venues"
+          key="favourite-venues"
           title={
             <div className="flex items-center gap-1.5">
               <Icon icon="lucide:heart" width={15} aria-hidden="true" />

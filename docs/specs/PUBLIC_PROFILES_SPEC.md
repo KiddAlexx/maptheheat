@@ -127,7 +127,7 @@ or settings.
 - [x] Step 1: Schema migration — add `is_public`, `show_favourites`, `created_at` (backfilled from `auth.users`).
 - [x] Step 2: Make favourites private — revoke `SELECT (favourite_venues)`; add owner + public favourites `SECURITY DEFINER` RPCs; move `apiUserProfiles` favourites read/toggle onto them.
 - [x] Step 3: Build the shared "Venues Added" list (approved-only, by user id, favourites-style search/filter, own list state).
-- [ ] Step 4: Mount "Venues Added" as a new tab on the private profile (+ tab-key rename + `/profile/venues` redirect).
+- [x] Step 4: Mount "Venues Added" as a new tab on the private profile (+ tab-key rename + `/profile/venues` redirect).
 - [ ] Step 5: Add public profile read service + hook (`getPublicProfile`) reading the public `profiles` row; same not-found for private/missing.
 - [ ] Step 6: Add `/user/:userId` route + page shell (private==missing 404, malformed id, `noindex`).
 - [ ] Step 7: Add a read-only banner variant (no settings cog) with join date.
@@ -258,6 +258,14 @@ tested on staging. Never push to production mid-feature.**
 - **Visibility of the favourites count** vs the favourites list itself.
 
 ## Completed Slices
+
+### Step 4: Mount Venues Added tab on private profile (2026-06-22)
+
+- Renamed the Favourites tab key in `UserProfile.tsx` from `"venues"` to `"favourite-venues"`.
+- Added an "Added" tab (`key="added-venues"`) rendering `<VenueListContainer mode="added" authorUserId={userId} />` inside a `Suspense` boundary.
+- Added a `<Route path="/profile/venues" element={<Navigate replace to="/profile/favourite-venues" />}` in `App.tsx` (placed before the parameterised `/profile/:section?/:setting?` route so it takes priority).
+- No `useMatch` sites needed updating -- those were already replaced with explicit `isUserMode` props in Step 3.
+- `npm run checks` passes (zero lint/type errors). No migration -- Step 4 is frontend-only.
 
 ### Step 1: Schema migration (2026-06-22)
 
