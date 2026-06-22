@@ -51,7 +51,7 @@ function UserProfileBanner({ userProfile, onEditClick }: UserProfileBannerProps)
             </div>
           </div>
           {createdAt && (
-            <p className="mt-1 text-xs text-app-muted">
+            <p className="mt-1 ml-1 text-xs text-app-muted">
               Member since {format(parseISO(createdAt), 'MMMM yyyy')}
             </p>
           )}

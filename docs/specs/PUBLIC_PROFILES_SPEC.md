@@ -137,7 +137,7 @@ or settings.
 - [x] Step 8: Mount Venues Added + Reviews-left on the public profile.
 - [x] Step 9: Add the conditional public "Favourites" list (only when opted in).
 - [x] Step 10: Add the Privacy settings section with the two toggles + update service/hook.
-- [ ] Step 11: Link "Added by" and review-author names to `/user/:userId` (plain text when private/unlinkable).
+- [x] Step 11: Link "Added by" and review-author names to `/user/:userId` (plain text when private/unlinkable).
 - [ ] Step 12: Account deletion — anonymise / `SET NULL` author FKs + avatar storage cleanup.
 - [ ] Step 13: Cover the public profile flow with tests.
 - [ ] Step 14: Update the Privacy Policy (depends on Step 12).
@@ -261,6 +261,14 @@ tested on staging. Never push to production mid-feature.**
 - **Visibility of the favourites count** vs the favourites list itself.
 
 ## Completed Slices
+
+### Step 11: Link attributions (2026-06-22)
+
+- In `getVenue` (`apiVenues.ts`): expanded `profiles(username)` to `profiles(username, user_id, is_public)`; added `addedByUserId` to the returned venue object, set to `profiles.userId` when `profiles.isPublic` is true, otherwise `null`.
+- Added `addedByUserId?: string | null` to the `Venue` type in `venueTypes.ts`.
+- In `DetailedVenueView.tsx`: imported `Link` from `react-router-dom`; destructured `addedByUserId` from venue; renders `<Link to={/user/${addedByUserId}}>` when `addedByUserId` is truthy, plain `<span>` otherwise.
+- In `ReviewListItem.tsx`: added `isPublic` to the `profiles` destructure; renders `<Link to={/user/${userId}}>` around the author username when `isPublic && username` (venue mode only -- user mode already shows the venue name, not the author).
+- No migration needed -- frontend-only. `npm run checks` passes (zero lint/type errors); all tests pass.
 
 ### Step 10: Privacy settings (2026-06-22)
 

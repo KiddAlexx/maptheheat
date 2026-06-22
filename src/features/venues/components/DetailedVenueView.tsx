@@ -1,5 +1,6 @@
 // Third Party Imports
 import { useNavigate, useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 import { PageSeo } from '@/lib/seo';
 
 // React imports
@@ -138,6 +139,7 @@ function DetailedVenueView() {
     cuisines,
     dietaryOptions,
     addedByUsername,
+    addedByUserId,
   } = venue;
 
   const { lat, lon } = coords;
@@ -279,9 +281,18 @@ function DetailedVenueView() {
           {addedByUsername && (
             <p className="mt-2 text-sm text-app-muted">
               Added by{' '}
-              <span className="font-medium text-foreground">
-                {addedByUsername}
-              </span>
+              {addedByUserId ? (
+                <Link
+                  to={`/user/${addedByUserId}`}
+                  className="font-medium text-foreground hover:opacity-80"
+                >
+                  {addedByUsername}
+                </Link>
+              ) : (
+                <span className="font-medium text-foreground">
+                  {addedByUsername}
+                </span>
+              )}
             </p>
           )}
         </div>
