@@ -135,7 +135,7 @@ or settings.
 - [x] Step 6: Add `/user/:userId` route + page shell (private==missing 404, malformed id, `noindex`).
 - [x] Step 7: Add a read-only banner variant (no settings cog) with join date.
 - [x] Step 8: Mount Venues Added + Reviews-left on the public profile.
-- [ ] Step 9: Add the conditional public "Favourites" list (only when opted in).
+- [x] Step 9: Add the conditional public "Favourites" list (only when opted in).
 - [ ] Step 10: Add the Privacy settings section with the two toggles + update service/hook.
 - [ ] Step 11: Link "Added by" and review-author names to `/user/:userId` (plain text when private/unlinkable).
 - [ ] Step 12: Account deletion — anonymise / `SET NULL` author FKs + avatar storage cleanup.
@@ -261,6 +261,14 @@ tested on staging. Never push to production mid-feature.**
 - **Visibility of the favourites count** vs the favourites list itself.
 
 ## Completed Slices
+
+### Step 9: Conditional public Favourites list (2026-06-22)
+
+- Added `getPublicFavourites(userId)` to `apiUserProfiles.ts`: calls `get_public_favourites` RPC with `{ p_user_id: userId }`, returns `string[]`.
+- Created `src/features/userProfile/hooks/useGetPublicFavourites.ts`: `useQuery` with key `['publicFavourites', userId]`, `enabled: !!userId`, returns `{ isLoading, publicFavourites, error }`.
+- In `PublicProfile.tsx`: called `useGetPublicFavourites` unconditionally before early returns, passing `publicProfile?.showFavourites ? publicProfile.userId : null` so the query is disabled when not needed.
+- Added a conditional Favourites `Tab` rendered only when `publicProfile.showFavourites` is true; shows `<LoaderSpinner />` while `isLoadingFavourites`, then `<VenueListContainer mode="user" favouriteVenues={publicFavourites} />` once the RPC resolves.
+- `npm run checks` passes (zero lint/type errors). No migration -- Step 9 is frontend-only.
 
 ### Step 8: Public contribution lists (2026-06-22)
 

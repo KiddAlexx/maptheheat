@@ -39,6 +39,14 @@ export async function getMyFavourites(): Promise<string[]> {
   return (data ?? []) as string[];
 }
 
+export async function getPublicFavourites(userId: string): Promise<string[]> {
+  const { data, error } = await supabase.rpc('get_public_favourites', {
+    p_user_id: userId,
+  });
+  if (error) throw new Error(`Error fetching public favourites: ${error.message}`);
+  return (data ?? []) as string[];
+}
+
 export async function getUnreadNotificationsCount({
   userId,
 }: {

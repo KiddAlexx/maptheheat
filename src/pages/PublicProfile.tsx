@@ -5,6 +5,7 @@ import { Tab, Tabs } from '@heroui/react';
 import { Icon } from '@iconify/react';
 
 import { useGetPublicProfile } from '@/features/userProfile/hooks/useGetPublicProfile';
+import { useGetPublicFavourites } from '@/features/userProfile/hooks/useGetPublicFavourites';
 import UserProfileBanner from '@/features/userProfile/components/UserProfileBanner';
 import { PageSeo } from '@/lib/seo';
 import LoaderSpinner from '@/ui/LoaderSpinner';
@@ -38,6 +39,11 @@ function PublicProfile() {
   const { isLoading, publicProfile } = useGetPublicProfile(
     isValidId ? userId : null
   );
+
+  const { publicFavourites, isLoading: isLoadingFavourites } =
+    useGetPublicFavourites(
+      publicProfile?.showFavourites ? publicProfile.userId : null
+    );
 
   if (!isValidId) return notFoundPage;
   if (isLoading) return <LoaderSpinner message="Loading profile" />;
@@ -85,6 +91,29 @@ function PublicProfile() {
               <ReviewContainer mode="user" authorUserId={publicProfile.userId} />
             </Suspense>
           </Tab>
+
+          {publicProfile.showFavourites && (
+            <Tab
+              key="favourites"
+              title={
+                <div className="flex items-center gap-1.5">
+                  <Icon icon="lucide:heart" width={15} aria-hidden="true" />
+                  <span className="mt-px">Favourites</span>
+                </div>
+              }
+            >
+              {isLoadingFavourites ? (
+                <LoaderSpinner />
+              ) : (
+                <Suspense fallback={<LoaderSpinner />}>
+                  <VenueListContainer
+                    mode="user"
+                    favouriteVenues={publicFavourites}
+                  />
+                </Suspense>
+              )}
+            </Tab>
+          )}
         </Tabs>
       </div>
     </main>
