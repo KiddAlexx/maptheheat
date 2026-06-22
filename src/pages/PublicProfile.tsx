@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router';
 
 import { useGetPublicProfile } from '@/features/userProfile/hooks/useGetPublicProfile';
+import UserProfileBanner from '@/features/userProfile/components/UserProfileBanner';
 import { PageSeo } from '@/lib/seo';
 import LoaderSpinner from '@/ui/LoaderSpinner';
 
@@ -39,7 +40,9 @@ function PublicProfile() {
         description={`View ${publicProfile.username ?? 'this user'}'s contributions on MapTheHeat.`}
       />
       <h1 className="sr-only">{publicProfile.username ?? 'User'}'s Profile</h1>
-      <div className="w-full max-w-[70rem]" />
+      <div className="w-full max-w-[70rem]">
+        <UserProfileBanner userProfile={publicProfile} />
+      </div>
     </main>
   );
 }

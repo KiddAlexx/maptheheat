@@ -1,14 +1,16 @@
+import { format, parseISO } from 'date-fns';
+
 import { Profile } from '@/types/userTypes';
 import Avatar from './Avatar';
 import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface UserProfileBannerProps {
   userProfile: Profile;
-  onEditClick: () => void;
+  onEditClick?: () => void;
 }
 
 function UserProfileBanner({ userProfile, onEditClick }: UserProfileBannerProps) {
-  const { userId, username, totalReviews, totalVenuesAdded } = userProfile;
+  const { userId, username, totalReviews, totalVenuesAdded, createdAt } = userProfile;
   return (
     <header className="mb-4 flex items-center gap-3">
       <div>
@@ -48,14 +50,21 @@ function UserProfileBanner({ userProfile, onEditClick }: UserProfileBannerProps)
               </div>
             </div>
           </div>
+          {createdAt && (
+            <p className="mt-1 text-xs text-app-muted">
+              Member since {format(parseISO(createdAt), 'MMMM yyyy')}
+            </p>
+          )}
         </div>
-        <button
-          onClick={onEditClick}
-          aria-label="Edit profile"
-          className="rounded-full p-1.5 text-app-muted transition hover:bg-app-surface hover:text-foreground"
-        >
-          <Icon icon="lucide:settings" width={20} aria-hidden="true" />
-        </button>
+        {onEditClick && (
+          <button
+            onClick={onEditClick}
+            aria-label="Edit profile"
+            className="rounded-full p-1.5 text-app-muted transition hover:bg-app-surface hover:text-foreground"
+          >
+            <Icon icon="lucide:settings" width={20} aria-hidden="true" />
+          </button>
+        )}
       </div>
     </header>
   );

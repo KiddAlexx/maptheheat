@@ -133,7 +133,7 @@ or settings.
 - [x] Step 4: Mount "Venues Added" as a new tab on the private profile (+ tab-key rename + `/profile/venues` redirect).
 - [x] Step 5: Add public profile read service + hook (`getPublicProfile`) reading the public `profiles` row; same not-found for private/missing.
 - [x] Step 6: Add `/user/:userId` route + page shell (private==missing 404, malformed id, `noindex`).
-- [ ] Step 7: Add a read-only banner variant (no settings cog) with join date.
+- [x] Step 7: Add a read-only banner variant (no settings cog) with join date.
 - [ ] Step 8: Mount Venues Added + Reviews-left on the public profile.
 - [ ] Step 9: Add the conditional public "Favourites" list (only when opted in).
 - [ ] Step 10: Add the Privacy settings section with the two toggles + update service/hook.
@@ -261,6 +261,13 @@ tested on staging. Never push to production mid-feature.**
 - **Visibility of the favourites count** vs the favourites list itself.
 
 ## Completed Slices
+
+### Step 7: Read-only banner (2026-06-22)
+
+- Made `onEditClick` optional in `UserProfileBanner` (`onEditClick?: () => void`); the settings cog button renders only when the prop is provided.
+- Added `createdAt` destructure and a "Member since [Month Year]" line (`date-fns` `format`/`parseISO`) rendered below the stats row when `createdAt` is non-null.
+- Imported `UserProfileBanner` into `PublicProfile.tsx` and mounted it inside the content div; no `onEditClick` prop so the cog is absent on the public page.
+- `npm run checks` passes (zero lint/type errors). Frontend-only -- no migration.
 
 ### Step 6: Public route + page shell (2026-06-22)
 
