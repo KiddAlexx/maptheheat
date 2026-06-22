@@ -10,10 +10,9 @@ full conversation history.
 For a new chat, read `AGENTS.md`, the Supabase workflow at
 `docs/guides/SUPABASE_WORKFLOW.md`, and this file, then continue from the first
 unchecked item in `Current Status`. Keep each slice scoped to that step. All schema
-changes (new columns, the public view, RLS) go through migration files per
+changes (new columns, the column revoke, favourites RPCs) go through migration files per
 `docs/specs/SUPABASE_MIGRATIONS_SPEC.md` — never edit schema directly. Keep public
-reads approved-only and limited to public-safe columns. Run `npm.cmd run checks`
-plus the relevant tests after each slice.
+reads approved-only. Run `npm.cmd run checks` plus the relevant tests after each slice.
 
 ## Context
 
@@ -26,25 +25,49 @@ or settings.
 
 ## Core Principles (do not violate)
 
-- **The public profile must never leak private data.** No email, notification data,
-  account settings, raw favourites (unless explicitly made public), or any private
-  profile field may ever be reachable through the public profile path. Enforce this
-  at the data layer (a dedicated public view / service that selects only safe
-  columns), not just in the UI.
-- **Public reads are approved-only.** Venues and reviews shown on a public profile
-  must be filtered to `status = 'approved'`, exactly like other public services.
-- **Respect visibility.** A private profile (opted out) returns not-found for its
-  public page; its contributions still show the username as plain text on venues/
-  reviews, but with no link to a profile.
-- **Keep private and public profiles separate.** The existing private profile lives
-  at `/profile/*` and is driven by the logged-in user. The public profile is a
-  distinct route and a distinct read path. Do not extend the private
-  `getUserProfile` to serve public requests.
+- **`profiles` stays publicly readable; only `favourite_venues` is protected.** Almost
+  every `profiles` column (`username, avatar_url, total_reviews, total_venues_added`)
+  is public by design — already shown on every review and venue. The **only** sensitive
+  column is `favourite_venues`. So we do **not** lock the table, build an attribution
+  RPC, or refactor `Avatar` — existing reads (`Avatar`, `getReviews` `profiles(*)`,
+  `getVenue` `profiles(username)`, the live "Added by") keep working untouched. We only
+  make `favourite_venues` private. (Email is not on `profiles` — it is in `auth.users`.)
+- **Protect `favourite_venues` at the DB layer, not in the app.** App-level narrowing is
+  not real security: any client can run `select favourite_venues from profiles`. Revoke
+  the column and serve favourites through small `SECURITY DEFINER` RPCs (see Step 2).
+- **Writes are already owner-only.** `profiles` UPDATE/INSERT is owner-only and DELETE is
+  admin-only (`profiles_update_owner_admin`, etc.). A user can already only change their
+  own row — verify, no change needed.
+- **Public reads are approved-only.** Venues and reviews shown on a public profile must
+  be filtered to `status = 'approved'`. Existing RLS already permits approved content for
+  any user (`vd_select_approved`, `vr_select_owner_approved_or_admin`), so verify, don't
+  broaden.
+- **`is_public` gates the page, not the row.** A private profile renders no public page
+  and no link; private == missing for the route (same 404 + `noindex`). The `profiles`
+  row staying readable is fine — it holds only public-anyway data.
 - **The private profile is the superset.** Public profiles are built from the same
   building blocks (banner, venues-added list, reviews list) shown in a stripped-down,
-  read-only form. The private profile shows everything the public one does, plus
-  private-only tabs (Notifications, Edit). Build each shared list/banner once and
-  mount it in both places; never surface a private-only piece on the public path.
+  read-only form. The private profile adds private-only tabs (Notifications, Edit). Build
+  each shared list/banner once and mount it in both places; never surface a private-only
+  piece on the public path.
+
+## Verified preconditions (from the current schema/code)
+
+- `profiles` columns: `user_id, updated_at, username, avatar_url, total_reviews,
+  favourite_venues (uuid[]), total_venues_added`. **No `created_at`** — join date must
+  be added and backfilled from `auth.users.created_at` (not `default now()`).
+- `favourite_venues` is the only sensitive column and is currently world-readable via
+  `profiles_select_anyone` / `Public profiles are viewable by everyone` (`USING (true)`).
+- `total_reviews` / `total_venues_added` are already maintained **approved-only** by
+  trigger, so banner counts match the approved lists.
+- Favourites read/write today: `getUserProfile` selects `*`, and `updateFavouriteVenue`
+  ([apiUserProfiles.ts](../../src/services/apiUserProfiles.ts)) selects + rewrites the
+  array. Both run as the owner, so both move onto the new favourites RPCs once the column
+  is revoked.
+- Author FKs `venue_details.user_id` and `venue_reviews.user_id` reference `profiles`
+  with **no `ON DELETE`** action, while `auth.users → profiles` is `CASCADE`. Deleting
+  a contributing user is therefore blocked — erasure needs an anonymise/`SET NULL`
+  strategy before it can work.
 
 ## Decisions (locked for v1)
 
@@ -62,9 +85,18 @@ or settings.
   and public profile, and reuses the same search/filter UI as the favourites list
   (`VenueListContainer` → `SearchAndFilterPanel` + `VenueListView`). Favourites list
   only when opted in.
-- **RLS will need adjusting.** Reading another user's approved venues/reviews by
-  `user_id`, and gating favourites on `show_favourites`, requires RLS/policy changes —
-  call these out explicitly in the migration steps.
+- **Favourites privacy via column revoke + small RPCs**, not a table lock. Revoke
+  `SELECT (favourite_venues)`; owner reads/toggles via `SECURITY DEFINER` RPCs; opt-in
+  public favourites via a gated RPC. Everything else on `profiles` stays public.
+- **Defined edge behaviours:** private == missing (same 404, both `noindex`); malformed
+  / non-uuid id → not-found; username-less profile → not linkable (treated like private
+  for linking); opting out of a public profile **preserves** `show_favourites` (so
+  re-enabling restores prior choice); every list has empty and error states.
+- **Independent list state.** The added-venues list gets its own pagination/filter
+  context — it must not share `UserFavVenuesContext` with the favourites list, or the
+  two lists on the private profile will fight over state.
+- **Legacy redirect.** `/profile/venues` redirects to `/profile/favourite-venues` after
+  the tab-key rename.
 - **Settings:** a new **Privacy** section in the profile settings holds the toggles:
   "Public profile" (default ON / opted in, can opt out) and "Show my favourites on my
   profile" (default OFF / opt in).
@@ -75,124 +107,128 @@ or settings.
 
 ## Goals
 
+- Make `favourite_venues` private (default), owner-readable, opt-in public — the only
+  data-security work needed.
 - Public, read-only profile pages at `/user/:userId`, built as a subset of the
   private profile's building blocks.
 - A "Venues Added" list that appears on **both** profiles and reuses the favourites
   list's search/filter UI.
-- Reuse `UserProfileBanner` (read-only variant) and approved-only contribution lists.
-- A safe public read path that exposes only whitelisted columns and respects the
-  public/private toggle.
 - Privacy controls in settings, defaulting to public profile + private favourites.
-- Link the existing "Added by" and review-author names to the public profile
-  (plain text when the profile is private).
+- "Added by" / review-author names link to the public profile, plain text when private.
 
 ## Current Status
 
-- [ ] Step 1: Add visibility columns + join-date access (migration).
-- [ ] Step 2: Adjust RLS + add a `public_profiles` safe view (migration).
-- [ ] Step 3: Add public profile read service + hook (`getPublicProfile`).
-- [ ] Step 4: Build the shared "Venues Added" list (approved-only, by user id, favourites-style search/filter).
-- [ ] Step 5: Mount "Venues Added" as a new tab on the private profile.
-- [ ] Step 6: Add `/user/:userId` route and page shell with not-found / private states.
+- [ ] Step 1: Schema migration — add `is_public`, `show_favourites`, `created_at` (backfilled from `auth.users`).
+- [ ] Step 2: Make favourites private — revoke `SELECT (favourite_venues)`; add owner + public favourites `SECURITY DEFINER` RPCs; move `apiUserProfiles` favourites read/toggle onto them.
+- [ ] Step 3: Build the shared "Venues Added" list (approved-only, by user id, favourites-style search/filter, own list state).
+- [ ] Step 4: Mount "Venues Added" as a new tab on the private profile (+ tab-key rename + `/profile/venues` redirect).
+- [ ] Step 5: Add public profile read service + hook (`getPublicProfile`) reading the public `profiles` row; same not-found for private/missing.
+- [ ] Step 6: Add `/user/:userId` route + page shell (private==missing 404, malformed id, `noindex`).
 - [ ] Step 7: Add a read-only banner variant (no settings cog) with join date.
 - [ ] Step 8: Mount Venues Added + Reviews-left on the public profile.
 - [ ] Step 9: Add the conditional public "Favourites" list (only when opted in).
 - [ ] Step 10: Add the Privacy settings section with the two toggles + update service/hook.
-- [ ] Step 11: Link "Added by" and review-author names to `/user/:userId` (plain text when private).
-- [ ] Step 12: Security pass — verify no private fields leak and visibility is enforced.
+- [ ] Step 11: Link "Added by" and review-author names to `/user/:userId` (plain text when private/unlinkable).
+- [ ] Step 12: Account deletion — anonymise / `SET NULL` author FKs + avatar storage cleanup.
 - [ ] Step 13: Cover the public profile flow with tests.
-- [ ] Step 14: Update the Privacy Policy to disclose public profiles + account-deletion behaviour.
+- [ ] Step 14: Update the Privacy Policy (depends on Step 12).
 
 ## Step Detail
 
-### Step 1: Visibility columns + join date (migration)
-- Add to `profiles` via migration: `is_public boolean not null default true` and
-  `show_favourites boolean not null default false`.
-- Confirm `profiles.created_at` exists for the join date; if not, source it from the
-  auth user. Expose only month/year granularity in the UI.
+Migration slices (Steps 1, 2, 12) go through migration files per
+`docs/specs/SUPABASE_MIGRATIONS_SPEC.md` and should be validated with `supabase db reset`
+alongside `npm.cmd run checks`.
 
-### Step 2: RLS adjustments + public-safe view (migration)
-- **RLS:** allow anon/authenticated to read **approved** venues and reviews by any
-  `user_id` (so the lists work for other users), and gate favourites reads on the
-  target's `show_favourites`. Audit existing `profiles` / `venue_details` /
-  `venue_reviews` policies and adjust as needed — this is the main RLS surface.
-- Create a `public_profiles` view (`security_invoker = true`) selecting **only** safe
-  columns: `user_id`, `username`, `total_reviews`, `total_venues_added`, `created_at`,
-  `show_favourites`, filtered to `is_public = true`.
-- Avatars are already public (served from the `avatars` bucket by `user_id`), so the
-  read-only `Avatar` component works unchanged.
-- Verify private columns (email, etc.) on the base `profiles` table are not newly
-  exposed.
+### Step 1: Schema migration — columns + join date
+- Add to `profiles`: `is_public boolean not null default true`,
+  `show_favourites boolean not null default false`, and `created_at timestamptz`.
+- Backfill `created_at` from `auth.users.created_at` (do **not** use `default now()`,
+  which would stamp existing users with the migration date). Expose only month/year in UI.
 
-### Step 3: Public read service + hook
-- Add `getPublicProfile(userId)` in a public service (e.g. `apiUserProfiles.ts` or a
-  new `apiPublicProfiles.ts`) that queries the `public_profiles` view. Returns null
-  for missing or private profiles.
-- Add a `useGetPublicProfile(userId)` hook. Keep this entirely separate from the
-  private `useGetUserProfile`.
+### Step 2: Make favourites private (column revoke + RPCs)
+- Migration: `REVOKE SELECT (favourite_venues) ON public.profiles FROM anon, authenticated`
+  (mirrors the existing `GRANT UPDATE(favourite_venues)` column grant). Everything else on
+  `profiles` stays publicly readable.
+- Add `SECURITY DEFINER` RPCs (mirror the existing pattern,
+  `SET search_path TO 'public', 'pg_temp'`):
+  - owner read + toggle (e.g. `get_my_favourites()` and `toggle_favourite(venue_id)`), since
+    revoking the column means the owner can no longer read it via a normal select;
+  - `get_public_favourites(user_id)` returning the target's **approved** favourite venues
+    only when `is_public && show_favourites` — never the raw array or the profile row.
+- Move [apiUserProfiles.ts](../../src/services/apiUserProfiles.ts) onto these: `getUserProfile`
+  stops relying on `*` returning favourites; `updateFavouriteVenue` becomes the toggle RPC.
+  Update the owner-favourites consumers (`UserProfile`, `DetailedVenueView` `isFavourite`,
+  the favourites `VenueListContainer`).
+- Note: `getReviews`'s `profiles(*)` automatically stops returning favourites after the
+  revoke — no change needed there; `Avatar`, `getVenue`, and "Added by" are untouched.
 
-### Step 4: Shared "Venues Added" list
+### Step 3: Shared "Venues Added" list
 - Build one reusable list of **approved** venues where `user_id = :targetUserId`,
   parameterised by user id (defaults to the logged-in user on the private profile).
-- Reuse the favourites list's search/filter UX: `VenueListContainer` already wraps
-  `SearchAndFilterPanel` + `VenueListView`. Likely needs a new mode (e.g. `'added'`)
-  or a dedicated pagination/sort context mirroring `UserFavVenuesContext`, since the
-  data source is "venues by author" rather than a list of favourite ids.
+- Reuse the favourites list's search/filter UX (`VenueListContainer` wraps
+  `SearchAndFilterPanel` + `VenueListView`). Give it its **own** pagination/sort context
+  (do not share `UserFavVenuesContext`), since the data source is "venues by author".
 - **Replace URL-based mode detection.** `SearchAndFilterPanel`, `VenueListView`,
-  `VenueListCard`, and `CitySelect` currently detect favourites/user mode via
-  `useMatch('/profile/venues')`. The added-venues list and the public lists reuse
-  these components at different URLs (`/profile/added-venues`, `/user/:userId`), so
-  swap the hardcoded match for an explicit prop/context flag. Update the renamed
-  `/profile/favourite-venues` slug (and the four `useMatch` call sites + the
-  `navigate`/default in `UserProfile`) in the same slice.
+  `VenueListCard`, `CitySelect` detect mode via `useMatch('/profile/venues')`. These
+  components now render at multiple URLs, so swap the hardcoded match for an explicit
+  prop/context flag.
 
-### Step 5: Mount on the private profile
-- Add a "Venues" (Added) tab to `UserProfile.tsx` alongside Reviews / Favourites /
-  Notifications / Edit, rendering the Step 4 list for the logged-in user.
+### Step 4: Mount on the private profile (+ rename + redirect)
+- Add an "Added" tab to `UserProfile.tsx` rendering the Step 3 list for the logged-in
+  user. Rename the Favourites tab key `venues` → `favourite-venues`, add `added-venues`,
+  update the four `useMatch` sites + the `navigate`/default, and add a
+  `/profile/venues` → `/profile/favourite-venues` redirect.
+
+### Step 5: Public profile read service + hook
+- Add `getPublicProfile(userId)` reading the (public) `profiles` row plus the join date,
+  returning the same null/not-found when `is_public` is false or the row is missing. Add a
+  `useGetPublicProfile` hook with a query key distinct from the private `useGetUserProfile`.
 
 ### Step 6: Public route + page shell
-- Add `/user/:userId` route. Render a clear "profile not found / private" state when
-  `getPublicProfile` returns null.
+- Add `/user/:userId`. Private and missing return the same not-found state; malformed /
+  non-uuid id → not-found; set `noindex` for not-found/private pages.
 
 ### Step 7: Read-only banner
-- Make `UserProfileBanner`'s edit affordance optional (e.g. `onEditClick?`): when
-  absent, do not render the settings cog. Reuse it on the public page.
-- Add the join date line ("Member since June 2026").
+- Make `UserProfileBanner`'s `onEditClick` optional: when absent, hide the settings cog.
+  Reuse on the public page. Add the join date line ("Member since June 2026").
 
 ### Step 8: Public contribution lists
-- Mount the shared Venues Added list (Step 4) for the target user, plus a
-  Reviews-left list — a variant of `ReviewContainer`/its query fetching **approved**
-  reviews by the target `userId` rather than the logged-in user.
+- Mount the shared Venues Added list (Step 3) for the target user, plus a Reviews-left
+  list — a variant of `ReviewContainer`/its query fetching **approved** reviews by the
+  target `userId`.
 
 ### Step 9: Conditional favourites list
-- Only render when the target profile's `show_favourites` is true. Fetch the target
-  user's favourites and show approved venues (reusing the favourites list UI).
+- Render only when the target's `show_favourites` is true, fed by `get_public_favourites`
+  (Step 2). Reuse the favourites list UI.
 
 ### Step 10: Privacy settings
 - Add a "Privacy" section to `EditProfilePanel` with two toggles: "Public profile"
-  (default ON) and "Show my favourites on my profile" (default OFF). Add an update
-  service + hook writing `is_public` / `show_favourites`.
+  (default ON) and "Show my favourites on my profile" (default OFF). Opting out of public
+  preserves `show_favourites`. Add an update service + hook writing `is_public` /
+  `show_favourites` (owner-only via existing `profiles_update_owner_admin`).
 
 ### Step 11: Link attributions
 - Point the "Added by" name in `DetailedVenueView` and review-author names to
-  `/user/:userId`. When the target profile is private, render plain text (no link),
-  preserving attribution without exposing a page.
+  `/user/:userId`. Render plain text (no link) when the target is private or has no
+  username. `is_public` is already on the public-readable `profiles` row, so no extra
+  contract is needed.
 
-### Step 12: Security pass
-- Confirm the public path returns only whitelisted columns, returns not-found for
-  private profiles, and that all listed content is approved-only. Add a test asserting
-  no private fields (email, etc.) are present in the public profile response.
+### Step 12: Account deletion
+- Decide and implement erasure: make author FKs `venue_details.user_id` /
+  `venue_reviews.user_id` `ON DELETE SET NULL` (and the columns nullable), or reassign to
+  a sentinel "deleted user", so deleting an `auth.users` row no longer blocks on the
+  `profiles` cascade. Include avatar storage cleanup. This unblocks the policy step.
 
 ### Step 13: Tests
-- Service + component coverage: public vs private, favourites opt-in on/off,
-  approved-only filtering, not-found state, the read-only banner (no cog), and the
-  shared Venues Added list on both profiles.
+- Service + component coverage: public vs private profile, favourites opt-in on/off,
+  approved-only filtering, not-found state, the read-only banner (no cog), and the shared
+  Venues Added list on both profiles. Include a check that `favourite_venues` is not
+  returned to a non-owner (e.g. the public favourites RPC respects both toggles).
 
-### Step 14: Privacy Policy
-- Disclose that public profiles exist and what they show (username, avatar, counts,
-  join date, contributions, and favourites when opted in). Confirm account deletion
-  removes/anonymises the public profile. (See the privacy decision captured in the
-  image-rights plan.)
+### Step 14: Privacy Policy (depends on Step 12)
+- Disclose that public profiles exist and what they show (username, avatar, counts, join
+  date, contributions, and favourites when opted in). Document the implemented account-
+  deletion / anonymisation behaviour.
 
 ## Future Considerations (not in v1)
 
