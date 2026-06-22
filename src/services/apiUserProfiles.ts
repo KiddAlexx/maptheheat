@@ -7,13 +7,21 @@ import { UserNotification } from '@/types/userTypes';
 export async function getUserProfile(userId: string) {
   const { data, error } = await supabase
     .from('profiles')
-    .select('*')
+    .select(
+      'user_id, updated_at, username, avatar_url, total_reviews, total_venues_added, is_public, show_favourites, created_at'
+    )
     .eq('user_id', userId);
 
   if (error) {
     throw new Error(`Profile could not be loaded. Error:${error.message}`);
   }
   return camelcaseKeys(data[0]);
+}
+
+export async function getMyFavourites(): Promise<string[]> {
+  const { data, error } = await supabase.rpc('get_my_favourites');
+  if (error) throw new Error(`Error fetching favourite venues: ${error.message}`);
+  return (data ?? []) as string[];
 }
 
 export async function getUnreadNotificationsCount({
@@ -170,47 +178,10 @@ export async function updateUsernameApi({ username }: UpdateUsernameParams) {
   return data;
 }
 
-export interface AddFavouriteVenueParams {
-  venueId: string;
-  userId: string;
-}
-
-export async function updateFavouriteVenue({
-  venueId,
-  userId,
-}: AddFavouriteVenueParams) {
-  // Fetch row based on userId + return favourite_venues
-  const { data: currentFavs, error: fetchError } = await supabase
-    .from('profiles')
-    .select('favourite_venues')
-    .eq('user_id', userId)
-    .single();
-
-  if (fetchError) {
-    throw new Error(
-      `Error fetching current favourite venues: ${fetchError.message}`
-    );
-  }
-
-  // Create an empty array when favourite_venues is null
-  const currentFavsArray: string[] = currentFavs.favourite_venues || [];
-
-  // Toggle presence of venueId in the favourites array
-  const updatedFavs = currentFavsArray.includes(venueId)
-    ? currentFavsArray.filter((id) => id !== venueId)
-    : [...currentFavsArray, venueId];
-
-  // Update profiles table with new favourite_venues list
-  const { data, error } = await supabase
-    .from('profiles')
-    .update({ favourite_venues: updatedFavs })
-    .eq('user_id', userId);
-
-  if (error) {
-    throw new Error(
-      `Error adding favourite venue to database: ${error.message}`
-    );
-  }
-
-  return data;
+export async function toggleFavouriteVenue(venueId: string): Promise<string[]> {
+  const { data, error } = await supabase.rpc('toggle_favourite', {
+    p_venue_id: venueId,
+  });
+  if (error) throw new Error(`Error toggling favourite venue: ${error.message}`);
+  return (data ?? []) as string[];
 }

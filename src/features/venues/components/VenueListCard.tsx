@@ -87,14 +87,11 @@ function VenueListCard({
           const nextFavourite = !previousFavourite;
           setOptimisticIsFavourite(nextFavourite);
 
-          updateFavouriteVenue(
-            { userId, venueId },
-            {
-              onError: () => {
-                setOptimisticIsFavourite(previousFavourite);
-              },
-            }
-          );
+          updateFavouriteVenue(venueId, {
+            onError: () => {
+              setOptimisticIsFavourite(previousFavourite);
+            },
+          });
         }
       );
     } else {
@@ -102,14 +99,11 @@ function VenueListCard({
       const nextFavourite = !previousFavourite;
       setOptimisticIsFavourite(nextFavourite);
 
-      updateFavouriteVenue(
-        { userId, venueId },
-        {
-          onError: () => {
-            setOptimisticIsFavourite(previousFavourite);
-          },
-        }
-      );
+      updateFavouriteVenue(venueId, {
+        onError: () => {
+          setOptimisticIsFavourite(previousFavourite);
+        },
+      });
     }
   }
 

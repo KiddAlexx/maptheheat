@@ -5,7 +5,9 @@ export interface Profile {
   avatarUrl: string;
   totalReviews: number | null;
   totalVenuesAdded: number | null;
-  favouriteVenues: string[] | null;
+  isPublic: boolean;
+  showFavourites: boolean;
+  createdAt: string | null;
 }
 
 export type NotificationRelatedType = 'review' | 'venue' | 'image';

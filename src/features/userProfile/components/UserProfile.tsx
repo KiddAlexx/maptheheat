@@ -7,6 +7,7 @@ import { lazy, Suspense } from 'react';
 // Hooks
 import { useUser } from '@/features/authentication/hooks/useUser';
 import { useGetUserProfile } from '../hooks/useGetUserProfile';
+import { useGetMyFavourites } from '../hooks/useGetMyFavourites';
 
 // Assets
 
@@ -42,10 +43,11 @@ function UserProfile() {
 
   const selected = (section || 'reviews') as Key;
 
-  if (isFetching || isPendingUser || isLoadingProfile || !userId)
-    return <LoaderSpinner message="Loading profile" />;
+  const { myFavourites: favouriteVenues, isLoading: isLoadingFavourites } =
+    useGetMyFavourites(userId);
 
-  const { favouriteVenues } = userProfile;
+  if (isFetching || isPendingUser || isLoadingProfile || isLoadingFavourites || !userId || !userProfile)
+    return <LoaderSpinner message="Loading profile" />;
 
   function handleSelectionChange(key: Key) {
     navigate(`/profile/${key}`, { replace: true });

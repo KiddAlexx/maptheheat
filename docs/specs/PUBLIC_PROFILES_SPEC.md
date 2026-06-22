@@ -119,7 +119,7 @@ or settings.
 ## Current Status
 
 - [x] Step 1: Schema migration — add `is_public`, `show_favourites`, `created_at` (backfilled from `auth.users`).
-- [ ] Step 2: Make favourites private — revoke `SELECT (favourite_venues)`; add owner + public favourites `SECURITY DEFINER` RPCs; move `apiUserProfiles` favourites read/toggle onto them.
+- [x] Step 2: Make favourites private — revoke `SELECT (favourite_venues)`; add owner + public favourites `SECURITY DEFINER` RPCs; move `apiUserProfiles` favourites read/toggle onto them.
 - [ ] Step 3: Build the shared "Venues Added" list (approved-only, by user id, favourites-style search/filter, own list state).
 - [ ] Step 4: Mount "Venues Added" as a new tab on the private profile (+ tab-key rename + `/profile/venues` redirect).
 - [ ] Step 5: Add public profile read service + hook (`getPublicProfile`) reading the public `profiles` row; same not-found for private/missing.
@@ -138,6 +138,10 @@ or settings.
 Migration slices (Steps 1, 2, 12) go through migration files per
 `docs/specs/SUPABASE_MIGRATIONS_SPEC.md` and should be validated with `supabase db reset`
 alongside `npm.cmd run checks`.
+
+**Deployment rule: staging gets each migration as it is completed and validated. Production
+gets all migrations in one batch only after every step is done and the full feature is
+tested on staging. Never push to production mid-feature.**
 
 ### Step 1: Schema migration — columns + join date
 - Add to `profiles`: `is_public boolean not null default true`,
@@ -256,4 +260,22 @@ alongside `npm.cmd run checks`.
 - Added `created_at timestamptz` (nullable; no `DEFAULT now()` to avoid stamping existing users with the migration date).
 - Backfill `UPDATE profiles SET created_at = auth.users.created_at` for all existing rows.
 - Updated `handle_new_user()` to include `created_at = new.created_at` in its insert so future signups populate the column.
-- `npm run checks` passes; `supabase db reset` could not run (Docker Desktop not started) -- validate before pushing to staging.
+- `npm run checks` passes; `supabase db reset` replayed all migrations cleanly locally.
+- Pushed to staging (`iuhgmfdpeblaaoolhpbt`) with `supabase db push`. Migration applied successfully.
+
+### Step 2: Make favourites private (2026-06-22)
+
+- Created `supabase/migrations/20260622130000_make_favourites_private.sql`.
+- `REVOKE SELECT (favourite_venues) ON public.profiles FROM anon, authenticated` -- column-level read is now blocked; the existing `GRANT UPDATE(favourite_venues)` column grant is unchanged.
+- Added `get_my_favourites()` SECURITY DEFINER RPC: returns `uuid[]` for `auth.uid()`; safe no-op for unauthenticated callers.
+- Added `toggle_favourite(p_venue_id uuid)` SECURITY DEFINER RPC: atomically toggles the venue in/out of the array and returns the new array.
+- Added `get_public_favourites(p_user_id uuid)` SECURITY DEFINER RPC: returns approved venue IDs only when `is_public AND show_favourites`; never exposes the raw array.
+- `getUserProfile` in `apiUserProfiles.ts` now selects explicit columns (no `favourite_venues`).
+- Added `getMyFavourites()` service function (calls `get_my_favourites` RPC).
+- Replaced `updateFavouriteVenue` / `AddFavouriteVenueParams` with `toggleFavouriteVenue(venueId)` (calls `toggle_favourite` RPC atomically).
+- `Profile` type updated: removed `favouriteVenues`, added `isPublic`, `showFavourites`, `createdAt`.
+- New `useGetMyFavourites(userId)` hook with query key `['myFavourites', userId]`.
+- `useUpdateFavouriteVenue` now calls `toggleFavouriteVenue`; invalidates `['myFavourites']` and `['userCities']` (no longer `['profile']`).
+- `UserProfile`, `DetailedVenueView`, `VenueListView` all switched to `useGetMyFavourites`; `VenueListCard` toggle calls updated to pass `venueId` string directly.
+- `supabase db reset` replayed all migrations cleanly; `npm run checks` passes (zero lint/type errors).
+- Pushed to staging; `supabase db push` applied `20260622130000_make_favourites_private.sql`.

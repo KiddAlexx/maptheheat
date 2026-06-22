@@ -12,6 +12,7 @@ import { useUser } from '../../authentication/hooks/useUser';
 import { useModalContext } from '@/context/ModalContext';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
+import { useGetMyFavourites } from '@/features/userProfile/hooks/useGetMyFavourites';
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
 
 import { useGlobalError } from '@/context/ErrorContext';
@@ -50,8 +51,8 @@ function DetailedVenueView() {
 
   const { userProfile } = useGetUserProfile(userId);
   const username = userProfile?.username;
-  const favVenuesList = userProfile?.favouriteVenues || null;
-  const isFavourite = favVenuesList?.includes(venueId) ?? false;
+  const { myFavourites } = useGetMyFavourites(userId);
+  const isFavourite = !!venueId && myFavourites.includes(venueId);
   const [optimisticIsFavourite, setOptimisticIsFavourite] =
     useState(isFavourite);
 
@@ -230,14 +231,11 @@ function DetailedVenueView() {
     const nextFavourite = !previousFavourite;
     setOptimisticIsFavourite(nextFavourite);
 
-    updateFavouriteVenue(
-      { userId, venueId },
-      {
-        onError: () => {
-          setOptimisticIsFavourite(previousFavourite);
-        },
-      }
-    );
+    updateFavouriteVenue(venueId, {
+      onError: () => {
+        setOptimisticIsFavourite(previousFavourite);
+      },
+    });
   }
 
   const seoTitle = `${venueName} in ${city} | MapTheHeat`;
