@@ -27,6 +27,7 @@ export interface VenuesRequestParams {
   sort?: VenueSort | null;
   pagination?: VenuePagination;
   favouriteVenues?: string[];
+  authorUserId?: string;
 }
 
 export interface VenuesResponse {
@@ -45,6 +46,7 @@ export async function getVenues({
   sort,
   pagination,
   favouriteVenues,
+  authorUserId,
 }: VenuesRequestParams): Promise<VenuesResponse> {
   let query = supabase
     .from('venue_details')
@@ -56,6 +58,11 @@ export async function getVenues({
 
   if (favouriteVenues) {
     query = query.in('venue_id', favouriteVenues);
+  }
+
+  // Filter by author when showing a user's added venues
+  if (authorUserId) {
+    query = query.eq('user_id', authorUserId);
   }
 
   // Apply each filter in the filters array if any

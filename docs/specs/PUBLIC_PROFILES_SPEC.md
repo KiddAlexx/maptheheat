@@ -14,6 +14,12 @@ changes (new columns, the column revoke, favourites RPCs) go through migration f
 `docs/specs/SUPABASE_MIGRATIONS_SPEC.md` — never edit schema directly. Keep public
 reads approved-only. Run `npm.cmd run checks` plus the relevant tests after each slice.
 
+After completing any step, always output:
+1. A git commit message (message string only, no extra commentary).
+2. A resume prompt — a self-contained paragraph the user can paste at the start of the
+   next chat to pick up exactly where this one left off (what was just completed, what
+   Docker/staging state to expect, and which step comes next).
+
 ## Context
 
 We now display "Added by [username]" on the venue detail page, and reviews already
@@ -120,7 +126,7 @@ or settings.
 
 - [x] Step 1: Schema migration — add `is_public`, `show_favourites`, `created_at` (backfilled from `auth.users`).
 - [x] Step 2: Make favourites private — revoke `SELECT (favourite_venues)`; add owner + public favourites `SECURITY DEFINER` RPCs; move `apiUserProfiles` favourites read/toggle onto them.
-- [ ] Step 3: Build the shared "Venues Added" list (approved-only, by user id, favourites-style search/filter, own list state).
+- [x] Step 3: Build the shared "Venues Added" list (approved-only, by user id, favourites-style search/filter, own list state).
 - [ ] Step 4: Mount "Venues Added" as a new tab on the private profile (+ tab-key rename + `/profile/venues` redirect).
 - [ ] Step 5: Add public profile read service + hook (`getPublicProfile`) reading the public `profiles` row; same not-found for private/missing.
 - [ ] Step 6: Add `/user/:userId` route + page shell (private==missing 404, malformed id, `noindex`).
@@ -262,6 +268,16 @@ tested on staging. Never push to production mid-feature.**
 - Updated `handle_new_user()` to include `created_at = new.created_at` in its insert so future signups populate the column.
 - `npm run checks` passes; `supabase db reset` replayed all migrations cleanly locally.
 - Pushed to staging (`iuhgmfdpeblaaoolhpbt`) with `supabase db push`. Migration applied successfully.
+
+### Step 3: Shared "Venues Added" list (2026-06-22)
+
+- Created `src/context/UserAddedVenuesContext.tsx` — independent pagination/filter/sort context (same reducer shape as `UserFavVenuesContext`); registered `UserAddedVenuesProvider` in `AppProviders.tsx`.
+- Added `authorUserId?: string` to `VenuesRequestParams` / `getVenues` in `apiVenues.ts`; when provided, applies `.eq('user_id', authorUserId)` after the `status = 'approved'` guard.
+- Updated `useVenues` to accept and forward `authorUserId`; included in the query key.
+- Replaced `useMatch('/profile/venues')` with an explicit `isUserMode?: boolean` prop in `CitySelect`, `SearchAndFilterPanel`, `VenueListView`, and `VenueListCard` — these components now work at any URL.
+- `CitySelect` decoupled city-list logic from URL: user-specific city list shown when `favouriteVenues` is provided (not based on URL); map navigation suppressed when `isUserMode` is true.
+- `VenueListContainer` extended: `mode` accepts `'venue' | 'user' | 'added'`; `'added'` selects `useUserAddedVenuesContext` and accepts `authorUserId`; `isUserMode` computed from mode and forwarded to both children.
+- `npm run checks` passes (zero lint/type errors). No migration — Step 3 is frontend-only.
 
 ### Step 2: Make favourites private (2026-06-22)
 

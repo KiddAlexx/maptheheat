@@ -6,6 +6,7 @@ import { VenueFilterProvider } from './context/VenueFilterContext';
 import { ReviewSortProvider } from './context/ReviewSortContext';
 import { UserReviewsProvider } from './context/UserReviewsContext';
 import { UserFavVenuesProvider } from './context/UserFavVenuesContext';
+import { UserAddedVenuesProvider } from './context/UserAddedVenuesContext';
 import { ModalProvider } from './context/ModalContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -32,18 +33,20 @@ function AppProviders({ children }: AppProviderProps) {
       <GlobalErrorProvider>
         <VenueFilterProvider>
           <UserFavVenuesProvider>
-            <ReviewSortProvider>
-              <UserReviewsProvider>
-                <ModalProvider>
-                  <UIProvider>
-                    <QueryClientProvider client={queryClient}>
-                      {/* <ReactQueryDevtools initialIsOpen={false} /> temporarily disabled for GIF recording */}
-                      {children}
-                    </QueryClientProvider>
-                  </UIProvider>
-                </ModalProvider>
-              </UserReviewsProvider>
-            </ReviewSortProvider>
+            <UserAddedVenuesProvider>
+              <ReviewSortProvider>
+                <UserReviewsProvider>
+                  <ModalProvider>
+                    <UIProvider>
+                      <QueryClientProvider client={queryClient}>
+                        {/* <ReactQueryDevtools initialIsOpen={false} /> temporarily disabled for GIF recording */}
+                        {children}
+                      </QueryClientProvider>
+                    </UIProvider>
+                  </ModalProvider>
+                </UserReviewsProvider>
+              </ReviewSortProvider>
+            </UserAddedVenuesProvider>
           </UserFavVenuesProvider>
         </VenueFilterProvider>
       </GlobalErrorProvider>

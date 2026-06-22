@@ -1,5 +1,4 @@
 // Third Party Imports
-import { useMatch } from 'react-router';
 
 // React imports
 
@@ -27,12 +26,13 @@ import type { Venue } from '@/types/venueTypes';
 interface ListViewProps {
   useVenueContext: () => VenueFilterContextType;
   favouriteVenues?: string[];
+  isUserMode?: boolean;
+  authorUserId?: string;
 }
 
-function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
+function ListView({ useVenueContext, favouriteVenues, isUserMode, authorUserId }: ListViewProps) {
   const { filters, sort, pagination, updatePageNumber } = useVenueContext();
   const { updateVenueFilter } = useVenueFilterContext();
-  const isUserMode = useMatch('/profile/venues');
   // Load venues from supabase
   const {
     venues,
@@ -43,6 +43,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
     filters,
     sort,
     pagination,
+    authorUserId,
   });
 
   const { isLargeScreen } = useUIContext();
@@ -106,6 +107,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
               userId={userId}
               isAuthenticated={isAuthenticated}
               favVenuesList={favVenuesList}
+              isUserMode={isUserMode}
               key={venue.venueId}
             />
           ))}
