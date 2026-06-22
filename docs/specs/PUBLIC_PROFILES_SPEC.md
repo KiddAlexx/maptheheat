@@ -15,7 +15,10 @@ changes (new columns, the column revoke, favourites RPCs) go through migration f
 reads approved-only. Run `npm.cmd run checks` plus the relevant tests after each slice.
 
 After completing any step, always output:
-1. A git commit message (message string only, no extra commentary).
+1. A git commit message (message string only, no extra commentary). Use a conventional
+   commit subject line. Do not include a step reference (e.g., "Step 6") anywhere in the
+   message. Add a bullet-point body only when there are multiple distinct changes worth
+   calling out individually; omit the body for simple, single-concern commits.
 2. A resume prompt — a self-contained paragraph the user can paste at the start of the
    next chat to pick up exactly where this one left off (what was just completed, what
    Docker/staging state to expect, and which step comes next).
@@ -129,7 +132,7 @@ or settings.
 - [x] Step 3: Build the shared "Venues Added" list (approved-only, by user id, favourites-style search/filter, own list state).
 - [x] Step 4: Mount "Venues Added" as a new tab on the private profile (+ tab-key rename + `/profile/venues` redirect).
 - [x] Step 5: Add public profile read service + hook (`getPublicProfile`) reading the public `profiles` row; same not-found for private/missing.
-- [ ] Step 6: Add `/user/:userId` route + page shell (private==missing 404, malformed id, `noindex`).
+- [x] Step 6: Add `/user/:userId` route + page shell (private==missing 404, malformed id, `noindex`).
 - [ ] Step 7: Add a read-only banner variant (no settings cog) with join date.
 - [ ] Step 8: Mount Venues Added + Reviews-left on the public profile.
 - [ ] Step 9: Add the conditional public "Favourites" list (only when opted in).
@@ -258,6 +261,12 @@ tested on staging. Never push to production mid-feature.**
 - **Visibility of the favourites count** vs the favourites list itself.
 
 ## Completed Slices
+
+### Step 6: Public route + page shell (2026-06-22)
+
+- Created `src/pages/PublicProfile.tsx`: reads `:userId` from route params, validates against a UUID regex, calls `useGetPublicProfile` (disabled when id is invalid). Non-UUID ids and null/private profiles all render `<PageNotFound />` with a `<Helmet>` injecting `<meta name="robots" content="noindex" />`. Valid profiles render a `<main>` with `<PageSeo>` (placeholder `<div>` for Steps 7-9 content).
+- Lazy-loaded `PublicProfile` in `App.tsx` and registered `<Route path="/user/:userId" element={<PublicProfile />} />` inside `<RootLayout>`, alongside the other public routes.
+- `npm run checks` passes (zero lint/type errors). No migration -- Step 6 is frontend-only.
 
 ### Step 5: Public profile read service + hook (2026-06-22)
 

@@ -58,6 +58,7 @@ const StandaloneImageModerationGroup = lazy(
 const AdminNotificationCenter = lazy(
   () => import('./features/moderation/components/AdminNotificationCenter')
 );
+const PublicProfile = lazy(() => import('./pages/PublicProfile'));
 
 function App() {
   return (
@@ -151,6 +152,7 @@ function App() {
               element={<AdminNotificationCenter />}
             />
           </Route>
+          <Route path="/user/:userId" element={<PublicProfile />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/contact" element={<Contact />} />
