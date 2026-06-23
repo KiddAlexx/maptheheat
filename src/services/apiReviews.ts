@@ -39,7 +39,7 @@ export async function getReviews({
   let query = supabase
     .from('venue_reviews')
     .select(
-      '*, profiles(*), venue_details(*), venue_images(image_path, alt_text, image_id)',
+      '*, profiles(user_id, updated_at, username, avatar_url, total_reviews, total_venues_added, is_public, show_favourites, created_at), venue_details(*), venue_images(image_path, alt_text, image_id)',
       { count: 'exact' }
     )
     .eq('status', 'approved')
@@ -93,7 +93,9 @@ export async function getReview(
 ): Promise<ReviewWithRelations> {
   const { data, error } = await supabase
     .from('venue_reviews')
-    .select('*, profiles(*), venue_details(*)')
+    .select(
+      '*, profiles(user_id, updated_at, username, avatar_url, total_reviews, total_venues_added, is_public, show_favourites, created_at), venue_details(*)'
+    )
     .eq('review_id', reviewId)
     .eq('status', 'approved');
 

@@ -10,7 +10,7 @@ export interface Venue {
   postcode: string;
   phoneNumber: string;
   website: string;
-  userId: string;
+  userId: string | null;
   addedByUsername?: string | null;
   addedByUserId?: string | null;
   venueNameSlug: string;
@@ -34,7 +34,7 @@ export interface ModerationImage extends DetailedImage {
   createdAt: string;
   venueId: string;
   reviewId: string | null;
-  userId: string;
+  userId: string | null;
   imageType: 'venue' | 'review' | 'standalone' | null;
   status: ModerationStatus;
 }

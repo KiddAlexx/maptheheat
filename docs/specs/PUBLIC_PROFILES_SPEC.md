@@ -38,9 +38,10 @@ or settings.
   every `profiles` column (`username, avatar_url, total_reviews, total_venues_added`)
   is public by design — already shown on every review and venue. The **only** sensitive
   column is `favourite_venues`. So we do **not** lock the table, build an attribution
-  RPC, or refactor `Avatar` — existing reads (`Avatar`, `getReviews` `profiles(*)`,
-  `getVenue` `profiles(username)`, the live "Added by") keep working untouched. We only
-  make `favourite_venues` private. (Email is not on `profiles` — it is in `auth.users`.)
+  RPC, or refactor `Avatar` — existing reads (`Avatar`, `getReviews`'s explicit public
+  profile projection, `getVenue` `profiles(username)`, the live "Added by") keep working.
+  We only make `favourite_venues` private. (Email is not on `profiles` — it is in
+  `auth.users`.)
 - **Protect `favourite_venues` at the DB layer, not in the app.** App-level narrowing is
   not real security: any client can run `select favourite_venues from profiles`. Revoke
   the column and serve favourites through small `SECURITY DEFINER` RPCs (see Step 2).
@@ -65,18 +66,16 @@ or settings.
 - `profiles` columns: `user_id, updated_at, username, avatar_url, total_reviews,
   favourite_venues (uuid[]), total_venues_added`. **No `created_at`** — join date must
   be added and backfilled from `auth.users.created_at` (not `default now()`).
-- `favourite_venues` is the only sensitive column and is currently world-readable via
-  `profiles_select_anyone` / `Public profiles are viewable by everyone` (`USING (true)`).
+- `favourite_venues` is the only sensitive column. Column-level `SELECT` is revoked from
+  `anon` / `authenticated`; owner and opted-in public reads go through dedicated RPCs.
 - `total_reviews` / `total_venues_added` are already maintained **approved-only** by
   trigger, so banner counts match the approved lists.
-- Favourites read/write today: `getUserProfile` selects `*`, and `updateFavouriteVenue`
-  ([apiUserProfiles.ts](../../src/services/apiUserProfiles.ts)) selects + rewrites the
-  array. Both run as the owner, so both move onto the new favourites RPCs once the column
-  is revoked.
-- Author FKs `venue_details.user_id` and `venue_reviews.user_id` reference `profiles`
-  with **no `ON DELETE`** action, while `auth.users → profiles` is `CASCADE`. Deleting
-  a contributing user is therefore blocked — erasure needs an anonymise/`SET NULL`
-  strategy before it can work.
+- Favourites reads/toggles in
+  [apiUserProfiles.ts](../../src/services/apiUserProfiles.ts) use the owner/public
+  favourites RPCs; normal profile and review selects explicitly omit the protected array.
+- Author FKs on `venue_details`, `venue_reviews`, and `venue_images` use `ON DELETE SET
+  NULL`. The hardened Edge Function cleans Storage and disposable content before deleting
+  `auth.users`; no sentinel profile is retained.
 
 ## Decisions (locked for v1)
 
@@ -138,9 +137,9 @@ or settings.
 - [x] Step 9: Add the conditional public "Favourites" list (only when opted in).
 - [x] Step 10: Add the Privacy settings section with the two toggles + update service/hook.
 - [x] Step 11: Link "Added by" and review-author names to `/user/:userId` (plain text when private/unlinkable).
-- [ ] Step 12: Account deletion — anonymise / `SET NULL` author FKs + avatar storage cleanup.
+- [x] Step 12: Hardened account deletion — de-attribution, moderated-content retention, storage cleanup, and approved-only venue metrics.
 - [ ] Step 13: Cover the public profile flow with tests.
-- [ ] Step 14: Update the Privacy Policy (depends on Step 12).
+- [x] Step 14: Update the Privacy Policy and Terms for the implemented deletion behaviour.
 
 ## Step Detail
 
@@ -172,8 +171,8 @@ tested on staging. Never push to production mid-feature.**
   stops relying on `*` returning favourites; `updateFavouriteVenue` becomes the toggle RPC.
   Update the owner-favourites consumers (`UserProfile`, `DetailedVenueView` `isFavourite`,
   the favourites `VenueListContainer`).
-- Note: `getReviews`'s `profiles(*)` automatically stops returning favourites after the
-  revoke — no change needed there; `Avatar`, `getVenue`, and "Added by" are untouched.
+- `getReviews` explicitly selects the public profile columns and excludes
+  `favourite_venues`; `Avatar`, `getVenue`, and "Added by" are otherwise untouched.
 
 ### Step 3: Shared "Venues Added" list
 - Build one reusable list of **approved** venues where `user_id = :targetUserId`,
@@ -227,10 +226,19 @@ tested on staging. Never push to production mid-feature.**
   contract is needed.
 
 ### Step 12: Account deletion
-- Decide and implement erasure: make author FKs `venue_details.user_id` /
-  `venue_reviews.user_id` `ON DELETE SET NULL` (and the columns nullable), or reassign to
-  a sentinel "deleted user", so deleting an `auth.users` row no longer blocks on the
-  `profiles` cascade. Include avatar storage cleanup. This unblocks the policy step.
+- Delete the Auth user and profile instead of retaining a sentinel profile. Approved
+  venues, approved venue/standalone images, and (by default) approved reviews with their
+  approved images remain with nullable author FKs and render as deleted/unattributed.
+- Always remove pending/declined contributions, notifications, favourites, avatar files,
+  and other disposable objects. The optional checkbox also deletes approved reviews and
+  their photos. Review-image metadata uses `ON DELETE CASCADE`.
+- Coordinate deletion through an authenticated Edge Function. Only `service_role` may
+  execute the preparation/finalisation RPCs; the browser never receives elevated access.
+  Storage cleanup completes before the transactional Auth deletion, and retained Storage
+  objects are de-attributed only in the final transaction.
+- Keep public venue metrics aligned with public review queries by counting approved
+  reviews only. If a removed photo was the venue thumbnail, promote the oldest remaining
+  approved image or clear the thumbnail when none remains.
 
 ### Step 13: Tests
 - Service + component coverage: public vs private profile, favourites opt-in on/off,
@@ -239,9 +247,10 @@ tested on staging. Never push to production mid-feature.**
   returned to a non-owner (e.g. the public favourites RPC respects both toggles).
 
 ### Step 14: Privacy Policy (depends on Step 12)
-- Disclose that public profiles exist and what they show (username, avatar, counts, join
-  date, contributions, and favourites when opted in). Document the implemented account-
-  deletion / anonymisation behaviour.
+- Disclose public-profile data and the exact account-deletion retention choices. Use
+  "without attribution" / "de-attributed" rather than promising that retained content is
+  anonymous. State that users can request retained-content removal through the contact
+  form, and keep the Terms content licence consistent with that retention.
 
 ## Future Considerations (not in v1)
 
@@ -261,6 +270,40 @@ tested on staging. Never push to production mid-feature.**
 - **Visibility of the favourites count** vs the favourites list itself.
 
 ## Completed Slices
+
+### Step 12: Account deletion (2026-06-22)
+
+- `20260622140000_account_deletion.sql` makes the venue, review, and image author FKs
+  nullable with `ON DELETE SET NULL`. The follow-up
+  `20260622200000_harden_account_deletion.sql` replaces the browser-callable deletion RPC
+  with `service_role`-only preparation/finalisation RPCs and gives review-image metadata
+  `ON DELETE CASCADE`.
+- Added the authenticated `delete-account` Edge Function. It validates the caller's JWT,
+  obtains a disposable Storage manifest from the database, removes those objects in
+  batches, then transactionally de-attributes retained objects, removes disposable rows,
+  repairs affected thumbnails, and deletes the Auth user.
+- Approved venues and approved venue/standalone images survive without attribution.
+  Approved reviews and their approved photos also survive by default; selecting "Also
+  delete my reviews and their photos" removes them. Pending/declined content is always
+  removed. The first staging user's ownerless review is repaired to approved during the
+  follow-up migration.
+- Fixed `review_owner_update_guard()` so the profile FK's `SET NULL` action cannot reset an
+  approved retained review to pending. `calculate_venue_metrics()` and the one-time metric
+  rebuild now use approved reviews only.
+- Public and moderation review queries now use left profile joins, explicit public profile
+  columns, and nullable author types. Retained reviews render as "Deleted user" without a
+  profile link; moderation metadata also tolerates a deleted submitter.
+- `deleteAccount(deleteReviews)` now invokes the Edge Function. After success the hook
+  clears only the local expired session, removes React Query data, and navigates home.
+- The Account panel explains the exact retention rules and links to the contact form. The
+  Privacy Policy and Terms now describe de-attributed retained content and removal requests.
+- Local validation covers both checkbox paths, Storage ownership/failure gating, pending
+  content cleanup, approved-only metrics, review-image cascading, and oldest-approved-image
+  thumbnail promotion. `supabase db reset`, `npm run checks`, the production build, 32
+  focused tests, and the full 147-test suite pass.
+- Both account-deletion migrations are deployed to staging (`iuhgmfdpeblaaoolhpbt`), and
+  the `delete-account` Edge Function is deployed there. A final staging dry run reports no
+  pending migrations. Production remains untouched.
 
 ### Step 11: Link attributions (2026-06-22)
 

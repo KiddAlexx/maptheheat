@@ -55,7 +55,7 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
     venueImages,
   } = review;
 
-  const { username, totalReviews, userId, isPublic } = profiles;
+  const { username, totalReviews, userId, isPublic } = profiles ?? {};
   const {
     city,
     country,
@@ -119,6 +119,8 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
               <h3 className="font-semibold">
                 {isUserMode ? (
                   venueName
+                ) : !userId ? (
+                  <span className="italic text-default-400">Deleted user</span>
                 ) : isPublic && username ? (
                   <Link to={`/user/${userId}`} className="hover:opacity-80">
                     {username}
@@ -127,10 +129,12 @@ function ReviewListItem({ review, mode }: ReviewListItemProps) {
                   username
                 )}
               </h3>
-              <p className="text-xs">
-                ({isUserMode ? totalVenueReviews : totalReviews}{' '}
-                {totalReviews === 1 ? 'review' : 'reviews'})
-              </p>
+              {(isUserMode || totalReviews != null) && (
+                <p className="text-xs">
+                  ({isUserMode ? totalVenueReviews : totalReviews}{' '}
+                  {totalReviews === 1 ? 'review' : 'reviews'})
+                </p>
+              )}
             </div>
             <div className="mr-5 sm:mr-0">
               <div

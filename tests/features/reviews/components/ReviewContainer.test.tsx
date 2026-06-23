@@ -18,6 +18,7 @@ import ReviewContainer from '@/features/reviews/components/ReviewContainer';
 import { db } from 'tests/mocks/db';
 import { drop } from '@mswjs/data';
 import {
+  getReviewsMock,
   simulateReviewsDelay,
   simulateReviewsError,
 } from 'tests/mocks/apiReviews';
@@ -27,6 +28,7 @@ import { getCurrentUserMock } from 'tests/mocks/apiAuth';
 import { renderWithRoute } from 'tests/utils/renderWithRoute';
 import { seedVenueWithReviews } from 'tests/utils/seedVenueWithReviews';
 import { formatDate } from '@/utils/dateTimeHelpers';
+import type { ReviewWithRelations } from '@/types/reviewTypes';
 
 type DbVenue = ReturnType<typeof db.venue.create>;
 
@@ -96,6 +98,27 @@ describe('ReviewContainer', () => {
     expect(
       reviewCard.getByRole('button', { name: /open review actions/i })
     ).toBeInTheDocument();
+  });
+
+  it('shows a retained review without linking a deleted author', async () => {
+    const { venue, reviews } = seedVenueWithReviews(1);
+    const deletedAuthorReview = {
+      ...reviews[0],
+      userId: null,
+      profiles: null,
+    } as unknown as ReviewWithRelations;
+    getReviewsMock.mockResolvedValueOnce({
+      reviews: [deletedAuthorReview],
+      count: 1,
+    });
+
+    const { getLoaderSpinner } = await renderComponent({ venue });
+    await waitForElementToBeRemoved(getLoaderSpinner);
+
+    expect(screen.getByText('Deleted user')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Deleted user' })
+    ).not.toBeInTheDocument();
   });
 
   it('should render sort component', async () => {

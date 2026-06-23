@@ -231,3 +231,18 @@ export async function updatePrivacySettings({
   if (error) throw new Error(`Error updating privacy settings: ${error.message}`);
   return data;
 }
+
+export async function deleteAccount(deleteReviews: boolean): Promise<void> {
+  // The Edge Function removes the avatar and other disposable Storage objects,
+  // optionally deletes approved reviews, and always removes pending content.
+  // Its service-role finalizer deletes auth.users; approved venue/review/image
+  // author FKs become NULL per the account-deletion migrations.
+  // The authenticated Edge Function coordinates all of these steps so
+  // storage cleanup and database deletion cannot be bypassed from the browser.
+  const { error } = await supabase.functions.invoke('delete-account', {
+    body: { deleteReviews },
+  });
+  if (error) {
+    throw new Error('Account deletion failed. Please try again.');
+  }
+}

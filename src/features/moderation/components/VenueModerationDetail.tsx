@@ -280,7 +280,7 @@ function getVenueNotificationDraft(
     includeLink,
     linkUrl: includeLink ? buildVenueShareUrl(venue) : null,
     mentionEdits,
-    recipientUserId: venue.userId,
+    recipientUserId: venue.userId ?? '',
     recipientUsername: venue.submitterUsername,
     venueId: venue.venueId,
     venueName: venue.venueName,

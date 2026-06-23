@@ -59,8 +59,9 @@ function Terms() {
               display, distribute, aggregate, and sublicense (to infrastructure providers such as
               our hosting and CDN services) any content you submit — including venue listings,
               reviews, ratings, and photos — for the purpose of operating and promoting the
-              platform. You retain ownership of content you submit and may request its removal via
-              our{' '}
+              platform. This licence continues for approved content retained without account
+              attribution after account deletion. You retain ownership of content you submit and
+              may request its removal via our{' '}
               <Link to="/contact" className="text-primary underline">
                 contact form
               </Link>

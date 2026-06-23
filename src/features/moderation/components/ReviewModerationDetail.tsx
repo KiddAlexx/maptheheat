@@ -281,7 +281,7 @@ function getReviewNotificationDraft(
     includeLink,
     linkUrl: includeLink && venue ? buildVenueShareUrl(venue) : null,
     mentionEdits,
-    recipientUserId: review.userId,
+    recipientUserId: review.userId ?? '',
     recipientUsername: review.submitterUsername,
     venueId: review.venueId,
     venueName: venue?.venueName ?? 'this venue',
