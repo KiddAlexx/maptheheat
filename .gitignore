@@ -29,3 +29,6 @@ dist-ssr
 
 # Local-only specs (sensitive — e.g. unfixed security gaps before launch)
 docs/specs/PRE_LAUNCH_AUDIT_SPEC.md
+
+# Skills are linked from .agents/skills via junction
+.claude/skills/

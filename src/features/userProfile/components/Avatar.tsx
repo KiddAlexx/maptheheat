@@ -2,7 +2,7 @@ import defaultAvatar from '../../../assets/default-avatar.webp';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
 
 interface AvatarProps {
-  userId: string;
+  userId?: string | null;
   className?: string;
   hasNotifications?: boolean;
 }

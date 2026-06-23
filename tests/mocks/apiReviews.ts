@@ -1,10 +1,18 @@
-import { ReviewsRequestParams } from '@/services/apiReviews';
+import {
+  ReviewsRequestParams,
+  ReviewsResponse,
+} from '@/services/apiReviews';
 import { delay } from 'msw';
 import { db } from './db';
 import { vi } from 'vitest';
 
 export const getReviewsAction = vi.fn(
-  async ({ venueId, userId, pagination, sort }: ReviewsRequestParams) => {
+  async ({
+    venueId,
+    userId,
+    pagination,
+    sort,
+  }: ReviewsRequestParams): Promise<ReviewsResponse> => {
     let rows = db.review.getAll();
 
     if (venueId) rows = rows.filter((r) => r.venueId === venueId);
@@ -37,7 +45,10 @@ export const getReviewsAction = vi.fn(
     const from = (pageNumber - 1) * maxResults;
     const to = from + maxResults;
 
-    return { reviews: rows.slice(from, to), count: rows.length };
+    return {
+      reviews: rows.slice(from, to) as unknown as ReviewsResponse['reviews'],
+      count: rows.length,
+    };
   }
 );
 

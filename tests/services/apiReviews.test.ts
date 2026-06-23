@@ -77,6 +77,9 @@ describe('apiReviews moderation boundaries', () => {
     await getReviews({ venueId: 'venue-test-id' });
 
     expect(supabaseMocks.from).toHaveBeenCalledWith('venue_reviews');
+    const selectCall = query.select.mock.calls[0]?.[0] as string;
+    expect(selectCall).toContain('profiles(user_id, updated_at, username');
+    expect(selectCall).not.toContain('profiles(*)');
     expect(query.eq).toHaveBeenCalledWith('status', 'approved');
     expect(query.eq).toHaveBeenCalledWith('venue_id', 'venue-test-id');
     expect(query.filter).toHaveBeenCalledWith(

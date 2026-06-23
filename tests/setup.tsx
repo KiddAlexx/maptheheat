@@ -1,7 +1,11 @@
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 import { deleteReviewMock, getReviewsMock } from './mocks/apiReviews';
-import { getCurrentUserMock, logoutApiMock } from './mocks/apiAuth';
+import {
+  clearLocalSessionApiMock,
+  getCurrentUserMock,
+  logoutApiMock,
+} from './mocks/apiAuth';
 import {
   getIsAdminMock,
   getModerationCitiesMock,
@@ -21,6 +25,7 @@ import {
   updateModerationVenueStatusMock,
 } from './mocks/apiModeration';
 import {
+  deleteAccountMock,
   getUnreadNotificationsCountMock,
   getUserProfileMock,
 } from './mocks/apiUserProfiles';
@@ -37,6 +42,7 @@ vi.mock('@/services/apiReviews', () => ({
 }));
 
 vi.mock('@/services/apiAuth', () => ({
+  clearLocalSessionApi: clearLocalSessionApiMock,
   getCurrentUser: getCurrentUserMock,
   logoutApi: logoutApiMock,
 }));
@@ -62,6 +68,7 @@ vi.mock('@/services/apiModeration', () => ({
 }));
 
 vi.mock('@/services/apiUserProfiles', () => ({
+  deleteAccount: deleteAccountMock,
   getUserProfile: getUserProfileMock,
   getUnreadNotificationsCount: getUnreadNotificationsCountMock,
 }));

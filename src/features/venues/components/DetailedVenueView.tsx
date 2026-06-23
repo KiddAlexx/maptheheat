@@ -1,5 +1,6 @@
 // Third Party Imports
 import { useNavigate, useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 import { PageSeo } from '@/lib/seo';
 
 // React imports
@@ -12,6 +13,7 @@ import { useUser } from '../../authentication/hooks/useUser';
 import { useModalContext } from '@/context/ModalContext';
 import { useGetReviews } from '@/features/reviews/hooks/useGetReviews';
 import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
+import { useGetMyFavourites } from '@/features/userProfile/hooks/useGetMyFavourites';
 import { useUpdateFavouriteVenue } from '@/features/userProfile/hooks/useUpdateFavouriteVenue';
 
 import { useGlobalError } from '@/context/ErrorContext';
@@ -43,15 +45,15 @@ function DetailedVenueView() {
   // Keep the city/country filter aligned with the venue's location in the URL
   useSyncCityFilterFromParams();
 
-  const { openModal, openModalUpload, openDialog } = useModalContext();
+  const { openModal, openModalUpload, openDialog, openUsernameModal } = useModalContext();
 
   const { isAuthenticated, user } = useUser();
   const userId = user?.id;
 
   const { userProfile } = useGetUserProfile(userId);
   const username = userProfile?.username;
-  const favVenuesList = userProfile?.favouriteVenues || null;
-  const isFavourite = favVenuesList?.includes(venueId) ?? false;
+  const { myFavourites } = useGetMyFavourites(userId);
+  const isFavourite = !!venueId && myFavourites.includes(venueId);
   const [optimisticIsFavourite, setOptimisticIsFavourite] =
     useState(isFavourite);
 
@@ -137,6 +139,7 @@ function DetailedVenueView() {
     cuisines,
     dietaryOptions,
     addedByUsername,
+    addedByUserId,
   } = venue;
 
   const { lat, lon } = coords;
@@ -156,20 +159,8 @@ function DetailedVenueView() {
   const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
   const shareUrl = buildVenueShareUrl(venue) ?? '';
 
-  async function handleReview() {
-    if (!venueId) return null;
-    // Open login modal if not authenticated
-    if (!isAuthenticated) {
-      openModal('login');
-      return;
-    }
-    // Ask for for username if not set
-    if (!username) {
-      openDialog('Please choose a username to proceed', () =>
-        navigate(`/profile/edit/username`)
-      );
-      return;
-    }
+  async function continueReviewFlow() {
+    if (!venueId) return;
     // Check if user has 2 or more pending reviews
     try {
       const underReviewLimit = await checkPendingReviews();
@@ -194,6 +185,21 @@ function DetailedVenueView() {
       setGlobalError(`${err}`);
       return;
     }
+  }
+
+  async function handleReview() {
+    if (!venueId) return null;
+    // Open login modal if not authenticated
+    if (!isAuthenticated) {
+      openModal('login');
+      return;
+    }
+    // Ask for for username if not set
+    if (!username) {
+      openUsernameModal(() => continueReviewFlow());
+      return;
+    }
+    await continueReviewFlow();
   }
 
   async function handleAddImages() {
@@ -230,14 +236,11 @@ function DetailedVenueView() {
     const nextFavourite = !previousFavourite;
     setOptimisticIsFavourite(nextFavourite);
 
-    updateFavouriteVenue(
-      { userId, venueId },
-      {
-        onError: () => {
-          setOptimisticIsFavourite(previousFavourite);
-        },
-      }
-    );
+    updateFavouriteVenue(venueId, {
+      onError: () => {
+        setOptimisticIsFavourite(previousFavourite);
+      },
+    });
   }
 
   const seoTitle = `${venueName} in ${city} | MapTheHeat`;
@@ -281,9 +284,18 @@ function DetailedVenueView() {
           {addedByUsername && (
             <p className="mt-2 text-sm text-app-muted">
               Added by{' '}
-              <span className="font-medium text-foreground">
-                {addedByUsername}
-              </span>
+              {addedByUserId ? (
+                <Link
+                  to={`/user/${addedByUserId}`}
+                  className="font-medium text-foreground hover:opacity-80"
+                >
+                  {addedByUsername}
+                </Link>
+              ) : (
+                <span className="font-medium text-foreground">
+                  {addedByUsername}
+                </span>
+              )}
             </p>
           )}
         </div>

@@ -10,7 +10,7 @@ function Privacy() {
       />
       <div className="w-full max-w-3xl rounded-xl border border-app-border bg-app-card p-6 shadow-md sm:p-10">
         <h1 className="mb-2 text-3xl font-bold text-foreground">Privacy Policy</h1>
-        <p className="mb-8 text-sm text-app-muted">Last updated: May 2026</p>
+        <p className="mb-8 text-sm text-app-muted">Last updated: June 2026</p>
 
         <section className="mb-8">
           <h2 className="mb-2 text-xl font-semibold text-foreground">1. Who We Are</h2>
@@ -166,10 +166,17 @@ function Privacy() {
         <section className="mb-8">
           <h2 className="mb-2 text-xl font-semibold text-foreground">5. How Long We Keep Your Data</h2>
           <p className="text-app-muted">
-            Your data is retained for as long as your account is active. If you delete your
-            account, your personal account data will be removed. Content you submitted (venues
-            and reviews) may remain on the platform in anonymised or attributed form unless you
-            specifically request its removal.
+            Your data is retained while your account is active. If you delete your account, we
+            remove your sign-in, profile, avatar, favourites, notifications, and pending or
+            declined contributions. Approved venue listings and approved venue or standalone
+            photos remain on the platform without an account attribution. Approved reviews and
+            their approved photos also remain without attribution unless you choose to delete
+            your reviews during account deletion. You can request removal of retained content
+            through our{' '}
+            <Link to="/contact" className="text-primary underline">
+              contact form
+            </Link>
+            .
           </p>
         </section>
 
