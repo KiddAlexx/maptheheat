@@ -3,7 +3,11 @@ import { Input } from '@heroui/react';
 import { Controller, useForm } from 'react-hook-form';
 import { useUpdateUsername } from '../hooks/useUpdateUsername';
 
-function UpdateUsernameForm() {
+interface UpdateUsernameFormProps {
+  onSuccess?: () => void;
+}
+
+function UpdateUsernameForm({ onSuccess }: UpdateUsernameFormProps) {
   interface FormData {
     username: string;
   }
@@ -15,7 +19,7 @@ function UpdateUsernameForm() {
   function formSubmit(formData: FormData) {
     const { username } = formData;
     if (!username) return;
-    updateUsername({ username }, { onSuccess: () => reset() });
+    updateUsername({ username }, { onSuccess: () => { reset(); onSuccess?.(); } });
   }
 
   return (

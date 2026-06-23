@@ -45,7 +45,7 @@ function DetailedVenueView() {
   // Keep the city/country filter aligned with the venue's location in the URL
   useSyncCityFilterFromParams();
 
-  const { openModal, openModalUpload, openDialog } = useModalContext();
+  const { openModal, openModalUpload, openDialog, openUsernameModal } = useModalContext();
 
   const { isAuthenticated, user } = useUser();
   const userId = user?.id;
@@ -159,20 +159,8 @@ function DetailedVenueView() {
   const mapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
   const shareUrl = buildVenueShareUrl(venue) ?? '';
 
-  async function handleReview() {
-    if (!venueId) return null;
-    // Open login modal if not authenticated
-    if (!isAuthenticated) {
-      openModal('login');
-      return;
-    }
-    // Ask for for username if not set
-    if (!username) {
-      openDialog('Please choose a username to proceed', () =>
-        navigate(`/profile/edit/username`)
-      );
-      return;
-    }
+  async function continueReviewFlow() {
+    if (!venueId) return;
     // Check if user has 2 or more pending reviews
     try {
       const underReviewLimit = await checkPendingReviews();
@@ -197,6 +185,21 @@ function DetailedVenueView() {
       setGlobalError(`${err}`);
       return;
     }
+  }
+
+  async function handleReview() {
+    if (!venueId) return null;
+    // Open login modal if not authenticated
+    if (!isAuthenticated) {
+      openModal('login');
+      return;
+    }
+    // Ask for for username if not set
+    if (!username) {
+      openUsernameModal(() => continueReviewFlow());
+      return;
+    }
+    await continueReviewFlow();
   }
 
   async function handleAddImages() {

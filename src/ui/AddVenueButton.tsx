@@ -20,24 +20,13 @@ interface AddVenueButtonProps {
 
 function AddVenueButton({ closeOtherModals, className }: AddVenueButtonProps) {
   const { setGlobalError } = useGlobalError();
-  const { openDialog, openModal } = useModalContext();
+  const { openDialog, openModal, openUsernameModal } = useModalContext();
   const navigate = useNavigate();
   const { isAuthenticated, user } = useUser();
   const { userProfile } = useGetUserProfile(user?.id);
   const username = userProfile?.username;
 
-  async function proceed() {
-    if (!isAuthenticated) {
-      openModal('login');
-      return;
-    }
-    // Ask for a username if not set, mirroring the review flow
-    if (!username) {
-      openDialog('Please choose a username to proceed', () =>
-        navigate('/profile/edit/username')
-      );
-      return;
-    }
+  async function continueAddVenue() {
     try {
       const underVenueLimit = await canUserAddVenue();
       if (underVenueLimit) {
@@ -50,6 +39,19 @@ function AddVenueButton({ closeOtherModals, className }: AddVenueButtonProps) {
     } catch (err) {
       setGlobalError(`${err}`);
     }
+  }
+
+  async function proceed() {
+    if (!isAuthenticated) {
+      openModal('login');
+      return;
+    }
+    // Ask for a username if not set, mirroring the review flow
+    if (!username) {
+      openUsernameModal(() => continueAddVenue());
+      return;
+    }
+    await continueAddVenue();
   }
 
   function handleAddVenue() {

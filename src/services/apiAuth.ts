@@ -49,7 +49,7 @@ export async function loginGoogleApi() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${window.location.origin}/app/map`,
+      redirectTo: window.location.href,
     },
   });
   if (error) throw new Error(`Google sign in failed:  ${error.message}`);
