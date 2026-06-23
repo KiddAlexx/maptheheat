@@ -396,7 +396,7 @@ export async function getModerationReviews({
   let query = supabase
     .from('venue_reviews')
     .select(
-      '*, profiles!inner(username), venue_details!inner(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)',
+      '*, profiles(username), venue_details!inner(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)',
       { count: 'exact' }
     )
     .eq('status', status);
@@ -444,7 +444,7 @@ export async function getModerationReview(
   const { data, error } = await supabase
     .from('venue_reviews')
     .select(
-      '*, profiles!inner(username), venue_details!inner(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)'
+      '*, profiles(username), venue_details!inner(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)'
     )
     .eq('review_id', reviewId)
     .single();
@@ -685,7 +685,7 @@ export async function updateModerationReview({
     .update(convertedReview)
     .eq('review_id', reviewId)
     .select(
-      '*, profiles!inner(username), venue_details!inner(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)'
+      '*, profiles(username), venue_details!inner(*), venue_images(image_id, created_at, venue_id, review_id, user_id, alt_text, status, image_type, image_path)'
     )
     .single();
 

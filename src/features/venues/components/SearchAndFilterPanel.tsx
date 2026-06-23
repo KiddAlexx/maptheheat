@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useMatch } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import VenueTypeFilter from './VenueTypeFilter';
 import CitySelect from './CitySelect';
@@ -13,14 +12,14 @@ import { getFilterValue } from '../utils/getFilterValue';
 interface SearchAndFilerPanelProps {
   useVenueContext: () => VenueFilterContextType;
   favouriteVenues?: string[];
+  isUserMode?: boolean;
 }
 
 function SearchAndFilterPanel({
   useVenueContext,
   favouriteVenues,
+  isUserMode,
 }: SearchAndFilerPanelProps) {
-  // isUserMode hides the search bar on the profile/favourites view
-  const isUserMode = useMatch('/profile/venues');
   const { filters, updateVenueFilter, removeVenueFilter } = useVenueContext();
 
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -65,6 +64,7 @@ function SearchAndFilterPanel({
       <CitySelect
         useVenueContext={useVenueContext}
         favouriteVenues={favouriteVenues}
+        isUserMode={isUserMode}
       />
       <div className="flex flex-col-reverse gap-3 xs:flex-row">
         <VenueTypeFilter useVenueContext={useVenueContext} />

@@ -19,13 +19,13 @@ export interface Review {
   reviewId: string;
   reviewTitle: string;
   reviewType: 'shop' | 'restaurant';
-  userId: string;
+  userId: string | null;
   venueId: string;
 }
 
 // Reviews with relational table data from profiles and venue_details
 export interface ReviewWithRelations extends Review {
-  profiles: Profile;
+  profiles: Profile | null;
   venueDetails: Venue;
   venueImages: DetailedImage[];
 }

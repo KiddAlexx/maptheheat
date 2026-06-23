@@ -1,5 +1,4 @@
 // Third Party Imports
-import { useMatch } from 'react-router';
 
 // React imports
 
@@ -7,7 +6,7 @@ import { useMatch } from 'react-router';
 import { useVenues } from '../hooks/useVenues';
 import { useParamsAndNavigate } from '@/hooks/useParamsAndNavigate';
 import { useUser } from '@/features/authentication/hooks/useUser';
-import { useGetUserProfile } from '@/features/userProfile/hooks/useGetUserProfile';
+import { useGetMyFavourites } from '@/features/userProfile/hooks/useGetMyFavourites';
 import {
   useVenueFilterContext,
   VenueFilterContextType,
@@ -27,12 +26,13 @@ import type { Venue } from '@/types/venueTypes';
 interface ListViewProps {
   useVenueContext: () => VenueFilterContextType;
   favouriteVenues?: string[];
+  isUserMode?: boolean;
+  authorUserId?: string;
 }
 
-function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
+function ListView({ useVenueContext, favouriteVenues, isUserMode, authorUserId }: ListViewProps) {
   const { filters, sort, pagination, updatePageNumber } = useVenueContext();
   const { updateVenueFilter } = useVenueFilterContext();
-  const isUserMode = useMatch('/profile/venues');
   // Load venues from supabase
   const {
     venues,
@@ -43,6 +43,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
     filters,
     sort,
     pagination,
+    authorUserId,
   });
 
   const { isLargeScreen } = useUIContext();
@@ -54,12 +55,12 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
     isAuthenticated,
   } = useUser();
   const userId = user ? user.id : null;
-  const { userProfile, isLoading: isLoadingProfile } =
-    useGetUserProfile(userId);
+  const { myFavourites: favVenuesList, isLoading: isLoadingFavourites } =
+    useGetMyFavourites(userId);
 
   const setParamsAndNavigate = useParamsAndNavigate();
 
-  if (isFetching || isPendingUser || isLoadingProfile || isLoadingVenues)
+  if (isFetching || isPendingUser || isLoadingFavourites || isLoadingVenues)
     return <LoaderSpinner message="Loading venues" />;
 
   function handleCardClick(venue: Venue) {
@@ -75,8 +76,6 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
 
     setParamsAndNavigate(venue, 'venue');
   }
-
-  const favVenuesList = userProfile?.favouriteVenues || null;
 
   return (
     <>
@@ -108,6 +107,7 @@ function ListView({ useVenueContext, favouriteVenues }: ListViewProps) {
               userId={userId}
               isAuthenticated={isAuthenticated}
               favVenuesList={favVenuesList}
+              isUserMode={isUserMode}
               key={venue.venueId}
             />
           ))}

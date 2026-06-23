@@ -1,7 +1,4 @@
-import {
-  updateFavouriteVenue as updateFavouriteVenueApi,
-  AddFavouriteVenueParams,
-} from '@/services/apiUserProfiles';
+import { toggleFavouriteVenue } from '@/services/apiUserProfiles';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
@@ -9,10 +6,9 @@ export function useUpdateFavouriteVenue() {
   const queryClient = useQueryClient();
 
   const { mutate: updateFavouriteVenue, isPending: isUpdating } = useMutation({
-    mutationFn: ({ venueId, userId }: AddFavouriteVenueParams) =>
-      updateFavouriteVenueApi({ venueId, userId }),
+    mutationFn: (venueId: string) => toggleFavouriteVenue(venueId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: ['myFavourites'] });
       queryClient.invalidateQueries({ queryKey: ['userCities'] });
     },
     onError: (err) => {

@@ -38,6 +38,7 @@ interface ModalContextType extends State {
   openModalUpload: (params: OpenModalUploadParams) => void;
   closeModal: () => void;
   openDialog: (message: string, confirmAction?: () => void) => void;
+  openUsernameModal: (successAction: () => void) => void;
 }
 
 type Action =
@@ -62,6 +63,7 @@ type Action =
       type: 'open-dialog';
       payload: { message: string; confirmActionAndClose?: (() => void) | null };
     }
+  | { type: 'open-username-modal'; payload: { successAction: () => void } }
   | { type: 'close-modal' };
 
 interface ModalProviderProps {
@@ -112,6 +114,14 @@ function reducer(state: State, action: Action) {
         modalOpen: true,
         message: action.payload.message,
         confirmAction: action.payload.confirmActionAndClose ?? null,
+      };
+
+    case 'open-username-modal':
+      return {
+        ...state,
+        modalName: 'set-username',
+        modalOpen: true,
+        confirmAction: action.payload.successAction,
       };
 
     case 'close-modal': {
@@ -191,6 +201,20 @@ function ModalProvider({ children }: ModalProviderProps) {
     [dispatch, closeModal]
   );
 
+  const openUsernameModal = useCallback(
+    (successAction: () => void) => {
+      const successActionAndClose = () => {
+        successAction();
+        closeModal();
+      };
+      dispatch({
+        type: 'open-username-modal',
+        payload: { successAction: successActionAndClose },
+      });
+    },
+    [dispatch, closeModal]
+  );
+
   const value = useMemo(
     () => ({
       modalName,
@@ -198,6 +222,7 @@ function ModalProvider({ children }: ModalProviderProps) {
       openModal,
       closeModal,
       openDialog,
+      openUsernameModal,
       openModalImages,
       openModalUpload,
       images,
@@ -213,6 +238,7 @@ function ModalProvider({ children }: ModalProviderProps) {
       openModal,
       closeModal,
       openDialog,
+      openUsernameModal,
       openModalImages,
       openModalUpload,
       images,

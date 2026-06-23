@@ -247,7 +247,7 @@ describe('apiModeration review reads', () => {
     vi.clearAllMocks();
   });
 
-  it('uses inner joins on profiles and venue_details for the review queue', async () => {
+  it('keeps ownerless reviews in the queue while requiring venue details', async () => {
     const query = createSupabaseQueryMock({ count: 0, data: [] });
     supabaseMocks.state.query = query;
 
@@ -255,7 +255,8 @@ describe('apiModeration review reads', () => {
 
     expect(supabaseMocks.from).toHaveBeenCalledWith('venue_reviews');
     const selectCall = query.select.mock.calls[0]?.[0] as string;
-    expect(selectCall).toContain('profiles!inner(username)');
+    expect(selectCall).toContain('profiles(username)');
+    expect(selectCall).not.toContain('profiles!inner(username)');
     expect(selectCall).toContain('venue_details!inner(*)');
   });
 

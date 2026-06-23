@@ -8,3 +8,7 @@ export const getUserProfileMock = vi.fn(async (userId: string) => {
 });
 
 export const getUnreadNotificationsCountMock = vi.fn(async () => 0);
+
+export const deleteAccountMock = vi.fn(async (deleteReviews: boolean) => {
+  void deleteReviews;
+});

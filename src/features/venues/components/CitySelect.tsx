@@ -1,5 +1,5 @@
 // Third Party Imports
-import { useMatch, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 // Hooks
 import { useUniqueCities } from '../hooks/useUniqueCities';
@@ -19,9 +19,10 @@ import type { Key, UniqueCity } from '@/types/venueTypes';
 interface VenueFilterProps {
   useVenueContext: () => VenueFilterContextType;
   favouriteVenues?: string[];
+  isUserMode?: boolean;
 }
 
-function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
+function CitySelect({ useVenueContext, favouriteVenues, isUserMode }: VenueFilterProps) {
   // Fetch unique city list from unique_cities table
   const { uniqueCities, isPending: isPendingCities } = useUniqueCities();
   // Fetch unique cities for venues in users favourite venues list
@@ -32,42 +33,39 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
   const { filters, updateVenueFilter, removeVenueFilter } = useVenueContext();
   const navigate = useNavigate();
 
-  // Determine "mode" based on url - used to differentiate between use
-  // within profile view or map/venue view
-
-  const isUserMode = useMatch('/profile/venues');
-
   // Ensure uniqueCity arrays have loaded
   if (isPendingCities || isLoadingUserCities) return;
 
-  // Select which city list to use based on "mode"
-  // Select which city list to use based on "mode"
+  // Show user-specific city list when favouriteVenues are provided;
+  // otherwise show all unique cities from the database.
   let finalCityList: UniqueCity[];
-  isUserMode
-    ? (finalCityList = [
-        {
-          cityId: 'ALL_KEY',
-          city: 'All',
-          country: 'favourites',
-          coords: { lat: 0, lon: 0 },
-        },
-        ...userCities!,
-      ])
-    : (finalCityList = uniqueCities!);
+  if (favouriteVenues && userCities) {
+    finalCityList = [
+      {
+        cityId: 'ALL_KEY',
+        city: 'All',
+        country: 'favourites',
+        coords: { lat: 0, lon: 0 },
+      },
+      ...userCities,
+    ];
+  } else {
+    finalCityList = uniqueCities!;
+  }
 
   // Derive the selected city from context (the stored value is the city name)
   // so the Autocomplete reflects the applied filter after a panel remount.
   const cityFilter = getFilterValue(filters, 'city') as string | undefined;
   const selectedKey = cityFilter
     ? finalCityList.find((cityObj) => cityObj.city === cityFilter)?.cityId ?? null
-    : isUserMode
+    : favouriteVenues
       ? 'ALL_KEY'
       : null;
 
   // Update venue filters based upon city selection
   async function handleSelectCity(value: Key | null) {
     // Displays all user favourites
-    if (isUserMode && value === 'ALL_KEY') {
+    if (favouriteVenues && value === 'ALL_KEY') {
       removeVenueFilter('city');
       removeVenueFilter('country');
       return;
@@ -83,6 +81,7 @@ function CitySelect({ useVenueContext, favouriteVenues }: VenueFilterProps) {
     updateVenueFilter({ field: 'city', value: city, method: 'eq' });
     updateVenueFilter({ field: 'country', value: country, method: 'eq' });
     removeVenueFilter('venueName');
+    // Navigate to map only outside profile views
     if (!isUserMode) {
       navigate(
         `/app/map/${city}/${country}?&lat=${coords.lat}&lon=${coords.lon}`

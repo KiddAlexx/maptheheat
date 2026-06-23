@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 
 // Third Party Imports
-import { useMatch } from 'react-router';
 import { Card, CardBody, CardFooter, Image } from '@heroui/react';
 import { Icon } from '@iconify/react';
 
@@ -27,6 +26,7 @@ interface VenueListCardProps {
   userId: string | null;
   isAuthenticated: boolean;
   favVenuesList?: string[] | null;
+  isUserMode?: boolean;
 }
 
 function VenueListCard({
@@ -35,12 +35,11 @@ function VenueListCard({
   userId,
   isAuthenticated,
   favVenuesList,
+  isUserMode,
 }: VenueListCardProps) {
   const setParamsAndNavigate = useParamsAndNavigate();
   const { updateFavouriteVenue, isUpdating } = useUpdateFavouriteVenue();
   const { openDialog } = useModalContext();
-
-  const isUserMode = useMatch('/profile/venues');
 
   const {
     venueName,
@@ -87,14 +86,11 @@ function VenueListCard({
           const nextFavourite = !previousFavourite;
           setOptimisticIsFavourite(nextFavourite);
 
-          updateFavouriteVenue(
-            { userId, venueId },
-            {
-              onError: () => {
-                setOptimisticIsFavourite(previousFavourite);
-              },
-            }
-          );
+          updateFavouriteVenue(venueId, {
+            onError: () => {
+              setOptimisticIsFavourite(previousFavourite);
+            },
+          });
         }
       );
     } else {
@@ -102,14 +98,11 @@ function VenueListCard({
       const nextFavourite = !previousFavourite;
       setOptimisticIsFavourite(nextFavourite);
 
-      updateFavouriteVenue(
-        { userId, venueId },
-        {
-          onError: () => {
-            setOptimisticIsFavourite(previousFavourite);
-          },
-        }
-      );
+      updateFavouriteVenue(venueId, {
+        onError: () => {
+          setOptimisticIsFavourite(previousFavourite);
+        },
+      });
     }
   }
 

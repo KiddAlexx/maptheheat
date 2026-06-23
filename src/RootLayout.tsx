@@ -24,7 +24,7 @@ function RootLayout() {
       <div
         className={`relative flex min-h-0 flex-1 flex-col${isFullHeightRoute ? ' overflow-hidden' : ''}`}
       >
-        {pathname !== '/' && !pathname.startsWith('/profile') && <BackgroundBlobs className="dark:hidden" />}
+        {pathname !== '/' && !pathname.startsWith('/profile') && !pathname.startsWith('/user/') && <BackgroundBlobs className="dark:hidden" />}
         <Suspense fallback={<LoaderSpinner />}>
           <Outlet />
         </Suspense>

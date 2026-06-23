@@ -27,6 +27,7 @@ export interface VenuesRequestParams {
   sort?: VenueSort | null;
   pagination?: VenuePagination;
   favouriteVenues?: string[];
+  authorUserId?: string;
 }
 
 export interface VenuesResponse {
@@ -45,6 +46,7 @@ export async function getVenues({
   sort,
   pagination,
   favouriteVenues,
+  authorUserId,
 }: VenuesRequestParams): Promise<VenuesResponse> {
   let query = supabase
     .from('venue_details')
@@ -56,6 +58,11 @@ export async function getVenues({
 
   if (favouriteVenues) {
     query = query.in('venue_id', favouriteVenues);
+  }
+
+  // Filter by author when showing a user's added venues
+  if (authorUserId) {
+    query = query.eq('user_id', authorUserId);
   }
 
   // Apply each filter in the filters array if any
@@ -100,7 +107,7 @@ export async function getVenues({
 export async function getVenue(id: string): Promise<Venue> {
   const { data, error } = await supabase
     .from('venue_details')
-    .select('*, profiles(username), venue_images(image_path, alt_text, image_id)')
+    .select('*, profiles(username, user_id, is_public), venue_images(image_path, alt_text, image_id)')
     .eq('venue_id', id)
     .eq('status', 'approved')
     .filter('venue_images.status', 'eq', 'approved');
@@ -116,6 +123,7 @@ export async function getVenue(id: string): Promise<Venue> {
     ...venueFields,
     venueImages: addImagePaths(venueData.venueImages),
     addedByUsername: profiles?.username ?? null,
+    addedByUserId: profiles?.isPublic ? (profiles?.userId ?? null) : null,
   };
 
   return venue;

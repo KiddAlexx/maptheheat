@@ -16,6 +16,7 @@ export function useVenues({
   filters = [],
   pagination,
   favouriteVenues,
+  authorUserId,
 }: VenuesRequestParams) {
   const { city, country } = useParams();
 
@@ -39,9 +40,9 @@ export function useVenues({
   const queryClient = useQueryClient();
 
   const { error, isPending, data } = useQuery<VenuesResponse>({
-    queryKey: ['venues', finalFilters, sort, pagination, favouriteVenues],
+    queryKey: ['venues', finalFilters, sort, pagination, favouriteVenues, authorUserId],
     queryFn: () =>
-      getVenues({ filters: finalFilters, sort, pagination, favouriteVenues }),
+      getVenues({ filters: finalFilters, sort, pagination, favouriteVenues, authorUserId }),
     placeholderData: keepPreviousData,
   });
 
@@ -54,13 +55,14 @@ export function useVenues({
     if (pageNumber < pageCount) {
       const next = { pageNumber: pageNumber + 1, maxResults };
       queryClient.prefetchQuery({
-        queryKey: ['venues', finalFilters, sort, next, favouriteVenues],
+        queryKey: ['venues', finalFilters, sort, next, favouriteVenues, authorUserId],
         queryFn: () =>
           getVenues({
             filters: finalFilters,
             sort,
             pagination: next,
             favouriteVenues,
+            authorUserId,
           }),
       });
     }
@@ -68,13 +70,14 @@ export function useVenues({
     if (pageNumber > 1) {
       const prev = { pageNumber: pageNumber - 1, maxResults };
       queryClient.prefetchQuery({
-        queryKey: ['venues', finalFilters, sort, prev, favouriteVenues],
+        queryKey: ['venues', finalFilters, sort, prev, favouriteVenues, authorUserId],
         queryFn: () =>
           getVenues({
             filters: finalFilters,
             sort,
             pagination: prev,
             favouriteVenues,
+            authorUserId,
           }),
       });
     }
@@ -87,6 +90,7 @@ export function useVenues({
     filters,
     sort,
     favouriteVenues,
+    authorUserId,
   ]);
 
   return { error, isPending, venues, totalCount };

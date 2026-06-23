@@ -16,9 +16,10 @@ import ReviewSort from './ReviewSort';
 
 interface ReviewContainerProps {
   mode: 'venue' | 'user';
+  authorUserId?: string;
 }
 
-function ReviewContainer({ mode }: ReviewContainerProps) {
+function ReviewContainer({ mode, authorUserId }: ReviewContainerProps) {
   const isUserMode = mode === 'user';
   const isVenueMode = mode === 'venue';
 
@@ -59,7 +60,7 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
   }, [pagination.pageNumber]);
 
   const { user, isPending: isPendingUser } = useUser();
-  const userId = user?.id;
+  const resolvedUserId = authorUserId ?? user?.id;
 
   // Fetch reviews - use mode prop to conditionally pass either
   // venueId or userId
@@ -70,12 +71,12 @@ function ReviewContainer({ mode }: ReviewContainerProps) {
     error: reviewError,
   } = useGetReviews({
     venueId: venueId ? venueId : undefined,
-    userId: isUserMode ? userId : undefined,
+    userId: isUserMode ? resolvedUserId : undefined,
     sort,
     pagination,
   });
 
-  if ((isUserMode && isPendingUser) || isPendingReviews)
+  if ((isUserMode && !authorUserId && isPendingUser) || isPendingReviews)
     return <LoaderSpinner message="Loading reviews" />;
 
   if (reviewError) {
